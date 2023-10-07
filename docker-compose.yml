@@ -18,3 +18,9 @@ services:
             - ./runs:/app
         working_dir: /app
         # docker-compose run --rm c /bin/bash -c "gcc hello.c -o hello && ./hello && rm hello"
+    python:
+        image: python:3.11.6-alpine3.18
+        volumes:
+            - ./runs:/app
+        working_dir: /app
+        # docker-compose run --rm python python hello.py

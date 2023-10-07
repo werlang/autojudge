@@ -37,6 +37,9 @@ for filename in "${inputs[@]}"; do
     "php")
       command="docker-compose run --rm php php $file < $filename"
       ;;
+    "py")
+      command="docker-compose run --rm python python $file < $filename"
+      ;;
     *)
       echo "Unsupported file extension: .$extension"
       exit 1
