@@ -41,6 +41,29 @@ output/
 autojudge.sh
 ```
 
+## Results
+
+If the output of your code matches the expected output, you will see a `passed` message. Otherwise, you will see a `failed` message.
+
+```bash
+10 passed, 0 failed
+```
+
+For the `failed` cases, the script will display the expected output and the actual output.
+
+```bash
+./input/teste4 Wrong answer
+Got:
+X = 13
+Expected:
+X = 3
+
+9 passed, 1 failed
+```
+
+In the case of a runtime/compilation error, the script will display the error message.
+
+
 ## Contributing
 
 Contributions are welcome! If you have any suggestions, bug reports, or feature requests, please open an issue or submit a pull request.
