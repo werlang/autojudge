@@ -14,7 +14,17 @@ AutoJudge is a simple script that automates the process of running test cases fo
 
 You will need Docker installed on your system to run the AutoJudge script within a Docker container. If you don't have Docker installed, you can download it from the official website [here](https://www.docker.com/get-started).
 
+## Setup
+
+Before Running the autojudge, you will need to pull and build the docker images for each language supported. To do this, run the following command:
+
+```bash
+docker-compose build
+```
+
 ## Usage
+
+Go to the `runs` folder, and run the following command:
 
 ```bash
 ./autojudge.sh <script_file>
