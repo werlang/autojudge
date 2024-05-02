@@ -1,6 +1,6 @@
 #!/bin/bash
 
-file="$1"
+file="code/$1"
 
 if [ -z "$file" ]; then
   echo "Usage: $0 <script_file>"
@@ -29,16 +29,16 @@ for filename in "${inputs[@]}"; do
 
   case "$extension" in
     "c")
-      command="docker-compose run --rm gcc /bin/bash -c \"gcc -o a.out $file && ./a.out < $filename && rm ./a.out\""
+      command="docker-compose -f ../compilers.yaml run --rm gcc /bin/bash -c \"gcc -o a.out $file && ./a.out < $filename && rm ./a.out\""
       ;;
     "js")
-      command="docker-compose run --rm node node $file < $filename"
+      command="docker-compose -f ../compilers.yaml run --rm node node $file < $filename"
       ;;
     "php")
-      command="docker-compose run --rm php php $file < $filename"
+      command="docker-compose -f ../compilers.yaml run --rm php php $file < $filename"
       ;;
     "py")
-      command="docker-compose run --rm python python $file < $filename"
+      command="docker-compose -f ../compilers.yaml run --rm python python $file < $filename"
       ;;
     *)
       echo "Unsupported file extension: .$extension"
