@@ -1,0 +1,18 @@
+{
+  "name": "autojudge",
+  "version": "1.0.0",
+  "description": "Send code and get them judged automatically",
+  "scripts": {
+    "start": "if [ \"$NODE_ENV\" = \"production\" ]; then node app.js; else nodemon app.js; fi"
+  },
+  "nodemonConfig": {
+    "ignore": []
+  },
+  "author": "Pablo Werlang",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mustache-express": "^1.3.2",
+    "nodemon": "^2.0.20"
+  }
+}
