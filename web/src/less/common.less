@@ -1,0 +1,80 @@
+@import "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css";
+@import "https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Quantico:ital,wght@0,400;0,700;1,400;1,700&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap";
+
+@size-400: ~"only screen and (min-width: 400px)";
+@size-600: ~"only screen and (min-width: 600px)";
+@size-900: ~"only screen and (min-width: 900px)";
+@size-1000: ~"only screen and (min-width: 1000px)";
+@size-1200: ~"only screen and (min-width: 1200px)";
+@size-1400: ~"only screen and (min-width: 1400px)";
+@size-1600: ~"only screen and (min-width: 1600px)";
+
+body {
+    background-color: var(--color-background);
+    color: var(--color-text);
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    font-size: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+
+    --color-background: #5b5b60;
+    --color-background-dark: #36393f;
+    --color-text: #f2f2f2;
+    --color-main: #69c9e0;
+    --color-secondary: #1abc9c;
+    --color-shadow: rgba(0, 0, 0, 0.2);
+    --color-border: #45484e;
+}
+
+#frame {
+    max-width: 900px;
+    margin-top: 100px;
+    flex-grow: 1;
+}
+
+
+h1 {
+    font-family: 'Lato', sans-serif;
+    font-size: 2.5rem;
+    margin: 0;
+}
+
+h2 {
+    font-family: 'Lato', sans-serif;
+    font-size: 2rem;
+    margin: 0;
+}
+
+h3 {
+    font-family: 'Lato', sans-serif;
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+pre {
+    font-family: 'Roboto Mono', monospace;
+    background-color: var(--color-background-dark);
+    border-radius: 5px;
+    padding: 5px;
+}
+
+footer {
+    width: 100%;
+    padding-top: 10px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    text-align: center;
+    color: var(--color-text);
+    border: 0px solid var(--color-border);
+    border-top-width: 1px;
+
+    .col {
+        opacity: 0.7;
+    }
+}

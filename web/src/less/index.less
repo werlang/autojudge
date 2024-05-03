@@ -1,0 +1,39 @@
+@import 'common.less';
+@import 'card.less';
+@import 'modal.less';
+@import 'form.less';
+
+
+#frame {
+
+    #logo {
+        img {
+            width: 200px;
+            height: 200px;
+        }
+    
+        h1 {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            font-family: 'Quantico', sans-serif;
+    
+            #site-name {
+                color: #1abc9c;
+            }
+    
+            #underline {
+                animation: underline 1.5s infinite;
+    
+                @keyframes underline {
+                    0% { opacity: 0; }
+                    20% { opacity: 0; }
+                    25% { opacity: 1; }
+                    75% { opacity: 1; }
+                    80% { opacity: 0; }
+                    100% { opacity: 0; }
+                }
+    
+            }
+        }
+    }
+}
