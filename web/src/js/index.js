@@ -2,6 +2,8 @@ import Card from './components/card';
 import Modal from './components/modal';
 import Form from './components/form';
 import Uploader from './components/uploader';
+import Toast from './components/toast';
+import LocalData from './helpers/localData';
 
 import '../less/index.less';
 
@@ -35,6 +37,8 @@ new Card(cardContainer, {
     const form = new Form(modal.get('.form'));
     form.setData({ file: null });
 
+    updateProblemsList();
+
     const uploader = new Uploader(form.get('#upload'), {
         accept: 'application/zip, application/octet-stream, application/x-zip-compressed, multipart/x-zip',
         placeholder: 'Test case file (.zip)',
@@ -55,17 +59,27 @@ new Card(cardContainer, {
     form.submit(async data => {
         // console.log(data)
         const validation = form.validate([
-            { id: 'problem-id', rule: e => e.length >= 3, message: 'ID must be at least 3 characters' }, 
+            { id: 'problemid', rule: e => e.length >= 3, message: 'ID must be at least 3 characters' }, 
             { id: 'file', rule: e => e, message: 'Please upload a valid file' },
         ]);
 
         if (validation.fail.total > 0) return;
 
-        console.log(form.inputs);
+        let problems = new LocalData({ id: 'problems' }).get() || {};
+        problems[data.problemid] = data.file;
 
+        new LocalData({
+            id: 'problems',
+            data: problems,
+            expires: Date.now() + 1000 * 60 * 60 * 24 * 365, // 1 year
+        }).set();
+
+        updateProblemsList();
+
+        form.clear();
+        uploader.reset();
+        new Toast('Problem uploaded', { customClass: 'success', timeOut: 5000 });
     });
-
-
 
 });
 
@@ -78,3 +92,19 @@ new Card(cardContainer, {
     console.log('judge');
 });
 
+function updateProblemsList() {
+    const problems = new LocalData({ id: 'problems' }).get() || {};
+    if (Object.keys(problems).length == 0) return;
+
+    const container = document.querySelector('#problems-list');    
+    container.innerHTML = '<div class="title">Submitted problems:</div>';
+    const list = document.createElement('ul');
+
+    for (let id in problems) {
+        const item = document.createElement('li');
+        item.innerHTML = `<a href="${problems[id]}" download="${id}"><i class="fa-solid fa-download"></i>${id}</a>`;
+        list.appendChild(item);
+    }
+
+    container.appendChild(list);
+}

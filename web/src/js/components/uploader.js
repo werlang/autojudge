@@ -14,6 +14,7 @@ export default class Uploader {
     
     constructor(dropElement, { accept, onSend, onUpload, placeholder }) {
         this.dropElement = dropElement;
+        this.placeholder = placeholder || 'Click or Drop file here';
         const self = this;
     
         this.dropElement.classList.add('dropzone');
@@ -28,10 +29,7 @@ export default class Uploader {
             maxFiles: 1,
             init: function() {
                 // content inside the dropzone
-                self.setContent({
-                    message: placeholder,
-                    icon: 'fa-solid fa-upload',
-                });
+                self.reset();
     
                 // Listen for the addedfile event triggered when a file is added
                 this.on('addedfile', file => {
@@ -96,6 +94,15 @@ export default class Uploader {
     setError({ message = 'Invalid file', icon = 'fa-solid fa-exclamation-triangle' }) {
         this.setContent({ message, icon });
         this.dropElement.classList.add('error');
+        this.dropElement.classList.remove('success');
+    }
+
+    reset() {
+        this.setContent({
+            message: this.placeholder,
+            icon: 'fa-solid fa-upload',
+        });
+        this.dropElement.classList.remove('error');
         this.dropElement.classList.remove('success');
     }
 }

@@ -218,4 +218,16 @@ export default class Form {
             this.inputs[id] = input;
         }
     }
+
+    clear() {
+        this.dom.reset();
+
+        for (let id in this.inputs) {
+            if (Array.isArray(this.inputs[id])) {
+                this.inputs[id].forEach(e => e.setValue(''));
+                continue;
+            }
+            this.inputs[id].setValue('');
+        }
+    }
 }
