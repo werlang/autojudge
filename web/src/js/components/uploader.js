@@ -51,6 +51,19 @@ export default class Uploader {
                         self.fileReady = true;
                         self.file = file;
                         if (onUpload) {
+                            if (data.accepted === false) {
+                                self.setError({
+                                    message: 'Invalid file',
+                                    icon: 'fa-solid fa-exclamation-triangle',
+                                });
+                                return;
+                            }
+
+                            self.setContent({
+                                icon: 'fa-solid fa-check',
+                                message: data.name,
+                            });
+                            self.dropElement.classList.add('success');
                             onUpload(file, data);
                         }
                     });
@@ -83,5 +96,6 @@ export default class Uploader {
     setError({ message = 'Invalid file', icon = 'fa-solid fa-exclamation-triangle' }) {
         this.setContent({ message, icon });
         this.dropElement.classList.add('error');
+        this.dropElement.classList.remove('success');
     }
 }

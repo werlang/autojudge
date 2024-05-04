@@ -16,11 +16,19 @@
 import Toast from './toast.js';
 
 export default class Input {
-    constructor(element) {
+    constructor(element, { abstract=false, id, value }={}) {
         this.element = element || document.createElement('input');
         this.value = this.element.value || '';
 
-        this.build();
+        if (id) {
+            this.setId(id);
+        }
+        if (abstract === false) {
+            this.build();
+        }
+        if (value) {
+            this.setValue(value);
+        }
     }
 
     build() {
@@ -77,6 +85,12 @@ export default class Input {
 
         this.maskFunction();
 
+        return this;
+    }
+
+    setId(id) {
+        this.element.id = id;
+        this.element.name = id;
         return this;
     }
 

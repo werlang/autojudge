@@ -31,8 +31,9 @@ new Card(cardContainer, {
     description: 'Submit input and output for a new problem'
 }).click(async () => {
     const modal = await new Modal(null, { id: 'problems' }).loadContent('html/index-problems.html');
-
+    
     const form = new Form(modal.get('.form'));
+    form.setData({ file: null });
 
     const uploader = new Uploader(form.get('#upload'), {
         accept: 'application/zip, application/octet-stream, application/x-zip-compressed, multipart/x-zip',
@@ -43,31 +44,25 @@ new Card(cardContainer, {
         onUpload: (file, data) => {
             // console.log(file, data);
             if (data.accepted === false) {
-                uploader.setError({
-                    message: 'Invalid file',
-                    icon: 'fa-solid fa-exclamation-triangle',
-                });
-                form.setData({ 'upload': null });
+                form.setData({ file: null });
                 return;
             }
 
-            form.setData({ 'upload': file });
-            uploader.setContent({
-                icon: 'fa-solid fa-check',
-                message: data.name,
-            });
+            form.setData({ file });
         }
     });
 
     form.submit(async data => {
         // console.log(data)
-        form.validate([
+        const validation = form.validate([
             { id: 'problem-id', rule: e => e.length >= 3, message: 'ID must be at least 3 characters' }, 
-            { id: 'upload', rule: e => {
-                console.log(e)
-                return e;
-            }, message: 'Please upload a valid file' },
+            { id: 'file', rule: e => e, message: 'Please upload a valid file' },
         ]);
+
+        if (validation.fail.total > 0) return;
+
+        console.log(form.inputs);
+
     });
 
 

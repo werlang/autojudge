@@ -22,8 +22,7 @@ export default class Form {
     buttons = {};
     inputs = {};
     selects = {};
-    customData = {};
-
+    
     constructor(element) {
         this.dom = element;
 
@@ -88,11 +87,6 @@ export default class Form {
             const { id, rule, message } = validationArray[i];
 
             let inputs = this.getInput(id) || this.getSelect(id);
-
-            if (!inputs) {
-                inputs = this.customData[id];
-            }
-
             if (!inputs) continue;
 
             if (!Array.isArray(inputs)) {
@@ -172,6 +166,13 @@ export default class Form {
             e.preventDefault();
 
             const fd = new FormData(this.dom);
+
+            // check for inputs outside of the dom
+            for (let id in this.inputs) {
+                if (fd.has(id)) continue;
+                fd.append(id, this.inputs[id].value);
+            }
+
             let data = {};
             for (let name of fd.entries()) {
                 // console.log(name);
@@ -185,9 +186,6 @@ export default class Form {
                 }
                 data[name[0]].push(name[1]);
             }
-
-            // add custom data to the form
-            data = {...data, ...this.customData};
 
             // select button type submit
             const button = this.getButton().find(e => e.get().type == 'submit');
@@ -211,7 +209,13 @@ export default class Form {
 
     setData(data) {
         for (let id in data) {
-            this.customData[id] = data[id];
+            if (this.inputs[id]) {
+                this.inputs[id].setValue(data[id]);
+                continue;
+            }
+
+            const input = new Input(null, { abstract: true, id, value: data[id]});
+            this.inputs[id] = input;
         }
     }
 }
