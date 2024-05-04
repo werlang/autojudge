@@ -13,6 +13,7 @@
 //   const input = new Input(document.querySelector('#my-input'));
 //   input.setError('E-mail inválido');
 
+import Toast from './toast.js';
 
 export default class Input {
     constructor(element) {
@@ -80,6 +81,7 @@ export default class Input {
     }
 
     setError(message) {
+        new Toast(message, { timeOut: 5000, customClass: 'error'});
         this.element.classList.add('error');
         this.element.focus();
     }
