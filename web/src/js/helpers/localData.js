@@ -1,7 +1,7 @@
 // LocalData: a class to save data to local storage, allowing to set expiration time
 // new LocalData({
 //     id: (string) key to save data,
-//     expires: (number) expiration timestamp,
+//     expires: (number) expiration timestamp || false,
 //     data: (object) data to save to local storage
 // })
 // Methods:
@@ -30,7 +30,7 @@ class LocalData {
     constructor({ id, data, expires } = {}) {
         this.id = id;
         this.data = data;
-        this.expires = expires || Date.now() + 1000 * 60 * 60 * 24; // 1 day
+        this.expires = expires || false;
     }
 
     // get data from local storage
@@ -47,13 +47,11 @@ class LocalData {
 
     // save data to local storage
     set({ data, expires } = {}) {
-        if (data) {
-            this.data = data;
+        if (!data && expires === undefined) {
+            return false;
         }
-        if (expires) {
-            this.expires = expires;
-        }
-        if (!this.data || !this.expires) return false;
+        this.data = data || this.data;
+        this.expires = expires === undefined ? this.expires : expires;
 
         localStorage.setItem(this.id, JSON.stringify({
             data: this.data,
@@ -66,7 +64,7 @@ class LocalData {
     check() {
         if (!this.data) return false;
 
-        if (this.expires > Date.now()) {
+        if (this.expires === false || this.expires > Date.now()) {
             return true;
         }
 
@@ -82,7 +80,7 @@ class LocalData {
 
     // add time to expiration time
     addTime(time) {
-        this.expires = this.expires + time;
+        this.expires = (this.expires === false ? Date.now() : this.expires) + time;
         this.set();
     }
 }

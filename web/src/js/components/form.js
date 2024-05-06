@@ -12,6 +12,8 @@
 //         ]);
 //  - get(): get an arbitrary element from the form
 //  - submit(callback): add a callback to the form's submit event
+//  - setData(data): set data to the form. This is useful to set data to inputs that are not in the DOM
+//  - clear(): clear the form
 
 import Select from './select.js';
 import Button from './button.js';
