@@ -4,6 +4,7 @@ import Form from './components/form';
 import Uploader from './components/uploader';
 import Toast from './components/toast';
 import Problem from './model/problem';
+import Judge from './model/judge';
 
 import '../less/index.less';
 
@@ -18,7 +19,7 @@ new Card(cardContainer, {
     title: 'Instructions',
     description: 'Learn how to use this tool'
 }).click(async () => {
-    const modal = await new Modal(null, { id: 'instructions' }).loadContent('html/index-instructions.html');
+    const modal = await new Modal(null, { id: 'instructions' }).loadContent('index-instructions');
     modal.addButton({
         text: 'OK, got it!',
         close: true,
@@ -32,7 +33,7 @@ new Card(cardContainer, {
     title: 'Problems',
     description: 'Submit input and output for a new problem'
 }).click(async () => {
-    const modal = await new Modal(null, { id: 'problems' }).loadContent('html/index-problems.html');
+    const modal = await new Modal(null, { id: 'problems' }).loadContent('index-problems');
     
     const form = new Form(modal.get('.form'));
     form.setData({ file: null });
@@ -75,7 +76,7 @@ new Card(cardContainer, {
     });
 
     function updateProblemsList() {
-        const problems = new Problem().get();
+        const problems = Problem.get();
         if (Object.keys(problems).length == 0) return;
     
         const container = document.querySelector('#problems-list');    
@@ -98,11 +99,11 @@ new Card(cardContainer, {
     title: 'Judge',
     description: 'Submit code to be judged'
 }).click(async () => {
-    const modal = await new Modal(null, { id: 'judge' }).loadContent('html/index-judge.html');
+    const modal = await new Modal(null, { id: 'judge' }).loadContent('index-judge');
     const form = new Form(modal.get('.form'));
     form.setData({ file: null });
 
-    const problems = new Problem().get();
+    const problems = Problem.get();
     const select = form.getSelect('problem');
     Object.keys(problems).forEach(p => select.addOption(p, p));
 
@@ -119,7 +120,7 @@ new Card(cardContainer, {
         }
     });
 
-    form.submit(data => {
+    form.submit(async data => {
         // console.log(data)
         const validation = form.validate([
             { id: 'problem', rule: e => e != 'none', message: 'Please select a problem' },
@@ -128,7 +129,14 @@ new Card(cardContainer, {
 
         if (validation.fail.total > 0) return;
 
-        console.log('submitting', data);
+        const problem = new Problem({ id: data.problem }).get();
+        
+        const run = await new Judge({
+            tests: problem.file,
+            code: data.file,
+        }).run();
+
+        console.log(run);
     })
 
 });

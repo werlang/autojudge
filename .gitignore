@@ -1,6 +1,6 @@
 node_modules
 web/public/css/*
 web/public/js/*
-web/package.json
-api/package.json
+web/package*.json
+api/package*.json
 nginx/*
