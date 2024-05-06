@@ -11,6 +11,7 @@
   "author": "Pablo Werlang",
   "license": "MIT",
   "dependencies": {
+    "cors": "^2.8.5",
     "css-loader": "^7.1.1",
     "css-minimizer-webpack-plugin": "^6.0.0",
     "dropzone": "^6.0.0-beta.2",
