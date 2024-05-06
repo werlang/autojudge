@@ -12,11 +12,14 @@
 //   - get(selector): get an element inside the modal, or the modal itself if no selector is provided
 //   - addButton({ id, text, callback, close = false, isDefault = true }): add a button to the modal
 //   - append(element): append an element to the modal (can be a string or a DOM element)
+//   - onClose(callback): set a callback to be called when the modal is closed
+//   - loadContent(file): load an HTML file to the modal
 // Example:
 //   const modal = new Modal(`<h1>Hello World</h1><button id='my-button'>Click me</button>`, { id: 'my-modal' });
 //   modal.addEvent({ id: 'my-button', event: 'click', callback: () => alert('Hello World') });
 
 import Button from './button.js';
+import HTMLLoader from '../helpers/html-loader.js';
 
 export default class Modal {
     constructor(text, options = {}) {
@@ -198,9 +201,13 @@ export default class Modal {
         });
     }
 
-    async loadContent(file) {
-        const content = await fetch(file).then(res => res.text());
-        this.domObject.querySelector('#content').innerHTML = content;
+    async loadContent(file, vars) {
+        const content = this.domObject.querySelector('#content');
+        content.classList.add('loading');
+        content.innerHTML = `<i class="fa-solid fa-spinner fa-spin-pulse"></i>`;
+        const loader = new HTMLLoader(file, vars);
+        await loader.load(content);
+        content.classList.remove('loading');
         return this;
     }
 }

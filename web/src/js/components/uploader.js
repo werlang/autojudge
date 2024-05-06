@@ -25,7 +25,7 @@ export default class Uploader {
     
         new Dropzone('.dropzone', { 
             url: '/upload',
-            acceptedFiles: accept || '*/*',
+            acceptedFiles: accept,
             maxFiles: 1,
             init: function() {
                 // content inside the dropzone

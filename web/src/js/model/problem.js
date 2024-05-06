@@ -1,4 +1,4 @@
-import LocalData from '../helpers/localData';
+import LocalData from '../helpers/local-data';
 
 export default class Problem {
 
@@ -14,9 +14,10 @@ export default class Problem {
     }
 
     set() {
-        const problems = this.get();
+        const problems = Problem.get();
         problems[this.id] = this.file;
-        new LocalData({
+
+        return new LocalData({
             id: Problem.storageKey,
             data: problems,
         }).set();
