@@ -3,7 +3,7 @@ import Modal from './components/modal';
 import Form from './components/form';
 import Uploader from './components/uploader';
 import Toast from './components/toast';
-import LocalData from './helpers/localData';
+import Problem from './model/problem';
 
 import '../less/index.less';
 
@@ -42,9 +42,6 @@ new Card(cardContainer, {
     const uploader = new Uploader(form.get('#upload'), {
         accept: 'application/zip, application/octet-stream, application/x-zip-compressed, multipart/x-zip',
         placeholder: 'Test case file (.zip)',
-        onSend: file => {
-            // console.log(file);
-        },
         onUpload: (file, data) => {
             // console.log(file, data);
             if (data.accepted === false) {
@@ -65,13 +62,9 @@ new Card(cardContainer, {
 
         if (validation.fail.total > 0) return;
 
-        let problems = new LocalData({ id: 'problems' }).get() || {};
-        problems[data.problemid] = data.file;
-
-        new LocalData({
-            id: 'problems',
-            data: problems,
-            expires: Date.now() + 1000 * 60 * 60 * 24 * 365, // 1 year
+        new Problem({
+            id: data.problemid,
+            file: data.file,
         }).set();
 
         updateProblemsList();
@@ -81,6 +74,22 @@ new Card(cardContainer, {
         new Toast('Problem uploaded', { customClass: 'success', timeOut: 5000 });
     });
 
+    function updateProblemsList() {
+        const problems = new Problem().get();
+        if (Object.keys(problems).length == 0) return;
+    
+        const container = document.querySelector('#problems-list');    
+        container.innerHTML = '<div class="title">Submitted problems:</div>';
+        const list = document.createElement('ul');
+    
+        for (let id in problems) {
+            const item = document.createElement('li');
+            item.innerHTML = `<a href="${problems[id]}" download="${id}"><i class="fa-solid fa-download"></i>${id}</a>`;
+            list.appendChild(item);
+        }
+    
+        container.appendChild(list);
+    }
 });
 
 new Card(cardContainer, {
@@ -88,23 +97,38 @@ new Card(cardContainer, {
     icon: 'fa-solid fa-gavel',
     title: 'Judge',
     description: 'Submit code to be judged'
-}).click(() => {
-    console.log('judge');
+}).click(async () => {
+    const modal = await new Modal(null, { id: 'judge' }).loadContent('html/index-judge.html');
+    const form = new Form(modal.get('.form'));
+    form.setData({ file: null });
+
+    const problems = new Problem().get();
+    const select = form.getSelect('problem');
+    Object.keys(problems).forEach(p => select.addOption(p, p));
+
+    const uploader = new Uploader(form.get('#upload'), {
+        placeholder: 'Source Code File',
+        onUpload: (file, data) => {
+            // console.log(file, data);
+            if (data.accepted === false) {
+                form.setData({ file: null });
+                return;
+            }
+
+            form.setData({ file });
+        }
+    });
+
+    form.submit(data => {
+        // console.log(data)
+        const validation = form.validate([
+            { id: 'problem', rule: e => e != 'none', message: 'Please select a problem' },
+            { id: 'file', rule: e => e, message: 'Please upload a the source code file' },
+        ]);
+
+        if (validation.fail.total > 0) return;
+
+        console.log('submitting', data);
+    })
+
 });
-
-function updateProblemsList() {
-    const problems = new LocalData({ id: 'problems' }).get() || {};
-    if (Object.keys(problems).length == 0) return;
-
-    const container = document.querySelector('#problems-list');    
-    container.innerHTML = '<div class="title">Submitted problems:</div>';
-    const list = document.createElement('ul');
-
-    for (let id in problems) {
-        const item = document.createElement('li');
-        item.innerHTML = `<a href="${problems[id]}" download="${id}"><i class="fa-solid fa-download"></i>${id}</a>`;
-        list.appendChild(item);
-    }
-
-    container.appendChild(list);
-}
