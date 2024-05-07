@@ -1,19 +1,17 @@
+import Request from "../helpers/request";
+
 export default class Judge {
+    request = new Request({ url: `https://api.${ window.location.hostname }` });
+
     constructor({ tests, code }) {
         this.tests = tests;
         this.code = code;
     }
 
     async run() {
-        const data = new FormData();
-        data.append('tests', this.tests);
-        data.append('code', this.code);
-
-        const response = await fetch('https://api.autojudge.localhost/judge', {
-            method: 'POST',
-            body: data,
+        return await this.request.post('judge', {
+            tests: this.tests,
+            code: this.code
         });
-
-        return await response.json();
     }
 }
