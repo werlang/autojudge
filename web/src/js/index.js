@@ -117,6 +117,7 @@ new Card(cardContainer, {
             }
 
             form.setData({ file });
+            form.setData({ filename: data.name });
         }
     });
 
@@ -134,6 +135,7 @@ new Card(cardContainer, {
         const run = await new Judge({
             tests: problem.file,
             code: data.file,
+            filename: data.filename,
         }).run();
 
         console.log(run);
