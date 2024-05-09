@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const Judge = require('./model/judge');
+const Runner = require('./model/runner');
 
 const port = 3000;
 const host = '0.0.0.0';
@@ -12,7 +12,7 @@ app.use(cors());
 
 app.post('/judge', async (req, res, next) => {
     try {
-        const response = await new Judge({ ...req.body }).run();
+        const response = await new Runner({ ...req.body }).run();
         res.send(response);
     }
     catch (err) {
