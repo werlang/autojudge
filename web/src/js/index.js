@@ -132,13 +132,26 @@ new Card(cardContainer, {
 
         const problem = new Problem({ id: data.problem }).get();
         
+        const resultDiv = modal.get('#result');
+        resultDiv.innerHTML = `<pre><code>Running code<span id="dots">...</span></code></pre>`;
+        const dotsSpan = modal.get('#result #dots');
+        let dots = 0;
+        const dotsInterval = setInterval(() => {
+            dotsSpan.innerHTML = '.'.repeat(dots);
+            dots = (dots + 1) % 4;
+        }, 500);
+        resultDiv.classList.add('loading');
+
         const run = await new Judge({
             tests: problem.file,
             code: data.file,
             filename: data.filename,
         }).run();
+        // console.log(run);
 
-        console.log(run);
-    })
+        resultDiv.classList.remove('loading');
+        clearInterval(dotsInterval);
+        modal.get('#result').innerHTML = `<pre><code>${run.message}</code></pre>`;
+    });
 
 });

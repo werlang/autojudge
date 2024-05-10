@@ -78,3 +78,27 @@
         }
     }
 }
+
+#judge {
+    #result {
+
+        &.loading {
+
+            pre code {
+                border-radius: 5px;
+                color: rgba(var(--color-text-raw), 0.3);
+                animation: oscilate 1.5s infinite;
+
+                @keyframes oscilate {
+                    0% { color: rgba(var(--color-text-raw), 0.3); }
+                    50% { color: rgba(var(--color-text-raw), 0.5); }
+                    100% { color: rgba(var(--color-text-raw), 0.3); }
+                }
+            }
+        }
+
+        pre {
+            white-space: pre-wrap;
+        }
+    }
+}
