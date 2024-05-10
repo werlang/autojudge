@@ -12,10 +12,12 @@ app.use(cors());
 
 app.post('/judge', async (req, res, next) => {
     try {
+        // console.log(req.body)
         const response = await new Runner({ ...req.body }).run();
-        res.send(response);
+        res.send({ message: response });
     }
     catch (err) {
+        // console.log(err);
         next(err);
     }
 });
