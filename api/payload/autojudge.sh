@@ -1,6 +1,7 @@
-#!/bin/bash
+#!/bin/sh
 
-file="code/$1"
+file="$1"
+tmpdir="$2"
 
 if [ -z "$file" ]; then
   echo "Usage: $0 <script_file>"
@@ -21,24 +22,32 @@ fail=0
 isError=false
 
 # Get every file from the 'input' directory
-inputs=(./input/*)
+inputs="./input/*"
 
-for filename in "${inputs[@]}"; do
-  output="./output/$(basename "$filename")"
-  output_contents="$(<"$output")"
+# execute command to create network, ignore if exsists
+docker network create --driver bridge judge_runner 2> /dev/null
+
+for input_file in $inputs; do
+  output="./output/$(basename "$input_file")"
+  output_contents="$(cat "$output")"
+   
+  # create .env file and set TMPDIR, FILE and FILENAME
+  echo "TMPDIR=$tmpdir" > .env
+  echo "FILE=$file" >> .env
+  echo "INPUT=$input_file" >> .env
 
   case "$extension" in
     "c")
-      command="docker-compose -f compilers.yaml run --rm gcc /bin/bash -c \"gcc -o a.out $file && ./a.out < $filename && rm ./a.out\""
+      command="docker compose -f compilers.yaml run --rm gcc"
       ;;
     "js")
-      command="docker-compose -f compilers.yaml run --rm node node $file < $filename"
+      command="docker compose -f compilers.yaml run --rm node"
       ;;
     "php")
-      command="docker-compose -f compilers.yaml run --rm php php $file < $filename"
+      command="docker compose -f compilers.yaml run --rm php"
       ;;
     "py")
-      command="docker-compose -f compilers.yaml run --rm python python $file < $filename"
+      command="docker compose -f compilers.yaml run --rm python"
       ;;
     *)
       echo "Unsupported file extension: .$extension"
@@ -64,13 +73,14 @@ for filename in "${inputs[@]}"; do
 
   result="$(cat "$result_file")"
 
-  if [[ "$result" != "$output_contents" ]]; then
+  if [ "$result" != "$output_contents" ]; then
     fail=$((fail + 1))
-    echo "$filename Wrong answer"
+    echo "$input_file Wrong answer"
     echo "Got:"
     echo "$result"
     echo "Expected:"
     echo "$output_contents"
+    echo ""
   else
     pass=$((pass + 1))
   fi
@@ -80,5 +90,4 @@ for filename in "${inputs[@]}"; do
 
 done
 
-echo ""
 echo "$pass passed, $fail failed"

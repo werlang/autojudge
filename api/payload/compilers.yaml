@@ -1,25 +1,39 @@
+# healthcheck template
+x-runner: &runner-template
+    volumes:
+        - runs:/app
+    working_dir: /app/${TMPDIR}
+    env_file:
+        - .env
+    networks:
+        - runner
+
 services:
-    php:
-        image: php:8.2.11-cli-alpine3.18
-        volumes:
-            - ./runs:/app
-        working_dir: /app
-        # docker-compose run --rm php php hello.php
-    node:
-        image: node:16-alpine3.18
-        volumes:
-            - ./runs:/app
-        working_dir: /app
-        # docker-compose run --rm node node hello.js
     gcc:
         image: gcc:9.5.0
-        volumes:
-            - ./runs:/app
-        working_dir: /app
-        # docker-compose run --rm c /bin/bash -c "gcc hello.c -o hello && ./hello && rm hello"
+        # docker-compose -f compilers.yaml run --rm gcc /bin/bash -c "gcc -o a.out hello.c && ./a.out"
+        <<: *runner-template
+        command: "/bin/bash -c \"gcc -o a.out ${FILE} && ./a.out < ${INPUT}\""
+    node:
+        image: node:16
+        # docker-compose -f compilers.yaml run --rm node node hello.js
+        <<: *runner-template
+        command: "node ${FILE}"
+    php:
+        image: php:8.2-cli
+        # docker-compose -f compilers.yaml run --rm php php hello.php
+        <<: *runner-template
+        command: "php ${FILE} < ${INPUT}"
     python:
-        image: python:3.11.6-alpine3.18
-        volumes:
-            - ./runs:/app
-        working_dir: /app
-        # docker-compose run --rm python python hello.py
+        image: python:3.11
+        # docker-compose -f compilers.yaml run --rm python python hello.py
+        <<: *runner-template
+        command: "python ${FILE} < ${INPUT}"
+networks:
+    runner:
+        name: judge_runner
+        external: true
+volumes:
+    runs:
+        name: judge_tmp_run
+        external: true

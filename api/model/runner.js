@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 const { exec } = require('child_process');
+const Pledge = require('../helpers/pledge');
 
 class Runner {
 
@@ -16,12 +17,14 @@ class Runner {
     async run() {
         this.createTmpDir();
         this.writeFiles();
-        await this.runAutoJudge();
+        const response = await this.runAutoJudge();
         this.removeTmpDir();
+        return response;
     }
 
     toFile(filedata) {
-        filedata = filedata.replace(/^data:application\/octet-stream;base64,/, '');
+        // console.log(filedata)
+        filedata = filedata.replace(/^data:.+;base64,/, '');
         const buffer = Buffer.from(filedata, 'base64');
         return buffer;
     }
@@ -29,17 +32,17 @@ class Runner {
     createTmpDir() {
         // generate a random directory name under the runs directory
         const randomDirName = uuidv4().replace(/-/g, '');
-        this.tmpDir = path.join(__dirname, '..', 'runs', randomDirName);
+        this.tmpDir = path.join('/app/runs', randomDirName);
         fs.mkdirSync(this.tmpDir, { recursive: true });
     }
 
     writeFiles() {
         // copy code
         fs.writeFileSync(path.join(this.tmpDir, this.filename), this.code);
+        // console.log(this.code.toString());
 
         // copy everything from payload dir to tmpDir
-        fs.cpSync(path.join(__dirname, '..', 'payload'), this.tmpDir, { recursive: true });
-
+        fs.cpSync('/app/payload', this.tmpDir, { recursive: true });
 
         // this.tests.forEach(({ input, output }, index) => {
         //     fs.writeFileSync(path.join(this.tmpDir, `input${ index + 1 }.txt`), input);
@@ -48,22 +51,32 @@ class Runner {
     }
 
     removeTmpDir() {
-        // fs.rmSync(this.tmpDir, { recursive: true });
+        fs.rmSync(this.tmpDir, { recursive: true });
     }
 
     async runAutoJudge() {
-        exec(`sh autojudge.sh ${this.filename}`, { cwd: this.tmpDir }, (error, stdout, stderr) => {
+        // console.log('Running autojudge...');
+
+        const pledge = new Pledge();
+
         // exec(`ls -la`, { cwd: this.tmpDir }, (error, stdout, stderr) => {
+        exec(`sh autojudge.sh ${this.filename} ${this.tmpDir.split('/').slice(-1)[0]}`, { cwd: this.tmpDir }, (error, stdout, stderr) => {
             if (error) {
-                console.error(`exec error: ${error}`);
+                // console.error(`exec error: ${error}`);
+                pledge.reject(error);
             }
             if (stderr) {
-                console.error(`stderr: ${stderr}`);
+                // console.error(`stderr: ${stderr}`);
+                pledge.reject(stderr);
             }
             if (stdout) {
-                console.log(`stdout: ${stdout}`);
+                // console.log(`stdout: ${stdout}`);
+                pledge.resolve(stdout);
             }
         });
+
+        // return pledge.get();
+        return pledge.timeout(5000);
     }
 
 }
