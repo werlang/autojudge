@@ -2,16 +2,34 @@ const fs = require('fs');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 const { exec } = require('child_process');
+const unzipper = require('unzipper');
 const Pledge = require('../helpers/pledge');
+
 
 class Runner {
 
-    service = 'runner';
-
     constructor({filename, code, tests}) {
-        this.code = this.toFile(code);
-        this.tests = tests;
+        this.code = this.base64toBuffer(code);
         this.filename = filename;
+        this.tests = tests;
+    }
+
+    base64toBuffer(filedata) {
+        // console.log(filedata)
+        filedata = filedata.replace(/^data:.+;base64,/, '');
+        const buffer = Buffer.from(filedata, 'base64');
+        return buffer;
+    }
+
+    unzipTests() {
+        const buffer = this.base64toBuffer(this.tests);
+
+        const filename = 'problem.zip';
+        fs.writeFileSync(path.join(this.tmpDir, filename), buffer);
+
+        // unzip file to tmpDir
+        fs.createReadStream(path.join(this.tmpDir, filename))
+        .pipe(unzipper.Extract({ path: this.tmpDir }));
     }
 
     async run() {
@@ -20,13 +38,6 @@ class Runner {
         const response = await this.runAutoJudge();
         this.removeTmpDir();
         return response;
-    }
-
-    toFile(filedata) {
-        // console.log(filedata)
-        filedata = filedata.replace(/^data:.+;base64,/, '');
-        const buffer = Buffer.from(filedata, 'base64');
-        return buffer;
     }
 
     createTmpDir() {
@@ -44,10 +55,7 @@ class Runner {
         // copy everything from payload dir to tmpDir
         fs.cpSync('/app/payload', this.tmpDir, { recursive: true });
 
-        // this.tests.forEach(({ input, output }, index) => {
-        //     fs.writeFileSync(path.join(this.tmpDir, `input${ index + 1 }.txt`), input);
-        //     fs.writeFileSync(path.join(this.tmpDir, `output${ index + 1 }.txt`), output);
-        // });
+        this.unzipTests();
     }
 
     removeTmpDir() {

@@ -17,7 +17,7 @@ app.post('/judge', async (req, res, next) => {
         res.send({ message: response });
     }
     catch (err) {
-        // console.log(err);
+        console.log(err);
         next(err);
     }
 });
