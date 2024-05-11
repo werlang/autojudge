@@ -2,6 +2,10 @@
 
 AutoJudge is a simple script that automates the process of running test cases for different programming languages. It can be used to evaluate the correctness of solutions for various programming problems.
 
+* **You can use this project as a CLI code runner. For this, check the [runner-cli](https://github.com/werlang/autojudge/tree/runner-cli) branch.**
+
+* **Check Autojudge online version at [autojudge.werlang.site](https://autojudge.werlang.site).**
+
 ## Features
 
 - Supports multiple programming languages, including C, JavaScript, PHP, Python.
@@ -9,75 +13,43 @@ AutoJudge is a simple script that automates the process of running test cases fo
 - Compiles and runs code with test cases from the `input` directory.
 - Compares the output with expected results from the `output` directory.
 - Provides pass/fail statistics for each test case.
+- Web interface allowing to save problems on _local storage_ and run autojudge in the browser.
 
 ## Requirements
 
-You will need Docker installed on your system to run the AutoJudge script within a Docker container. If you don't have Docker installed, you can download it from the official website [here](https://www.docker.com/get-started).
+- Docker
 
 ## Setup
 
-Before Running the autojudge, you will need to pull and build the docker images for each language supported. To do this, run the following command:
+Build the Docker images and start the containers:
 
 ```bash
-docker-compose build
+docker compose up -d
 ```
+
+Pull the images for the languages you will use.
+
+```bash
+docker pull python:3.11
+docker pull node:16
+docker pull php:8.2-cli
+docker pull gcc:9.5.0
+```
+
+Build the front-end css and js files. First enter the container:
+
+```bash
+docker exec -it autojudge-web-1 bash
+```
+
+Then use webpack to build the files:
+
+```bash
+npx webpack
+```
+
+Hit `Ctrl+C` and `exit` to leave the container.
 
 ## Usage
 
-Go to the `runs` folder, and run the following command:
-
-```bash
-./autojudge.sh <script_file>
-```
-Replace `<script_file>` with the filename of your code, and the script will automatically detect the language based on the file extension.
-
-You will receive a summary of the pass/fail statistics for each test case.
-
-## Input/output format
-
-The script will look for input and output files in the `input` and `output` directories respectively. The input and output files must have the same name.
-
-```
-input/
-    test00
-    test01
-    test02
-    ...
-output/
-    test00
-    test01
-    test02
-    ...
-autojudge.sh
-```
-
-## Results
-
-If the output of your code matches the expected output, you will see a `passed` message. Otherwise, you will see a `failed` message.
-
-```bash
-10 passed, 0 failed
-```
-
-For the `failed` cases, the script will display the expected output and the actual output.
-
-```bash
-./input/teste4 Wrong answer
-Got:
-X = 13
-Expected:
-X = 3
-
-9 passed, 1 failed
-```
-
-In the case of a runtime/compilation error, the script will display the error message.
-
-
-## Contributing
-
-Contributions are welcome! If you have any suggestions, bug reports, or feature requests, please open an issue or submit a pull request.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](/LICENSE) file for details.
+Nginx will serve the front-end at `https://autojudge.localhost`. You can access the web interface to run the autojudge. From there, you can check the instructions on how to use the tool.
