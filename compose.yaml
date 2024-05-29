@@ -1,5 +1,6 @@
 services:
     web:
+        container_name: web
         build:
             context: .
             dockerfile: Dockerfile-web
@@ -12,7 +13,11 @@ services:
             - .env
         command: npm start
         # command: tail -f /dev/null #idle container
+        networks:
+            - default
+            - autojudge
     api:
+        container_name: api
         build:
             context: .
             dockerfile: Dockerfile-api
@@ -27,21 +32,25 @@ services:
         # command: tail -f /dev/null #idle container
         networks:
             - default
+            - autojudge
             - runner
-    nginx:
-        image: valian/docker-nginx-auto-ssl
-        restart: ${RESTART_POLICY}
-        ports:
-            - "80:80"
-            - "443:443"
-        volumes:
-            - ./nginx:/etc/nginx/conf.d
-        environment:
-            - SITES=${URL}=web:3000;api.${URL}=api:3000
-            - FORCE_HTTPS=true
+    # nginx:
+    #     container_name: nginx
+    #     image: valian/docker-nginx-auto-ssl
+    #     restart: ${RESTART_POLICY}
+    #     ports:
+    #         - "80:80"
+    #         - "443:443"
+    #     volumes:
+    #         - ./nginx:/etc/nginx/conf.d
+    #     environment:
+    #         - SITES=${URL}=web:3000;api.${URL}=api:3000
+    #         - FORCE_HTTPS=true
 volumes:
     node_modules:
     runs:
         name: judge_tmp_run
 networks:
     runner:
+    autojudge:
+        name: autojudge

@@ -4,3 +4,4 @@ web/public/js/*
 */package*.json
 nginx/*
 api/runs/*
+.env

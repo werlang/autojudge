@@ -13,9 +13,10 @@ app.engine('html', mustacheExpress());
 app.set('view engine', 'html');
 app.set('views', __dirname + '/view/');
 
-
 app.get('/', (req, res) => {
-    res.render('index', {});
+    res.render('index', {
+        apiurl: process.env.API
+    });
 });
 
 

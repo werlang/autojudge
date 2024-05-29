@@ -15,7 +15,7 @@ services:
         <<: *runner-template
         command: "/bin/bash -c \"gcc -o a.out ${FILE} && ./a.out < ${INPUT}\""
     node:
-        image: node:16
+        image: node:22
         # docker-compose -f compilers.yaml run --rm node node hello.js
         <<: *runner-template
         command: "/bin/bash -c \"node ${FILE} < ${INPUT}\""

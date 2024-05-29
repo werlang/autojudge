@@ -27,28 +27,19 @@ Build the Docker images and start the containers:
 docker compose up -d
 ```
 
-Pull the images for the languages you will use.
+Pull the images for the languages you will use. With the api service running, you can pull the images with the following command:
 
 ```bash
-docker pull python:3.11
-docker pull node:16
-docker pull php:8.2-cli
-docker pull gcc:9.5.0
+docker exec api npm run compilers
 ```
 
-Build the front-end css and js files. First enter the container:
+Build the front-end css and js files. call the webpack command inside the container:
 
 ```bash
-docker exec -it autojudge-web-1 bash
+docker exec web npx webpack
 ```
 
-Then use webpack to build the files:
-
-```bash
-npx webpack
-```
-
-Hit `Ctrl+C` and `exit` to leave the container.
+Hit `Ctrl+C` when the process finishes.
 
 ## Usage
 

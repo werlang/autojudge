@@ -67,24 +67,31 @@ class Runner {
 
         const pledge = new Pledge();
 
-        // exec(`ls -la`, { cwd: this.tmpDir }, (error, stdout, stderr) => {
-        exec(`sh autojudge.sh ${this.filename} ${this.tmpDir.split('/').slice(-1)[0]}`, { cwd: this.tmpDir }, (error, stdout, stderr) => {
-            if (error) {
-                // console.error(`exec error: ${error}`);
-                pledge.reject(error);
-            }
-            if (stderr) {
-                // console.error(`stderr: ${stderr}`);
-                pledge.reject(stderr);
-            }
-            if (stdout) {
-                // console.log(`stdout: ${stdout}`);
-                pledge.resolve(stdout);
-            }
-        });
-
-        // return pledge.get();
-        return pledge.timeout(5000);
+        try {
+            // exec(`ls -la`, { cwd: this.tmpDir }, (error, stdout, stderr) => {
+            exec(`sh autojudge.sh ${this.filename} ${this.tmpDir.split('/').slice(-1)[0]}`, { cwd: this.tmpDir }, (error, stdout, stderr) => {
+                if (error) {
+                    // console.error(`exec error: ${error}`);
+                    pledge.reject(error);
+                }
+                if (stderr) {
+                    // console.error(`stderr: ${stderr}`);
+                    pledge.reject(stderr);
+                }
+                if (stdout) {
+                    // console.log(`stdout: ${stdout}`);
+                    pledge.resolve(stdout);
+                }
+            });
+    
+            // return pledge.get();
+            return pledge.timeout(5000);
+        }
+        catch (error) {
+            console.error(error);
+            pledge.reject(JSON.stringify(error));
+            return pledge.timeout(5000);
+        }
     }
 
 }

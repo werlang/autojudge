@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "Send code and get them judged automatically",
   "scripts": {
-    "start": "if [ \"$NODE_ENV\" = \"production\" ]; then node app.js; else nodemon app.js; fi"
+    "start": "if [ \"$NODE_ENV\" = \"production\" ]; then node app.js; else nodemon app.js; fi",
+    "compilers": "cd payload && echo $'TMPDIR=.\nFILE=a\nINPUT=b' > .env && docker compose -f compilers.yaml pull && rm .env"
   },
   "nodemonConfig": {
     "ignore": []
