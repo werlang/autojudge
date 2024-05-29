@@ -14,7 +14,6 @@ services:
         command: npm start
         # command: tail -f /dev/null #idle container
         networks:
-            - default
             - autojudge
     api:
         container_name: api
@@ -31,21 +30,23 @@ services:
         command: npm start
         # command: tail -f /dev/null #idle container
         networks:
-            - default
             - autojudge
             - runner
-    # nginx:
-    #     container_name: nginx
-    #     image: valian/docker-nginx-auto-ssl
-    #     restart: ${RESTART_POLICY}
-    #     ports:
-    #         - "80:80"
-    #         - "443:443"
-    #     volumes:
-    #         - ./nginx:/etc/nginx/conf.d
-    #     environment:
-    #         - SITES=${URL}=web:3000;api.${URL}=api:3000
-    #         - FORCE_HTTPS=true
+    nginx:
+        container_name: nginx
+        image: valian/docker-nginx-auto-ssl
+        restart: ${RESTART_POLICY}
+        ports:
+            - "80:80"
+            - "443:443"
+        volumes:
+            - ./nginx:/etc/nginx/conf.d
+        environment:
+            - SITES=${URL}=web:3000;${API}=api:3000
+            - FORCE_HTTPS=true
+        networks:
+            - autojudge
+            
 volumes:
     node_modules:
     runs:
