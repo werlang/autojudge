@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "Send code and get them judged automatically",
   "scripts": {
-    "start": "if [ \"$NODE_ENV\" = \"production\" ]; then node app.js; else nodemon app.js; fi",
+    "production": "node app.js",
+    "development": "nodemon --inspect=0.0.0.0 app.js",
     "compilers": "cd payload && echo $'TMPDIR=.\nFILE=a\nINPUT=b' > .env && docker compose -f compilers.yaml pull && rm .env"
   },
   "nodemonConfig": {
