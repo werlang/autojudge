@@ -1,6 +1,6 @@
 // Error handling middleware
 
-module.exports = (err, req, res, next) => {
+export default (err, req, res, next) => {
     // Error list
     const errorList = [
         { status: 304, type: 'Not Modified' },

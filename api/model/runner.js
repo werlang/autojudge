@@ -1,14 +1,12 @@
-const fs = require('fs');
-const path = require('path');
-const { v4: uuidv4 } = require('uuid');
-const { exec } = require('child_process');
-const unzipper = require('unzipper');
-const Pledge = require('../helpers/pledge');
-
+import fs from 'fs';
+import path from 'path';
+import { v4 as uuidv4 } from 'uuid';
+import { exec } from 'child_process';
+import unzipper from 'unzipper';
+import Pledge from '../helpers/pledge.js';
 
 class Runner {
-
-    constructor({filename, code, tests}) {
+    constructor({ filename, code, tests }) {
         this.code = this.base64toBuffer(code);
         this.filename = filename;
         this.tests = tests;
@@ -29,7 +27,7 @@ class Runner {
 
         // unzip file to tmpDir
         fs.createReadStream(path.join(this.tmpDir, filename))
-        .pipe(unzipper.Extract({ path: this.tmpDir }));
+            .pipe(unzipper.Extract({ path: this.tmpDir }));
     }
 
     async run() {
@@ -96,4 +94,4 @@ class Runner {
 
 }
 
-module.exports = Runner;
+export default Runner;

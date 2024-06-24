@@ -1,6 +1,7 @@
-const express = require('express');
-const cors = require('cors');
-const Runner = require('./model/runner');
+import express from 'express';
+import cors from 'cors';
+import Runner from './model/runner.js';
+import errorMiddleware from './middleware/error.js';
 
 const port = 3000;
 const host = '0.0.0.0';
@@ -23,7 +24,7 @@ app.post('/judge', async (req, res, next) => {
 });
 
 // error handling
-app.use(require('./middleware/error'));
+app.use(errorMiddleware);
 
 // 404
 app.use((req, res) => {

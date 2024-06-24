@@ -1,9 +1,9 @@
-const path = require('path');
-const TerserPlugin = require('terser-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+import path from 'path';
+import TerserPlugin from 'terser-webpack-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import CssMinimizerPlugin from "css-minimizer-webpack-plugin";
 
-module.exports = {
+export default {
     entry: {
         index: './src/js/index.js',
     },
@@ -60,5 +60,6 @@ module.exports = {
         }),
     ],
     watch: true,
-    devtool: process.env.NODE_ENV === 'production' ? false : 'eval-cheap-module-source-map',
+    // devtool: process.env.NODE_ENV === 'production' ? false : 'eval-cheap-module-source-map',
+    devtool: process.env.NODE_ENV === 'production' ? false : 'source-map',
 };

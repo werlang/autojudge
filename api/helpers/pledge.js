@@ -1,5 +1,3 @@
-const CustomError = require('./error');
-
 class Pledge {
 
     promise = null;
@@ -42,4 +40,4 @@ class Pledge {
 
 }
 
-module.exports = Pledge;
+export default Pledge;
