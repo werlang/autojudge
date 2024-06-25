@@ -6,6 +6,7 @@ import CssMinimizerPlugin from "css-minimizer-webpack-plugin";
 export default {
     entry: {
         index: './src/js/index.js',
+        passkey: './src/js/passkey.js',
     },
     output: {
         filename: 'js/[name].min.js',

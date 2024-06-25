@@ -20,6 +20,12 @@ app.get('/', (req, res) => {
     }));
 });
 
+// Not in use
+// app.get('/passkey', (req, res) => {
+//     res.render('passkey', formatTemplateVars({
+//         apiurl: process.env.API,
+//     }));
+// });
 
 // static assets
 app.use(express.static(import.meta.dirname + '/public/'));
