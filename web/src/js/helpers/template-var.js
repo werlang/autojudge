@@ -4,10 +4,20 @@ export default class TemplateVar {
     static isBuilt = false;
 
     static build() {
-        document.querySelectorAll('.template-var').forEach(e => {
-            TemplateVar.vars[e.id] = e.value;
-            e.remove();
-        });
+        const e = document.querySelector('#template-vars');
+        if (!e) return;
+
+        try {
+            const vars = JSON.parse(e.value);
+            for (let i in vars) {
+                TemplateVar.vars[i] = vars[i];
+            }
+        }
+        catch (error) {
+            console.error('Error parsing template variable:', error);
+        }
+
+        e.remove();
         TemplateVar.isBuilt = true;
     }
 

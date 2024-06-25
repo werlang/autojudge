@@ -5,3 +5,4 @@ web/public/js/*
 nginx/*
 api/runs/*
 .env
+.DS_Store

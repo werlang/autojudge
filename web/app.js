@@ -12,10 +12,12 @@ app.engine('html', mustacheExpress());
 app.set('view engine', 'html');
 app.set('views', import.meta.dirname + '/view/');
 
+const formatTemplateVars = vars => ({ 'template-vars': JSON.stringify(vars) });
+
 app.get('/', (req, res) => {
-    res.render('index', {
+    res.render('index', formatTemplateVars({
         apiurl: process.env.API
-    });
+    }));
 });
 
 

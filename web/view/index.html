@@ -1,11 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+    {{>meta}}
     <title>AutoJudge</title>
-    <link rel="shortcut icon" href="img/favicon.ico">
     <script type="module" src="js/index.min.js" defer></script>
     <link rel="stylesheet" href="css/index.min.css">
 
@@ -20,13 +17,6 @@
         
         <div id="options"></div>
     </div>
-    <footer>
-        <div class="col">
-            <div>Check the project on <a href="https://github.com/werlang/autojudge" target="_blank"><i class="fa-brands fa-github"></i> GitHub</a></div>
-            <div>© <span id="year"></span> Pablo Werlang</div>
-        </div>
-    </footer>
-
-    <input id="apiurl" class="template-var" type="hidden" value="{{apiurl}}">
+    {{>footer}}
 </body>
 </html>
