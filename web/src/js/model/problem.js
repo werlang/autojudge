@@ -1,4 +1,4 @@
-import LocalData from '../helpers/local-data';
+import LocalData from '../helpers/local-data.js';
 
 export default class Problem {
 

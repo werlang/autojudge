@@ -9,7 +9,7 @@ export default {
     },
     output: {
         filename: 'js/[name].min.js',
-        path: path.resolve(__dirname, './public/'),
+        path: path.resolve(import.meta.dirname, './public/'),
     },
     optimization: {
         minimize: true,

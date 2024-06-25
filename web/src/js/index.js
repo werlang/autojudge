@@ -1,10 +1,10 @@
-import Card from './components/card';
-import Modal from './components/modal';
-import Form from './components/form';
-import Uploader from './components/uploader';
-import Toast from './components/toast';
-import Problem from './model/problem';
-import Judge from './model/judge';
+import Card from './components/card.js';
+import Modal from './components/modal.js';
+import Form from './components/form.js';
+import Uploader from './components/uploader.js';
+import Toast from './components/toast.js';
+import Problem from './model/problem.js';
+import Judge from './model/judge.js';
 
 import '../less/index.less';
 

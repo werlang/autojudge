@@ -1,5 +1,5 @@
-import Request from "../helpers/request";
-import TemplateVar from "../helpers/template-var";
+import Request from "../helpers/request.js";
+import TemplateVar from "../helpers/template-var.js";
 
 export default class Judge {
     request = new Request({ url: `https://${TemplateVar.get('apiurl')}` });
