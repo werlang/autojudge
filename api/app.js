@@ -3,6 +3,7 @@ import cors from 'cors';
 import Runner from './model/runner.js';
 import errorMiddleware from './middleware/error.js';
 // import passkeyRouter from './route/passKey.js';
+import login from './route/login.js';
 
 const port = 3000;
 const host = '0.0.0.0';
@@ -26,6 +27,7 @@ app.post('/judge', async (req, res, next) => {
 
 // app.use('/passkey', passkeyRouter);
 
+app.use('/login', login);
 
 // error handling
 app.use(errorMiddleware);

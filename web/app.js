@@ -27,6 +27,13 @@ app.get('/', (req, res) => {
 //     }));
 // });
 
+app.get('/test', (req, res) => {
+    res.render('test', formatTemplateVars({
+        apiurl: process.env.API,
+        googleClientId: process.env.GOOGLE_CLIENT_ID
+    }));
+});
+
 // static assets
 app.use(express.static(import.meta.dirname + '/public/'));
 

@@ -7,6 +7,7 @@ export default {
     entry: {
         index: './src/js/index.js',
         passkey: './src/js/passkey.js',
+        test: './src/js/test.js',
     },
     output: {
         filename: 'js/[name].min.js',
