@@ -6,3 +6,4 @@ nginx/*
 api/runs/*
 .env
 .DS_Store
+config.js

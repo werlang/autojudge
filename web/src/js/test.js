@@ -3,8 +3,11 @@ import Request from './helpers/request.js';
 import DynamicScript from './helpers/dynamic-script.js';
 
 async function handleCredentialResponse(response) {
-    const request = new Request({ url: `https://${TemplateVar.get('apiurl')}` });
-    const resp = await request.post('login', { token: response.credential });
+    const request = new Request({ 
+        url: `https://${TemplateVar.get('apiurl')}`,
+        headers: { 'Authorization': `Bearer ${response.credential}` }
+    });
+    const resp = await request.post('login');
     console.log(resp);
 }
 

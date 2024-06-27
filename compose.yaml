@@ -25,6 +25,8 @@ services:
         restart: ${RESTART_POLICY}
         ports:
             - 127.0.0.1:9229:9229
+        env_file:
+            - .env
         volumes:
             - ./api:/app
             - runs:/app/runs
@@ -36,6 +38,22 @@ services:
         networks:
             - autojudge
             - runner
+        depends_on:
+            - mysql
+    mysql:
+        container_name: mysql
+        image: mysql:8.0
+        restart: ${RESTART_POLICY}
+        environment:
+            - MYSQL_DATABASE=${MYSQL_DATABASE}
+            - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+        volumes:
+            - mysql:/var/lib/mysql
+            # - .:/app
+        ports:
+            - 127.0.0.1:${MYSQL_PORT}:3306
+        networks:
+            - autojudge
     nginx:
         container_name: nginx
         image: valian/docker-nginx-auto-ssl
@@ -50,11 +68,15 @@ services:
             - FORCE_HTTPS=true
         networks:
             - autojudge
+        depends_on:
+            - web
+            - api
             
 volumes:
     node_modules:
     runs:
         name: judge_tmp_run
+    mysql:
 networks:
     runner:
     autojudge:

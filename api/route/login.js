@@ -1,26 +1,40 @@
 import { Router } from 'express';
-import { OAuth2Client } from 'google-auth-library';
+import User from '../model/user.js';
+import auth from '../middleware/auth.js';
 
 const router = Router();
 
-router.post('/', async (req, res) => {
-    const clientId = process.env.GOOGLE_CLIENT_ID;
-    const client = new OAuth2Client();
+router.post('/', auth, async (req, res, next) => {
     try {
-        const ticket = await client.verifyIdToken({
-            idToken: req.body.token,
-            audience: clientId,  // Specify the CLIENT_ID of the app that accesses the backend
-        });
-        const payload = ticket.getPayload();
-        const userid = payload['sub'];
-        // If the request specified a Google Workspace domain:
-        // const domain = payload['hd'];
-        
-        res.send({ payload });
+        if (req.user) {
+            res.send({ user: {
+                email: req.user.email,
+                name: req.user.name,
+                lastName: req.user.lastName,
+                picture: req.user.picture
+            } });
+            return ;
+        }
+
+        const payload = req.authPayload;
+
+        // If the user is not found, we create a new user
+        const newUser = await new User({
+            googleId: payload.sub,
+            email: payload.email,
+            name: payload.given_name,
+            lastName: payload.family_name,
+            picture: payload.picture,
+        }).insert();
+        return res.status(201).send({ user: {
+            email: newUser.email,
+            name: newUser.name,
+            lastName: newUser.lastName,
+            picture: newUser.picture
+        } });
     }
     catch (error) {
-        console.error(error);
-        return res.status(400).send({ error: error.message });
+        next(error);
     }
 });
 
