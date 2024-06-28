@@ -97,4 +97,16 @@ router.put('/:id', auth({admin: true}), async (req, res, next) => {
     }
 });
 
+// Get all problems from a contest
+router.get('/:id/problems', auth({member: true}), async (req, res, next) => {
+    try {
+        // TODO: This will break bc getProblems is not implemented
+        const problems = await new Contest({ id: req.params.id }).getProblems();
+        res.send({ problems });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+
 export default router;

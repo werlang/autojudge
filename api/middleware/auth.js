@@ -5,7 +5,8 @@ import Team from '../model/team.js';
 import bcrypt from 'bcrypt';
 import Contest from '../model/contest.js';
 
-async function checkToken(headers) {
+async function checkToken(req) {
+    const headers = req.headers;
     const clientId = process.env.GOOGLE_CLIENT_ID;
     const client = new OAuth2Client();
 
@@ -18,19 +19,24 @@ async function checkToken(headers) {
             idToken: token,
             audience: clientId,
         });
-        return ticket.getPayload();
+        req.authPayload = ticket.getPayload();
+        return req.authPayload;
     }
     catch (error) {
         throw new CustomError(401, 'Invalid token.', error.message);
     }
 }
 
-async function checkUser(payload) {
+async function checkUser(req) {
+    const headers = req.headers;
+    const payload = await checkToken(req);
     const user = await new User({ google_id: payload.sub }).get();
+    req.user = user;
     return user;
 }
 
-async function checkTeam(headers, { id, contest }) {
+async function isTeamMember(req, { id, contest }) {
+    const headers = req.headers;
     if (!headers.authorization) {
         throw new CustomError(400, 'Password not found.');
     }
@@ -42,12 +48,14 @@ async function checkTeam(headers, { id, contest }) {
         if (!isValidPassword) {
             throw new CustomError(401, 'Invalid password.');
         }
+        req.team = team;
         return team;
     }
     else if (contest) {
         const teams = await new Team({ contest }).getAll();
         for (const team of teams) {
             if (await bcrypt.compare(password, team.password)) {
+                req.team = team;
                 return team;
             }
         };
@@ -56,11 +64,13 @@ async function checkTeam(headers, { id, contest }) {
     throw new CustomError(401, 'Invalid password.');
 }
 
-async function checkAdmin(contestId, user) {
+async function isContestAdmin(contestId, req) {
+    const user = await checkUser(req);
     const contest = await new Contest({ id: contestId }).get();
     if (contest.admin !== user.id) {
         throw new CustomError(403, 'You are not allowed to access this contest.');
     }
+    req.contest = contest;
     return contest;
 }
 
@@ -78,8 +88,7 @@ function auth({
 
         if (token) {
             try {
-                const payload = await checkToken(req.headers);
-                req.authPayload = payload;
+                await checkToken(req);
                 anyPassed = true;
             }
             catch (error) {
@@ -89,33 +98,7 @@ function auth({
 
         if (user) {
             try {
-                const payload = await checkToken(req.headers);
-                const user = await checkUser(payload);
-                req.user = user;
-                anyPassed = true;
-            }
-            catch (error) {
-                errorList.push(error);
-            }
-        }
-
-        if (team) {
-            const key = team === true ? 'id' : team;
-            try {
-                const teamInstance = await checkTeam(req.headers, { id: req.params[key] || req.body[key] });
-                req.team = teamInstance;
-                anyPassed = true;
-            }
-            catch (error) {
-                errorList.push(error);
-            }
-        }
-
-        if (member) {
-            const key = member === true ? 'id' : member;
-            try {
-                const team = await checkTeam(req.headers, { contest: req.params[key] || req.body[key] });
-                req.team = team;
+                await checkUser(req);
                 anyPassed = true;
             }
             catch (error) {
@@ -126,10 +109,32 @@ function auth({
         if (admin) {
             const key = admin === true ? 'id' : admin;
             try {
-                const payload = await checkToken(req.headers);
-                const user = await checkUser(payload);
-                const contest = await checkAdmin(req.params[key] || req.body[key], user);
-                req.contest = contest;
+                const contestId = req.params[key] || req.body[key];
+                await isContestAdmin(contestId, req);
+                anyPassed = true;
+            }
+            catch (error) {
+                errorList.push(error);
+            }
+        }
+
+        if (team) {
+            const key = team === true ? 'id' : team;
+            try {
+                const teamId = req.params[key] || req.body[key];
+                await isTeamMember(req, { id: teamId });
+                anyPassed = true;
+            }
+            catch (error) {
+                errorList.push(error);
+            }
+        }
+
+        if (member) {
+            const key = member === true ? 'id' : member;
+            try {
+                const contestId = req.params[key] || req.body[key];
+                await isTeamMember(req, { contest: contestId });
                 anyPassed = true;
             }
             catch (error) {
@@ -140,12 +145,10 @@ function auth({
         if (adminTeam) {
             const key = adminTeam === true ? 'id' : adminTeam;
             try {
-                const payload = await checkToken(req.headers);
-                const user = await checkUser(payload);
-                const team = await new Team({ id: req.params[key] || req.body[key] }).get();
-                const contest = await checkAdmin(team.contest, user);
+                const teamId = req.params[key] || req.body[key];
+                const team = await new Team({ id: teamId }).get();
                 req.team = team;
-                req.contest = contest;
+                await isContestAdmin(team.contest, req);
                 anyPassed = true;
             }
             catch (error) {
