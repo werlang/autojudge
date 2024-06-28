@@ -1,3 +1,27 @@
+// Model: Bootstrap all CRUD operations for a model
+
+// Usage:
+// class SampleModel extends Model {
+//     constructor({ foo, bar }) {
+//         super('sample_table', {
+//             fields: {
+//                 id: null,
+//                 foo,
+//                 bar,
+//             },
+//             allowUpdate: ['foo'],
+//             insertFields: ['foo', 'bar'],
+//         });
+//     }
+// }
+
+// Then you can use the model like this:
+// const sample = new SampleModel({ foo: 'foo', bar: 'bar' });
+// await sample.insert();
+// await sample.get();
+// await sample.update({ foo: 'new_foo' }
+
+
 import CustomError from '../helpers/error.js';
 import Db from '../helpers/mysql.js';
 

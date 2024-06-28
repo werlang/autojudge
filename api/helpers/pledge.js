@@ -1,3 +1,16 @@
+// Pledge: a helper class to handle promises
+
+// Usage:
+// const pledge = new Pledge();
+// someCallbackFunction((error, data) => {
+//     if (error) {
+//         pledge.reject(error);
+//     }
+//     pledge.resolve(data);
+// });
+// const response = await pledge.timeout(5000);
+
+
 class Pledge {
 
     promise = null;
