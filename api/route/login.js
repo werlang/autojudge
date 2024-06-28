@@ -10,7 +10,7 @@ router.post('/', auth, async (req, res, next) => {
             res.send({ user: {
                 email: req.user.email,
                 name: req.user.name,
-                lastName: req.user.lastName,
+                lastName: req.user.last_name,
                 picture: req.user.picture
             } });
             return ;
@@ -20,18 +20,21 @@ router.post('/', auth, async (req, res, next) => {
 
         // If the user is not found, we create a new user
         const newUser = await new User({
-            googleId: payload.sub,
+            google_id: payload.sub,
             email: payload.email,
             name: payload.given_name,
-            lastName: payload.family_name,
+            last_name: payload.family_name,
             picture: payload.picture,
         }).insert();
-        return res.status(201).send({ user: {
-            email: newUser.email,
-            name: newUser.name,
-            lastName: newUser.lastName,
-            picture: newUser.picture
-        } });
+        return res.status(201).send({
+            message: 'User created.',
+            user: {
+                email: newUser.email,
+                name: newUser.name,
+                lastName: newUser.last_name,
+                picture: newUser.picture
+            }
+        });
     }
     catch (error) {
         next(error);

@@ -26,10 +26,16 @@ export default async function authUser(req, res, next) {
     try {
         const payload = await validateGoogleToken(req.headers);
         req.authPayload = payload;
-        const user = await new User({ googleId: payload.sub }).get();
-        
-        if (user.found) {
+
+        try {
+            const user = await new User({ google_id: payload.sub }).get();
             req.user = user;
+        }
+        catch (error) {
+            if (error.code === 404) {
+                req.user = null;
+                return next();
+            }
         }
         
         next();
