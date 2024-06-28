@@ -5,6 +5,7 @@ import errorMiddleware from './middleware/error.js';
 // import passkeyRouter from './route/passKey.js';
 import login from './route/login.js';
 import contest from './route/contest.js';
+import teams from './route/team.js';
 
 const port = 3000;
 const host = '0.0.0.0';
@@ -30,6 +31,7 @@ app.post('/judge', async (req, res, next) => {
 
 app.use('/login', login);
 app.use('/contests', contest);
+app.use('/teams', teams);
 
 // error handling
 app.use(errorMiddleware);

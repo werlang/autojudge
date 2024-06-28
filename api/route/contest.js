@@ -2,6 +2,7 @@ import { Router } from 'express';
 import Contest from '../model/contest.js';
 import auth from '../middleware/auth.js';
 import CustomError from '../helpers/error.js';
+import Team from '../model/team.js';
 
 const router = Router();
 
@@ -51,6 +52,26 @@ router.get('/:id', auth, async (req, res, next) => {
             name: contest.name,
             description: contest.description,
         } });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+
+// Get all teams for a contest
+router.get('/:id/teams', auth, async (req, res, next) => {
+    try {
+        let teams = await new Team({ contest: req.params.id }).getAll();
+        teams = teams.map(team => ({
+            name: team.name,
+            score: team.score,
+        }));
+
+        if (teams.length === 0) {
+            throw new CustomError(404, 'No teams found.');
+        }
+
+        res.send({ teams });
     }
     catch (error) {
         next(error);

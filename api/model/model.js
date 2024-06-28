@@ -38,8 +38,8 @@ export default class Model {
         Object.assign(this, fields);
     }
 
-    static async getAll(tableName) {
-        return Db.find(tableName, {});
+    static async getAll(tableName, filter = {}) {
+        return Db.find(tableName, { filter });
     }
 
     async insert() {

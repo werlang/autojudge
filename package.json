@@ -14,6 +14,7 @@
   "author": "Pablo Werlang",
   "license": "MIT",
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "css-loader": "^7.1.1",
     "css-minimizer-webpack-plugin": "^6.0.0",
