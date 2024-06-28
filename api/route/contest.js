@@ -3,11 +3,15 @@ import Contest from '../model/contest.js';
 import auth from '../middleware/auth.js';
 import CustomError from '../helpers/error.js';
 import Team from '../model/team.js';
+import User from '../model/user.js';
 
 const router = Router();
 
 // Create a new contest
-router.post('/', auth, async (req, res, next) => {
+// Only authenticated users can create contests
+// POST /contests
+// Request body: { name, description }
+router.post('/', auth({user: true}), async (req, res, next) => {
     try {
         if (!req.body.name) {
             throw new CustomError(400, 'Name is required.');
@@ -20,6 +24,7 @@ router.post('/', auth, async (req, res, next) => {
         return res.status(201).send({
             message: 'Contest created.',
             contest: {
+                id: contest.id,
                 name: contest.name,
                 description: contest.description,
             }
@@ -30,10 +35,13 @@ router.post('/', auth, async (req, res, next) => {
     }
 });
 
-// Get all contests
-router.get('/', auth, async (req, res, next) => {
+// Get all contests by admin
+// Only authenticated users can get contests
+// GET /contests
+router.get('/', auth({user: true}), async (req, res, next) => {
     try {
-        const contests = (await Contest.getAll()).map(contest => ({
+        const contests = (await new Contest({ admin: req.user.id }).getAll()).map(contest => ({
+            id: contest.id,
             name: contest.name,
             description: contest.description,
         }));
@@ -45,12 +53,26 @@ router.get('/', auth, async (req, res, next) => {
 });
 
 // Get a contest by id
-router.get('/:id', auth, async (req, res, next) => {
+// Only authenticated users can get contests
+router.get('/:id', auth({
+    admin: true,
+    member: true,
+}), async (req, res, next) => {
     try {
-        const contest = await new Contest({ id: req.params.id }).get();
+        if (!req.contest) {
+            req.contest = await new Contest({ id: req.params.id }).get();
+        }
+        let teams = await new Team({ contest: req.contest.id }).getAll();
+        teams = teams.map(team => ({
+            id: team.id,
+            name: team.name,
+            score: team.score,
+        }));
         res.send({ contest: {
-            name: contest.name,
-            description: contest.description,
+            id: req.contest.id,
+            name: req.contest.name,
+            description: req.contest.description,
+            teams,
         } });
     }
     catch (error) {
@@ -58,35 +80,15 @@ router.get('/:id', auth, async (req, res, next) => {
     }
 });
 
-// Get all teams for a contest
-router.get('/:id/teams', auth, async (req, res, next) => {
-    try {
-        let teams = await new Team({ contest: req.params.id }).getAll();
-        teams = teams.map(team => ({
-            name: team.name,
-            score: team.score,
-        }));
-
-        if (teams.length === 0) {
-            throw new CustomError(404, 'No teams found.');
-        }
-
-        res.send({ teams });
-    }
-    catch (error) {
-        next(error);
-    }
-});
-
 // Update a contest
-router.put('/:id', auth, async (req, res, next) => {
+router.put('/:id', auth({admin: true}), async (req, res, next) => {
     try {
-        const contest = await new Contest({ id: req.params.id }).update(req.body);
+        await req.contest.update(req.body);
         res.send({
             message: 'Contest updated.',
             contest: {
-                name: contest.name,
-                description: contest.description,
+                name: req.contest.name,
+                description: req.contest.description,
             }
         });
     }

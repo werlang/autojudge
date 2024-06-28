@@ -18,23 +18,24 @@ export default class Team extends Model {
                 password,
                 score: null,
             },
-            allowUpdate: ['name', 'score'],
-            insertFields: ['name', 'contest', 'password'],
+            allowUpdate: ['name', 'score', 'password'],
+            insertFields: ['name', 'contest'],
         });
     }
 
     async insert() {
-        // generate new password: 6 random digits
-        const password = Math.random().toString(10).slice(-6);
-        // hash the password
-        this.password = await bcrypt.hash(password, 10);
-
         // check for contest
         await new Contest({ id: this.contest }).get();
-
         const insert = await super.insert();
-        this.password = password;
+        await this.resetPassword();
         return insert;
+    }
+
+    async resetPassword() {
+        const newPassword = Math.random().toString(10).slice(-6);
+        await this.update({ password: await bcrypt.hash(newPassword, 10) });
+        this.password = newPassword;
+        return newPassword;
     }
 
     async getAll() {

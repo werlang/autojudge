@@ -19,7 +19,7 @@ export default class Contest extends Model {
         });
     }
 
-    static async getAll() {
-        return Model.getAll('contests');
+    async getAll() {
+        return Model.getAll('contests', { admin: this.admin });
     }
 }
