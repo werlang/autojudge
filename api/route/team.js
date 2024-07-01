@@ -38,10 +38,11 @@ router.post('/', auth({admin: 'contest'}), async (req, res, next) => {
 router.get('/:id', auth({team: true}), async (req, res, next) => {
     try {
         const contest = await new Contest({ id: req.team.contest }).get();
+        const team = await new Team({ id: req.team.id }).getActive();
         res.send({ team: {
-            id: req.team.id,
-            name: req.team.name,
-            score: req.team.score,
+            id: team.id,
+            name: team.name,
+            score: team.score,
             contest: {
                 id: contest.id,
                 name: contest.name,
@@ -89,6 +90,17 @@ router.put('/:id/reset', auth({adminTeam: true}), async (req, res, next) => {
                 password,
             }
         });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+
+// Delete a team
+router.delete('/:id', auth({adminTeam: true}), async (req, res, next) => {
+    try {
+        await req.team.delete();
+        res.send({ message: 'Team removed.' });
     }
     catch (error) {
         next(error);

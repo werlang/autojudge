@@ -17,8 +17,9 @@ export default class Team extends Model {
                 contest,
                 password,
                 score: null,
+                is_active: null,
             },
-            allowUpdate: ['name', 'score', 'password'],
+            allowUpdate: ['name', 'score', 'password', 'is_active'],
             insertFields: ['name', 'contest'],
         });
     }
@@ -47,5 +48,13 @@ export default class Team extends Model {
             throw new CustomError(400, 'Score must be a positive number.');
         }
         return this.update({ score });
+    }
+
+    async delete() {
+        return this.update({ is_active: 0 });
+    }
+
+    async getActive() {
+        return super.getBy('id', { is_active: 1 });
     }
 }

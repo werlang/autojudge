@@ -52,13 +52,13 @@ export default class Model {
         return this.get();
     }
 
-    async getBy(field = 'id') {
+    async getBy(field = 'id', additionalFilters = {}) {
         if (!this[field]) {
             throw new CustomError(400, 'Invalid field');
         }
 
         let item = await Db.find(this.#tableName, {
-            filter: { [field]: this[field] },
+            filter: { [field]: this[field], ...additionalFilters },
         });
 
         if (item.length === 0) {
