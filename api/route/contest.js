@@ -125,8 +125,20 @@ router.get('/:id/problems', auth({
     try {
         const contest = await new Contest({ id: req.params.id }).get();
         const problems = await contest.getProblems();
-        // TODO: Filter which fields to show
-        res.send({ problems });
+        res.send({ problems: problems.map(problem => {
+            const filteredProblem = {
+                id: problem.id,
+                title: problem.title,
+                description: problem.description,
+                input: problem.input_public,
+                output: problem.output_public,
+            }
+            if (problem.owner === req.user.id) {
+                filteredProblem.inputHidden = problem.input_hidden;
+                filteredProblem.outputHidden = problem.output_hidden;
+            }
+            return filteredProblem;
+        }) });
     }
     catch (error) {
         next(error);

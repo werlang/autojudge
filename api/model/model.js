@@ -24,6 +24,7 @@
 
 import CustomError from '../helpers/error.js';
 import Db from '../helpers/mysql.js';
+import Relation from './relation.js';
 
 export default class Model {
     
@@ -95,5 +96,20 @@ export default class Model {
         }
         await Db.update(this.#tableName, toChange, this.id);
         return this.get();
+    }
+
+    addRelation(relationName, tableName, nativeField, relatedField) {
+        if (!this.relations) {
+            this.relations = [];
+        }
+        this.relations[relationName] = new Relation(tableName, { [nativeField]: this.id }, relatedField);
+    }
+
+    async insertRelation(name, value) {
+        return this.relations[name].insert(value);
+    }
+
+    async getRelation(name) {
+        return this.relations[name].get();
     }
 }
