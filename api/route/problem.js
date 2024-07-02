@@ -36,15 +36,68 @@ router.post('/', auth({user: true}), async (req, res, next) => {
 
 // get a problem by id
 // must be logged as user
+// if owner, show hidden fields
 router.get('/:id', auth({user: true}), async (req, res, next) => {
     try {
         const problem = await new Problem({ id: req.params.id }).get();
-        res.send({ problem: {
+
+        const problemData = {
             id: problem.id,
             title: problem.title,
             description: problem.description,
-            // TODO: public inputs and outputs for everyone, hidden inputs and outputs and solution only for the owner
-        } });
+            input: problem.input_public,
+            output: problem.output_public,
+        }
+        if (problem.owner === req.user.id) {
+            problemData.inputHidden = problem.input_hidden;
+            problemData.outputHidden = problem.output_hidden;
+        }
+
+        res.send({ problem: problemData });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+
+// update a problem
+router.put('/:id', auth({user: true}), async (req, res, next) => {
+    try {
+        const problem = await new Problem({ id: req.params.id }).get();
+        if (problem.owner !== req.user.id) {
+            throw new CustomError(403, 'You are not allowed to update this problem.');
+        }
+        
+        const data = req.body;
+
+        data.public = data.public === 'true' || data.public === true;
+
+        if (data.input && data.public) {
+            data.input_public = data.input;
+        }
+        else if (data.input) {
+            data.input_hidden = data.input;
+        }
+        else if (data.output && data.public) {
+            data.output_public = data.output;
+        }
+        else if (data.output) {
+            data.output_hidden = data.output;
+        }
+
+        delete data.input;
+        delete data.output;
+        delete data.public;
+
+        await problem.update(data);
+        res.send({ 
+            message: 'Problem updated.',
+            problem: {
+                id: problem.id,
+                title: problem.title,
+                description: problem.description,
+            }
+        });
     }
     catch (error) {
         next(error);

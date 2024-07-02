@@ -52,6 +52,10 @@ export default class Model {
         return this.get();
     }
 
+    async insertRelation(tableName, fields) {
+        return Db.insert(tableName, fields);
+    }
+
     async getBy(field = 'id', additionalFilters = {}) {
         if (!this[field]) {
             throw new CustomError(400, 'Invalid field');
@@ -75,6 +79,11 @@ export default class Model {
 
     async get() {
         return this.getBy();
+    }
+
+    async getRelation(relationTable, nativeField, relatedField) {
+        const relatedEntities = await Db.find(relationTable, { filter: nativeField });
+        return relatedEntities.map(entity => entity[relatedField]);
     }
 
     async update(fields) {

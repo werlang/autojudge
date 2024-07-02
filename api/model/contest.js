@@ -1,4 +1,5 @@
 import Model from './model.js';
+import Problem from './problem.js';
 
 export default class Contest extends Model {
     constructor({
@@ -21,5 +22,18 @@ export default class Contest extends Model {
 
     async getAll() {
         return Model.getAll('contests', { admin: this.admin });
+    }
+
+    async addProblem(problem) {
+        return this.insertRelation('contest_problems', {
+            contest: this.id,
+            problem,
+        });
+    }
+
+    async getProblems() {
+        let problems = await this.getRelation('contest_problems', { contest: this.id }, 'problem');
+        problems = problems.map(async problem => new Problem({ id: problem }).get());
+        return Promise.all(problems);
     }
 }

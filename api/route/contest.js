@@ -4,6 +4,7 @@ import auth from '../middleware/auth.js';
 import CustomError from '../helpers/error.js';
 import Team from '../model/team.js';
 import User from '../model/user.js';
+import Problem from '../model/problem.js';
 
 const router = Router();
 
@@ -97,11 +98,34 @@ router.put('/:id', auth({admin: true}), async (req, res, next) => {
     }
 });
 
-// Get all problems from a contest
-router.get('/:id/problems', auth({member: true}), async (req, res, next) => {
+// Add a new existing problem to a contest
+router.post('/:id/problems/:problemId', auth({admin: true}), async (req, res, next) => {
     try {
-        // TODO: This will break bc getProblems is not implemented
-        const problems = await new Contest({ id: req.params.id }).getProblems();
+        const problem = await new Problem({ id: req.params.problemId }).get();
+        await req.contest.addProblem(problem.id);
+        res.send({
+            message: 'Problem added to contest.',
+            problem: {
+                id: problem.id,
+                title: problem.title,
+            }
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+
+// Get all problems from a contest
+router.get('/:id/problems', auth({
+    // TODO: improve auth to be more intuitive
+    member: true,
+    admin: true,
+}), async (req, res, next) => {
+    try {
+        const contest = await new Contest({ id: req.params.id }).get();
+        const problems = await contest.getProblems();
+        // TODO: Filter which fields to show
         res.send({ problems });
     }
     catch (error) {
