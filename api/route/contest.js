@@ -148,4 +148,16 @@ router.get('/:id/problems', auth({
     }
 });
 
+// remove a problem from a contest
+// Only the contest admin can remove problems from the contest
+router.delete('/:id/problems/:problemId', auth({'contest:admin': true}), async (req, res, next) => {
+    try {
+        await req.contest.removeProblem(req.params.problemId);
+        res.send({ message: 'Problem removed from contest.' });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+
 export default router;

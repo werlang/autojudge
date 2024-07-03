@@ -35,4 +35,8 @@ export default class Contest extends Model {
         problems = problems.map(async problem => new Problem({ id: problem }).get());
         return Promise.all(problems);
     }
+
+    async removeProblem(problemValue) {
+        return this.deleteRelation('problem', problemValue);
+    }
 }
