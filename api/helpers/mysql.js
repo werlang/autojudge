@@ -82,19 +82,19 @@ export default class Mysql {
         return Mysql.query(sql, values);
     }
 
-    static async delete(table, id) {
+    static async delete(table, filter) {
         let value;
-        if (typeof id === 'object') {
-            value = Object.values(id)[0];
-            id = Object.keys(id)[0];
+        if (typeof filter === 'object') {
+            value = Object.values(filter);
+            filter = Object.keys(filter).map(k => `${k} = ?`).join(' AND ');
         }
         else {
-            value = id;
-            id = 'id';
+            value = [filter];
+            filter = 'id = ?';
         }
 
-        const sql = `DELETE FROM ${table} WHERE ${id} = ?`;
-        return Mysql.query(sql, [ value ]);
+        const sql = `DELETE FROM ${table} WHERE ${filter};`;
+        return Mysql.query(sql, value);
     }
 
     // db.find('users', { filter: { name: 'John' }, view: ['name', 'age'], opt: { limit: 1, sort: { age: -1 }, skip: 1 } });
