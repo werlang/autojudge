@@ -28,21 +28,20 @@ async function checkToken(req) {
 }
 
 async function checkUser(req) {
-    const headers = req.headers;
     const payload = await checkToken(req);
     const user = await new User({ google_id: payload.sub }).get();
     req.user = user;
     return user;
 }
 
-async function isTeamMember(req, { id, contest }) {
+async function isTeamMember(req, context, id) {
     const headers = req.headers;
     if (!headers.authorization) {
         throw new CustomError(400, 'Password not found.');
     }
     const password = headers.authorization.split(' ')[1];
 
-    if (id) {
+    if (context === 'id') {
         const team = await new Team({ id }).get();
         const isValidPassword = await bcrypt.compare(password, team.password);
         if (!isValidPassword) {
@@ -51,8 +50,8 @@ async function isTeamMember(req, { id, contest }) {
         req.team = team;
         return team;
     }
-    else if (contest) {
-        const teams = await new Team({ contest }).getAll();
+    else if (context === 'contest') {
+        const teams = await new Team({ contest: id }).getAll();
         for (const team of teams) {
             if (await bcrypt.compare(password, team.password)) {
                 req.team = team;
@@ -74,19 +73,14 @@ async function isContestAdmin(contestId, req) {
     return contest;
 }
 
-function auth({
-    token, // check if the token is valid
-    user, // check if the user exists (token)
-    team, // check if password matches a team
-    admin, // check if the user is the admin of the contest
-    member, // check if the password matches a team in the contest
-    adminTeam, // check if the user is the admin of the contest where the team is
-}) {
+function auth(modes = {}) {
+    
     return async (req, res, next) => {
         let anyPassed = false;
         let errorList = [];
 
-        if (token) {
+        // check if the token is valid
+        if (modes['user:token']) {
             try {
                 await checkToken(req);
                 anyPassed = true;
@@ -96,7 +90,8 @@ function auth({
             }
         }
 
-        if (user) {
+        // check if the user exists (token)
+        if (modes['user:exists']) {
             try {
                 await checkUser(req);
                 anyPassed = true;
@@ -106,8 +101,20 @@ function auth({
             }
         }
 
-        if (admin) {
-            const key = admin === true ? 'id' : admin;
+        // logged user optional
+        if (modes['user:optional']) {
+            anyPassed = true;
+            try {
+                await checkUser(req);
+            }
+            catch (error) {
+                // do nothing
+            }
+        }
+
+        // check if the user is the admin of the contest
+        if (modes['contest:admin']) {
+            const key = modes['contest:admin'] === true ? 'id' : modes['contest:admin'];
             try {
                 const contestId = req.params[key] || req.body[key];
                 await isContestAdmin(contestId, req);
@@ -118,11 +125,12 @@ function auth({
             }
         }
 
-        if (team) {
-            const key = team === true ? 'id' : team;
+        // check if the password matches a team (is a member of the team)
+        if (modes['team:member']) {
+            const key = modes['team:member'] === true ? 'id' : modes['team:member'];
             try {
                 const teamId = req.params[key] || req.body[key];
-                await isTeamMember(req, { id: teamId });
+                await isTeamMember(req, 'id', teamId);
                 anyPassed = true;
             }
             catch (error) {
@@ -130,11 +138,12 @@ function auth({
             }
         }
 
-        if (member) {
-            const key = member === true ? 'id' : member;
+        // check if the password matches a team in the contest
+        if (modes['team:contest']) {
+            const key = modes['team:contest'] === true ? 'id' : modes['team:contest'];
             try {
                 const contestId = req.params[key] || req.body[key];
-                await isTeamMember(req, { contest: contestId });
+                await isTeamMember(req, 'contest', contestId);
                 anyPassed = true;
             }
             catch (error) {
@@ -142,8 +151,9 @@ function auth({
             }
         }
 
-        if (adminTeam) {
-            const key = adminTeam === true ? 'id' : adminTeam;
+        // check if the user is the admin of the contest where the team is
+        if (modes['contest:admin:team']) {
+            const key = modes['contest:admin:team'] === true ? 'id' : modes['contest:admin:team'];
             try {
                 const teamId = req.params[key] || req.body[key];
                 const team = await new Team({ id: teamId }).get();

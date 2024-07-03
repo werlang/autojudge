@@ -12,7 +12,7 @@ const router = Router();
 // Only authenticated users can create contests
 // POST /contests
 // Request body: { name, description }
-router.post('/', auth({user: true}), async (req, res, next) => {
+router.post('/', auth({'user:exists': true}), async (req, res, next) => {
     try {
         if (!req.body.name) {
             throw new CustomError(400, 'Name is required.');
@@ -39,7 +39,7 @@ router.post('/', auth({user: true}), async (req, res, next) => {
 // Get all contests by admin
 // Only authenticated users can get contests
 // GET /contests
-router.get('/', auth({user: true}), async (req, res, next) => {
+router.get('/', auth({'user:exists': true}), async (req, res, next) => {
     try {
         const contests = (await new Contest({ admin: req.user.id }).getAll()).map(contest => ({
             id: contest.id,
@@ -54,10 +54,10 @@ router.get('/', auth({user: true}), async (req, res, next) => {
 });
 
 // Get a contest by id
-// Only authenticated users can get contests
+// Only the contest admin or team members wich are part of the contest
 router.get('/:id', auth({
-    admin: true,
-    member: true,
+    'contest:admin': true,
+    'team:member': true,
 }), async (req, res, next) => {
     try {
         if (!req.contest) {
@@ -82,7 +82,8 @@ router.get('/:id', auth({
 });
 
 // Update a contest
-router.put('/:id', auth({admin: true}), async (req, res, next) => {
+// Only the contest admin can update the contest
+router.put('/:id', auth({'contest:admin': true}), async (req, res, next) => {
     try {
         await req.contest.update(req.body);
         res.send({
@@ -99,7 +100,8 @@ router.put('/:id', auth({admin: true}), async (req, res, next) => {
 });
 
 // Add a new existing problem to a contest
-router.post('/:id/problems/:problemId', auth({admin: true}), async (req, res, next) => {
+// Only the contest admin can add problems to the contest
+router.post('/:id/problems/:problemId', auth({'contest:admin': true}), async (req, res, next) => {
     try {
         const problem = await new Problem({ id: req.params.problemId }).get();
         await req.contest.addProblem(problem.id);
@@ -117,10 +119,11 @@ router.post('/:id/problems/:problemId', auth({admin: true}), async (req, res, ne
 });
 
 // Get all problems from a contest
+// Only the contest admin can see hidden problems
+// Only team members can see public problems
 router.get('/:id/problems', auth({
-    // TODO: improve auth to be more intuitive
-    member: true,
-    admin: true,
+    'team:member': true,
+    'contest:admin': true,
 }), async (req, res, next) => {
     try {
         const contest = await new Contest({ id: req.params.id }).get();

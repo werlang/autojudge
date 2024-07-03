@@ -6,7 +6,8 @@ import Problem from '../model/problem.js';
 const router = Router();
 
 // create a new problem
-router.post('/', auth({user: true}), async (req, res, next) => {
+// must be logged as user
+router.post('/', auth({'user:exists': true}), async (req, res, next) => {
     try {
         if (!req.body.title) {
             throw new CustomError(400, 'Title is required.');
@@ -35,9 +36,9 @@ router.post('/', auth({user: true}), async (req, res, next) => {
 });
 
 // get a problem by id
-// must be logged as user
+// anyone can access public problems
 // if owner, show hidden fields
-router.get('/:id', auth({user: true}), async (req, res, next) => {
+router.get('/:id', auth({'user:optional': true}), async (req, res, next) => {
     try {
         const problem = await new Problem({ id: req.params.id }).get();
 
@@ -48,7 +49,7 @@ router.get('/:id', auth({user: true}), async (req, res, next) => {
             input: problem.input_public,
             output: problem.output_public,
         }
-        if (problem.owner === req.user.id) {
+        if (req.user && problem.owner === req.user.id) {
             problemData.inputHidden = problem.input_hidden;
             problemData.outputHidden = problem.output_hidden;
         }
@@ -61,7 +62,8 @@ router.get('/:id', auth({user: true}), async (req, res, next) => {
 });
 
 // update a problem
-router.put('/:id', auth({user: true}), async (req, res, next) => {
+// must be logged as user
+router.put('/:id', auth({'user:exists': true}), async (req, res, next) => {
     try {
         const problem = await new Problem({ id: req.params.id }).get();
         if (problem.owner !== req.user.id) {

@@ -7,7 +7,8 @@ import Contest from '../model/contest.js';
 const router = Router();
 
 // Create a new team
-router.post('/', auth({admin: 'contest'}), async (req, res, next) => {
+// Only the contest admin can create teams
+router.post('/', auth({'contest:admin': 'contest'}), async (req, res, next) => {
     try {
         if (!req.body.name) {
             throw new CustomError(400, 'Name is required.');
@@ -35,7 +36,9 @@ router.post('/', auth({admin: 'contest'}), async (req, res, next) => {
 });
 
 // Get a team by id
-router.get('/:id', auth({team: true}), async (req, res, next) => {
+// Only team members can get their own team
+// Contest admin can access teams from GET /contests/:id
+router.get('/:id', auth({'team:member': true}), async (req, res, next) => {
     try {
         const contest = await new Contest({ id: req.team.contest }).get();
         const team = await new Team({ id: req.team.id }).getActive();
@@ -55,7 +58,8 @@ router.get('/:id', auth({team: true}), async (req, res, next) => {
 });
 
 // Update a team
-router.put('/:id', auth({adminTeam: true}), async (req, res, next) => {
+// Only the contest admin can update teams
+router.put('/:id', auth({'contest:admin:team': true}), async (req, res, next) => {
     try {
         if (!req.body.name) {
             throw new CustomError(400, 'Name is required.');
@@ -79,7 +83,8 @@ router.put('/:id', auth({adminTeam: true}), async (req, res, next) => {
 });
 
 // Reset team password
-router.put('/:id/reset', auth({adminTeam: true}), async (req, res, next) => {
+// Only the contest admin can reset team passwords
+router.put('/:id/reset', auth({'contest:admin:team': true}), async (req, res, next) => {
     try {
         const password = await req.team.resetPassword();
         res.send({
@@ -97,7 +102,8 @@ router.put('/:id/reset', auth({adminTeam: true}), async (req, res, next) => {
 });
 
 // Delete a team
-router.delete('/:id', auth({adminTeam: true}), async (req, res, next) => {
+// Only the contest admin can delete teams
+router.delete('/:id', auth({'contest:admin:team': true}), async (req, res, next) => {
     try {
         await req.team.delete();
         res.send({ message: 'Team removed.' });

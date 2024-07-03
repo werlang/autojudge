@@ -4,7 +4,7 @@ import auth from '../middleware/auth.js';
 
 const router = Router();
 
-router.post('/', auth({token: true}), async (req, res, next) => {
+router.post('/', auth({'user:token': true}), async (req, res, next) => {
     // passed the token verification
     try {
         const payload = req.authPayload;
