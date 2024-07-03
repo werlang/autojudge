@@ -6,35 +6,6 @@ import Contest from '../model/contest.js';
 
 const router = Router();
 
-// Create a new team
-// Only the contest admin can create teams
-router.post('/', auth({'contest:admin': 'contest'}), async (req, res, next) => {
-    try {
-        if (!req.body.name) {
-            throw new CustomError(400, 'Name is required.');
-        }
-        if (!req.body.contest) {
-            throw new CustomError(400, 'Contest is required.');
-        }
-        
-        const team = await new Team({
-            name: req.body.name,
-            contest: req.body.contest,
-        }).insert();
-        return res.status(201).send({
-            message: 'Team created. Please write down the password as it will not be shown again.',
-            team: {
-                id: team.id,
-                name: team.name,
-                password: team.password,
-            }
-        });
-    }
-    catch (error) {
-        next(error);
-    }
-});
-
 // Get a team by id
 // Only team members can get their own team
 // Contest admin can access teams from GET /contests/:id

@@ -99,6 +99,33 @@ router.put('/:id', auth({'contest:admin': true}), async (req, res, next) => {
     }
 });
 
+// Create a new team
+// Only the contest admin can create teams
+router.post('/:id/teams', auth({'contest:admin': true}), async (req, res, next) => {
+    try {
+        if (!req.body.name) {
+            throw new CustomError(400, 'Name is required.');
+        }
+        
+        const team = await new Team({
+            name: req.body.name,
+            contest: req.contest.id,
+        }).insert();
+        return res.status(201).send({
+            message: 'Team created. Please write down the password as it will not be shown again.',
+            team: {
+                id: team.id,
+                name: team.name,
+                password: team.password,
+            }
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+
+
 // Add a new existing problem to a contest
 // Only the contest admin can add problems to the contest
 router.post('/:id/problems/:problemId', auth({'contest:admin': true}), async (req, res, next) => {
