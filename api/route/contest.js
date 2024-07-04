@@ -53,10 +53,10 @@ router.get('/', auth({'user:exists': true}), async (req, res, next) => {
 });
 
 // Get a contest by id
-// Only the contest admin or team members wich are part of the contest
+// Only the contest admin or team members in contest can get the contest
 router.get('/:id', auth({
     'contest:admin': true,
-    'team:member': true,
+    'team:contest': true,
 }), async (req, res, next) => {
     try {
         if (!req.contest) {

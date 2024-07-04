@@ -7,6 +7,7 @@ import login from './route/login.js';
 import contest from './route/contest.js';
 import teams from './route/team.js';
 import problems from './route/problem.js';
+import submissions from './route/submission.js';
 
 const port = 3000;
 const host = '0.0.0.0';
@@ -34,6 +35,7 @@ app.use('/login', login);
 app.use('/contests', contest);
 app.use('/teams', teams);
 app.use('/problems', problems);
+app.use('/submissions', submissions);
 
 // error handling
 app.use(errorMiddleware);

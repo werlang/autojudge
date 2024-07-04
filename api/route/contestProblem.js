@@ -11,7 +11,7 @@ router.post('/:problemId', auth({'contest:admin': true}), async (req, res, next)
     try {
         const problem = await new Problem({ id: req.params.problemId }).get();
         await req.contest.addProblem(problem.id);
-        res.send({
+        res.status(201).send({
             message: 'Problem added to contest.',
             problem: {
                 id: problem.id,

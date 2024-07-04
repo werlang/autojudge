@@ -3,12 +3,12 @@ import Request from './helpers/request.js';
 import DynamicScript from './helpers/dynamic-script.js';
 
 async function handleCredentialResponse(response) {
-    const request = new Request({ 
+    console.log(response.credential);
+    const resp = await new Request({ 
         url: `https://${TemplateVar.get('apiurl')}`,
         headers: { 'Authorization': `Bearer ${response.credential}` }
-    });
-    const resp = await request.post('login');
-    console.log(resp);
+    }).post('login');
+    console.log({resp});
 }
 
 new DynamicScript('https://accounts.google.com/gsi/client', () => {
