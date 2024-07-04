@@ -22,5 +22,14 @@
             "localRoot": "${workspaceFolder}/web",
             "remoteRoot": "/app",
         },
+        {
+            "name": "Attach Background",
+            "type": "node",
+            "request": "attach",
+            "port": 9231,
+            "address": "localhost",
+            "localRoot": "${workspaceFolder}/background",
+            "remoteRoot": "/app",
+        },
     ]
 }
