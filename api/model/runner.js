@@ -6,10 +6,11 @@ import unzipper from 'unzipper';
 import Pledge from '../helpers/pledge.js';
 
 class Runner {
-    constructor({ filename, code, tests }) {
-        this.code = this.base64toBuffer(code);
+    constructor({ filename, code, tests, format }) {
         this.filename = filename;
         this.tests = tests;
+        this.format = format || 'zip';
+        this.code = this.base64toBuffer(code);
     }
 
     base64toBuffer(filedata) {
@@ -28,6 +29,20 @@ class Runner {
         // unzip file to tmpDir
         fs.createReadStream(path.join(this.tmpDir, filename))
             .pipe(unzipper.Extract({ path: this.tmpDir }));
+    }
+
+    buildJsonTests() {
+        // create input and output dir on tmpDir
+        fs.mkdirSync(path.join(this.tmpDir, 'input'), { recursive: true });
+        fs.mkdirSync(path.join(this.tmpDir, 'output'), { recursive: true });
+
+        // write input and output files
+        JSON.parse(this.tests.input).forEach((test, i) => {
+            fs.writeFileSync(path.join(this.tmpDir, 'input', `test${i.toString().padStart(2, '0')}`), test);
+        });
+        JSON.parse(this.tests.output).forEach((test, i) => {
+            fs.writeFileSync(path.join(this.tmpDir, 'output', `test${i.toString().padStart(2, '0')}`), test);
+        });
     }
 
     async run() {
@@ -53,7 +68,12 @@ class Runner {
         // copy everything from payload dir to tmpDir
         fs.cpSync('/app/payload', this.tmpDir, { recursive: true });
 
-        this.unzipTests();
+        if (this.format === 'zip') {
+            this.unzipTests();
+        }
+        else if (this.format === 'json') {
+            this.buildJsonTests();
+        }
     }
 
     removeTmpDir() {

@@ -80,7 +80,8 @@ router.put('/:id', auth({'user:exists': true}), async (req, res, next) => {
         else if (data.input) {
             data.input_hidden = data.input;
         }
-        else if (data.output && data.public) {
+        
+        if (data.output && data.public) {
             data.output_public = data.output;
         }
         else if (data.output) {
