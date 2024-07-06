@@ -6,6 +6,7 @@ export default class Submission extends Model {
         team,
         problem,
         code,
+        filename,
     }) {
         super('submissions', {
             fields: {
@@ -13,11 +14,16 @@ export default class Submission extends Model {
                 team,
                 problem,
                 code,
+                filename,
                 status: null,
                 submitted_at: null,
             },
             allowUpdate: ['status'],
-            insertFields: ['team', 'problem', 'code'],
+            insertFields: ['team', 'problem', 'code', 'filename'],
         });
+    }
+
+    static async getAll() {
+        return Model.getAll('submissions');
     }
 }

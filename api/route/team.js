@@ -101,6 +101,7 @@ router.post('/:id/problems/:pid/submissions', [
             team: req.team.id,
             problem: req.params.pid,
             code: req.body.code,
+            filename: req.body.filename,
         }).insert();
         
         res.status(201).send({
