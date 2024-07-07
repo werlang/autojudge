@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { exec } from 'child_process';
 import unzipper from 'unzipper';
 import Pledge from '../helpers/pledge.js';
+import CustomError from '../helpers/error.js';
 
 class Runner {
     constructor({ filename, code, tests, format }) {
@@ -50,7 +51,15 @@ class Runner {
         this.writeFiles();
         const response = await this.runAutoJudge();
         this.removeTmpDir();
-        return response;
+        try {
+            return JSON.parse(response);
+        }
+        catch (error) {
+            throw CustomError('Error running autojudge', 500, {
+                message: response,
+                error,
+            });
+        }
     }
 
     createTmpDir() {

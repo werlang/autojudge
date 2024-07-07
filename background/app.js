@@ -16,7 +16,10 @@ const background = {
             const submission = submissions.submissions[0];
 
             const response = await this.request.post(`submissions/${submission.id}/judge`, {});
-            console.log(response);
+            console.log(response, response.submission.results);
+        }
+        else {
+            console.log('No pending submissions');
         }
             
         // setTimeout(() => this.watchSubmissions(), 1000);

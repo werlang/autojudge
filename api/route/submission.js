@@ -48,18 +48,26 @@ router.post('/:id/judge', async (req, res, next) => {
         const output = problem.output_hidden;
         const code = submission.code;
 
-        const response = await new Runner({
-            format: 'json',
-            filename: submission.filename,
-            code,
-            tests: { input, output },
-        }).run();
-
-        // TODO: check actual submission status
-        await submission.update({ status: 'ACCEPTED' });
-
-        res.send({ message: response });
-
+        try {
+            const response = await new Runner({
+                format: 'json',
+                filename: submission.filename,
+                code,
+                tests: { input, output },
+            }).run();
+    
+            let status = 'ACCEPTED';
+            if (response.failed > 0) {
+                status = 'WRONG_ANSWER';
+            }
+    
+            await submission.update({ status });
+            res.send({ submission: response });
+        }
+        catch (error) {
+            await submission.update({ status: 'PARSING_ERROR' });
+            throw error;
+        }
     }
     catch (error) {
         next(error);

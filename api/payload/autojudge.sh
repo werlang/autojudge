@@ -19,7 +19,6 @@ extension="${file##*.}"
 
 pass=0
 fail=0
-isError=false
 
 # Get every file from the 'input' directory
 inputs="./input/*"
@@ -67,22 +66,15 @@ for input_file in $inputs; do
     sleep 0.01
   done
 
-  if $isError; then
-    exit
-  fi
-
   result="$(cat "$result_file")"
 
   if [ "$result" != "$output_contents" ]; then
     fail=$((fail + 1))
-    echo "$input_file Wrong answer"
-    echo "Got:"
-    echo "$result"
-    echo "Expected:"
-    echo "$output_contents"
-    echo ""
+    error_type="WRONG_ANSWER"
+    results="${results}{\"file\":\"$input_file\",\"status\":\"$error_type\",\"got\":\"$(echo "$result" | sed 's/"/\\"/g')\",\"expected\":\"$(echo "$output_contents" | sed 's/"/\\"/g')\"},"
   else
     pass=$((pass + 1))
+    results="${results}{\"file\":\"$input_file\",\"status\":\"PASS\"},"
   fi
 
   # Clean up result file
@@ -90,4 +82,10 @@ for input_file in $inputs; do
 
 done
 
-echo "$pass passed, $fail failed"
+# Remove trailing comma and wrap in array brackets
+results="[${results%,}]"
+
+# Create JSON output
+json_output="{\"passed\":$pass,\"failed\":$fail,\"results\":$results}"
+
+echo "$json_output"
