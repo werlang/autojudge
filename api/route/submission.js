@@ -70,6 +70,9 @@ router.post('/:id/judge', async (req, res, next) => {
             if (response.results.find(r => r.status === 'TLE')) {
                 response.status = 'TIME_LIMIT_EXCEEDED';
             }
+            if (response.results.find(r => r.status === 'RTE')) {
+                response.status = 'ERROR';
+            }
             else {
                 response.status = 'WRONG_ANSWER';
             }

@@ -44,7 +44,7 @@ fs.readdir(inputDir, async (error, inputFiles) => {
         process.exit(1);
     }
 
-    await Promise.all(inputFiles.map(async inputFile => {
+    for (const inputFile of inputFiles) {
         const inputFilePath = path.join(inputDir, inputFile);
         const outputFilePath = path.join(outputDir, inputFile);
 
@@ -92,14 +92,20 @@ fs.readdir(inputDir, async (error, inputFiles) => {
 
         // Execute the command
         const exePromise = new Promise(resolve => exec(command, (error, stdout, stderr) => {
-            const result = stdout + stderr;
-
-            if (result !== outputContents) {
+            if (stderr.length > 0) {
                 fail += 1;
                 results.push({
                     file: inputFilePath,
-                    status: "FAIL",
-                    got: result,
+                    status: "RTE",
+                    message: stderr,
+                });
+            }
+            else if (stdout !== outputContents) {
+                fail += 1;
+                results.push({
+                    file: inputFilePath,
+                    status: "WA",
+                    got: stdout,
                     expected: outputContents
                 });
             }
@@ -110,13 +116,14 @@ fs.readdir(inputDir, async (error, inputFiles) => {
                     status: "PASS"
                 });
             }
+
             clearTimeout(timeout);
             resolve();
         }));
 
         // return when either the command finishes or the timeout is reached
-        return await Promise.race([timeoutPromise, exePromise]);
-    }));
+        await Promise.race([timeoutPromise, exePromise]);
+    }
 
     // When all files are processed, output the results
     if (results.length !== inputFiles.length) {
