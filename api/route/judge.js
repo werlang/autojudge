@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import Runner from '../model/runner.js';
+import Request from '../helpers/request.js';
 
 const router = Router();
 
@@ -7,7 +7,15 @@ const router = Router();
 router.post('/', async (req, res, next) => {
     try {
         // console.log(req.body)
-        const response = await new Runner({ ...req.body, format: 'zip' }).run();
+        
+        const request = new Request({ url: `http://judge:3000` });
+        const response = await request.post('', {
+            format: 'json',
+            filename: req.body.filename,
+            code: req.body.code,
+            tests: req.body.tests,
+        });
+        
         res.send({ message: response });
     }
     catch (err) {

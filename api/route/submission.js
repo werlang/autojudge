@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import Submission from '../model/submission.js';
 import Problem from '../model/problem.js';
-import Runner from '../model/runner.js';
+import Request from '../helpers/request.js';
 
 const router = Router();
 
@@ -48,26 +48,24 @@ router.post('/:id/judge', async (req, res, next) => {
         const output = problem.output_hidden;
         const code = submission.code;
 
-        try {
-            const response = await new Runner({
-                format: 'json',
-                filename: submission.filename,
-                code,
-                tests: { input, output },
-            }).run();
-    
-            let status = 'ACCEPTED';
-            if (response.failed > 0) {
-                status = 'WRONG_ANSWER';
-            }
-    
-            await submission.update({ status });
-            res.send({ submission: response });
+        const request = new Request({ url: `http://judge:3000` });
+        const response = await request.post('', {
+            format: 'json',
+            filename: submission.filename,
+            code,
+            tests: { input, output },
+        });
+
+        let status = 'ACCEPTED';
+        if (response.failed === undefined) {
+            status = 'PARSING_ERROR';
         }
-        catch (error) {
-            await submission.update({ status: 'PARSING_ERROR' });
-            throw error;
+        else if (response.failed > 0) {
+            status = 'WRONG_ANSWER';
         }
+
+        await submission.update({ status });
+        res.send({ submission: response });
     }
     catch (error) {
         next(error);

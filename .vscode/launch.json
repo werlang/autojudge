@@ -31,5 +31,14 @@
             "localRoot": "${workspaceFolder}/background",
             "remoteRoot": "/app",
         },
+        {
+            "name": "Attach Judge",
+            "type": "node",
+            "request": "attach",
+            "port": 9232,
+            "address": "localhost",
+            "localRoot": "${workspaceFolder}/judge",
+            "remoteRoot": "/app",
+        },
     ]
 }

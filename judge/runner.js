@@ -3,8 +3,8 @@ import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import { exec } from 'child_process';
 import unzipper from 'unzipper';
-import Pledge from '../helpers/pledge.js';
-import CustomError from '../helpers/error.js';
+import Pledge from './pledge.js';
+import CustomError from './error.js';
 
 class Runner {
     constructor({ filename, code, tests, format }) {
