@@ -56,15 +56,26 @@ router.post('/:id/judge', async (req, res, next) => {
             tests: { input, output },
         });
 
-        let status = 'ACCEPTED';
-        if (response.failed === undefined) {
-            status = 'PARSING_ERROR';
+        response.status = 'ACCEPTED';
+        // this is the TLE check for the entire process. the autojudge script itself
+        if (response.error && response.error === 'TLE') {
+            response.status = 'TIME_LIMIT_EXCEEDED';
+        }
+        // if the response do not return a valid json, it is a parsing error
+        else if (response.failed === undefined) {
+            response.status = 'PARSING_ERROR';
         }
         else if (response.failed > 0) {
-            status = 'WRONG_ANSWER';
+            // this checks if the timeout inside the autojudge script was triggered
+            if (response.results.find(r => r.status === 'TLE')) {
+                response.status = 'TIME_LIMIT_EXCEEDED';
+            }
+            else {
+                response.status = 'WRONG_ANSWER';
+            }
         }
 
-        await submission.update({ status });
+        await submission.update({ status: response.status });
         res.send({ submission: response });
     }
     catch (error) {

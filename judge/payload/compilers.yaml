@@ -13,22 +13,22 @@ services:
         image: gcc:9.5.0
         # docker-compose -f compilers.yaml run --rm gcc /bin/bash -c "gcc -o a.out hello.c && ./a.out"
         <<: *runner-template
-        command: "/bin/bash -c \"gcc -o a.out ${FILE} && ./a.out < ${INPUT}\""
+        command: "/bin/bash -c \"gcc -o a.out ${FILE} && timeout ${TIME_LIMIT} ./a.out < ${INPUT}\""
     node:
         image: node:22
         # docker-compose -f compilers.yaml run --rm node node hello.js
         <<: *runner-template
-        command: "/bin/bash -c \"node ${FILE} < ${INPUT}\""
+        command: "/bin/bash -c \"timeout ${TIME_LIMIT} node ${FILE} < ${INPUT}\""
     php:
         image: php:8.2-cli
         # docker-compose -f compilers.yaml run --rm php php hello.php
         <<: *runner-template
-        command: "/bin/bash -c \"php ${FILE} < ${INPUT}\""
+        command: "/bin/bash -c \"timeout ${TIME_LIMIT} php ${FILE} < ${INPUT}\""
     python:
         image: python:3.11
         # docker-compose -f compilers.yaml run --rm python python hello.py
         <<: *runner-template
-        command: "/bin/bash -c \"python ${FILE} < ${INPUT}\""
+        command: "/bin/bash -c \"timeout ${TIME_LIMIT} python ${FILE} < ${INPUT}\""
 networks:
     runner:
         name: judge_runner

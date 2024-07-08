@@ -11,7 +11,7 @@ app.use(express.json());
 app.post('/', async (req, res) => {
     try {
         const response = await new Runner({...req.body}).run();
-        console.log(response);
+        // console.log(response);
         res.send(response);
     }
     catch (error) {

@@ -51,15 +51,7 @@ class Runner {
         this.writeFiles();
         const response = await this.runAutoJudge();
         this.removeTmpDir();
-        try {
-            return JSON.parse(response);
-        }
-        catch (error) {
-            throw CustomError('Error running autojudge', 500, {
-                message: response,
-                error,
-            });
-        }
+        return response;
     }
 
     createTmpDir() {
@@ -96,7 +88,7 @@ class Runner {
 
         try {
             // exec(`ls -la`, { cwd: this.tmpDir }, (error, stdout, stderr) => {
-            exec(`sh autojudge.sh ${this.filename} ${this.tmpDir.split('/').slice(-1)[0]}`, { cwd: this.tmpDir }, (error, stdout, stderr) => {
+            exec(`node autojudge.js ${this.filename} ${this.tmpDir.split('/').slice(-1)[0]}`, { cwd: this.tmpDir }, (error, stdout, stderr) => {
                 if (error) {
                     // console.error(`exec error: ${error}`);
                     pledge.reject(error);
@@ -112,7 +104,20 @@ class Runner {
             });
     
             // return pledge.get();
-            return pledge.timeout(5000);
+            const response = await pledge.timeout(5000);
+            if (response === 'Request Timeout') {
+                return { error: 'TLE', message: 'Request Timeout' };
+            }
+            try {
+                return JSON.parse(response);
+            }
+            catch (error) {
+                return {
+                    error,
+                    message: 'Error parsing response',
+                    response,
+                }
+            }
         }
         catch (error) {
             console.error(error);
