@@ -25,6 +25,10 @@ export default class Team extends Model {
         });
     }
 
+    static async getAll(filter) {
+        return Model.getAll('teams', filter);
+    }
+
     async insert() {
         // check for contest
         const contest = await new Contest({ id: this.contest }).get();
@@ -41,10 +45,6 @@ export default class Team extends Model {
         await this.update({ password: await bcrypt.hash(newPassword, 10) });
         this.password = newPassword;
         return newPassword;
-    }
-
-    async getAll() {
-        return Model.getAll('teams', { contest: this.contest });
     }
 
     async setScore(score) {

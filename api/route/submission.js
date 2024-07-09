@@ -8,8 +8,10 @@ const router = Router();
 // get pending submissions
 router.get('/pending', async (req, res, next) => {
     try {
-        const submissions = await Submission.getAll();
-        res.send({ submissions: submissions.filter(s => s.status === 'PENDING') });
+        const submissions = await Submission.getAll({
+            status: 'PENDING',
+        });
+        res.send({ submissions });
     }
     catch (error) {
         next(error);

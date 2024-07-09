@@ -28,8 +28,8 @@ export default class Submission extends Model {
         });
     }
 
-    static async getAll() {
-        return Model.getAll('submissions');
+    static async getAll(filter) {
+        return Model.getAll('submissions', filter);
     }
 
     async isSubmissionEnabled() {
@@ -75,11 +75,14 @@ export default class Submission extends Model {
         data.score = config.contest.minScore + (config.contest.maxScore - config.contest.minScore) * elapsedTimeRatio;
 
         // get all teams in this contest
-        const teamsInContest = await new Team({ contest: contest.id }).getAll();
+        const teamsInContest = await Team.getAll({ contest: contest.id });
 
         // check how many have been accepted before to the same problem
-        const submissions = await Submission.getAll();
-        const acceptedSubmissions = submissions.filter(s => s.status === 'ACCEPTED' && s.problem === this.problem && teamsInContest.some(t => t.id === s.team));
+        const acceptedSubmissions = await Submission.getAll({
+            problem: this.problem,
+            team: [...teamsInContest.map(t => t.id)],
+            status: 'ACCEPTED',
+        });
 
         // bonus for the first and second accepted submission
         if (acceptedSubmissions.length === 0) {

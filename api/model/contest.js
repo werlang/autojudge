@@ -27,8 +27,8 @@ export default class Contest extends Model {
         this.addRelation('problem', 'contest_problems', 'contest', 'problem');
     }
 
-    async getAll() {
-        return Model.getAll('contests', { admin: this.admin });
+    static async getAll(filter) {
+        return Model.getAll('contests', filter);
     }
 
     async addProblem(problemValue) {

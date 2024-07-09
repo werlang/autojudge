@@ -42,7 +42,7 @@ router.post('/', auth({'user:exists': true}), async (req, res, next) => {
 // GET /contests
 router.get('/', auth({'user:exists': true}), async (req, res, next) => {
     try {
-        const contests = (await new Contest({ admin: req.user.id }).getAll()).map(contest => ({
+        const contests = (await Contest.getAll({ admin: req.user.id })).map(contest => ({
             id: contest.id,
             name: contest.name,
             description: contest.description,
@@ -66,7 +66,7 @@ router.get('/:id', auth({
         if (!req.contest) {
             req.contest = await new Contest({ id: req.params.id }).get();
         }
-        let teams = await new Team({ contest: req.contest.id }).getAll();
+        let teams = await Team.getAll({ contest: req.contest.id });
         teams = teams.map(team => ({
             id: team.id,
             name: team.name,

@@ -51,7 +51,7 @@ async function isTeamMember(req, context, id) {
         return team;
     }
     else if (context === 'contest') {
-        const teams = await new Team({ contest: id }).getAll();
+        const teams = await Team.getAll({ contest: id });
         for (const team of teams) {
             if (await bcrypt.compare(password, team.password)) {
                 req.team = team;

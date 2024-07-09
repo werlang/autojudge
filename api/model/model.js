@@ -43,6 +43,10 @@ export default class Model {
         return Db.find(tableName, { filter });
     }
 
+    async getAll(filter = {}) {
+        return Db.find(this.#tableName, { filter });
+    }
+
     async insert() {
         const insertData = {};
         for (const field of this.#insertFields) {
