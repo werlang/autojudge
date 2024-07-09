@@ -26,6 +26,8 @@ router.get('/:id', async (req, res, next) => {
             team: submission.team,
             problem: submission.problem,
             status: submission.status,
+            score: submission.score,
+            submittedAt: submission.submitted_at,
         }});
     }
     catch (error) {
@@ -41,6 +43,7 @@ router.post('/:id/judge', async (req, res, next) => {
             res.status(400).send({ message: 'Submission already judged' });
             return;
         }
+        await submission.isSubmissionEnabled();
 
         const problem = await new Problem({ id: submission.problem }).get();
         
@@ -78,7 +81,7 @@ router.post('/:id/judge', async (req, res, next) => {
             }
         }
 
-        await submission.update({ status: response.status });
+        await submission.updateStatus(response.status);
         res.send({ submission: response });
     }
     catch (error) {

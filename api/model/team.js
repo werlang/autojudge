@@ -48,9 +48,6 @@ export default class Team extends Model {
     }
 
     async setScore(score) {
-        if (score < 0) {
-            throw new CustomError(400, 'Score must be a positive number.');
-        }
         return this.update({ score });
     }
 
