@@ -81,7 +81,7 @@ export default class Model {
     async update(fields) {
         const toChange = {};
         for (const key of Object.keys(fields)) {
-            if (this.#allowUpdate.includes(key)) {
+            if (this.#allowUpdate.includes(key) && fields[key] !== undefined) {
                 toChange[key] = fields[key];
             }
         }

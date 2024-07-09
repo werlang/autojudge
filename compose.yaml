@@ -37,6 +37,7 @@ services:
             - autojudge
         depends_on:
             - mysql
+            - judge
     judge:
         container_name: judge
         build:

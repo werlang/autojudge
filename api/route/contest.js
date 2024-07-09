@@ -4,6 +4,7 @@ import auth from '../middleware/auth.js';
 import CustomError from '../helpers/error.js';
 import Team from '../model/team.js';
 import contestProblem from './contestProblem.js';
+import config from '../helpers/config.js';
 
 const router = Router();
 
@@ -19,6 +20,7 @@ router.post('/', auth({'user:exists': true}), async (req, res, next) => {
         const contest = await new Contest({
             name: req.body.name,
             description: req.body.description,
+            duration: req.body.duration || config.contest.duration,
             admin: req.user.id,
         }).insert();
         return res.status(201).send({
@@ -44,6 +46,8 @@ router.get('/', auth({'user:exists': true}), async (req, res, next) => {
             id: contest.id,
             name: contest.name,
             description: contest.description,
+            duration: contest.duration,
+            startedAt: contest.started_at,
         }));
         res.send({ contests });
     }
@@ -72,6 +76,8 @@ router.get('/:id', auth({
             id: req.contest.id,
             name: req.contest.name,
             description: req.contest.description,
+            duration: req.contest.duration,
+            startedAt: req.contest.started_at,
             teams,
         } });
     }
@@ -84,7 +90,12 @@ router.get('/:id', auth({
 // Only the contest admin can update the contest
 router.put('/:id', auth({'contest:admin': true}), async (req, res, next) => {
     try {
-        await req.contest.update(req.body);
+        await req.contest.update({
+            name: req.body.name,
+            description: req.body.description,
+            duration: req.body.duration,
+            started_at: req.body.startedAt,
+        });
         res.send({
             message: 'Contest updated.',
             contest: {

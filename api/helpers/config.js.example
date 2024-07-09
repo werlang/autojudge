@@ -6,4 +6,11 @@ export default {
         database: process.env.MYSQL_DATABASE,
         port: process.env.MYSQL_PORT,
     },
+    contest: {
+        duration: 180,
+        maxScore: 100,
+        minScore: 80,
+        bonusScore: 0.1,
+        penaltyScore: -1,
+    },
 }
