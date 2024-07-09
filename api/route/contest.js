@@ -94,15 +94,26 @@ router.put('/:id', auth({'contest:admin': true}), async (req, res, next) => {
             name: req.body.name,
             description: req.body.description,
             duration: req.body.duration,
-            started_at: req.body.startedAt,
         });
         res.send({
             message: 'Contest updated.',
             contest: {
                 name: req.contest.name,
                 description: req.contest.description,
+                duration: req.contest.duration,
             }
         });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+
+// start a contest
+router.put('/:id/start', auth({'contest:admin': true}), async (req, res, next) => {
+    try {
+        await req.contest.start();
+        res.send({ message: 'Contest started.' });
     }
     catch (error) {
         next(error);
