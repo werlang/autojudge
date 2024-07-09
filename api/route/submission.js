@@ -6,6 +6,7 @@ import Request from '../helpers/request.js';
 const router = Router();
 
 // get pending submissions
+// the background service is supposed to call this endpoint. it will show all pending submissions from all contests
 router.get('/pending', async (req, res, next) => {
     try {
         const submissions = await Submission.getAll({
