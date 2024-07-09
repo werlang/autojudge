@@ -73,6 +73,19 @@ async function isContestAdmin(contestId, req) {
     return contest;
 }
 
+function isBackground(req) {
+    const headers = req.headers;
+    if (!headers.authorization) {
+        throw new CustomError(400, 'Token not found.');
+    }
+    const token = headers.authorization.split(' ')[1];
+
+    if (token !== process.env.BACKGROUND_TOKEN) {
+        throw new CustomError(403, 'You are not allowed to access this resource.');
+    }
+    return true;
+}
+
 function auth(modes = {}) {
     
     return async (req, res, next) => {
@@ -164,7 +177,17 @@ function auth(modes = {}) {
             catch (error) {
                 errorList.push(error);
             }
-            
+        }
+
+        // check if the call was made by the background service
+        if (modes['background']) {
+            try {
+                isBackground(req);
+                anyPassed = true;
+            }
+            catch (error) {
+                errorList.push(error);
+            }
         }
 
         if (!anyPassed) {

@@ -2,12 +2,13 @@ import { Router } from 'express';
 import Submission from '../model/submission.js';
 import Problem from '../model/problem.js';
 import Request from '../helpers/request.js';
+import auth from '../middleware/auth.js';
 
 const router = Router();
 
 // get pending submissions
 // the background service is supposed to call this endpoint. it will show all pending submissions from all contests
-router.get('/pending', async (req, res, next) => {
+router.get('/pending', auth({'background': true}), async (req, res, next) => {
     try {
         const submissions = await Submission.getAll({
             status: 'PENDING',
@@ -39,7 +40,8 @@ router.get('/:id', async (req, res, next) => {
 });
 
 // call the judge to run the submission
-router.post('/:id/judge', async (req, res, next) => {
+// only the background service can call this endpoint
+router.post('/:id/judge', auth({'background': true}), async (req, res, next) => {
     try {
         const submission = await new Submission({ id: req.params.id }).get();
         if (submission.status !== 'PENDING') {
