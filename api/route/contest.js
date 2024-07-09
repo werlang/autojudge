@@ -79,6 +79,9 @@ router.get('/:id', auth({
             description: req.contest.description,
             duration: req.contest.duration,
             startedAt: req.contest.started_at,
+            maxScore: config.contest.maxScore,
+            minScore: config.contest.minScore,
+            bonusScore: config.contest.bonusScore,
             teams,
         } });
     }
