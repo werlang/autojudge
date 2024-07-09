@@ -1,3 +1,4 @@
+import CustomError from '../helpers/error.js';
 import Contest from './contest.js';
 import Model from './model.js';
 import bcrypt from 'bcrypt';
@@ -26,7 +27,10 @@ export default class Team extends Model {
 
     async insert() {
         // check for contest
-        await new Contest({ id: this.contest }).get();
+        const contest = await new Contest({ id: this.contest }).get();
+        if (contest.isStarted()) {
+            throw new CustomError(403, 'Contest has already started');
+        }
         const insert = await super.insert();
         await this.resetPassword();
         return insert;
