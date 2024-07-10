@@ -2,6 +2,7 @@ import CustomError from '../helpers/error.js';
 import Contest from './contest.js';
 import Model from './model.js';
 import bcrypt from 'bcrypt';
+import Submission from './submission.js';
 
 export default class Team extends Model {
     constructor({
@@ -47,7 +48,11 @@ export default class Team extends Model {
         return newPassword;
     }
 
-    async setScore(score) {
+    async updateScore() {
+        // get all submissions
+        const submissions = await Submission.getAll({ team: this.id });
+        // calculate score
+        const score = submissions.reduce((acc, submission) => acc + parseFloat(submission.score), 0);
         return this.update({ score });
     }
 

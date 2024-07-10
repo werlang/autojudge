@@ -72,8 +72,9 @@ export default class Submission extends Model {
         
         if (status !== 'ACCEPTED') {
             data.score = config.contest.penaltyScore;
-            team.setScore(team.score + data.score);
-            return this.update(data);
+            await this.update(data);
+            await team.updateScore();
+            return this;
         }
 
         // score between 80 and 100 based on the time elapsed
@@ -99,8 +100,8 @@ export default class Submission extends Model {
         }
 
         // update team score
-        team.setScore(team.score + data.score);
-
-        return this.update(data);
+        await this.update(data);
+        await team.updateScore();
+        return this;
     }
 }

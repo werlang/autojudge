@@ -3,6 +3,8 @@ import Submission from '../model/submission.js';
 import Problem from '../model/problem.js';
 import Request from '../helpers/request.js';
 import auth from '../middleware/auth.js';
+import Contest from '../model/contest.js';
+import Team from '../model/team.js';
 
 const router = Router();
 
@@ -94,6 +96,39 @@ router.post('/:id/judge', auth({'background': true}), async (req, res, next) => 
 
         await submission.updateStatus(response.status);
         res.send({ submission: response });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+
+// manually update submission status
+// only the contest admin can call this endpoint
+router.put('/:id/status', auth({'user:exists': true}), async (req, res, next) => {
+    try {
+        const submission = await new Submission({ id: req.params.id }).get();
+        const team = await new Team({ id: submission.team }).get();
+        const contest = await new Contest({ id: team.contest }).get();
+        if (contest.admin !== req.user.id) {
+            res.status(403).send({ message: 'Only the contest admin can update the submission status' });
+            return;
+        }
+
+        const allowedStatus = ['ACCEPTED', 'WRONG_ANSWER', 'TIME_LIMIT_EXCEEDED', 'ERROR'];
+        if (!allowedStatus.includes(req.body.status)) {
+            res.status(400).send({ message: 'Invalid status' });
+            return;
+        }
+
+        await submission.updateStatus(req.body.status);
+        res.send({ submission: {
+            id: submission.id,
+            team: submission.team,
+            problem: submission.problem,
+            status: submission.status,
+            score: submission.score,
+            submittedAt: submission.submitted_at,
+        }});
     }
     catch (error) {
         next(error);
