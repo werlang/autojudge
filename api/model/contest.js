@@ -64,11 +64,13 @@ export default class Contest extends Model {
         return this.update({ started_at: Db.toDateTime(Date.now()) });
     }
 
-    getRemainingTime() {
+    getRemainingTime(targetTime) {
+        if (!targetTime) {
+            targetTime = Date.now();
+        }
         if (!this.isStarted()) return 0;
         const startedAt = new Date(this.started_at).getTime();
-        const now = Date.now();
-        const elapsed = (now - startedAt) / 1000;
+        const elapsed = Math.floor((targetTime - startedAt) / 1000);
         return this.duration * 60 - elapsed;
     }
 }

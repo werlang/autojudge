@@ -36,7 +36,7 @@ export default class Submission extends Model {
         const team = await new Team({ id: this.team }).get();
         const contest = await new Contest({ id: team.contest }).get();
         const isStarted = contest.isStarted();
-        const remainingTime = contest.getRemainingTime();
+        const remainingTime = contest.getRemainingTime(this.submitted_at);
         let enabled = true;
 
         if (!isStarted && !forceReturn) {
