@@ -10,6 +10,7 @@ const background = {
     },
     
     watchSubmissions: async function() {
+        const requestInterval = 5000;
         try {
             const submissions = await this.request.get(`submissions/pending`, {});
             // console.log(submissions);
@@ -19,13 +20,13 @@ const background = {
     
                 const response = await this.request.post(`submissions/${submission.id}/judge`, {});
                 // console.log(response);
-                console.log(response, response.submission.results);
+                // console.log(response, response.submissions.results);
             }
             else {
-                console.log('No pending submissions');
+                // console.log('No pending submissions');
             }
                 
-            // setTimeout(() => this.watchSubmissions(), 1000);
+            setTimeout(() => this.watchSubmissions(), requestInterval);
         }
         catch (error) {
             console.error(error);

@@ -32,21 +32,27 @@ export default class Submission extends Model {
         return Model.getAll('submissions', filter);
     }
 
-    async isSubmissionEnabled() {
+    async isSubmissionEnabled(forceReturn = false) {
         const team = await new Team({ id: this.team }).get();
         const contest = await new Contest({ id: team.contest }).get();
         const isStarted = contest.isStarted();
         const remainingTime = contest.getRemainingTime();
+        let enabled = true;
 
-        if (!isStarted) {
+        if (!isStarted && !forceReturn) {
             throw new CustomError(400, 'Contest has not started yet.');
         }
-        if (remainingTime <= 0){
+        if (remainingTime <= 0 && !forceReturn){
             throw new CustomError(400, 'Contest has ended.');
         }
 
+        // if forceReturn and some error occurs, return the data anyway
+        if (!isStarted || remainingTime <= 0) {
+            enabled = false;
+        }
+
         return {
-            enabled: true,
+            enabled,
             isStarted,
             remainingTime,
             team,

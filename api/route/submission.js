@@ -10,9 +10,15 @@ const router = Router();
 // the background service is supposed to call this endpoint. it will show all pending submissions from all contests
 router.get('/pending', auth({'background': true}), async (req, res, next) => {
     try {
-        const submissions = await Submission.getAll({
+        let submissions = await Submission.getAll({
             status: 'PENDING',
         });
+        // remove submissions from contests that are not started or have ended
+        submissions = await Promise.all(submissions.map(async submission => {
+            const enabled = await new Submission({ id: submission.id }).get().then(s => s.isSubmissionEnabled(true));
+            return enabled.enabled ? submission : null;
+        }));
+        submissions = submissions.filter(submission => submission !== null);
         res.send({ submissions });
     }
     catch (error) {

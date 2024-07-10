@@ -75,7 +75,6 @@ services:
         networks:
             - autojudge
         depends_on:
-            - mysql
             - api
     mysql:
         container_name: mysql
