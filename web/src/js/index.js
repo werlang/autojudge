@@ -1,3 +1,4 @@
+import TypeIt from 'typeit';
 import Card from './components/card.js';
 import Modal from './components/modal.js';
 import Form from './components/form.js';
@@ -10,28 +11,29 @@ import '../less/index.less';
 
 document.querySelector('footer #year').innerHTML = new Date().getFullYear();
 
+// set up typewriter effect
+document.querySelectorAll('section .col.text .content h1, #section-3 h1, #section-1 #welcome').forEach(e => {
+    new TypeIt(e, {
+        speed: 75,
+        waitUntilVisible: true,
+        cursorChar: '_',
+    }).go();
+});
+
+const splashVideo = document.querySelector('#section-1 video');
+splashVideo.playbackRate = 0.4;
+// splashVideo.width = window.innerWidth;
+
+
 // add cards
 const cardContainer = document.querySelector('#options');
-
-new Card(cardContainer, {
-    id: 'instructions',
-    icon: 'fa-solid fa-circle-question',
-    title: 'Instructions',
-    description: 'Learn how to use this tool'
-}).click(async () => {
-    const modal = await new Modal(null, { id: 'instructions' }).loadContent('index-instructions');
-    modal.addButton({
-        text: 'OK, got it!',
-        close: true,
-    })
-});
 
 
 new Card(cardContainer, {
     id: 'problems',
-    icon: 'fa-solid fa-file-code',
+    icon: 'fa-solid fa-circle-question',
     title: 'Problems',
-    description: 'Submit input and output for a new problem'
+    description: 'The fuel for the competition! Create and submit problems here.',
 }).click(async () => {
     const modal = await new Modal(null, { id: 'problems' }).loadContent('index-problems');
     
@@ -93,11 +95,26 @@ new Card(cardContainer, {
     }
 });
 
+
+new Card(cardContainer, {
+    id: 'instructions',
+    icon: 'fa-solid fa-medal',
+    title: 'Contests',
+    description: 'Where the magic happens! Manage contests and their teams.',
+}).click(async () => {
+    const modal = await new Modal(null, { id: 'instructions' }).loadContent('index-instructions');
+    modal.addButton({
+        text: 'OK, got it!',
+        close: true,
+    })
+});
+
+
 new Card(cardContainer, {
     id: 'judge',
-    icon: 'fa-solid fa-gavel',
-    title: 'Judge',
-    description: 'Submit code to be judged'
+    icon: 'fa-solid fa-people-group',
+    title: 'Teams',
+    description: 'Who will be the champion? Participate in the contest.',
 }).click(async () => {
     const modal = await new Modal(null, { id: 'judge' }).loadContent('index-judge');
     const form = new Form(modal.get('.form'));

@@ -9,13 +9,67 @@
 </head>
 <body>
     <div id="frame">
-        <div id="logo">
-            <img src="img/autojudge.webp">
-            <h1>root@<span id="site-name">autojudge</span>~$ Welcome!<span id="underline">_</span></h1>
-        </div>
-        <h3>Online Judge at your service. I can help you test your code against multiple test cases.</h3>
-        
-        <div id="options"></div>
+        <section id="section-1" class="row">
+            <div id="col-left" class="col">
+                <div id="logo">
+                    <img src="img/autojudge.webp">
+                    <h1>root@<span id="site-name">autojudge</span>~$ <span id="welcome">Welcome!</span></h1>
+                </div>
+                <h3>Online Judge at your service. I can help you with programming problems and contests.</h3>
+                <div id="button-container">
+                    <button id="join" class="default">Join</button>
+                </div>
+            </div>
+            <div id="video-container" class="col">
+                <video autoplay muted loop>
+                    <source src="img/index-processor.webm" type="video/webm">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </section>
+        <section id="section-3">
+            <div>
+                <h1>What can I do for you?</h1>
+                <p>AutoJudge is an online judge platform that allows you to create, manage and solve programming problems, host contests and join with your team to compete. Whether you are a teacher, a student or a professional, AutoJudge got you covered!</p>
+                <div id="options"></div>
+            </div>
+        </section>
+        <section id="section-4" class="row">
+            <div class="col text">
+                <div class="content">
+                    <h1>Create, manage and solve problems</h1>
+                    <p>I can help you bring your programming problems to life! You can create problems along with test cases. Once on the platform, users can submit their solutions and I will evaluate them for you.</p>
+                    <div id="button-container">
+                        <button id="problems" class="default">Check Problems</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col image"></div>
+        </section>
+        <section id="section-5" class="row">
+            <div class="col image"></div>
+            <div class="col text">
+                <div class="content">
+                    <h1>Host contests within your institution</h1>
+                    <p>You can host contests on the platform! You choose the problems, the duration and the start time. Students can join as teams and compete with each other. I will take care of the rest.</p>
+                    <div id="button-container">
+                        <button id="contests" class="default">Manage Contests</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="section-6" class="row">
+            <div class="col text">
+                <div class="content">
+                    <h1>Join with your team and compete</h1>
+                    <p>Join a contest with your team and compete with others. You can see the standings in real-time and see how you are doing compared to others. I will judge your submissions and keep track of everything.</p>
+                    <div id="button-container">
+                        <button id="teams" class="default">Gather your Team</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col image"></div>
+        </section>
     </div>
     {{>footer}}
 </body>
