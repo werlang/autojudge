@@ -6,6 +6,7 @@ import Uploader from './components/uploader.js';
 import Toast from './components/toast.js';
 import Problem from './model/problem.js';
 import Judge from './model/judge.js';
+import GoogleLogin from './helpers/google-login.js';
 
 import '../less/index.less';
 
@@ -22,7 +23,21 @@ document.querySelectorAll('section .col.text .content h1, #section-3 h1, #sectio
 
 const splashVideo = document.querySelector('#section-1 video');
 splashVideo.playbackRate = 0.4;
-// splashVideo.width = window.innerWidth;
+
+GoogleLogin.init();
+GoogleLogin.onFail(async () => {
+    const modal = new Modal(`
+        <h1>Sign up</h1>
+        <p>Use your Google account to sign up and access the platform.</p>
+        <div id="button"></div>
+    `, { id: 'signup' });
+    GoogleLogin.renderButton(modal.get('#button'));
+});
+
+// bind buttons to google login
+document.querySelectorAll(`#section-1 #join, #section-4 #problems, #section-5 #contests, #section-6 #teams`).forEach(e => {
+    e.addEventListener('click', () => GoogleLogin.prompt());
+});
 
 
 // add cards

@@ -16,21 +16,15 @@ const formatTemplateVars = vars => ({ 'template-vars': JSON.stringify(vars) });
 
 app.get('/', (req, res) => {
     res.render('index', formatTemplateVars({
-        apiurl: process.env.API
+        apiurl: process.env.API,
+        googleClientId: process.env.GOOGLE_CLIENT_ID
     }));
 });
 
-// Not in use
-// app.get('/passkey', (req, res) => {
-//     res.render('passkey', formatTemplateVars({
-//         apiurl: process.env.API,
-//     }));
-// });
-
-app.get('/test', (req, res) => {
-    res.render('test', formatTemplateVars({
+app.post('/dashboard', (req, res) => {
+    res.render('dashboard', formatTemplateVars({
         apiurl: process.env.API,
-        googleClientId: process.env.GOOGLE_CLIENT_ID
+        authToken: req.body.credential
     }));
 });
 

@@ -260,17 +260,26 @@
     width: 100%;
     max-width: 400px;
 
-    &#instructions {
-        max-width: 600px;
-    }
-
     .dropzone {
         margin-bottom: 20px;
     }
 
 }
 
-#problems {
+.modal#signup {
+    #button {
+        display: flex;
+        justify-content: center;
+        margin-top: 15px;
+        margin-bottom: 30px;
+    }
+}
+
+.modal#instructions {
+    max-width: 600px;
+}
+
+.modal#problems {
     h1 {
         margin: 10px 0 30px;
     }
@@ -303,7 +312,7 @@
     }
 }
 
-#judge {
+.modal#judge {
     #result {
 
         &.loading {
