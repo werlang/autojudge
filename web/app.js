@@ -21,12 +21,15 @@ app.get('/', (req, res) => {
     }));
 });
 
-app.post('/dashboard', (req, res) => {
+const dashboardRoute = (req, res) => {
     res.render('dashboard', formatTemplateVars({
         apiurl: process.env.API,
-        authToken: req.body.credential
+        googleCredential: req.body.credential
     }));
-});
+}
+app.post('/dashboard', dashboardRoute);
+app.get('/dashboard', dashboardRoute);
+
 
 // static assets
 app.use(express.static(import.meta.dirname + '/public/'));

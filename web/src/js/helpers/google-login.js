@@ -1,7 +1,7 @@
 import TemplateVar from './template-var.js';
-import Request from './request.js';
 import DynamicScript from './dynamic-script.js';
 import Pledge from './pledge.js';
+import LocalData from './local-data.js';
 
 
 export default class GoogleLogin {
@@ -19,12 +19,8 @@ export default class GoogleLogin {
         new DynamicScript('https://accounts.google.com/gsi/client', () => {
             async function handleCredentialResponse(response) {
                 // console.log(response.credential);
-                const resp = await new Request({ 
-                    url: `https://${TemplateVar.get('apiurl')}`,
-                    headers: { 'Authorization': `Bearer ${response.credential}` }
-                }).post('login');
-                console.log({resp});
                 GoogleLogin.logged = true;
+                GoogleLogin.saveCredential(response.credential);
             }
 
             google.accounts.id.initialize({
@@ -71,5 +67,18 @@ export default class GoogleLogin {
         GoogleLogin.onFailCallback = callback;
         return GoogleLogin;
     }
-        
+
+    static saveCredential(credential) {
+        new LocalData({ id: 'google-credential' }).set({ data: credential });
+        if (GoogleLogin.onSignInCallback) GoogleLogin.onSignInCallback(credential);
+    }
+
+    static getCredential() {
+        return new LocalData({ id: 'google-credential' }).get();
+    }
+
+    static onSignIn(callback) {
+        GoogleLogin.onSignInCallback = callback;
+        return GoogleLogin;
+    }
 }

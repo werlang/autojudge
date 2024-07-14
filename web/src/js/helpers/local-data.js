@@ -46,7 +46,10 @@ class LocalData {
     }
 
     // save data to local storage
-    set() {
+    set({ id, data, expires } = {}) {
+        if (id) this.id = id;
+        if (data) this.data = data;
+        if (expires) this.expires = expires;
         localStorage.setItem(this.id, JSON.stringify({
             data: this.data,
             expires: this.expires

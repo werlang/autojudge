@@ -39,6 +39,10 @@ document.querySelectorAll(`#section-1 #join, #section-4 #problems, #section-5 #c
     e.addEventListener('click', () => GoogleLogin.prompt());
 });
 
+GoogleLogin.onSignIn(async () => {
+    location.href = '/dashboard';
+});
+
 
 // add cards
 const cardContainer = document.querySelector('#options');
