@@ -77,6 +77,10 @@ export default class GoogleLogin {
         return new LocalData({ id: 'google-credential' }).get();
     }
 
+    static removeCredential() {
+        new LocalData({ id: 'google-credential' }).remove();
+    }
+
     static onSignIn(callback) {
         GoogleLogin.onSignInCallback = callback;
         return GoogleLogin;
