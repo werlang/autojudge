@@ -5,40 +5,75 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Attach API",
+            "name": "Debug API",
             "type": "node",
             "request": "attach",
             "port": 9229,
             "address": "localhost",
             "localRoot": "${workspaceFolder}/api",
-            "remoteRoot": "/app",
+            "remoteRoot": "/app"
         },
         {
-            "name": "Attach Web",
+            "name": "Debug Web",
             "type": "node",
             "request": "attach",
             "port": 9230,
             "address": "localhost",
             "localRoot": "${workspaceFolder}/web",
-            "remoteRoot": "/app",
+            "remoteRoot": "/app"
         },
         {
-            "name": "Attach Background",
+            "name": "Debug Background",
             "type": "node",
             "request": "attach",
             "port": 9231,
             "address": "localhost",
             "localRoot": "${workspaceFolder}/background",
-            "remoteRoot": "/app",
+            "remoteRoot": "/app"
         },
         {
-            "name": "Attach Judge",
+            "name": "Debug Judge",
             "type": "node",
             "request": "attach",
             "port": 9232,
             "address": "localhost",
             "localRoot": "${workspaceFolder}/judge",
-            "remoteRoot": "/app",
+            "remoteRoot": "/app"
         },
+        {
+            "name": "Launch Edge",
+            "type": "msedge",
+            "request": "launch",
+            "runtimeArgs": [
+                "--remote-debugging-port=9233",
+                "--user-data-dir=remote-debug-profile"
+            ],
+            "url": "https://localtest.me"
+        },
+        {
+            "name": "Debug Edge",
+            "type": "msedge",
+            "request": "attach",
+            "port": 9233,
+            "webRoot": "${workspaceFolder}/web",
+        },
+        {
+            "name": "Devtools Edge",
+            "type": "vscode-edge-devtools.debug",
+            "request": "attach",
+            "port": 9233,
+            "webRoot": "${workspaceFolder}/web",
+            "url": "https://localtest.me"
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Develop in Edge",
+            "configurations": [
+                "Launch Edge",
+                "Devtools Edge",
+                "Debug Edge"
+            ]
+        }
     ]
 }
