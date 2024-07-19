@@ -36,7 +36,13 @@ GoogleLogin.onFail(async () => {
 
 // bind buttons to google login
 document.querySelectorAll(`#section-1 #join, #section-4 #problems, #section-5 #contests, #section-6 #teams`).forEach(e => {
-    e.addEventListener('click', () => GoogleLogin.prompt());
+    e.addEventListener('click', () => {
+        if (GoogleLogin.getCredential()) {
+            location.href = '/dashboard';
+            return;
+        }
+        GoogleLogin.prompt()
+    });
 });
 
 GoogleLogin.onSignIn(async () => {
