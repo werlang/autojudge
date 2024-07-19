@@ -45,10 +45,10 @@
             "type": "msedge",
             "request": "launch",
             "runtimeArgs": [
-                "--remote-debugging-port=9233",
-                "--user-data-dir=remote-debug-profile"
+                // "--headless",
+                "--remote-debugging-port=9233"
             ],
-            "url": "https://localtest.me"
+            "url": "https://localtest.me",
         },
         {
             "name": "Debug Edge",

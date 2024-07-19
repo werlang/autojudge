@@ -101,6 +101,7 @@ services:
             - ./nginx:/etc/nginx/conf.d
         environment:
             - SITES=${URL}=web:3000;${API}=api:3000
+            - ALLOWED_DOMAINS=${PRODUCTION_DOMAIN}
             - FORCE_HTTPS=true
         networks:
             - autojudge
