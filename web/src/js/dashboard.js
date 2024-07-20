@@ -8,9 +8,17 @@ import '../less/dashboard.less';
 
 const menu = new Menu({
     items: [
-        { id: 'dashboard', text: 'Dashboard', icon: 'fas fa-tachometer-alt' },
+        { id: 'dashboard', text: 'Dashboard', icon: 'fas fa-tachometer-alt', default: true },
+        { id: 'problems', text: 'Problems', icon: 'fas fa-tasks' },
+        { id: 'contests', text: 'Contests', icon: 'fas fa-trophy' },
+        { id: 'teams', text: 'Teams', icon: 'fas fa-users' },
+        { id: 'logout', text: 'Logout', icon: 'fas fa-sign-out-alt' },
     ],
 })
+.addAction('logout', async () => {
+    GoogleLogin.removeCredential();
+    location.href = '/';
+});
 
 // handle redirect from google login
 function handleRedirect() {

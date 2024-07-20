@@ -77,12 +77,9 @@ export default class Menu {
         this.domElement.innerHTML = `
             <div id="top">
                 <div id="logo">
-                    <a href="/"></a>
-                </div>
-                <div id="user">
-                    <a href="/perfil">
-                        <div id="user-avatar"><img alt="Avatar"></div>
-                        <div id="user-name"></div>
+                    <a href="/">
+                        <img src="img/autojudge.webp" alt="AutoJudge">
+                        <span>AutoJudge</span>
                     </a>
                 </div>
             </div>
@@ -135,10 +132,12 @@ export default class Menu {
     // add action to menu item
     addAction(id, action) {
         this.action[id] = action;
+        return this;
     }
 
     click(id) {
         this.domElement.querySelector(`#${ id }`).click();
+        return this;
     }
 
     getActive() {

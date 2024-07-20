@@ -4,6 +4,52 @@
     // here goes menus without fog
     background-color: var(--color-background);
     width: var(--width);
+
+    #logo a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 20px;
+
+        img {
+            width: 45px;
+            height: 45px;
+            margin-right: 10px;
+        }
+
+        span {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--color-main);
+            cursor: pointer;
+        }
+    }
+
+    #menu-item-container {
+        margin-top: 15px;
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: 0.3s all;
+    
+            &.active {
+                background-color: rgba(var(--color-main-raw), 0.3);
+            }
+
+            &:hover {
+                background-color: rgba(var(--color-main-raw), 0.5);
+            }
+    
+            i {
+                font-size: 1.5rem;
+                margin-right: 10px;
+            }
+        
+        }
+    }
 }
 
 #fog {
