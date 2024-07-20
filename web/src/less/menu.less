@@ -1,0 +1,34 @@
+@import 'modal.less';
+
+#menu {
+    // here goes menus without fog
+    background-color: var(--color-background);
+    width: var(--width);
+}
+
+#fog {
+    transition: var(--hide-time) background-color;
+
+    &.hidden {
+        display: none;
+    }
+
+    &.playing {
+        display: block;
+        background-color: transparent;
+
+        #menu {
+            transform: translateX(calc(-50px - var(--width)));
+        }
+    }
+    
+    #menu {
+        transition: var(--hide-time) transform;
+        left: 0;
+        position: fixed;
+        height: 100vh;
+        box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.5);
+        border-right: 1px solid var(--color-border);
+    }
+}
+

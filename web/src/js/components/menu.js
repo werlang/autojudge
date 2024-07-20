@@ -6,7 +6,7 @@
 //     - icon: string with the icon class of the menu item (from fontawesome)
 //     - text: string with the text of the menu item
 //     - action: function to be executed when the menu item is clicked
-//   - domElement: DOM element to build the menu
+//   - domElement: DOM element to build the menu. If not provided, a new element will be created with a fog
 // Methods:
 //   - build(): build the menu
 //   - addAction(id, action): add an action to a menu item
@@ -22,10 +22,12 @@ export default class Menu {
     active = false;
     loading = false;
     action = {};
+    width = 300;
 
-    constructor({ items, domElement }) {
+    constructor({ items, domElement, width }) {
         this.items = items;
         this.domElement = domElement;
+        this.width = width || this.width;
 
         this.build();
     }
@@ -34,6 +36,16 @@ export default class Menu {
         if (!this.domElement) {
             this.domElement = document.createElement('div');
             this.domElement.id = 'menu';
+
+            // wrap ip in fog
+            const fog = document.createElement('div');
+            fog.id = 'fog';
+            fog.appendChild(this.domElement);
+            document.body.appendChild(fog);
+
+            fog.addEventListener('click', () => this.close());
+            this.domElement.addEventListener('click', ev => ev.stopPropagation());
+            this.close(0);
         }
 
         // create menu items as HTML string
@@ -76,6 +88,7 @@ export default class Menu {
             </div>
             <div id="menu-item-container">${ itemsHTML }</div>
         `;
+        this.domElement.style.setProperty('--width', `${ this.width }px`);
 
         // set active menu item when clicked
         this.domElement.querySelectorAll('.menu-item').forEach((e,i) => e.addEventListener('click', async ev => {    
@@ -154,6 +167,22 @@ export default class Menu {
                 item.floatingAction.hide();
             }
         }
+    }
+
+    // close the menu without removing it
+    close(time) {
+        const hideTime = time || 300;
+        const fog = this.domElement.closest('#fog');
+        fog.classList.add('hidden', 'playing');
+        fog.style.setProperty('--hide-time', `${hideTime}ms`);
+        setTimeout(() => fog.classList.remove('playing'), hideTime + 500);
+    }
+
+    open() {
+        const fog = this.domElement.closest('#fog');
+        fog.classList.remove('hidden');
+        fog.classList.add('playing');
+        setTimeout(() => fog.classList.remove('playing'), 1);
     }
 
 }

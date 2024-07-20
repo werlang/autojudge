@@ -1,7 +1,16 @@
 import GoogleLogin from "./helpers/google-login.js";
 import TemplateVar from "./helpers/template-var.js";
 import User from "./model/user.js";
+import Menu from "./components/menu.js";
+import Header from "./components/header.js";
 
+import '../less/dashboard.less';
+
+const menu = new Menu({
+    items: [
+        { id: 'dashboard', text: 'Dashboard', icon: 'fas fa-tachometer-alt' },
+    ],
+})
 
 // handle redirect from google login
 function handleRedirect() {
@@ -13,9 +22,8 @@ function handleRedirect() {
 }
 handleRedirect();
 
-
 // get logged user
-const user = await (async () => {
+const {user} = await (async () => {
     try {
         const user = await new User().get();
         console.log(user);
@@ -27,3 +35,8 @@ const user = await (async () => {
         location.href = '/';
     }
 })();
+
+new Header({
+    user,
+    menu,
+});

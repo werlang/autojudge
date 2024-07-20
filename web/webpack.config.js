@@ -63,4 +63,5 @@ export default {
     watch: true,
     // devtool: process.env.NODE_ENV === 'production' ? false : 'eval-cheap-module-source-map',
     devtool: process.env.NODE_ENV === 'production' ? false : 'source-map',
+    mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
 };
