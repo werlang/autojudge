@@ -8,6 +8,7 @@ export default class GoogleLogin {
 
     static logged = false;
     static loaded = false;
+    static expireTime = '1h';
 
     static async init() {
         if (GoogleLogin.loaded) {
@@ -29,6 +30,7 @@ export default class GoogleLogin {
                 auto_select: true,
                 ux_mode: 'redirect',
                 login_uri: `https://${window.location.hostname}/dashboard`,
+                // use_fedcm_for_prompt: true,
             });
 
             GoogleLogin.loaded = true;
@@ -69,7 +71,7 @@ export default class GoogleLogin {
     }
 
     static saveCredential(credential) {
-        new LocalData({ id: 'google-credential' }).set({ data: credential });
+        new LocalData({ id: 'google-credential' }).set({ data: credential, expires: GoogleLogin.expireTime });
         if (GoogleLogin.onSignInCallback) GoogleLogin.onSignInCallback(credential);
     }
 
@@ -79,6 +81,13 @@ export default class GoogleLogin {
 
     static removeCredential() {
         new LocalData({ id: 'google-credential' }).remove();
+    }
+
+    static refreshCredential() {
+        const credential = GoogleLogin.getCredential();
+        if (credential) {
+            GoogleLogin.saveCredential(credential);
+        }
     }
 
     static onSignIn(callback) {

@@ -34,7 +34,7 @@ handleRedirect();
 const {user} = await (async () => {
     try {
         const user = await new User().get();
-        console.log(user);
+        // console.log(user);
         return user;
     }
     catch (error) {
@@ -44,7 +44,4 @@ const {user} = await (async () => {
     }
 })();
 
-new Header({
-    user,
-    menu,
-});
+new Header({ user, menu, });
