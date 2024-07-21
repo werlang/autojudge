@@ -55,7 +55,7 @@ export default class GoogleLogin {
         );
     }
 
-    static prompt() {
+    static async prompt() {
         if (!GoogleLogin.loaded) {
             throw new Error('GoogleLogin not loaded');
         }
@@ -63,6 +63,19 @@ export default class GoogleLogin {
             if (!notification.isNotDisplayed()) return;
             if (GoogleLogin.onFailCallback) GoogleLogin.onFailCallback(notification);
         });
+
+        await GoogleLogin.waitLogged();
+    }
+
+    static async waitLogged() {
+        const pledge = new Pledge();
+        let interval = setInterval(() => {
+            if (GoogleLogin.logged) {
+                clearInterval(interval);
+                pledge.resolve();
+            }
+        }, 1000);
+        return pledge.get();
     }
 
     static onFail(callback) {

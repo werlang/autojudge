@@ -7,6 +7,7 @@ import Toast from './components/toast.js';
 import Problem from './model/problem.js';
 import Judge from './model/judge.js';
 import GoogleLogin from './helpers/google-login.js';
+import Button from './components/button.js';
 
 import '../less/index.less';
 
@@ -36,12 +37,12 @@ GoogleLogin.onFail(async () => {
 
 // bind buttons to google login
 document.querySelectorAll(`#section-1 #join, #section-4 #problems, #section-5 #contests, #section-6 #teams`).forEach(e => {
-    e.addEventListener('click', () => {
+    new Button({ element: e }).click(async () => {
         if (GoogleLogin.getCredential()) {
             location.href = '/dashboard';
             return;
         }
-        GoogleLogin.prompt()
+        return GoogleLogin.prompt();
     });
 });
 

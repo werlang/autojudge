@@ -87,7 +87,7 @@ class LocalData {
         if (typeof expires === 'string') {
             const value = parseInt(expires.slice(0, -1));
             const unit = expires.slice(-1);
-            console.log(value, unit);
+            // console.log(value, unit);
          
             if (isNaN(value)) {
                 throw new Error('Invalid expiration time');
