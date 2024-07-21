@@ -28,7 +28,12 @@ const dashboardRoute = (req, res) => {
     }));
 }
 app.post('/dashboard', dashboardRoute);
-app.get('/dashboard', dashboardRoute);
+app.get([
+    '/dashboard',
+    '/problems',
+    '/contests',
+    '/teams',
+], dashboardRoute);
 
 
 // static assets

@@ -24,10 +24,11 @@ export default class Menu {
     action = {};
     width = 300;
 
-    constructor({ items, domElement, width }) {
+    constructor({ items, domElement, width, usePath }) {
         this.items = items;
         this.domElement = domElement;
         this.width = width || this.width;
+        this.usePath = usePath || false;
 
         this.build();
     }
@@ -53,6 +54,11 @@ export default class Menu {
             if (item.default) {
                 this.active = index;
             }
+            // check for pathname
+            if (this.usePath && location.pathname.slice(1) === item.id) {
+                this.active = index;
+                item.default = true;
+            } 
 
             let subitemsHTML = '';
             if (item.subitems) {
@@ -102,6 +108,7 @@ export default class Menu {
             if (this.action[e.id] && i !== this.active) {
                 // set here so the action also knows the active menu item
                 this.active = i;
+                this.close();
                 await this.action[e.id](ev);
             }
             this.active = i;
