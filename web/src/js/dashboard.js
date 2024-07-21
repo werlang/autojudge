@@ -15,7 +15,10 @@ const menu = new Menu({
         { id: 'teams', text: 'Teams', icon: 'fas fa-users' },
         { id: 'logout', text: 'Logout', icon: 'fas fa-sign-out-alt' },
     ],
-    usePath: true,
+    options: {
+        usePath: true,
+        reload: true,
+    }
 })
 .addAction('logout', async () => {
     GoogleLogin.removeCredential();

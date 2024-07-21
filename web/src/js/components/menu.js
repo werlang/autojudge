@@ -7,6 +7,10 @@
 //     - text: string with the text of the menu item
 //     - action: function to be executed when the menu item is clicked
 //   - domElement: DOM element to build the menu. If not provided, a new element will be created with a fog
+//   - width: number with the width of the menu
+//   - options: object with the following properties:
+//     - usePath: boolean to use the pathname as the active menu item
+//     - reload: boolean to reload the page when the menu item is clicked
 // Methods:
 //   - build(): build the menu
 //   - addAction(id, action): add an action to a menu item
@@ -15,6 +19,8 @@
 //   - click(id): click a menu item
 //   - getActive(): return the active menu item
 //   - changeAlertIcon(itemId, value): change the alert icon of a menu item
+//   - open(): open the menu
+//   - close(time): close the menu
 
 
 export default class Menu {
@@ -24,11 +30,11 @@ export default class Menu {
     action = {};
     width = 300;
 
-    constructor({ items, domElement, width, usePath }) {
+    constructor({ items, domElement, width, options }) {
         this.items = items;
         this.domElement = domElement;
         this.width = width || this.width;
-        this.usePath = usePath || false;
+        this.options = options || {};
 
         this.build();
     }
@@ -55,7 +61,7 @@ export default class Menu {
                 this.active = index;
             }
             // check for pathname
-            if (this.usePath && location.pathname.slice(1) === item.id) {
+            if (this.options.usePath === true && location.pathname.slice(1) === item.id) {
                 this.active = index;
                 item.default = true;
             } 
@@ -105,6 +111,9 @@ export default class Menu {
             }
 
             // execute action if it has one and it's not the active menu item (to avoid double click)
+            if (this.options.reload === true && i !== this.active) {
+                location.pathname = `/${ e.id }`;
+            }
             if (this.action[e.id] && i !== this.active) {
                 // set here so the action also knows the active menu item
                 this.active = i;
