@@ -1,3 +1,17 @@
+// Google Login helper
+// USAGE:
+// GoogleLogin.init(); // initialize the google login
+// GoogleLogin.onFail(() => {}); // callback when the login fails (no account selected)
+// GoogleLogin.onSignIn(() => {}); // callback when the login is successful
+// GoogleLogin.prompt(); // prompt the user to login. It will redirect to ask for the google account or automatically login if the account is already selected. This is asynchronous, so you can await it.
+// GoogleLogin.getCredential(); // get the google credential if it is saved (logged)
+// GoogleLogin.saveCredential(credential); // save the google credential (login)
+// GoogleLogin.removeCredential(); // remove the google credential (logout)
+// GoogleLogin.refreshCredential(); // refresh the google credential (update the expiration time)
+// GoogleLogin.isLoaded(); // check if the google login is loaded
+// GoogleLogin.renderButton(element); // render the google login button in the element
+
+
 import TemplateVar from './template-var.js';
 import DynamicScript from './dynamic-script.js';
 import Pledge from './pledge.js';

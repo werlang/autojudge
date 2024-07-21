@@ -1,3 +1,12 @@
+// Request class to make API requests
+// Usage:
+// Unauthenticated request:
+// const request = new Request({ url: 'http://localhost:3000' });
+// request.setHeader('Authorization', 'Bearer ' + token);
+// request.get('endpoint', { key: value });
+// request.post('endpoint', { key: value });
+
+
 export default class Request {
     constructor({ url, headers }) {
         this.url = url;

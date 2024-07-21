@@ -1,3 +1,9 @@
+// TemplateVar helper class to get template variables from the DOM
+// When the page is rendered, the server might sends some template variables that are used in the client-side. This class helps to get those variables.
+//  Usage:
+//  const variable = TemplateVar.get('variableName'); // get the variable value
+
+
 export default class TemplateVar {
 
     static vars = {};
