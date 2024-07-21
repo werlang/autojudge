@@ -1,37 +1,18 @@
-import LocalData from '../helpers/local-data.js';
+import Api from "../helpers/api.js";
 
 export default class Problem {
 
-    static storageKey = 'problems';
-
-    constructor({ id, file }) {
+    constructor({ id }) {
         this.id = id;
-        this.file = file;
     }
 
-    static get() {
-        return new LocalData({ id: Problem.storageKey }).get() || {};
+    static async getAll() {
+        const problems = await new Api().get('problems');
+        return problems;
     }
 
-    set() {
-        const problems = Problem.get();
-        problems[this.id] = this.file;
-
-        return new LocalData({
-            id: Problem.storageKey,
-            data: problems,
-        }).set();
-    }
-
-
-    get() {
-        const problems = Problem.get();
-        
-        if (!this.id || !problems[this.id]) {
-            return false;
-        }
-
-        this.file = problems[this.id];
-        return this;
+    async get() {
+        const problem = await new Api().get(`problems/${this.id}`);
+        return problem;
     }
 }
