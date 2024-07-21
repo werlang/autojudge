@@ -1,11 +1,6 @@
 import TypeIt from 'typeit';
 import Card from './components/card.js';
 import Modal from './components/modal.js';
-import Form from './components/form.js';
-import Uploader from './components/uploader.js';
-import Toast from './components/toast.js';
-import Problem from './model/problem.js';
-import Judge from './model/judge.js';
 import GoogleLogin from './helpers/google-login.js';
 import Button from './components/button.js';
 
@@ -36,20 +31,19 @@ GoogleLogin.onFail(async () => {
 });
 
 // bind buttons to google login
-document.querySelectorAll(`#section-1 #join, #section-4 #problems, #section-5 #contests, #section-6 #teams`).forEach(e => {
-    new Button({ element: e }).click(async () => {
-        if (GoogleLogin.getCredential()) {
-            location.href = '/dashboard';
-            return;
-        }
-        return GoogleLogin.prompt();
-    });
-});
-
-GoogleLogin.onSignIn(async () => {
-    location.href = '/dashboard';
-});
-
+async function redirectOrLogin(path) {
+    GoogleLogin.onSignIn(async () => location.href = `/${path}`);
+    
+    if (GoogleLogin.getCredential()) {
+        location.href = `/${path}`;
+        return;
+    }
+    return GoogleLogin.prompt(path);
+}
+new Button({ element: document.querySelector('#section-1 #join') }).click(async () => redirectOrLogin('dashboard'));
+new Button({ element: document.querySelector('#section-4 #problems') }).click(async () => redirectOrLogin('problems'));
+new Button({ element: document.querySelector('#section-5 #contests') }).click(async () => redirectOrLogin('contests'));
+new Button({ element: document.querySelector('#section-6 #teams') }).click(async () => redirectOrLogin('teams'));
 
 // add cards
 const cardContainer = document.querySelector('#options');
@@ -61,64 +55,7 @@ new Card(cardContainer, {
     title: 'Problems',
     description: 'The fuel for the competition! Create and submit problems here.',
 }).click(async () => {
-    const modal = await new Modal(null, { id: 'problems' }).loadContent('index-problems');
-    
-    const form = new Form(modal.get('.form'));
-    form.setData({ file: null });
-
-    updateProblemsList();
-
-    const uploader = new Uploader(form.get('#upload'), {
-        accept: 'application/zip, application/octet-stream, application/x-zip-compressed, multipart/x-zip',
-        placeholder: 'Test case file (.zip)',
-        onUpload: (file, data) => {
-            // console.log(file, data);
-            if (data.accepted === false) {
-                form.setData({ file: null });
-                return;
-            }
-
-            form.setData({ file });
-        }
-    });
-
-    form.submit(async data => {
-        // console.log(data)
-        const validation = form.validate([
-            { id: 'problemid', rule: e => e.length >= 3, message: 'ID must be at least 3 characters' }, 
-            { id: 'file', rule: e => e, message: 'Please upload a valid file' },
-        ]);
-
-        if (validation.fail.total > 0) return;
-
-        new Problem({
-            id: data.problemid,
-            file: data.file,
-        }).set();
-
-        updateProblemsList();
-
-        form.clear();
-        uploader.reset();
-        new Toast('Problem uploaded', { customClass: 'success', timeOut: 5000 });
-    });
-
-    function updateProblemsList() {
-        const problems = Problem.get();
-        if (Object.keys(problems).length == 0) return;
-    
-        const container = document.querySelector('#problems-list');    
-        container.innerHTML = '<div class="title">Submitted problems:</div>';
-        const list = document.createElement('ul');
-    
-        for (let id in problems) {
-            const item = document.createElement('li');
-            item.innerHTML = `<a href="${problems[id]}" download="${id}"><i class="fa-solid fa-download"></i>${id}</a>`;
-            list.appendChild(item);
-        }
-    
-        container.appendChild(list);
-    }
+    redirectOrLogin('problems');
 });
 
 
@@ -128,11 +65,7 @@ new Card(cardContainer, {
     title: 'Contests',
     description: 'Where the magic happens! Manage contests and their teams.',
 }).click(async () => {
-    const modal = await new Modal(null, { id: 'instructions' }).loadContent('index-instructions');
-    modal.addButton({
-        text: 'OK, got it!',
-        close: true,
-    })
+    redirectOrLogin('contests');
 });
 
 
@@ -142,59 +75,5 @@ new Card(cardContainer, {
     title: 'Teams',
     description: 'Who will be the champion? Participate in the contest.',
 }).click(async () => {
-    const modal = await new Modal(null, { id: 'judge' }).loadContent('index-judge');
-    const form = new Form(modal.get('.form'));
-    form.setData({ file: null });
-
-    const problems = Problem.get();
-    const select = form.getSelect('problem');
-    Object.keys(problems).forEach(p => select.addOption(p, p));
-
-    const uploader = new Uploader(form.get('#upload'), {
-        placeholder: 'Source Code File',
-        onUpload: (file, data) => {
-            // console.log(file, data);
-            if (data.accepted === false) {
-                form.setData({ file: null });
-                return;
-            }
-
-            form.setData({ file });
-            form.setData({ filename: data.name });
-        }
-    });
-
-    form.submit(async data => {
-        // console.log(data)
-        const validation = form.validate([
-            { id: 'problem', rule: e => e != 'none', message: 'Please select a problem' },
-            { id: 'file', rule: e => e, message: 'Please upload a the source code file' },
-        ]);
-
-        if (validation.fail.total > 0) return;
-
-        const problem = new Problem({ id: data.problem }).get();
-        
-        const resultDiv = modal.get('#result');
-        resultDiv.innerHTML = `<pre><code>Running code<span id="dots">...</span></code></pre>`;
-        const dotsSpan = modal.get('#result #dots');
-        let dots = 0;
-        const dotsInterval = setInterval(() => {
-            dotsSpan.innerHTML = '.'.repeat(dots);
-            dots = (dots + 1) % 4;
-        }, 500);
-        resultDiv.classList.add('loading');
-
-        const run = await new Judge({
-            tests: problem.file,
-            code: data.file,
-            filename: data.filename,
-        }).run();
-        // console.log(run);
-
-        resultDiv.classList.remove('loading');
-        clearInterval(dotsInterval);
-        modal.get('#result').innerHTML = `<pre><code>${run.message}</code></pre>`;
-    });
-
+    redirectOrLogin('teams');
 });
