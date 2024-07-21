@@ -35,6 +35,35 @@ router.post('/', auth({'user:exists': true}), async (req, res, next) => {
     }
 });
 
+// get all problems
+// anyone can access public problems
+// if owner, show hidden fields
+router.get('/', auth({'user:optional': true}), async (req, res, next) => {
+    try {
+        const problems = await Problem.getAll({});
+
+        const problemsData = problems.map(problem => {
+            const problemData = {
+                id: problem.id,
+                title: problem.title,
+                description: problem.description,
+                input: problem.input_public,
+                output: problem.output_public,
+            }
+            if (req.user && problem.owner === req.user.id) {
+                problemData.inputHidden = problem.input_hidden;
+                problemData.outputHidden = problem.output_hidden;
+            }
+            return problemData;
+        });
+
+        res.send({ problems: problemsData });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+
 // get a problem by id
 // anyone can access public problems
 // if owner, show hidden fields

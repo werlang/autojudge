@@ -29,5 +29,8 @@ export default class Problem extends Model {
             insertFields: ['title', 'description', 'owner'],
         });
     }
-
+    
+    static async getAll(filter) {
+        return Model.getAll('problems', filter);
+    }
 }
