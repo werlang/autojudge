@@ -3,8 +3,9 @@ export default class Table {
     placeholderAmount = 10;
     content = [];
 
-    constructor({ element, id, columns }) {
+    constructor({ element, id, columns, controls }) {
         this.columns = columns;
+        this.controls = controls || [];
         this.domElement = document.createElement('div');
         this.domElement.id = id;
         this.domElement.classList.add('table');
@@ -29,7 +30,7 @@ export default class Table {
         const columns = this.columns.map(column => {
             const columnDOM = document.createElement('div');
             columnDOM.classList.add('column', column.id || '');
-            columnDOM.innerHTML = `<div class="button"><i class="fa-solid fa-arrow-down-a-z"></i></div>${column.name}`;
+            columnDOM.innerHTML = `${column.name}<div class="button"><i class="fa-solid fa-arrow-down-a-z"></i></div>`;
 
             const button = columnDOM.querySelector('.button');
             // click the sort button
@@ -65,10 +66,20 @@ export default class Table {
         this.head.innerHTML = `
             <div class="columns"></div>
             <div class="controls">
-                <div class="search button" title="Search"><i class="fas fa-search"></i><input type="text" placeholder="Search..."></div>
-                <div class="add button" title="Add Problem"><i class="fas fa-plus"></i></div>
+                <div class="search button" title="Search"><i class="fas fa-search"></i><input type="text"></div>
             </div>
         `;
+
+        // add custom controls
+        const controlsDOM = this.head.querySelector('.controls');
+        this.controls.forEach(control => {
+            const controlDOM = document.createElement('div');
+            controlDOM.classList.add('button', control.id);
+            controlDOM.innerHTML = `<i class="${control.icon}"></i>`;
+            controlDOM.addEventListener('click', control.action);
+            controlDOM.title = control.title;
+            controlsDOM.appendChild(controlDOM);
+        });
 
         this.head.querySelector('.columns').append(...columns);
 

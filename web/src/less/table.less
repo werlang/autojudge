@@ -94,6 +94,10 @@
         }
 
         .controls {
+            width: 150px;
+            margin-left: -150px;
+            justify-content: flex-end;
+
             .button i {
                 color: var(--color-text);
             }
@@ -101,12 +105,12 @@
             .search.active {
                 width: auto;
                 padding: 0 10px;
-                margin-left: -100px;
                 background-color: rgba(var(--color-secondary-raw), 0.3);
 
                 input {
                     width: 100px;
                     margin-left: 5px;
+                    transform: scaleX(1);
                 }
             }
             
@@ -123,6 +127,7 @@
                 background-color: transparent;
                 color: var(--color-text);
                 box-sizing: border-box;
+                transform: scaleX(0);
             }
         }
 
