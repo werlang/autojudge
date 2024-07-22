@@ -1,5 +1,7 @@
 import express from 'express';
 import mustacheExpress from 'mustache-express';
+import langMiddleware from './middleware/language.js';
+import renderMiddleware from './middleware/render.js';
 
 const port = 3000;
 const host = '0.0.0.0';
@@ -12,20 +14,25 @@ app.engine('html', mustacheExpress());
 app.set('view engine', 'html');
 app.set('views', import.meta.dirname + '/view/');
 
-const formatTemplateVars = vars => ({ 'template-vars': JSON.stringify(vars) });
+// language middleware
+app.use(langMiddleware);
+
+// render middleware
+app.use(renderMiddleware);
 
 app.get('/', (req, res) => {
-    res.render('index', formatTemplateVars({
+    res.templateRender('index', {
         apiurl: process.env.API,
-        googleClientId: process.env.GOOGLE_CLIENT_ID
-    }));
+        googleClientId: process.env.GOOGLE_CLIENT_ID,
+    },
+    ['index']);
 });
 
 const dashboardRoute = (req, res) => {
-    res.render('dashboard', formatTemplateVars({
+    res.templateRender('dashboard', {
         apiurl: process.env.API,
         googleCredential: req.body.credential
-    }));
+    });
 }
 app.post('/dashboard', dashboardRoute);
 app.get([

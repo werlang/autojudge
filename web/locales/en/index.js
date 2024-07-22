@@ -1,0 +1,16 @@
+export default {
+    'section1-welcome': 'Welcome!',
+    'section1-h3': 'Online Judge at your service. I can help you with programming problems and contests.',
+    'section1-button': 'Join',
+    'section3-h1': 'What can I do for you?',
+    'section3-p': 'AutoJudge is an online judge platform that allows you to create, manage and solve programming problems, host contests and join with your team to compete. Whether you are a teacher, a student or a professional, AutoJudge got you covered!',
+    'section4-h1': 'Create, manage and solve problems',
+    'section4-p': 'I can help you bring your programming problems to life! You can create problems along with test cases. Once on the platform, users can submit their solutions and I will evaluate them for you.',
+    'section4-button': 'Check Problems',
+    'section5-h1': 'Host contests within your institution',
+    'section5-p': 'You can host contests on the platform! You choose the problems, the duration and the start time. Students can join as teams and compete with each other. I will take care of the rest.',
+    'section5-button': 'Manage Contests',
+    'section6-h1': 'Join with your team and compete',
+    'section6-p': 'Join a contest with your team and compete with others. You can see the standings in real-time and see how you are doing compared to others. I will judge your submissions and keep track of everything.',
+    'section6-button': 'Gather your Team',
+}
