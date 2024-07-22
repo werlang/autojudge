@@ -85,6 +85,44 @@
 
             .column {
                 width: var(--column-width);
+
+                &:hover i {
+                    color: var(--color-text);
+                }
+
+            }
+        }
+
+        .controls {
+            .button i {
+                color: var(--color-text);
+            }
+
+            .search.active {
+                width: auto;
+                padding: 0 10px;
+                margin-left: -100px;
+                background-color: rgba(var(--color-secondary-raw), 0.3);
+
+                input {
+                    width: 100px;
+                    margin-left: 5px;
+                }
+            }
+            
+
+            .search input {
+                height: 30px;
+                width: 0px;
+                border-radius: 5px;
+                border: none;
+                padding: 0 10px;
+                margin-left: -20px;
+                transition: 0.5s all;
+                outline: none;
+                background-color: transparent;
+                color: var(--color-text);
+                box-sizing: border-box;
             }
         }
 
@@ -102,13 +140,19 @@
             margin: 0 5px;
                         
             &:hover {
-                background-color: rgba(var(--color-secondary-raw), 0.5);
+                background-color: rgba(var(--color-secondary-raw), 0.3);
             }
 
             i {
                 display: flex;
                 justify-content: center;
                 align-items: center;
+                color: transparent;
+                transition: 0.3s all;
+            }
+
+            i.active {
+                color: var(--color-text);
             }
         }
     }

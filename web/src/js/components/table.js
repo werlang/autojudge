@@ -1,6 +1,7 @@
 export default class Table {
 
     placeholderAmount = 10;
+    content = [];
 
     constructor({ element, id, columns }) {
         this.columns = columns;
@@ -25,33 +26,104 @@ export default class Table {
     }
 
     createHead() {
-        const columns = this.columns.map(column => `<div class="column ${column.id || ''}"><div class="button"><i class="fa-solid fa-arrow-down-a-z"></i></div>${column.name}</div>`).join('');
+        const columns = this.columns.map(column => {
+            const columnDOM = document.createElement('div');
+            columnDOM.classList.add('column', column.id || '');
+            columnDOM.innerHTML = `<div class="button"><i class="fa-solid fa-arrow-down-a-z"></i></div>${column.name}`;
+
+            const button = columnDOM.querySelector('.button');
+            // click the sort button
+            button.addEventListener('click', () => {
+                // console.log('sort by', column.id, button.sort);
+                button.querySelector('i').classList.toggle('fa-arrow-down-a-z');
+                button.querySelector('i').classList.toggle('fa-arrow-up-a-z');
+                
+                // make active only the clicked button
+                columns.forEach(c => {
+                    c.querySelector('.button i').classList.remove('active');
+                });
+                button.querySelector('i').classList.add('active');
+                
+                // sort the content toggle asc/desc
+                if (button.sort === 'asc') {
+                    button.sort = 'desc';
+                    this.content.sort((a, b) => a[column.id] > b[column.id] ? 1 : -1);
+                }
+                else {
+                    button.sort = 'asc';
+                    this.content.sort((a, b) => a[column.id] > b[column.id] ? -1 : 1);
+                }
+
+                this.render();
+            });
+
+            return columnDOM;
+        });
 
         this.head = document.createElement('div');
         this.head.classList.add('head');
         this.head.innerHTML = `
-            <div class="columns">${columns}</div>
+            <div class="columns"></div>
             <div class="controls">
-                <div class="search button" title="Search"><i class="fas fa-search"></i></div>
+                <div class="search button" title="Search"><i class="fas fa-search"></i><input type="text" placeholder="Search..."></div>
                 <div class="add button" title="Add Problem"><i class="fas fa-plus"></i></div>
             </div>
         `;
+
+        this.head.querySelector('.columns').append(...columns);
+
+        // create the search function
+        const searchButton = this.head.querySelector('.search');
+        const input = searchButton.querySelector('input');
+        searchButton.addEventListener('click', () => {
+            searchButton.classList.add('active');
+            input.focus();
+        });
+        input.addEventListener('blur', e => {
+            e.stopPropagation();
+            if (input.value === '') {
+                searchButton.classList.remove('active');
+            }
+        });
+        input.addEventListener('input', () => {
+            const search = input.value.toLowerCase();
+            this.content.forEach(item => {
+                item.hidden = true;
+                this.columns.forEach(column => {
+                    if (item[column.id].toLowerCase().indexOf(search) !== -1) {
+                        item.hidden = false;
+                    }
+                });
+            });
+            this.render();
+        });
     }
 
     clear() {
         this.domElement.innerHTML = '';
         this.domElement.appendChild(this.head);
+        this.content = [];
     }
 
     addItem(item) {
-        const itemDOM = document.createElement('div');
-        itemDOM.classList.add('item');
-        if (item.customClass) {
-            itemDOM.classList.add(item.customClass);
-        }
-        itemDOM.innerHTML = this.columns.map(column => `<div class="column ${column.id || ''}">${item[column.id]}</div>`).join('');
+        this.content.push(item);
+        this.render();
+    }
 
-        this.domElement.appendChild(itemDOM);
+    render() {
+        this.domElement.querySelectorAll('.item').forEach(item => item.remove());
+
+        this.content.forEach(item => {
+            if (item.hidden) return;
+            const itemDOM = document.createElement('div');
+            itemDOM.classList.add('item');
+            if (item.customClass) {
+                itemDOM.classList.add(item.customClass);
+            }
+            itemDOM.innerHTML = this.columns.map(column => `<div class="column ${column.id || ''}">${item[column.id]}</div>`).join('');
+    
+            this.domElement.appendChild(itemDOM);
+        });
     }
 
 }
