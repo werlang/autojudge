@@ -13,4 +13,12 @@ export default {
     'section6-h1': 'Join with your team and compete',
     'section6-p': 'Join a contest with your team and compete with others. You can see the standings in real-time and see how you are doing compared to others. I will judge your submissions and keep track of everything.',
     'section6-button': 'Gather your Team',
+    'index-sign-up-h1': 'Sign up',
+    'index-sign-up-p': 'Use your Google account to sign up and access the platform.',
+    'index-card-problems-title': 'Problems',
+    'index-card-problems-description': 'The fuel for the competition! Create and submit problems here.',
+    'index-card-contests-title': 'Contests',
+    'index-card-contests-description': 'Where the magic happens! Manage contests and their teams.',
+    'index-card-teams-title': 'Teams',
+    'index-card-teams-description': 'Who will be the champion? Participate in the contest.',
 }

@@ -42,10 +42,17 @@ i18next.init({
 });
 
 export default (req, res, next) => {
-    const header = req.headers['accept-language'];
-    const language = header ? header.split(',')[0] : 'en';
-    req.language = language;
-    i18next.changeLanguage(language);
+    // check if there are language cookies
+    if (req.cookies.language) {
+        req.language = req.cookies.language;
+    }
+    else {
+        const header = req.headers['accept-language'];
+        const language = header ? header.split(',')[0].split('-')[0] : 'en';
+        req.language = language;
+    }
+
+    i18next.changeLanguage(req.language);
     res.locals.t = i18next.t.bind(i18next);
     next();
 }

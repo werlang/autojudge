@@ -12,12 +12,15 @@ export default (req, res, next) => {
                 const mainLang = req.language.split('-')[0]; // Extract the main language from dialect (e.g., 'en' from 'en-US')
                 resources = i18next.getResourceBundle(mainLang, ns);
             }
-            console.log(req.language, resources);
+            // console.log(req.language, resources);
             // get every key in the namespace
             for (let key in resources) {
                 translations[key] = res.locals.t(key, { ns });
             }
         }
+
+        // add the translations to the templateVars
+        templateVars.translations = translations;
         
         const template = {
             // pass the templateVars to a hidden input in the template. Frontend will read this and store it in a class
