@@ -15,6 +15,9 @@
     }
 
     .toast {
+        --color-success: #519653;
+        --color-error: #db554b;
+
         color: var(--text-color-inverse);
         padding: 15px 20px;
         border-radius: 5px;
@@ -29,11 +32,11 @@
         background-color: rgba(var(--color-secondary-raw), 0.8);
         
         &.success {
-            background-color: rgba(var(--color-main-raw), 0.8);
+            background-color: var(--color-success);
         }
 
         &.error {
-            background-color: rgba(var(--color-error-raw), 0.8);
+            background-color: var(--color-error);
         }
 
         &.fade {

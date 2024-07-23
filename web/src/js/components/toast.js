@@ -8,7 +8,7 @@
 // const myToast = new Toast('Hello world!', { timeOut: 5000, position: 'center', customClass: 'my-toast' });
 
 export default class Toast {
-    constructor(text, { timeOut, position='center', customClass }={}) {
+    constructor(text, { timeOut, position='center', customClass, type }={}) {
         // create container if it doesn't exist
         let container = document.querySelector('#toast-container');
         if (!container) {
@@ -28,12 +28,18 @@ export default class Toast {
             container.classList.add('center');
         }
 
+        if (type) {
+            customClass = type;
+        }
         if (customClass) {
             this.element.classList.add(customClass);
         }
 
         container.prepend(this.element);
 
+        if (this.timeOut === undefined) {
+            this.timeOut = 5000;
+        }
         if (this.timeOut > 0) {
             this.fade();
         }

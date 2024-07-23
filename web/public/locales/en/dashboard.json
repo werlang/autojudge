@@ -9,7 +9,9 @@
             "h1": "Add Problem",
             "title": "Title",
             "description": "Description",
-            "submit": "Submit Problem"
+            "submit": "Submit Problem",
+            "success": "Problem submitted successfully!",
+            "error": "Error submitting problem."
         }
     }
 }

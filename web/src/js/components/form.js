@@ -47,30 +47,23 @@ export default class Form {
 
         // for every input, add the default behavior of clicking the default button when pressing enter
         this.getInput().forEach((input,i) => {
-            if (!Array.isArray(input)) {
-                input = [input];
-            }
-            input.forEach((input,j) => {
-                // check if the input is not a textarea
-                if (
-                    input.get().tagName == 'TEXTAREA' ||
-                    input.get().type == 'checkbox'
-                ) return;
-                
-                if (this.dom.tagName != 'FORM') {
-                    input.keyPress(e => {
-                        if (e.key == 'Enter') {
-                            const defButton = this.getButton().find(e => e.get().classList.contains('default'));
-                            if (defButton.get().getAttribute('type') == 'submit') return;
-                            defButton.click();
-                        }
-                    });
-                }
-                if (i == 0 && j == 0) {
-                    input.get().focus();
+            // check if the input is not a textarea
+            if ( input.get().tagName == 'TEXTAREA' || input.get().type == 'checkbox' ) return;
+            if (this.dom.tagName == 'FORM') return;
+            
+            input.keyPress(e => {
+                if (e.key == 'Enter') {
+                    const defButton = this.getButton().find(e => e.get().classList.contains('default'));
+                    if (defButton.get().getAttribute('type') == 'submit') return;
+                    defButton.click();
                 }
             });
         });
+
+        // focus on the first input
+        if (this.getInput().length && this.getInput()[0].get()) {
+            this.getInput()[0].get().focus();
+        }
     }
 
     // validate every input in the form

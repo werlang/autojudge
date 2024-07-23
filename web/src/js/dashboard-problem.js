@@ -1,7 +1,8 @@
 import Table from "./components/table.js";
 import Problem from "./model/problem.js";
 import Modal from "./components/modal.js";
-import translate from "./helpers/translate.js";
+import Form from "./components/form.js";
+import Toast from "./components/toast.js";
 
 export default {
     build: async function() {
@@ -30,7 +31,31 @@ export default {
     },
 
     add: function() {
-        const modal = new Modal(`Add Problem`);
+        const content = document.createElement('div');
+        content.innerHTML = `
+            <h1>${this.translate('problems.add.h1', 'dashboard')}</h1>
+            <form>
+                <input id="title" name="title" type="text" required placeholder="${this.translate('problems.add.title', 'dashboard')}">
+                <textarea id="description" name="description" required placeholder="${this.translate('problems.add.description', 'dashboard')}"></textarea>
+                <button class="default">${this.translate('problems.add.submit', 'dashboard')}</button>
+            </form>
+        `;
+        const modal = new Modal(content, { id: 'add-problem' });
+        const form = new Form(content.querySelector('form'));
+
+        form.submit(async data => {
+            console.log(data);
+            try {
+                await new Problem(data).create();
+                modal.close();
+                this.build();
+                new Toast(this.translate('problems.add.success', 'dashboard'), { type: 'success' });
+            }
+            catch (error) {
+                console.error(error);
+                new Toast(this.translate('problems.add.error', 'dashboard'), { type: 'error' });
+            }
+        })
     }
 
 }

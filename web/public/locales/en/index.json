@@ -40,5 +40,8 @@
             "title": "Teams",
             "description": "Who will be the champion? Participate in the contest."
         }
+    },
+    "login": {
+        "expired": "Your session has expired. Please log in again."
     }
 }

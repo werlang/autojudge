@@ -9,7 +9,9 @@
             "h1": "Adicionar Problema",
             "title": "Título",
             "description": "Descrição",
-            "submit": "Enviar Problema"
+            "submit": "Enviar Problema",
+            "success": "Problema enviado com sucesso!",
+            "error": "Erro ao enviar problema."
         }
     }
 }
