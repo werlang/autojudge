@@ -7,7 +7,6 @@
 // GoogleLogin.getCredential(); // get the google credential if it is saved (logged)
 // GoogleLogin.saveCredential(credential); // save the google credential (login)
 // GoogleLogin.removeCredential(); // remove the google credential (logout)
-// GoogleLogin.refreshCredential(); // refresh the google credential (update the expiration time)
 // GoogleLogin.isLoaded(); // check if the google login is loaded
 // GoogleLogin.renderButton(element); // render the google login button in the element
 
@@ -22,7 +21,6 @@ export default class GoogleLogin {
 
     static logged = false;
     static loaded = false;
-    static expireTime = '1h';
 
     static async init() {
         if (GoogleLogin.loaded) {
@@ -98,7 +96,7 @@ export default class GoogleLogin {
     }
 
     static saveCredential(credential) {
-        new LocalData({ id: 'google-credential' }).set({ data: credential, expires: GoogleLogin.expireTime });
+        new LocalData({ id: 'google-credential' }).set({ data: credential });
         if (GoogleLogin.onSignInCallback) GoogleLogin.onSignInCallback(credential);
     }
 
@@ -108,13 +106,6 @@ export default class GoogleLogin {
 
     static removeCredential() {
         new LocalData({ id: 'google-credential' }).remove();
-    }
-
-    static refreshCredential() {
-        const credential = GoogleLogin.getCredential();
-        if (credential) {
-            GoogleLogin.saveCredential(credential);
-        }
     }
 
     static onSignIn(callback) {

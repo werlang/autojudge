@@ -19,8 +19,11 @@ export default (req, res, next) => {
         // console.log(translations);
         
         const vars = {
-            // pass the templateVars to a hidden input in the template. Frontend will read this and store it in a class
+            // send the templateVars to a hidden input in the template. Frontend will read this and store it in a class
             'template-vars': JSON.stringify(templateVars),
+            // send the templateVars to replace the view
+            ...templateVars,
+            // send the translations to the view
             ...translations,
         };
         res.render(view, vars);

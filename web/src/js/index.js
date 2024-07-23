@@ -4,6 +4,7 @@ import Modal from './components/modal.js';
 import GoogleLogin from './helpers/google-login.js';
 import Button from './components/button.js';
 import Translator from './helpers/translate.js';
+import Toast from './components/toast.js';
 
 import '../less/index.less';
 
@@ -34,11 +35,19 @@ GoogleLogin.onFail(async () => {
     GoogleLogin.renderButton(modal.get('#button'));
 });
 
+const credential = GoogleLogin.getCredential();
+// console.log(credential);
+// check if the credential is expired and show a message
+if (credential === 'expired') {
+    GoogleLogin.removeCredential();
+    new Toast(translate('login.expired', 'index'), { type: 'error' });
+}
+
 // bind buttons to google login
 async function redirectOrLogin(path) {
     GoogleLogin.onSignIn(async () => location.href = `/${path}`);
     
-    if (GoogleLogin.getCredential()) {
+    if (credential) {
         location.href = `/${path}`;
         return;
     }

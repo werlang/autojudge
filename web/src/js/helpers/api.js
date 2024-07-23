@@ -21,7 +21,6 @@ export default class Api {
         if (!token) {
             throw new Error('Credential not found');
         }
-        GoogleLogin.refreshCredential();
 
         const requestInstance = new Request({ 
             url: `https://${TemplateVar.get('apiurl')}`,

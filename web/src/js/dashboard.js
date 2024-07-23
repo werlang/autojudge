@@ -48,7 +48,10 @@ const {user} = await (async () => {
     }
     catch (error) {
         console.error(error);
-        GoogleLogin.removeCredential();
+        // set expired token so index can show the message
+        if (error.message === 'Invalid token.') {
+            GoogleLogin.saveCredential('expired');
+        }
         location.href = '/';
     }
 })();
