@@ -46,10 +46,9 @@ export default {
         form.submit(async data => {
             console.log(data);
             try {
-                await new Problem(data).create();
-                modal.close();
-                this.build();
-                new Toast(this.translate('problems.add.success', 'dashboard'), { type: 'success' });
+                // create problem and redirect to it
+                const { problem } = await new Problem(data).create();
+                location.href = `/problems/${problem.id}`;
             }
             catch (error) {
                 console.error(error);

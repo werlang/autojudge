@@ -10,7 +10,6 @@
             "title": "Título",
             "description": "Descrição",
             "submit": "Enviar Problema",
-            "success": "Problema enviado com sucesso!",
             "error": "Erro ao enviar problema."
         }
     }

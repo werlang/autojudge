@@ -10,7 +10,6 @@
             "title": "Title",
             "description": "Description",
             "submit": "Submit Problem",
-            "success": "Problem submitted successfully!",
             "error": "Error submitting problem."
         }
     }
