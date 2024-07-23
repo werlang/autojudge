@@ -1,0 +1,15 @@
+{
+    "problems": {
+        "h1": "Problemas",
+        "table": {
+            "title": "Título",
+            "add": "Adicionar Problema"
+        },
+        "add": {
+            "h1": "Adicionar Problema",
+            "title": "Título",
+            "description": "Descrição",
+            "submit": "Enviar Problema"
+        }
+    }
+}

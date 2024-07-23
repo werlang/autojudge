@@ -17,7 +17,11 @@ app.set('view engine', 'html');
 app.set('views', import.meta.dirname + '/view/');
 
 // language middleware
-app.use(langMiddleware);
+langMiddleware.init({
+    languages: ['en', 'pt'],
+    namespaces: ['index', 'components', 'dashboard'],
+})
+app.use(langMiddleware.listen());
 
 // render middleware
 app.use(renderMiddleware);
@@ -26,16 +30,14 @@ app.get('/', (req, res) => {
     res.templateRender('index', {
         apiurl: process.env.API,
         googleClientId: process.env.GOOGLE_CLIENT_ID,
-    },
-    ['components', 'index']);
+    });
 });
 
 const dashboardRoute = (req, res) => {
     res.templateRender('dashboard', {
         apiurl: process.env.API,
         googleCredential: req.body.credential
-    },
-    ['components', 'dashboard']);
+    });
 }
 app.post('/dashboard', dashboardRoute);
 app.get([

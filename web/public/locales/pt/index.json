@@ -1,0 +1,44 @@
+{
+    "section1": {
+        "welcome": "Bem-vindo!",
+        "h3": "Juiz Online ao seu serviço. Eu posso te ajudar com problemas de programação e competições.",
+        "button": "Entrar"
+    },
+    "section3": {
+        "h1": "O que eu posso fazer por você?",
+        "p": "O AutoJudge é uma plataforma do tipo juiz online que permite criar, gerenciar e resolver problemas de programação, hospedar competições e se juntar com sua equipe para competir. Seja você um professor, estudante ou profissional, o AutoJudge tem tudo o que você precisa!"
+    },
+    "section4": {
+        "h1": "Crie, gerencie e resolva problemas",
+        "p": "Eu posso te ajudar a dar vida aos seus problemas de programação! Você pode criar problemas e incluir casos de teste. Uma vez na plataforma, os usuários podem enviar suas soluções e eu as avaliarei para você.",
+        "button": "Ver Problemas"
+    },
+    "section5": {
+        "h1": "Hospede competições na sua instituição",
+        "p": "Você pode hospedar competições na plataforma! Você escolhe os problemas, a duração e o horário de início. Os alunos podem se juntar em equipes e competir entre si. Eu cuidarei do resto.",
+        "button": "Gerenciar Competições"
+    },
+    "section6": {
+        "h1": "Junte-se com sua equipe para competir",
+        "p": "Participe de uma competição e desafie outras equipes. Você pode ver a classificação em tempo real e ver como está se saindo em comparação com os outros. Eu julgarei suas submissões e acompanharei tudo.",
+        "button": "Reunir sua Equipe"
+    },
+    "signup": {
+        "h1": "Inscrever-se",
+        "p": "Use sua conta do Google para se inscrever e acessar a plataforma."
+    },
+    "card": {
+        "problems": {
+            "title": "Problemas",
+            "description": "O combustível para a competição! Crie e envie problemas aqui."
+        },
+        "contests": {
+            "title": "Competições",
+            "description": "Onde a mágica acontece! Gerencie competições e suas equipes."
+        },
+        "teams": {
+            "title": "Equipes",
+            "description": "Quem será o campeão? Participe de uma competição."
+        }
+    }
+}

@@ -1,0 +1,17 @@
+export default [
+    ['section1.welcome', { ns: 'index' }],
+    ['section1.h3', { ns: 'index' }],
+    ['section1.button', { ns: 'index' }],
+    ['section3.h1', { ns: 'index' }],
+    ['section3.p', { ns: 'index' }],
+    ['section4.h1', { ns: 'index' }],
+    ['section4.p', { ns: 'index' }],
+    ['section4.button', { ns: 'index' }],
+    ['section5.h1', { ns: 'index' }],
+    ['section5.p', { ns: 'index' }],
+    ['section5.button', { ns: 'index' }],
+    ['section6.h1', { ns: 'index' }],
+    ['section6.p', { ns: 'index' }],
+    ['section6.button', { ns: 'index' }],
+    ['footer.check-project', { ns: 'components' }],
+]

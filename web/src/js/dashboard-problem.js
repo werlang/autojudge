@@ -6,7 +6,7 @@ import translate from "./helpers/translate.js";
 export default {
     build: async function() {
         const frame = document.querySelector('#frame');
-        frame.innerHTML = `<h1>${translate('dashboard-problems-h1')}</h1>`;
+        frame.innerHTML = `<h1>${this.translate('problems.h1', 'dashboard')}</h1>`;
 
         const problemsPromise = Problem.getAll();
 
@@ -14,11 +14,12 @@ export default {
             element: frame,
             id: 'problems', 
             columns: [
-                {id: 'title', name: translate('dashboard-problems-table-title')},
+                {id: 'title', name: this.translate('problems.table.title', 'dashboard')},
             ],
             controls: [
-                {id: 'add', icon: 'fas fa-plus', title: translate('dashboard-problems-table-add'), action: () => this.add()},
-            ]
+                {id: 'add', icon: 'fas fa-plus', title: this.translate('problems.table.add', 'dashboard'), action: () => this.add()},
+            ],
+            translate: this.translate,
         });
 
         const { problems } = await problemsPromise;

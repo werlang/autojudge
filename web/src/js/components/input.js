@@ -18,6 +18,7 @@ import Toast from './toast.js';
 export default class Input {
     constructor(element, { abstract=false, id, value }={}) {
         this.element = element || document.createElement('input');
+        this.element.classList.add('material-input');
         this.value = this.element.value || '';
 
         if (id) {

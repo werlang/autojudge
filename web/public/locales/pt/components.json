@@ -1,0 +1,15 @@
+{
+    "footer": {
+        "check-project": "Verifique o projeto em"
+    },
+    "menu": {
+        "dashboard": "Painel",
+        "problems": "Problemas",
+        "contests": "Competições",
+        "teams": "Equipes",
+        "logout": "Sair"
+    },
+    "table": {
+        "search-title": "Procurar"
+    }
+}

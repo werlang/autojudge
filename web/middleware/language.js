@@ -23,36 +23,39 @@ const loadLocales = async (languages, namespaces) => {
 
 // Function to load a single translation file
 const loadLocale = async (lng, ns) => {
-    const filePath = path.join(import.meta.dirname, '..', 'locales', lng, `${ns}.js`);
+    const filePath = path.join(import.meta.dirname, '..', 'public/locales', lng, `${ns}.json`);
     if (fs.existsSync(filePath)) {
-        const module = await import(filePath);
-        return {[lng]: { [ns]: module.default }};
+        const file = JSON.parse(fs.readFileSync(filePath));
+        return {[lng]: { [ns]: file }};
     }
     console.error(`Could not load translation file for ${lng} at ${filePath}`);
     return {[lng]: { [ns]: {} }};
 };
 
-i18next.init({
-    fallbackLng: 'en',
-    resources: await loadLocales(
-        ['en', 'pt'],
-        ['index', 'components', 'dashboard']
-    ),
-    // debug: true,
-});
+export default {
+    init: async function({languages, namespaces}) {
+        i18next.init({
+            fallbackLng: 'en',
+            resources: await loadLocales(languages, namespaces),
+            // debug: true,
+        });
+    },
 
-export default (req, res, next) => {
-    // check if there are language cookies
-    if (req.cookies.language) {
-        req.language = req.cookies.language;
-    }
-    else {
-        const header = req.headers['accept-language'];
-        const language = header ? header.split(',')[0].split('-')[0] : 'en';
-        req.language = language;
-    }
-
-    i18next.changeLanguage(req.language);
-    res.locals.t = i18next.t.bind(i18next);
-    next();
+    listen: function() {
+        return async (req, res, next) => {
+            // check if there are language cookies
+            if (req.cookies.language) {
+                req.language = req.cookies.language;
+            }
+            else {
+                const header = req.headers['accept-language'];
+                const language = header ? header.split(',')[0].split('-')[0] : 'en';
+                req.language = language;
+            }
+            
+            i18next.changeLanguage(req.language);
+            res.locals.t = i18next.t.bind(i18next);
+            next();
+        }
+    },
 }

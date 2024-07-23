@@ -1,5 +1,5 @@
-import TemplateVar from './template-var.js';
 import Cookie from './cookies.js';
+import i18next from 'i18next';
 
 // bind the language switcher
 document.querySelectorAll('footer #language a').forEach(e => e.addEventListener('click', () => {
@@ -7,13 +7,60 @@ document.querySelectorAll('footer #language a').forEach(e => e.addEventListener(
     location.reload();
 }));
 
-function translate(key) {
-    const translations = TemplateVar.get('translations');
-    if (!translations[key]) {
-        console.log(`translation not found for key ${key}`);
-        return key;
+
+class Translator {
+
+    static cache = {};
+    static loaded = false;
+
+    constructor(languages, namespaces) {
+        this.languages = languages;
+        this.namespaces = namespaces;
     }
-    return translations[key];
+    
+    async init() {
+        if (!Translator.loaded) {
+            i18next.init({
+                fallbackLng: 'en',
+                resources: await this.loadLocales(),
+                // debug: true,
+            });
+            i18next.changeLanguage(this.getLanguage());
+            Translator.loaded = true;
+        }
+        return (key, ns) => this.translate(key, ns);
+    }
+
+    getLanguage() {
+        return new Cookie('language').get() || navigator.language.split('-')[0];
+    }
+
+    translate(key, ns) {
+        return i18next.t(key, { ns });
+    }
+
+    async loadLocales() {
+        const languageList = {};
+        for (let lng of this.languages) {
+            languageList[lng] = {};
+            for (let ns of this.namespaces) {
+                languageList[lng][ns] = await this.loadLocale(lng, ns);
+            }
+        }
+        // console.log(languageList);
+        return languageList;
+    }
+
+    async loadLocale(lng, ns) {
+        if (Translator.cache[`${lng}-${ns}`]) {
+            return Translator.cache[`${lng}-${ns}`];
+        }
+        const filePath = `/locales/${lng}/${ns}.json`;
+        const file = await fetch(filePath).then(res => res.json());
+        Translator.cache[`${lng}-${ns}`] = file;
+        return file;
+    }
+
 }
 
-export default translate;
+export default Translator;

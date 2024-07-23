@@ -23,7 +23,7 @@ const background = {
                 // console.log(response, response.submissions.results);
             }
             else {
-                // console.log('No pending submissions');
+                console.log(`[${new Date().toISOString()}] No pending submissions`);
             }
                 
             setTimeout(() => this.watchSubmissions(), requestInterval);

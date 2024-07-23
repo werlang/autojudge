@@ -1,0 +1,15 @@
+{
+    "problems": {
+        "h1": "Problems",
+        "table": {
+            "title": "Title",
+            "add": "Add Problem"
+        },
+        "add": {
+            "h1": "Add Problem",
+            "title": "Title",
+            "description": "Description",
+            "submit": "Submit Problem"
+        }
+    }
+}

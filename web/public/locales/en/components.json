@@ -1,0 +1,15 @@
+{
+    "footer": {
+        "check-project": "Check the project on"
+    },
+    "menu": {
+        "dashboard": "Dashboard",
+        "problems": "Problems",
+        "contests": "Contests",
+        "teams": "Teams",
+        "logout": "Logout"
+    },
+    "table": {
+        "search-title": "Search"
+    }
+}

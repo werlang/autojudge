@@ -1,0 +1,44 @@
+{
+    "section1": {
+        "welcome": "Welcome!",
+        "h3": "Online Judge at your service. I can help you with programming problems and contests.",
+        "button": "Join"
+    },
+    "section3": {
+        "h1": "What can I do for you?",
+        "p": "AutoJudge is an online judge platform that allows you to create, manage and solve programming problems, host contests and join with your team to compete. Whether you are a teacher, a student or a professional, AutoJudge got you covered!"
+    },
+    "section4": {
+        "h1": "Create, manage and solve problems",
+        "p": "I can help you bring your programming problems to life! You can create problems along with test cases. Once on the platform, users can submit their solutions and I will evaluate them for you.",
+        "button": "Check Problems"
+    },
+    "section5": {
+        "h1": "Host contests within your institution",
+        "p": "You can host contests on the platform! You choose the problems, the duration and the start time. Students can join as teams and compete with each other. I will take care of the rest.",
+        "button": "Manage Contests"
+    },
+    "section6": {
+        "h1": "Join with your team and compete",
+        "p": "Join a contest with your team and compete with others. You can see the standings in real-time and see how you are doing compared to others. I will judge your submissions and keep track of everything.",
+        "button": "Gather your Team"
+    },
+    "signup": {
+        "h1": "Sign up",
+        "p": "Use your Google account to sign up and access the platform."
+    },
+    "card": {
+        "problems": {
+            "title": "Problems",
+            "description": "The fuel for the competition! Create and submit problems here."
+        },
+        "contests": {
+            "title": "Contests",
+            "description": "Where the magic happens! Manage contests and their teams."
+        },
+        "teams": {
+            "title": "Teams",
+            "description": "Who will be the champion? Participate in the contest."
+        }
+    }
+}

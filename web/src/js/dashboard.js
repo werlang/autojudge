@@ -4,17 +4,20 @@ import User from "./model/user.js";
 import Menu from "./components/menu.js";
 import Header from "./components/header.js";
 import problems from "./dashboard-problem.js";
-import translate from "./helpers/translate.js";
+import Translator from "./helpers/translate.js";
 
 import '../less/dashboard.less';
 
+const translate = await new Translator(['en', 'pt'], ['components', 'dashboard']).init();
+problems.translate = translate;
+
 const menu = new Menu({
     items: [
-        { id: 'dashboard', text: translate('menu-dashboard'), icon: 'fas fa-tachometer-alt' },
-        { id: 'problems', text: translate('menu-problems'), icon: 'fas fa-tasks', action: () => problems.build() },
-        { id: 'contests', text: translate('menu-contests'), icon: 'fas fa-trophy' },
-        { id: 'teams', text: translate('menu-teams'), icon: 'fas fa-users' },
-        { id: 'logout', text: translate('menu-logout'), icon: 'fas fa-sign-out-alt' },
+        { id: 'dashboard', text: translate('menu.dashboard', 'components'), icon: 'fas fa-tachometer-alt' },
+        { id: 'problems', text: translate('menu.problems', 'components'), icon: 'fas fa-tasks', action: () => problems.build() },
+        { id: 'contests', text: translate('menu.contests', 'components'), icon: 'fas fa-trophy' },
+        { id: 'teams', text: translate('menu.teams', 'components'), icon: 'fas fa-users' },
+        { id: 'logout', text: translate('menu.logout', 'components'), icon: 'fas fa-sign-out-alt' },
     ],
     options: {
         usePath: true,

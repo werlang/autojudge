@@ -1,13 +1,12 @@
-import translate from "../helpers/translate.js";
-
 export default class Table {
 
     placeholderAmount = 10;
     content = [];
 
-    constructor({ element, id, columns, controls }) {
+    constructor({ element, id, columns, controls, translate }) {
         this.columns = columns;
         this.controls = controls || [];
+        this.translate = translate;
         this.domElement = document.createElement('div');
         this.domElement.id = id;
         this.domElement.classList.add('table');
@@ -68,7 +67,7 @@ export default class Table {
         this.head.innerHTML = `
             <div class="columns"></div>
             <div class="controls">
-                <div class="search button" title="${translate('table-search-title')}"><i class="fas fa-search"></i><input type="text"></div>
+                <div class="search button" title="${this.translate('table.search-title', 'components')}"><i class="fas fa-search"></i><input type="text"></div>
             </div>
         `;
 
