@@ -7,11 +7,12 @@ export default (req, res, next) => {
         // 'bar': res.locals.t('bar', { ns: 'translation' }),
         const translations = {};
         for (let ns of namespaces) {
-            let resources = i18next.getResourceBundle(req.language, ns);
-            if (!resources) {
-                const mainLang = req.language.split('-')[0]; // Extract the main language from dialect (e.g., 'en' from 'en-US')
-                resources = i18next.getResourceBundle(mainLang, ns);
-            }
+            // get the resources from the fallback language and the current language
+            const fallbackResources = i18next.getResourceBundle(i18next.options.fallbackLng[0], ns);
+            const currentResources = i18next.getResourceBundle(req.language, ns);
+            // merge the resources so even if a key is missing in the current language, it will be present in the fallback language
+            const resources = { ...fallbackResources, ...currentResources };
+
             // console.log(req.language, resources);
             // get every key in the namespace
             for (let key in resources) {

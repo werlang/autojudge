@@ -1,12 +1,12 @@
 import Table from "./components/table.js";
 import Problem from "./model/problem.js";
 import Modal from "./components/modal.js";
-import { translations } from "./components/footer.js";
+import translate from "./helpers/translate.js";
 
 export default {
     build: async function() {
         const frame = document.querySelector('#frame');
-        frame.innerHTML = `<h1>${translations['dashboard-problems-h1']}</h1>`;
+        frame.innerHTML = `<h1>${translate('dashboard-problems-h1')}</h1>`;
 
         const problemsPromise = Problem.getAll();
 
@@ -14,10 +14,10 @@ export default {
             element: frame,
             id: 'problems', 
             columns: [
-                {id: 'title', name: translations['dashboard-problems-table-title']},
+                {id: 'title', name: translate('dashboard-problems-table-title')},
             ],
             controls: [
-                {id: 'add', icon: 'fas fa-plus', title: translations['dashboard-problems-table-add'], action: () => this.add()},
+                {id: 'add', icon: 'fas fa-plus', title: translate('dashboard-problems-table-add'), action: () => this.add()},
             ]
         });
 

@@ -3,7 +3,7 @@ import Card from './components/card.js';
 import Modal from './components/modal.js';
 import GoogleLogin from './helpers/google-login.js';
 import Button from './components/button.js';
-import { translations } from './components/footer.js';
+import translate from './helpers/translate.js';
 
 import '../less/index.less';
 
@@ -24,8 +24,8 @@ splashVideo.playbackRate = 0.4;
 GoogleLogin.init();
 GoogleLogin.onFail(async () => {
     const modal = new Modal(`
-        <h1>${translations['index-sign-up-h1']}</h1>
-        <p>${translations['index-sign-up-p']}</p>
+        <h1>${translate('index-sign-up-h1')}</h1>
+        <p>${translate('index-sign-up-p')}</p>
         <div id="button"></div>
     `, { id: 'signup' });
     GoogleLogin.renderButton(modal.get('#button'));
@@ -53,8 +53,8 @@ const cardContainer = document.querySelector('#options');
 new Card(cardContainer, {
     id: 'problems',
     icon: 'fa-solid fa-circle-question',
-    title: translations['index-card-problems-title'],
-    description: translations['index-card-problems-description'],
+    title: translate('index-card-problems-title'),
+    description: translate('index-card-problems-description'),
 }).click(async () => {
     redirectOrLogin('problems');
 });
@@ -62,8 +62,8 @@ new Card(cardContainer, {
 new Card(cardContainer, {
     id: 'instructions',
     icon: 'fa-solid fa-medal',
-    title: translations['index-card-contests-title'],
-    description: translations['index-card-contests-description'],
+    title: translate('index-card-contests-title'),
+    description: translate('index-card-contests-description'),
 }).click(async () => {
     redirectOrLogin('contests');
 });
@@ -71,8 +71,8 @@ new Card(cardContainer, {
 new Card(cardContainer, {
     id: 'judge',
     icon: 'fa-solid fa-people-group',
-    title: translations['index-card-teams-title'],
-    description: translations['index-card-teams-description'],
+    title: translate('index-card-teams-title'),
+    description: translate('index-card-teams-description'),
 }).click(async () => {
     redirectOrLogin('teams');
 });
