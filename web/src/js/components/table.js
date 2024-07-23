@@ -1,3 +1,5 @@
+import { translations } from "./footer.js";
+
 export default class Table {
 
     placeholderAmount = 10;
@@ -66,7 +68,7 @@ export default class Table {
         this.head.innerHTML = `
             <div class="columns"></div>
             <div class="controls">
-                <div class="search button" title="Search"><i class="fas fa-search"></i><input type="text"></div>
+                <div class="search button" title="${translations['table-search-title']}"><i class="fas fa-search"></i><input type="text"></div>
             </div>
         `;
 

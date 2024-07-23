@@ -36,7 +36,7 @@ i18next.init({
     fallbackLng: 'en',
     resources: await loadLocales(
         ['en', 'pt'],
-        ['index']
+        ['index', 'components', 'dashboard']
     ),
     // debug: true,
 });

@@ -4,16 +4,17 @@ import User from "./model/user.js";
 import Menu from "./components/menu.js";
 import Header from "./components/header.js";
 import problems from "./dashboard-problem.js";
+import { translations } from "./components/footer.js";
 
 import '../less/dashboard.less';
 
 const menu = new Menu({
     items: [
-        { id: 'dashboard', text: 'Dashboard', icon: 'fas fa-tachometer-alt' },
-        { id: 'problems', text: 'Problems', icon: 'fas fa-tasks', action: () => problems.build() },
-        { id: 'contests', text: 'Contests', icon: 'fas fa-trophy' },
-        { id: 'teams', text: 'Teams', icon: 'fas fa-users' },
-        { id: 'logout', text: 'Logout', icon: 'fas fa-sign-out-alt' },
+        { id: 'dashboard', text: translations['menu-dashboard'], icon: 'fas fa-tachometer-alt' },
+        { id: 'problems', text: translations['menu-problems'], icon: 'fas fa-tasks', action: () => problems.build() },
+        { id: 'contests', text: translations['menu-contests'], icon: 'fas fa-trophy' },
+        { id: 'teams', text: translations['menu-teams'], icon: 'fas fa-users' },
+        { id: 'logout', text: translations['menu-logout'], icon: 'fas fa-sign-out-alt' },
     ],
     options: {
         usePath: true,

@@ -3,8 +3,7 @@ import Card from './components/card.js';
 import Modal from './components/modal.js';
 import GoogleLogin from './helpers/google-login.js';
 import Button from './components/button.js';
-import TemplateVar from './helpers/template-var.js';
-import Cookie from './helpers/cookies.js';
+import { translations } from './components/footer.js';
 
 import '../less/index.less';
 
@@ -18,15 +17,6 @@ document.querySelectorAll('section .col.text .content h1, #section-3 h1, #sectio
         cursorChar: '_',
     }).go();
 });
-
-const translations = TemplateVar.get('translations');
-// console.log(translations);
-
-// bind the language switcher
-document.querySelectorAll('footer #language a').forEach(e => e.addEventListener('click', () => {
-    new Cookie('language').set(e.id, 365);
-    location.reload();
-}));
 
 const splashVideo = document.querySelector('#section-1 video');
 splashVideo.playbackRate = 0.4;

@@ -27,14 +27,15 @@ app.get('/', (req, res) => {
         apiurl: process.env.API,
         googleClientId: process.env.GOOGLE_CLIENT_ID,
     },
-    ['index']);
+    ['components', 'index']);
 });
 
 const dashboardRoute = (req, res) => {
     res.templateRender('dashboard', {
         apiurl: process.env.API,
         googleCredential: req.body.credential
-    });
+    },
+    ['components', 'dashboard']);
 }
 app.post('/dashboard', dashboardRoute);
 app.get([
