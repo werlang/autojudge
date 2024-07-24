@@ -1,7 +1,7 @@
 {
-    "input_zero": "No Sample Input",
-    "input_other": "Sample Input",
-    "output_zero": "No Sample Output",
-    "output_other": "Sample Output",
-    "case": "Case"
+    "inout_zero": "No Input/Output Samples found",
+    "inout_other": "Input/Output Samples",
+    "case": "Case",
+    "input": "Input",
+    "output": "Output"
 }

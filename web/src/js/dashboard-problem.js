@@ -67,16 +67,25 @@ export default {
 
     show: function (item) {
         // console.log(item);
-        const mapInput = item => item && item.length ? JSON.parse(item).map((icase, i) => `<div class="case"><span class="label">${this.translate('case', 'problem')} ${i + 1}</span>${icase}</div>`).join('') : '';
         const inputLength = item => item && item.length ? JSON.parse(item).length : 0;
+        const getItems = item => item && item.length ? JSON.parse(item) || [] : [];
+        const io = {
+            input: getItems(item.input),
+            output: getItems(item.output)
+        };
+
+        const codes = io.input.map((_, i) => `<div class="code">
+            ${[Object.keys(io).map(key => `<div class="case">
+                <span class="label">${this.translate(key, 'problem')}</span>
+                ${io[key][i]}
+            </div>`).join('')]}
+        </div>`).join('');
 
         const modal = new Modal(`
             <h1>${item.title}</h1>
             <p>${item.description}</p>
-            <h3>${this.translate('input', 'problem', { count: inputLength(item.input) })}</h3>
-            <div class="code">${mapInput(item.input)}</div>
-            <h3>${this.translate('output', 'problem', { count: inputLength(item.output) })}</h3>
-            <div class="code">${mapInput(item.output)}</div>
+            <h3>${this.translate('inout', 'problem', {count: inputLength(item.input)})}</h3>
+            ${codes}
         `, { id: 'problem' })
         .addButton({ text: this.translate('close', 'common'), close: true });
         

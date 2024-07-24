@@ -1,9 +1,7 @@
 {
-    "input_zero": "Nenhum Exemplo de Entrada",
-    "input_one": "Exemplo de Entrada",
-    "input_other": "Exemplos de Entrada",
-    "output_zero": "Nenhum Exemplo de Saída",
-    "output_one": "Exemplo de Saída",
-    "output_other": "Exemplos de Saída",
-    "case": "Caso"
+    "inout_zero": "Nenhum Exemplo de Entrada/Saída encontrado",
+    "inout_other": "Exemplos de Entrada/Saída",
+    "case": "Caso",
+    "input": "Entrada",
+    "output": "Saída"
 }
