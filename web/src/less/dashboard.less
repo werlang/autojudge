@@ -5,3 +5,35 @@
 @import 'modal.less';
 @import 'form.less';
 @import 'toast.less';
+
+
+.modal#problem {
+
+    h3 {
+        margin-bottom: 10px;
+    }
+
+    .code {
+        font-family: 'Quantico', monospace;
+        border-radius: 5px;
+        border: 1px solid rgba(var(--color-text-raw), 0.4);
+        margin: 5px 0;
+
+        .case {
+            padding: 5px 10px;
+            display: flex;
+            align-items: baseline;
+            background-color: rgba(var(--color-main-raw), 0.1);
+
+            .label {
+                opacity: 0.3;
+                font-size: 0.7rem;
+                width: 50px;
+            }
+        }
+
+        .case:nth-child(odd) {
+            background-color: rgba(var(--color-main-raw), 0.2);
+        }
+    }
+}

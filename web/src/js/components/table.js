@@ -134,8 +134,24 @@ export default class Table {
             }
             itemDOM.innerHTML = this.columns.map(column => `<div class="column ${column.id || ''}">${item[column.id]}</div>`).join('');
     
+            if (this.itemEvents) {
+                this.itemEvents.forEach(event => {
+                    itemDOM.addEventListener(event.event, ev => {
+                        event.action(item, ev);
+                    });
+                });
+            }
+
             this.domElement.appendChild(itemDOM);
         });
+    }
+
+    addItemEvent(event, action) {
+        if (!this.itemEvents) {
+            this.itemEvents = [];
+        }
+        this.itemEvents.push({ event, action });
+        this.render();
     }
 
 }

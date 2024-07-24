@@ -28,15 +28,15 @@ class Translator {
             i18next.changeLanguage(this.getLanguage());
             Translator.loaded = true;
         }
-        return (key, ns) => this.translate(key, ns);
+        return (key, ns, modifiers) => this.translate(key, ns, modifiers);
     }
 
     getLanguage() {
         return new Cookie('language').get() || navigator.language.split('-')[0];
     }
 
-    translate(key, ns) {
-        return i18next.t(key, { ns });
+    translate(key, ns, modifiers = {}) {
+        return i18next.t(key, { ns, ...modifiers });
     }
 
     async loadLocales() {
@@ -47,7 +47,7 @@ class Translator {
                 languageList[lng][ns] = await this.loadLocale(lng, ns);
             }
         }
-        // console.log(languageList);
+        console.log(languageList);
         return languageList;
     }
 

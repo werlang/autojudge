@@ -35,12 +35,13 @@ GoogleLogin.onFail(async () => {
     GoogleLogin.renderButton(modal.get('#button'));
 });
 
-const credential = GoogleLogin.getCredential();
+let credential = GoogleLogin.getCredential();
 // console.log(credential);
 // check if the credential is expired and show a message
 if (credential === 'expired') {
     GoogleLogin.removeCredential();
     new Toast(translate('login.expired', 'index'), { type: 'error' });
+    credential = null;
 }
 
 // bind buttons to google login

@@ -19,7 +19,7 @@ app.set('views', import.meta.dirname + '/view/');
 // language middleware
 langMiddleware.init({
     languages: ['en', 'pt'],
-    namespaces: ['index', 'components', 'dashboard'],
+    namespaces: ['index', 'components', 'dashboard', 'problem'],
 })
 app.use(langMiddleware.listen());
 
@@ -39,6 +39,7 @@ const dashboardRoute = (req, res) => {
         googleCredential: req.body.credential
     });
 }
+// routes for dashboard (menu)
 app.post('/dashboard', dashboardRoute);
 app.get([
     '/dashboard',
@@ -47,6 +48,14 @@ app.get([
     '/teams',
 ], dashboardRoute);
 
+// route for problem
+app.get('/problems/:id', (req, res) => {
+    res.templateRender('problem', {
+        apiurl: process.env.API,
+        googleCredential: req.body.credential,
+        problemId: req.params.id,
+    });
+});
 
 // static assets
 app.use(express.static(import.meta.dirname + '/public/'));
