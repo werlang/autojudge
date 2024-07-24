@@ -47,7 +47,7 @@ class Translator {
                 languageList[lng][ns] = await this.loadLocale(lng, ns);
             }
         }
-        console.log(languageList);
+        // console.log(languageList);
         return languageList;
     }
 

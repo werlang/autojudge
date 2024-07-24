@@ -19,7 +19,13 @@ app.set('views', import.meta.dirname + '/view/');
 // language middleware
 langMiddleware.init({
     languages: ['en', 'pt'],
-    namespaces: ['index', 'components', 'dashboard', 'problem'],
+    namespaces: [
+        'index',
+        'components',
+        'dashboard',
+        'problem',
+        'common',
+    ],
 })
 app.use(langMiddleware.listen());
 

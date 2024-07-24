@@ -8,7 +8,7 @@ import Translator from "./helpers/translate.js";
 
 import '../less/dashboard.less';
 
-const translate = await new Translator(['en', 'pt'], ['components', 'dashboard', 'problem']).init();
+const translate = await new Translator(['en', 'pt'], ['components', 'dashboard', 'problem', 'common']).init();
 problems.translate = translate;
 
 const menu = new Menu({

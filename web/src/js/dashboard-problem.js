@@ -7,7 +7,7 @@ import Toast from "./components/toast.js";
 export default {
     build: async function() {
         const frame = document.querySelector('#frame');
-        frame.innerHTML = `<h1>${this.translate('problems.h1', 'dashboard')}</h1>`;
+        frame.innerHTML = `<h1>${this.translate('problem', 'common', {count: 2})}</h1>`;
 
         const problemsPromise = Problem.getAll();
 
@@ -15,7 +15,7 @@ export default {
             element: frame,
             id: 'problems', 
             columns: [
-                {id: 'title', name: this.translate('problems.table.title', 'dashboard')},
+                {id: 'title', name: this.translate('title', 'common')},
             ],
             controls: [
                 {id: 'add', icon: 'fas fa-plus', title: this.translate('problems.table.add', 'dashboard'), action: () => this.add()},
@@ -29,19 +29,7 @@ export default {
         problems.forEach(problem => table.addItem(problem));
 
         table.addItemEvent('click', async item => {
-            // console.log(item);
-            const mapInput = item => item && item.length ? JSON.parse(item).map((icase, i) => `<div class="case"><span class="label">${this.translate('case', 'problem')} ${i+1}</span>${icase}</div>`).join('') : '';
-            const inputLength = item => item && item.length ? JSON.parse(item).length : 0;
-
-            new Modal(`
-                <h1>${item.title}</h1>
-                <p>${item.description}</p>
-                <h3>${this.translate('input', 'problem', {count: inputLength(item.input)})}</h3>
-                <div class="code">${mapInput(item.input)}</div>
-                <h3>${this.translate('output', 'problem', {count: inputLength(item.output)})}</h3>
-                <div class="code">${mapInput(item.output)}</div>
-            `, { id: 'problem' })
-            .addButton({ text: 'OK', isDefault: true, close: true });
+            this.show(item);
         });
     },
 
@@ -50,8 +38,8 @@ export default {
         content.innerHTML = `
             <h1>${this.translate('problems.add.h1', 'dashboard')}</h1>
             <form>
-                <input id="title" name="title" type="text" required placeholder="${this.translate('problems.add.title', 'dashboard')}">
-                <textarea id="description" name="description" required placeholder="${this.translate('problems.add.description', 'dashboard')}"></textarea>
+                <input id="title" name="title" type="text" required placeholder="${this.translate('title', 'common')}">
+                <textarea id="description" name="description" required placeholder="${this.translate('description', 'common')}"></textarea>
                 <button class="default">${this.translate('problems.add.submit', 'dashboard')}</button>
             </form>
         `;
@@ -70,6 +58,23 @@ export default {
                 new Toast(this.translate('problems.add.error', 'dashboard'), { type: 'error' });
             }
         })
-    }
+    },
 
+    show: function (item) {
+        // console.log(item);
+        const mapInput = item => item && item.length ? JSON.parse(item).map((icase, i) => `<div class="case"><span class="label">${this.translate('case', 'problem')} ${i + 1}</span>${icase}</div>`).join('') : '';
+        const inputLength = item => item && item.length ? JSON.parse(item).length : 0;
+
+        new Modal(`
+            <h1>${item.title}</h1>
+            <p>${item.description}</p>
+            <h3>${this.translate('input', 'problem', { count: inputLength(item.input) })}</h3>
+            <div class="code">${mapInput(item.input)}</div>
+            <h3>${this.translate('output', 'problem', { count: inputLength(item.output) })}</h3>
+            <div class="code">${mapInput(item.output)}</div>
+        `, { id: 'problem' })
+        .addButton({ text: this.translate('edit', 'common'), isDefault: false, callback: () => location.href = `/problems/${item.id}` })
+        .addButton({ text: this.translate('close', 'common'), close: true })
+        
+    },
 }
