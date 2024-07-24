@@ -10,7 +10,7 @@ export default class Problem extends Model {
         input_hidden,
         output_hidden,
         solution,
-        owner,
+        author,
     }) {
         super('problems', {
             fields: {
@@ -23,10 +23,10 @@ export default class Problem extends Model {
                 input_hidden,
                 output_hidden,
                 solution,
-                owner,
+                author,
             },
             allowUpdate: ['title', 'description', 'input_public', 'output_public', 'input_hidden', 'output_hidden', 'solution'],
-            insertFields: ['title', 'description', 'owner'],
+            insertFields: ['title', 'description', 'author'],
         });
     }
     

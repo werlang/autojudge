@@ -19,7 +19,7 @@ router.post('/', auth({'user:exists': true}), async (req, res, next) => {
         const problem = await new Problem({
             title: req.body.title,
             description: req.body.description,
-            owner: req.user.id,
+            author: req.user.id,
         }).insert();
         return res.status(201).send({
             message: 'Problem created.',
@@ -37,7 +37,7 @@ router.post('/', auth({'user:exists': true}), async (req, res, next) => {
 
 // get all problems
 // anyone can access public problems
-// if owner, show hidden fields
+// if author, show hidden fields
 router.get('/', auth({'user:optional': true}), async (req, res, next) => {
     try {
         const problems = await Problem.getAll({});
@@ -50,10 +50,10 @@ router.get('/', auth({'user:optional': true}), async (req, res, next) => {
                 input: problem.input_public,
                 output: problem.output_public,
             }
-            if (req.user && problem.owner === req.user.id) {
+            if (req.user && problem.author === req.user.id) {
                 problemData.inputHidden = problem.input_hidden;
                 problemData.outputHidden = problem.output_hidden;
-                problemData.owner = true;
+                problemData.author = true;
             }
             return problemData;
         });
@@ -67,7 +67,7 @@ router.get('/', auth({'user:optional': true}), async (req, res, next) => {
 
 // get a problem by id
 // anyone can access public problems
-// if owner, show hidden fields
+// if author, show hidden fields
 router.get('/:id', auth({'user:optional': true}), async (req, res, next) => {
     try {
         const problem = await new Problem({ id: req.params.id }).get();
@@ -79,10 +79,10 @@ router.get('/:id', auth({'user:optional': true}), async (req, res, next) => {
             input: problem.input_public,
             output: problem.output_public,
         }
-        if (req.user && problem.owner === req.user.id) {
+        if (req.user && problem.author === req.user.id) {
             problemData.inputHidden = problem.input_hidden;
             problemData.outputHidden = problem.output_hidden;
-            problemData.owner = true;
+            problemData.author = true;
         }
 
         res.send({ problem: problemData });
@@ -97,7 +97,7 @@ router.get('/:id', auth({'user:optional': true}), async (req, res, next) => {
 router.put('/:id', auth({'user:exists': true}), async (req, res, next) => {
     try {
         const problem = await new Problem({ id: req.params.id }).get();
-        if (problem.owner !== req.user.id) {
+        if (problem.author !== req.user.id) {
             throw new CustomError(403, 'You are not allowed to update this problem.');
         }
         

@@ -2,8 +2,8 @@
     "problems": {
         "table": {
             "add": "Adicionar Problema",
-            "owner": "Dono",
-            "owner-title": "Eu sou o dono"
+            "author": "Autor",
+            "author-title": "Eu sou o autor"
         },
         "add": {
             "h1": "Adicionar Problema",

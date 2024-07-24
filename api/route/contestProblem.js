@@ -42,7 +42,7 @@ router.get('/', auth({
                 input: problem.input_public,
                 output: problem.output_public,
             }
-            if (problem.owner === req.user.id) {
+            if (problem.author === req.user.id) {
                 filteredProblem.inputHidden = problem.input_hidden;
                 filteredProblem.outputHidden = problem.output_hidden;
             }

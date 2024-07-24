@@ -27,8 +27,8 @@ export default {
         // console.log(problems);
         table.clear();
         problems.forEach(problem => {
-            if (problem.owner) {
-                problem.title += `<span class="owner-card" title="${this.translate('problems.table.owner-title', 'dashboard')}">${this.translate('problems.table.owner', 'dashboard')}</span>`;
+            if (problem.author) {
+                problem.title += `<span class="author-card" title="${this.translate('problems.table.author-title', 'dashboard')}">${this.translate('problems.table.author', 'dashboard')}</span>`;
             }
         });
         problems.forEach(problem => table.addItem(problem));
@@ -80,7 +80,7 @@ export default {
         `, { id: 'problem' })
         .addButton({ text: this.translate('close', 'common'), close: true });
         
-        if (item.owner) {
+        if (item.author) {
             modal.addButton({ text: this.translate('edit', 'common'), isDefault: false, callback: () => location.href = `/problems/${item.id}` });
         }
     },
