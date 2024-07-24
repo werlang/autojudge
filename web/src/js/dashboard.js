@@ -3,48 +3,21 @@ import TemplateVar from "./helpers/template-var.js";
 import User from "./model/user.js";
 import Menu from "./components/menu.js";
 import Header from "./components/header.js";
-import problems from "./dashboard-problem.js";
 import Translator from "./helpers/translate.js";
+import Pledge from "./helpers/pledge.js";
 
 import '../less/dashboard.less';
 
-const translate = await new Translator(['en', 'pt'], ['components', 'dashboard', 'problem', 'common']).init();
-problems.translate = translate;
+const translatePledge = new Pledge();
+new Translator(['en', 'pt'], ['components', 'dashboard', 'problem', 'common']).init().then(translate => translatePledge.resolve(translate));
 
-const menu = new Menu({
-    items: [
-        { id: 'dashboard', text: translate('menu.dashboard', 'components'), icon: 'fas fa-tachometer-alt' },
-        { id: 'problems', text: translate('menu.problems', 'components'), icon: 'fas fa-tasks', action: () => problems.build() },
-        { id: 'contests', text: translate('menu.contests', 'components'), icon: 'fas fa-trophy' },
-        { id: 'teams', text: translate('menu.teams', 'components'), icon: 'fas fa-users' },
-        { id: 'logout', text: translate('menu.logout', 'components'), icon: 'fas fa-sign-out-alt' },
-    ],
-    options: {
-        usePath: true,
-        reload: true,
-    }
-})
-.addAction('logout', async () => {
-    GoogleLogin.removeCredential();
-    location.href = '/';
-});
-
-// handle redirect from google login
-function handleRedirect() {
-    const credential = TemplateVar.get('googleCredential');
-    // console.log(credential);
-    if (credential) {
-        GoogleLogin.saveCredential(credential);
-    }
-}
-handleRedirect();
-
+const userPledge = new Pledge();
 // get logged user
-const {user} = await (async () => {
+(async () => {
     try {
         const user = await new User().get();
         // console.log(user);
-        return user;
+        userPledge.resolve(user);
     }
     catch (error) {
         console.error(error);
@@ -56,4 +29,48 @@ const {user} = await (async () => {
     }
 })();
 
-new Header({ user, menu, });
+const menuPledge = new Pledge();
+translatePledge.then(translate => {
+    const menu = new Menu({
+        items: [
+            { id: 'dashboard', text: translate('menu.dashboard', 'components'), icon: 'fas fa-tachometer-alt' },
+            { id: 'problems', text: translate('menu.problems', 'components'), icon: 'fas fa-tasks', action: problemsMenuClick },
+            { id: 'contests', text: translate('menu.contests', 'components'), icon: 'fas fa-trophy' },
+            { id: 'teams', text: translate('menu.teams', 'components'), icon: 'fas fa-users' },
+            { id: 'logout', text: translate('menu.logout', 'components'), icon: 'fas fa-sign-out-alt' },
+        ],
+        options: {
+            usePath: true,
+            reload: true,
+        }
+    })
+    .addAction('logout', async () => {
+        GoogleLogin.removeCredential();
+        location.href = '/';
+    });
+    
+    async function problemsMenuClick() {
+        const module = await import('./dashboard-problem.js');
+        const problems = module.default
+        problems.translate = translate;
+        problems.build();
+    }
+
+    menuPledge.resolve(menu);
+});
+
+
+// handle redirect from google login
+function handleRedirect() {
+    const credential = TemplateVar.get('googleCredential');
+    // console.log(credential);
+    if (credential) {
+        GoogleLogin.saveCredential(credential);
+    }
+}
+handleRedirect();
+
+
+Pledge.all([userPledge, menuPledge]).then(([{user}, menu]) => {
+    new Header({ user, menu, });
+});

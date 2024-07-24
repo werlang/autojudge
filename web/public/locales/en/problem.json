@@ -1,5 +1,6 @@
 {
     "inout_zero": "No Input/Output Samples found",
+    "inout_one": "Input/Output Sample",
     "inout_other": "Input/Output Samples",
     "case": "Case",
     "input": "Input",

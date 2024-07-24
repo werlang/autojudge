@@ -56,7 +56,7 @@ app.get([
 
 // route for problem
 app.get('/problems/:id', (req, res) => {
-    res.templateRender('problem', {
+    res.templateRender('dashboard', {
         apiurl: process.env.API,
         googleCredential: req.body.credential,
         problemId: req.params.id,

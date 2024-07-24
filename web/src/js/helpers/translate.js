@@ -41,12 +41,21 @@ class Translator {
 
     async loadLocales() {
         const languageList = {};
+        const promises = [];
+        
         for (let lng of this.languages) {
             languageList[lng] = {};
             for (let ns of this.namespaces) {
-                languageList[lng][ns] = await this.loadLocale(lng, ns);
+                // languageList[lng][ns] = this.loadLocale(lng, ns);
+                const promise = this.loadLocale(lng, ns);
+                promise.then(file => languageList[lng][ns] = file);
+                promises.push(promise);
             }
         }
+
+        // await all promises
+        await Promise.all(promises);
+
         // console.log(languageList);
         return languageList;
     }

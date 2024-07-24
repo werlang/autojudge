@@ -22,6 +22,10 @@ class Pledge {
         });
     }
 
+    static all(pledges) {
+        return Promise.all(pledges.map(pledge => pledge.get()));
+    }
+
     resolve(data) {
         this.resolve(data);
     }
@@ -51,6 +55,10 @@ class Pledge {
         return this.promise;
     }
 
+    then(callback) {
+        this.promise.then(callback);
+        return this;
+    }
 }
 
 export default Pledge;

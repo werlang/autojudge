@@ -11,7 +11,7 @@ export default class Header {
                 </div>
                 <div class="logo">
                     <a href="/">
-                        <img src="img/autojudge.webp" alt="AutoJudge">
+                        <img src="/img/autojudge.webp" alt="AutoJudge">
                     </a>
                 </div>
             </div>
