@@ -49,14 +49,27 @@ translatePledge.then(translate => {
         location.href = '/';
     });
     
+    menuPledge.resolve(menu);
+
     async function problemsMenuClick() {
+        // lazy load problems
         const module = await import('./dashboard-problem.js');
         const problems = module.default
         problems.translate = translate;
         problems.build();
     }
 
-    menuPledge.resolve(menu);
+    // check for single problem page
+    (async () => {
+        const id = TemplateVar.get('problemId');
+        if (id && location.pathname === `/problems/${id}`) {
+            // lazy load problem
+            const module = await import('./dashboard-single-problem.js');
+            const problem = module.default
+            problem.translate = translate;
+            problem.load(id);
+        }
+    })();
 });
 
 
