@@ -6,8 +6,45 @@
 @import 'form.less';
 @import 'toast.less';
 
+.owner-card {
+    align-items: center;
+    border: 1px solid rgba(var(--color-text-raw),.2);
+    border-radius: 4px;
+    color: rgba(var(--color-text-raw),.6);
+    display: flex;
+    font-size: 0.5rem;
+    justify-content: center;
+    margin-left: 3px;
+    background-color: rgba(var(--color-secondary-raw),0.5);
+    padding: 0 2px;
+    text-transform: uppercase;
+    margin-top: -15px;
+    transition: 0.3s all;
+
+    &:hover {
+        transform: scale(1.2);
+        filter: brightness(1.2);
+    }
+}
 
 .modal#problem {
+
+    h1 {
+        display: flex;
+        align-items: center;
+        
+        .owner-card {
+            font-size: 0.7rem;
+            margin-left: 10px;
+            margin-top: -20px;
+            padding: 2px 5px;
+            cursor: default;
+
+            &:hover {
+                transform: none;
+            }
+        }
+    }
 
     p {
         margin-bottom: 10px;

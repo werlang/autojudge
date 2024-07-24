@@ -53,6 +53,7 @@ router.get('/', auth({'user:optional': true}), async (req, res, next) => {
             if (req.user && problem.owner === req.user.id) {
                 problemData.inputHidden = problem.input_hidden;
                 problemData.outputHidden = problem.output_hidden;
+                problemData.owner = true;
             }
             return problemData;
         });
@@ -81,6 +82,7 @@ router.get('/:id', auth({'user:optional': true}), async (req, res, next) => {
         if (req.user && problem.owner === req.user.id) {
             problemData.inputHidden = problem.input_hidden;
             problemData.outputHidden = problem.output_hidden;
+            problemData.owner = true;
         }
 
         res.send({ problem: problemData });

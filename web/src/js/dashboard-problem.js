@@ -18,14 +18,19 @@ export default {
                 {id: 'title', name: this.translate('title', 'common')},
             ],
             controls: [
-                {id: 'add', icon: 'fas fa-plus', title: this.translate('problems.table.add', 'dashboard'), action: () => this.add()},
+                {id: 'add', icon: 'fa fa-plus', title: this.translate('problems.table.add', 'dashboard'), action: () => this.add()},
             ],
             translate: this.translate,
         });
 
-        const { problems } = await problemsPromise;
+        let { problems } = await problemsPromise;
         // console.log(problems);
         table.clear();
+        problems.forEach(problem => {
+            if (problem.owner) {
+                problem.title += `<span class="owner-card" title="${this.translate('problems.table.owner-title', 'dashboard')}">${this.translate('problems.table.owner', 'dashboard')}</span>`;
+            }
+        });
         problems.forEach(problem => table.addItem(problem));
 
         table.addItemEvent('click', async item => {
@@ -65,7 +70,7 @@ export default {
         const mapInput = item => item && item.length ? JSON.parse(item).map((icase, i) => `<div class="case"><span class="label">${this.translate('case', 'problem')} ${i + 1}</span>${icase}</div>`).join('') : '';
         const inputLength = item => item && item.length ? JSON.parse(item).length : 0;
 
-        new Modal(`
+        const modal = new Modal(`
             <h1>${item.title}</h1>
             <p>${item.description}</p>
             <h3>${this.translate('input', 'problem', { count: inputLength(item.input) })}</h3>
@@ -73,8 +78,10 @@ export default {
             <h3>${this.translate('output', 'problem', { count: inputLength(item.output) })}</h3>
             <div class="code">${mapInput(item.output)}</div>
         `, { id: 'problem' })
-        .addButton({ text: this.translate('edit', 'common'), isDefault: false, callback: () => location.href = `/problems/${item.id}` })
-        .addButton({ text: this.translate('close', 'common'), close: true })
+        .addButton({ text: this.translate('close', 'common'), close: true });
         
+        if (item.owner) {
+            modal.addButton({ text: this.translate('edit', 'common'), isDefault: false, callback: () => location.href = `/problems/${item.id}` });
+        }
     },
 }

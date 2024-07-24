@@ -1,7 +1,9 @@
 {
     "problems": {
         "table": {
-            "add": "Add Problem"
+            "add": "Add Problem",
+            "owner": "Owner",
+            "owner-title": "I am the owner"
         },
         "add": {
             "h1": "Add Problem",

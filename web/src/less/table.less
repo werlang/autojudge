@@ -37,7 +37,13 @@
         }
 
         .column {
-            width: var(--column-width);
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        .column.small {
+            flex: 0 0 120px;
         }
     }
 
@@ -84,12 +90,15 @@
             flex-grow: 1;
 
             .column {
-                width: var(--column-width);
+                flex: 1;
 
                 &:hover i {
                     color: var(--color-text);
                 }
+            }
 
+            .column.small {
+                flex: 0 0 120px;
             }
         }
 

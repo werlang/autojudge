@@ -10,7 +10,6 @@ export default class Table {
         this.domElement = document.createElement('div');
         this.domElement.id = id;
         this.domElement.classList.add('table');
-        this.domElement.style.setProperty('--column-width', `${(100 / columns.length).toFixed(2)}%`);
         element.appendChild(this.domElement);
 
         this.createHead();
@@ -31,6 +30,9 @@ export default class Table {
         const columns = this.columns.map(column => {
             const columnDOM = document.createElement('div');
             columnDOM.classList.add('column', column.id || '');
+            if (column.size === 'small') {
+                columnDOM.classList.add('small');
+            }
             columnDOM.innerHTML = `${column.name}<div class="button"><i class="fa-solid fa-arrow-down-a-z"></i></div>`;
 
             const button = columnDOM.querySelector('.button');
@@ -132,7 +134,16 @@ export default class Table {
             if (item.customClass) {
                 itemDOM.classList.add(item.customClass);
             }
-            itemDOM.innerHTML = this.columns.map(column => `<div class="column ${column.id || ''}">${item[column.id]}</div>`).join('');
+            itemDOM.innerHTML = this.columns.map(column => {
+                let classes = ['column'];
+                if (column.size === 'small') {
+                    classes.push('small');
+                }
+                if (column.id) {
+                    classes.push(column.id);
+                }
+                return `<div class="${classes.join(' ')}">${item[column.id]}</div>`
+            }).join('');
     
             if (this.itemEvents) {
                 this.itemEvents.forEach(event => {
