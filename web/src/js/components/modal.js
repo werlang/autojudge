@@ -10,9 +10,11 @@
 //   - addEvent({ id, event, callback }): add an event to the modal
 //   - close(): close the modal
 //   - get(selector): get an element inside the modal, or the modal itself if no selector is provided
+//   - getAll(selector): get all elements inside the modal
 //   - addButton({ id, text, callback, close = false, isDefault = true }): add a button to the modal
 //   - append(element): append an element to the modal (can be a string or a DOM element)
 //   - onClose(callback): set a callback to be called when the modal is closed
+//   - addInput({ id, type, placeholder, value, label, required, disabled }): add an input to the modal
 //   - loadContent(file): load an HTML file to the modal
 // Example:
 //   const modal = new Modal(`<h1>Hello World</h1><button id='my-button'>Click me</button>`, { id: 'my-modal' });
@@ -20,6 +22,7 @@
 
 import Button from './button.js';
 import HTMLLoader from '../helpers/html-loader.js';
+import Input from './input.js';
 
 export default class Modal {
     constructor(text, options = {}) {
@@ -170,6 +173,26 @@ export default class Modal {
         return this;
     }
 
+    addInput({ id, type, placeholder, value, label, required, disabled }) {
+        let input = document.createElement('input');
+        input.id = id;
+        input.type = type;
+        input.placeholder = placeholder || label;
+        input.value = value;
+        input.required = required;
+        input.disabled = disabled;
+
+        input = new Input(input);
+        this.append(input.get().parentNode);
+
+        if (!this.inputList) {
+            this.inputList = {};
+        }
+        this.inputList[id] = input;
+
+        return this;
+    }
+
     append(element) {
         if (typeof element === 'string') {
             this.domObject.querySelector('#content').insertAdjacentHTML('beforeend', element);
@@ -209,5 +232,9 @@ export default class Modal {
         await loader.load(content);
         content.classList.remove('loading');
         return this;
+    }
+
+    getInput(id) {
+        return this.inputList[id];
     }
 }
