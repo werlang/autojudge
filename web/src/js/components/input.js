@@ -9,6 +9,13 @@
 //   - keyUp(callback): add a callback to the keyup event
 //   - input(callback): add a callback to the input event
 //   - setValue(value): set the input value
+//   - disable(): disable the input
+//   - enable(): enable the input
+//   - setMask(mask): set a mask to the input. The mask is a string with the following characters:
+//       - 0: only numbers
+//       - X: only uppercase letters
+//       - x: only lowercase letters
+//       - Any other character: fixed character
 // Example:
 //   const input = new Input(document.querySelector('#my-input'));
 //   input.setError('E-mail inválido');
@@ -43,6 +50,11 @@ export default class Input {
         if (this.element.type == 'checkbox') {
             const label = document.createElement('label');
             label.classList.add('checkbox');
+
+            if (this.element.disabled) {
+                label.classList.add('disabled');
+            }
+
             label.appendChild(this.element);
             label.appendChild(span);
             wrapper.appendChild(label);
@@ -122,7 +134,26 @@ export default class Input {
     }
 
     change(callback) {
-        this.get().addEventListener('change', callback);
+        this.get().addEventListener('change', e => {
+            if (this.element.disabled) return;
+            callback(e);
+        });
+        return this;
+    }
+
+    disable() {
+        this.element.disabled = true;
+        if (this.element.type == 'checkbox') {
+            this.element.parentElement.classList.add('disabled');
+        }
+        return this;
+    }
+
+    enable() {
+        this.element.disabled = false;
+        if (this.element.type == 'checkbox') {
+            this.element.parentElement.classList.remove('disabled');
+        }
         return this;
     }
 
