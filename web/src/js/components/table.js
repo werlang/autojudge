@@ -1,3 +1,5 @@
+import Translator from "../helpers/translate.js";
+
 export default class Table {
 
     placeholderAmount = 10;
@@ -51,11 +53,11 @@ export default class Table {
                 // sort the content toggle asc/desc
                 if (button.sort === 'asc') {
                     button.sort = 'desc';
-                    this.content.sort((a, b) => a[column.id] > b[column.id] ? 1 : -1);
+                    this.content.sort((a, b) => a[column.id].localeCompare(b[column.id], Translator.currentLanguage(), { sensitivity: 'base' }));
                 }
                 else {
                     button.sort = 'asc';
-                    this.content.sort((a, b) => a[column.id] > b[column.id] ? -1 : 1);
+                    this.content.sort((a, b) => b[column.id].localeCompare(a[column.id], Translator.currentLanguage(), { sensitivity: 'base' }));
                 }
 
                 this.render();

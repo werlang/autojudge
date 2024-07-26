@@ -17,6 +17,10 @@ class Translator {
         this.languages = languages;
         this.namespaces = namespaces;
     }
+
+    static currentLanguage() {
+        return i18next.language;
+    }
     
     async init() {
         if (!Translator.loaded) {
