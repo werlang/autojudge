@@ -1,6 +1,6 @@
 // Google Login helper
 // USAGE:
-// GoogleLogin.init(); // initialize the google login
+// GoogleLogin.init({ redirectUri }); // initialize the google login. redirectUri is the uri to redirect after login
 // GoogleLogin.onFail(() => {}); // callback when the login fails (no account selected)
 // GoogleLogin.onSignIn(() => {}); // callback when the login is successful
 // GoogleLogin.prompt(); // prompt the user to login. It will redirect to ask for the google account or automatically login if the account is already selected. This is asynchronous, so you can await it.
@@ -22,9 +22,12 @@ export default class GoogleLogin {
     static logged = false;
     static loaded = false;
 
-    static async init() {
+    static async init({ redirectUri }) {
         if (GoogleLogin.loaded) {
             return GoogleLogin;
+        }
+        if (!redirectUri) {
+            throw new Error('redirectUri not set');
         }
 
         const pledge = new Pledge();
@@ -41,7 +44,7 @@ export default class GoogleLogin {
                 callback: handleCredentialResponse,
                 auto_select: true,
                 ux_mode: 'redirect',
-                login_uri: `https://${window.location.hostname}/dashboard`,
+                login_uri: redirectUri,
                 // use_fedcm_for_prompt: true,
             });
 

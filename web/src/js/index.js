@@ -25,7 +25,7 @@ splashVideo.playbackRate = 0.4;
 const translate = await new Translator(['en', 'pt'], ['index', 'components']).init();
 
 
-GoogleLogin.init();
+GoogleLogin.init({ redirectUri: `https://${window.location.hostname}/dashboard` });
 GoogleLogin.onFail(async () => {
     const modal = new Modal(`
         <h1>${translate('signup.h1', 'index')}</h1>

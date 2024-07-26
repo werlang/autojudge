@@ -17,10 +17,17 @@ export default (req, res, next) => {
             translations[viewKey] = res.locals.t(...item);
         }
         // console.log(translations);
-        
+
+        // eliminate undefined values
+        for (let key in templateVars) {
+            if (!templateVars[key]) {
+                delete templateVars[key];
+            }
+        }
+
         const vars = {
             // send the templateVars to a hidden input in the template. Frontend will read this and store it in a class
-            'template-vars': JSON.stringify(templateVars),
+            'template-vars': new URLSearchParams(templateVars).toString(),
             // send the templateVars to replace the view
             ...templateVars,
             // send the translations to the view

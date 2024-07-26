@@ -14,11 +14,11 @@ export default class TemplateVar {
         if (!e) return;
 
         try {
-            const vars = JSON.parse(e.value);
-            for (let i in vars) {
-                TemplateVar.vars[i] = vars[i];
-            }
-        }
+            const vars = new URLSearchParams(e.value);
+            vars.forEach((value, key) => {
+                TemplateVar.vars[key] = value;
+            });
+        }   
         catch (error) {
             console.error('Error parsing template variable:', error);
         }
