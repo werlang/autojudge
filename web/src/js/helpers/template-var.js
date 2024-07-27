@@ -3,6 +3,8 @@
 //  Usage:
 //  const variable = TemplateVar.get('variableName'); // get the variable value
 
+import DynamicScript from "./dynamic-script.js";
+
 
 export default class TemplateVar {
 
@@ -16,7 +18,7 @@ export default class TemplateVar {
         try {
             const vars = new URLSearchParams(e.value);
             vars.forEach((value, key) => {
-                TemplateVar.vars[key] = value;
+                TemplateVar.vars[key] = TemplateVar.format(value);
             });
         }   
         catch (error) {
@@ -25,6 +27,16 @@ export default class TemplateVar {
 
         e.remove();
         TemplateVar.isBuilt = true;
+
+        // load live reload
+        TemplateVar.loadLive();
+    }
+
+    static format(value) {
+        if (value === 'true') return true;
+        if (value === 'false') return false;
+        if (!isNaN(value)) return Number(value);
+        return value;
     }
 
     static get(key) {
@@ -35,6 +47,13 @@ export default class TemplateVar {
             return TemplateVar.vars;
         }
         return TemplateVar.vars[key];
+    }
+
+    static loadLive() {
+        let modes = TemplateVar.get('liveReload');
+        if (modes === false) return;
+        if (modes === true) modes = 'css,js,html';
+        new DynamicScript(`https://livejs.com/live.js#${modes}`);
     }
 
 }
