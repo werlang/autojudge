@@ -1,5 +1,11 @@
-export default (req, res, next) => {
+export default fixedVars => (req, res, next) => {
     res.templateRender = async (view, templateVars = {}) => {
+        // set fixed variables
+        templateVars = {
+            ...fixedVars,
+            ...templateVars,
+        };
+
         // load view template
         let template;
         try {

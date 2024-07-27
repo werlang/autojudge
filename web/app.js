@@ -29,20 +29,21 @@ langMiddleware.init({
 })
 app.use(langMiddleware.listen());
 
-// render middleware
-app.use(renderMiddleware);
+// render middleware, setting some variables to be used in all views
+app.use(renderMiddleware({
+    apiurl: process.env.API,
+    liveReload: process.env.LIVE_RELOAD,
+}));
 
 app.get('/', (req, res) => {
     res.templateRender('index', {
-        apiurl: process.env.API,
         googleClientId: process.env.GOOGLE_CLIENT_ID,
     });
 });
 
 const dashboardRoute = (req, res) => {
     res.templateRender('dashboard', {
-        apiurl: process.env.API,
-        googleCredential: req.body.credential
+        googleCredential: req.body.credential,
     });
 }
 // routes for dashboard (menu)
@@ -57,8 +58,6 @@ app.get([
 // route for problem
 app.get('/problems/:id', (req, res) => {
     res.templateRender('dashboard', {
-        apiurl: process.env.API,
-        googleCredential: req.body.credential,
         problemId: req.params.id,
     });
 });
