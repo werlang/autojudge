@@ -1,7 +1,8 @@
 {
-    "inout_zero": "Nenhum Exemplo de Entrada/Saída encontrado",
-    "inout_one": "Exemplo de Entrada/Saída",
-    "inout_other": "Exemplos de Entrada/Saída",
+    "inout_zero": "Nenhum Exemplo de Entrada/Saída {{hidden}} encontrado",
+    "inout_one": "Exemplo de Entrada/Saída {{hidden}}",
+    "inout_other": "Exemplos de Entrada/Saída {{hidden}}",
+    "hidden": "Oculto",
     "case": "Caso",
     "input": "Entrada",
     "output": "Saída",
@@ -13,5 +14,7 @@
     "field": {
         "title": "Título",
         "description": "Descrição"
-    }
+    },
+    "add-case": "Adicionar novo caso de teste",
+    "add-hidden": "Adicionar novo caso de teste oculto"
 }

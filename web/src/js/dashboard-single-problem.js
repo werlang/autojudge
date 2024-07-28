@@ -1,3 +1,4 @@
+import Button from './components/button.js';
 import Modal from './components/modal.js';
 import Toast from './components/toast.js';
 import Problem from './model/problem.js'
@@ -6,7 +7,7 @@ export default {
 
     load: async function(id) {
         const {problem} = await new Problem({ id }).get();
-        // console.log(problem);
+        console.log(problem);
 
         if (!problem) {
             location.href = '/problems';
@@ -19,28 +20,47 @@ export default {
 
     render: function() {
         const inputLength = item => item && item.length ? JSON.parse(item).length : 0;
-        const getItems = item => item && item.length ? JSON.parse(item) || [] : [];
-        const io = {
-            input: getItems(this.problem.input),
-            output: getItems(this.problem.output)
-        };
-        const codes = io.input.map((_, i) => `<div class="code">
-            ${[Object.keys(io).map(key => `<div class="case">
-                <span class="label">${this.translate(key, 'problem')}</span>
-                ${io[key][i]}
-            </div>`).join('')]}
-        </div>`).join('');
-        
+
         const frame = document.querySelector('#frame');
         frame.innerHTML = `<div id="problem">
             <h1 id="title">${this.problem.title}</h1>
             <p id="description">${this.problem.description}</p>
-            <h3>${this.translate('inout', 'problem', {count: inputLength(this.problem.input)})}</h3>
-            ${codes}
+            <div id="public-codes"></div>
+            <div id="hidden-codes"></div>
         </div>`;
 
+        const publicCodes = frame.querySelector('#problem #public-codes');
+        publicCodes.innerHTML = `<h3>${this.translate('inout', 'problem', {count: inputLength(this.problem.input), hidden: ''})}</h3>`;
+
+        const codeContainerPublic = document.createElement('div');
+        codeContainerPublic.classList.add('code-container');
+        codeContainerPublic.innerHTML = this.addCases(this.problem.input, this.problem.output);
+        publicCodes.appendChild(codeContainerPublic);
+
+        // do not add hidden cases if the problem has no author
+        // also do not add editable fields
         if (!this.problem.author) return;
+
+        const buttonAddCase = new Button({ id: 'add-case', text: this.translate('add-case', 'problem'), callback: () => {
+            codeContainerPublic.innerHTML += this.addCase();
+        }});
+        publicCodes.appendChild(buttonAddCase.get());
+
+
+        const hiddenCodes = frame.querySelector('#problem #hidden-codes');
+        hiddenCodes.innerHTML = `<h3>${this.translate('inout', 'problem', {count: inputLength(this.problem.inputHidden), hidden: this.translate('hidden', 'problem')})}</h3>`;
+        const codeContainerHidden = document.createElement('div');
+        codeContainerHidden.classList.add('code-container');
+        codeContainerHidden.innerHTML = this.addCases(this.problem.inputHidden, this.problem.outputHidden);
+        hiddenCodes.appendChild(codeContainerHidden);
+
+        const buttonAddHidden = new Button({ id: 'add-hidden', text: this.translate('add-hidden', 'problem'), callback: () => {
+            codeContainerHidden.innerHTML += this.addCase();
+        }});
+        hiddenCodes.appendChild(buttonAddHidden.get());
+
         this.createEditableFields();
+        
     },
 
     createEditableFields: function() {
@@ -115,5 +135,28 @@ export default {
             new Toast(error.message, { type: 'error' });
         }
     },
+
+    addCase: function(input, output) {
+        return `<div class="code">
+            <div class="case">
+                <span class="label">${this.translate('input', 'problem')}</span>
+                ${input || ''}
+            </div>
+            <div class="case">
+                <span class="label">${this.translate('output', 'problem')}</span>
+                ${output || ''}
+            </div>
+        </div>`;
+    },
+
+    addCases: function(inputs, outputs) {
+        const getItems = item => item && item.length ? JSON.parse(item) || [] : [];
+        const io = {
+            input: getItems(inputs),
+            output: getItems(outputs),
+        };
+
+        return io.input.map((_, i) => this.addCase(io.input[i], io.output[i])).join('');
+    }
 
 }

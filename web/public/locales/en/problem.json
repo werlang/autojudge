@@ -1,7 +1,8 @@
 {
-    "inout_zero": "No Input/Output Samples found",
-    "inout_one": "Input/Output Sample",
-    "inout_other": "Input/Output Samples",
+    "inout_zero": "No {{hidden}} Input/Output Samples found",
+    "inout_one": "{{hidden}} Input/Output Sample",
+    "inout_other": "{{hidden}} Input/Output Samples",
+    "hidden": "Hidden",
     "case": "Case",
     "input": "Input",
     "output": "Output",
@@ -13,5 +14,7 @@
     "field": {
         "title": "Title",
         "description": "Description"
-    }
+    },
+    "add-case": "Add new test case",
+    "add-hidden": "Add new hidden test case"
 }
