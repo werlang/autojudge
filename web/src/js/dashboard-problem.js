@@ -87,10 +87,11 @@ export default {
             <h3>${this.translate('inout', 'problem', {count: inputLength(item.input)})}</h3>
             ${codes}
         `, { id: 'problem' })
-        .addButton({ text: this.translate('close', 'common'), close: true });
-        
-        if (item.author) {
-            modal.addButton({ text: this.translate('edit', 'common'), isDefault: false, callback: () => location.href = `/problems/${item.id}` });
-        }
+        .addButton({ text: this.translate('close', 'common'), close: true })
+        .addButton({ 
+            text: `${this.translate('open', 'common')}${item.author ? ` / ${this.translate('edit', 'common')}` : ''}`,
+            isDefault: false,
+            callback: () => location.href = `/problems/${item.id}` 
+        });
     },
 }

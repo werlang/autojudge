@@ -4,5 +4,8 @@
     "problem_one": "Problema",
     "problem_other": "Problemas",
     "close": "Fechar",
-    "edit": "Editar"
+    "edit": "Editar",
+    "open": "Abrir",
+    "yes": "Sim",
+    "no": "Não"
 }

@@ -4,5 +4,14 @@
     "inout_other": "Input/Output Samples",
     "case": "Case",
     "input": "Input",
-    "output": "Output"
+    "output": "Output",
+    "save-changes": {
+        "h1": "Save Changes",
+        "message": "Do you want to save the changes to the <b>{{field}}</b> field?",
+        "success": "Problem saved successfully."
+    },
+    "field": {
+        "title": "Title",
+        "description": "Description"
+    }
 }

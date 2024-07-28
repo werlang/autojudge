@@ -4,5 +4,14 @@
     "inout_other": "Exemplos de Entrada/Saída",
     "case": "Caso",
     "input": "Entrada",
-    "output": "Saída"
+    "output": "Saída",
+    "save-changes": {
+        "h1": "Salvar Alterações",
+        "message": "Deseja salvar as alterações no campo <b>{{field}}</b>?",
+        "success": "Problema salvo com sucesso."
+    },
+    "field": {
+        "title": "Título",
+        "description": "Descrição"
+    }
 }
