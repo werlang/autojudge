@@ -25,4 +25,9 @@ export default class Problem {
         });
         return problem;
     }
+
+    async update(fields) {
+        const problem = await new Api().put(`problems/${this.id}`, fields);
+        return problem;
+    }
 }

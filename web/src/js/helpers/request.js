@@ -25,13 +25,21 @@ export default class Request {
         return this.request('POST', endpoint, args);
     }
 
+    async put(endpoint, args) {
+        return this.request('PUT', endpoint, args);
+    }
+
+    async delete(endpoint, args) {
+        return this.request('DELETE', endpoint, args);
+    }
+
     async request(method, endpoint, data={}) {
         const options = {
             method,
             headers: this.headers,
         };
 
-        if (method === 'POST') {
+        if (method === 'POST' || method === 'PUT') {
             options.body = JSON.stringify(data);
             this.headers.set('Content-Type', 'application/json');
         }
