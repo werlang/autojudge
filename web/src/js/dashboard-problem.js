@@ -82,8 +82,8 @@ export default {
         </div>`).join('');
 
         const modal = new Modal(`
-            <h1>${item.title}</h1>
-            <p>${item.description}</p>
+            <h1 title="title">${item.title}</h1>
+            <p id="description">${item.description}</p>
             <h3>${this.translate('inout', 'problem', {count: inputLength(item.input)})}</h3>
             ${codes}
         `, { id: 'problem' })

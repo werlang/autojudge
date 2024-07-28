@@ -52,7 +52,13 @@ async function redirectOrLogin(path) {
         location.href = `/${path}`;
         return;
     }
-    return GoogleLogin.prompt(path);
+    try {
+        return await GoogleLogin.prompt(path);
+    }
+    catch (error) {
+        console.error(error);
+        new Toast(error.message, { type: 'error' });
+    }
 }
 new Button({ element: document.querySelector('#section-1 #join') }).click(async () => redirectOrLogin('dashboard'));
 new Button({ element: document.querySelector('#section-4 #problems') }).click(async () => redirectOrLogin('problems'));

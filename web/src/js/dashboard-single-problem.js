@@ -86,14 +86,14 @@ export default {
                 `)
                 // save changes
                 .addButton({
-                    text: this.translate('yes', 'common'),
+                    text: this.translate('save', 'common'),
                     close: true,
                     isDefault: false,
                     callback: () => this.saveChanges(editable.parentNode.id, field.textContent)
                 })
                 // discard changes
                 .addButton({ 
-                    text: this.translate('no', 'common'), 
+                    text: this.translate('discard', 'common'), 
                     close: true,
                     isDefault: true,
                     callback: () => field.textContent = oldContent

@@ -7,5 +7,7 @@
     "edit": "Edit",
     "open": "Open",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "save": "Save",
+    "discard": "Discard"
 }
