@@ -3,6 +3,7 @@ import Problem from "./model/problem.js";
 import Modal from "./components/modal.js";
 import Form from "./components/form.js";
 import Toast from "./components/toast.js";
+import Translator from "./helpers/translate.js";
 
 export default {
     build: async function() {
@@ -52,7 +53,8 @@ export default {
         const form = new Form(content.querySelector('form'));
 
         form.submit(async data => {
-            console.log(data);
+            // console.log(data);
+            data.language = Translator.currentLanguage();
             try {
                 // create problem and redirect to it
                 const { problem } = await new Problem(data).create();

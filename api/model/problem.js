@@ -11,6 +11,7 @@ export default class Problem extends Model {
         output_hidden,
         solution,
         author,
+        language,
     }) {
         super('problems', {
             fields: {
@@ -24,9 +25,10 @@ export default class Problem extends Model {
                 output_hidden,
                 solution,
                 author,
+                language,
             },
-            allowUpdate: ['title', 'description', 'input_public', 'output_public', 'input_hidden', 'output_hidden', 'solution'],
-            insertFields: ['title', 'description', 'author'],
+            allowUpdate: ['title', 'description', 'input_public', 'output_public', 'input_hidden', 'output_hidden', 'solution', 'language'],
+            insertFields: ['title', 'description', 'author', 'language'],
         });
     }
     

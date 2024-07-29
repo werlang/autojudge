@@ -19,6 +19,7 @@ router.post('/', auth({'user:exists': true}), async (req, res, next) => {
         const problem = await new Problem({
             title: req.body.title,
             description: req.body.description,
+            language: req.body.language || 'en',
             author: req.user.id,
         }).insert();
         return res.status(201).send({

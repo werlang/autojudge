@@ -2,10 +2,11 @@ import Api from "../helpers/api.js";
 
 export default class Problem {
 
-    constructor({ id, title, description }) {
+    constructor({ id, title, description, language }) {
         this.id = id;
         this.title = title;
         this.description = description;
+        this.language = language || 'en';
     }
 
     static async getAll() {
@@ -21,7 +22,8 @@ export default class Problem {
     async create() {
         const problem = await new Api().post('problems', {
             title: this.title,
-            description: this.description
+            description: this.description,
+            language: this.language,
         });
         return problem;
     }
