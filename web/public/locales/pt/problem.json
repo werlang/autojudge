@@ -19,5 +19,6 @@
     "add-case": "Adicionar novo caso de teste",
     "add-hidden": "Adicionar novo caso de teste oculto",
     "new-case-value": "Novo valor de {{inout}}",
-    "empty-case": "Por favor, preencha os campos de entrada e saída."
+    "empty-case": "Por favor, preencha os campos de entrada e saída.",
+    "duplicate-case": "Este caso de teste já existe."
 }

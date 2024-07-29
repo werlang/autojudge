@@ -50,6 +50,7 @@ export default {
             codeContainerPublic.appendChild(this.createCaseNode());
             // hide all buttons
             frame.querySelectorAll('button').forEach(b => b.classList.add('hidden'));
+            frame.querySelector('.code.create .input').focus();
         }});
         publicCodes.appendChild(buttonAddCase.get());
 
@@ -68,6 +69,7 @@ export default {
             if (hiddenCodes.querySelector('.create')) return;
             codeContainerHidden.appendChild(this.createCaseNode());
             frame.querySelectorAll('button').forEach(b => b.classList.add('hidden'));
+            frame.querySelector('.code.create .input').focus();
         }});
         hiddenCodes.appendChild(buttonAddHidden.get());
 
@@ -92,7 +94,7 @@ export default {
             // click the icon
             const editIcon = editable.querySelector('.edit-icon');
             editIcon.addEventListener('click', () => {
-                field.contentEditable = true;
+                field.contentEditable = 'plaintext-only';
                 field.focus();
                 // select all the text
                 window.getSelection().selectAllChildren(field);
@@ -108,7 +110,14 @@ export default {
                 editIcon.classList.remove('editing');
                 editIcon.innerHTML = '<i class="fas fa-edit"></i>';
 
+                // do not save if the content is the same
                 if (oldContent === field.textContent) return;
+
+                // do not save if the content is empty
+                if (!field.textContent) {
+                    field.textContent = oldContent;
+                    return;
+                }
 
                 // show save changes modal
                 // console.log(editable.parentNode.id, field.textContent);
@@ -195,13 +204,13 @@ export default {
             // input field: where the user writes new the input
             const inputField = document.createElement('span');
             inputField.classList.add('input');
-            inputField.contentEditable = true;
+            inputField.contentEditable = 'plaintext-only';
             inputField.setAttribute('placeholder', this.translate('new-case-value', 'problem', { inout: this.translate('input', 'common') }));
 
             // output field: where the user writes new the output
             const outputField = document.createElement('span');
             outputField.classList.add('input');
-            outputField.contentEditable = true;
+            outputField.contentEditable = 'plaintext-only';
             outputField.setAttribute('placeholder', this.translate('new-case-value', 'problem', { inout: this.translate('output', 'common') }));
 
             // append the fields to the cases
@@ -263,12 +272,18 @@ export default {
         newOutput = newOutput ? JSON.parse(newOutput) : [];
 
         if (operation === 'add') {
+            if (newInput.includes(input)) {
+                new Toast(this.translate('duplicate-case', 'problem'), { type: 'error' });
+                return;
+            }
+
             newInput.push(input);
             newOutput.push(output);
         }
         else {
-            newInput.splice(newInput.indexOf(input), 1);
-            newOutput.splice(newOutput.indexOf(output), 1);
+            const index = newInput.indexOf(input);
+            newInput.splice(index, 1);
+            newOutput.splice(index, 1);
         }
 
         try {

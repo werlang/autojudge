@@ -19,5 +19,6 @@
     "add-case": "Add new test case",
     "add-hidden": "Add new hidden test case",
     "new-case-value": "New {{inout}} value",
-    "empty-case": "Please fill in the input and output fields."
+    "empty-case": "Please fill in the input and output fields.",
+    "duplicate-case": "This test case already exists."
 }
