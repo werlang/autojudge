@@ -7,9 +7,21 @@ import Translator from "./helpers/translate.js";
 import Pledge from "./helpers/pledge.js";
 
 import '../less/dashboard.less';
+import LocalData from "./helpers/local-data.js";
 
 const translatePledge = new Pledge();
 new Translator(['en', 'pt'], ['components', 'dashboard', 'problem', 'common']).init().then(translate => translatePledge.resolve(translate));
+
+// handle redirect from google login
+function handleRedirect() {
+    const credential = TemplateVar.get('googleCredential');
+    // console.log(credential);
+    if (credential) {
+        GoogleLogin.saveCredential(credential);
+        new LocalData({ id: 'redirect-message' }).remove();
+    }
+}
+handleRedirect();
 
 const userPledge = new Pledge();
 // get logged user
@@ -23,7 +35,8 @@ const userPledge = new Pledge();
         console.error(error);
         // set expired token so index can show the message
         if (error.message === 'Invalid token.') {
-            GoogleLogin.saveCredential('expired');
+            GoogleLogin.removeCredential();
+            new LocalData({ id: 'redirect-message' }).set({ data: 'expired' });
         }
         location.href = '/';
     }
@@ -46,6 +59,7 @@ translatePledge.then(translate => {
     })
     .addAction('logout', async () => {
         GoogleLogin.removeCredential();
+        new LocalData({ id: 'redirect-message' }).set({ data: 'logout' });
         location.href = '/';
     });
     
@@ -70,19 +84,8 @@ translatePledge.then(translate => {
             problem.load(id);
         }
     })();
+
 });
-
-
-// handle redirect from google login
-function handleRedirect() {
-    const credential = TemplateVar.get('googleCredential');
-    // console.log(credential);
-    if (credential) {
-        GoogleLogin.saveCredential(credential);
-    }
-}
-handleRedirect();
-
 
 Pledge.all([userPledge, menuPledge]).then(([{user}, menu]) => {
     new Header({ user, menu, });

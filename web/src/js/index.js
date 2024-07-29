@@ -5,6 +5,7 @@ import GoogleLogin from './helpers/google-login.js';
 import Button from './components/button.js';
 import Translator from './helpers/translate.js';
 import Toast from './components/toast.js';
+import LocalData from './helpers/local-data.js';
 
 import '../less/index.less';
 
@@ -26,33 +27,35 @@ const translate = await new Translator(['en', 'pt'], ['index', 'components']).in
 
 
 GoogleLogin.init({ redirectUri: `https://${window.location.hostname}/dashboard` });
-GoogleLogin.onFail(async () => {
-    const modal = new Modal(`
-        <h1>${translate('signup.h1', 'index')}</h1>
-        <p>${translate('signup.p', 'index')}</p>
-        <div id="button"></div>
-    `, { id: 'signup' });
-    GoogleLogin.renderButton(modal.get('#button'));
-});
+GoogleLogin.onFail(showSignInModal);
 
+let redirectMessage = new LocalData({ id: 'redirect-message' });
 let credential = GoogleLogin.getCredential();
 // console.log(credential);
 // check if the credential is expired and show a message
-if (credential === 'expired') {
-    GoogleLogin.removeCredential();
+if (redirectMessage.get() === 'expired') {
+    // GoogleLogin.removeCredential();
     new Toast(translate('login.expired', 'index'), { type: 'error' });
+    redirectMessage.remove();
     credential = null;
 }
 
 // bind buttons to google login
 async function redirectOrLogin(path) {
-    GoogleLogin.onSignIn(async () => location.href = `/${path}`);
+    GoogleLogin.onSignIn(async () => {
+        redirectMessage.remove();
+        location.href = `/${path}`;
+    });
     
     if (credential) {
         location.href = `/${path}`;
         return;
     }
     try {
+        if (redirectMessage.get() === 'logout') {
+            showSignInModal();
+            return;
+        }
         return await GoogleLogin.prompt(path);
     }
     catch (error) {
@@ -64,6 +67,15 @@ new Button({ element: document.querySelector('#section-1 #join') }).click(async 
 new Button({ element: document.querySelector('#section-4 #problems') }).click(async () => redirectOrLogin('problems'));
 new Button({ element: document.querySelector('#section-5 #contests') }).click(async () => redirectOrLogin('contests'));
 new Button({ element: document.querySelector('#section-6 #teams') }).click(async () => redirectOrLogin('teams'));
+
+function showSignInModal() {
+    const modal = new Modal(`
+        <h1>${translate('signup.h1', 'index')}</h1>
+        <p>${translate('signup.p', 'index')}</p>
+        <div id="button"></div>
+    `, { id: 'signup' });
+    GoogleLogin.renderButton(modal.get('#button'));
+}
 
 // add cards
 const cardContainer = document.querySelector('#options');
