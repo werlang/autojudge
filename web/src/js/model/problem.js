@@ -27,7 +27,8 @@ export default class Problem {
     }
 
     async update(fields) {
-        const problem = await new Api().put(`problems/${this.id}`, fields);
-        return problem;
+        const resp = await new Api().put(`problems/${this.id}`, fields);
+        const problem = await this.get();
+        return { ...resp, ...problem };
     }
 }

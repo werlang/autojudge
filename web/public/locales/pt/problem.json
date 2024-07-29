@@ -9,12 +9,15 @@
     "save-changes": {
         "h1": "Salvar Alterações",
         "message": "Deseja salvar as alterações no campo <b>{{field}}</b>?",
-        "success": "Problema salvo com sucesso."
+        "success": "Problema salvo com sucesso.",
+        "success-case": "Caso de teste {{operation}} com sucesso."
     },
     "field": {
         "title": "Título",
         "description": "Descrição"
     },
     "add-case": "Adicionar novo caso de teste",
-    "add-hidden": "Adicionar novo caso de teste oculto"
+    "add-hidden": "Adicionar novo caso de teste oculto",
+    "new-case-value": "Novo valor de {{inout}}",
+    "empty-case": "Por favor, preencha os campos de entrada e saída."
 }

@@ -9,5 +9,9 @@
     "yes": "Sim",
     "no": "Não",
     "save": "Salvar",
-    "discard": "Descartar"
+    "discard": "Descartar",
+    "input": "Entrada",
+    "output": "Saída",
+    "added": "Adicionado",
+    "removed": "Removido"
 }
