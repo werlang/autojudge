@@ -80,6 +80,10 @@ export default class Input {
                 this.element.classList.remove('filled');
             }
         });
+
+        if (this.value) {
+            this.setValue(this.value);
+        }
     }
 
     get() {

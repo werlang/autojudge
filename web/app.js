@@ -25,6 +25,7 @@ langMiddleware.init({
         'dashboard',
         'problem',
         'common',
+        'contest'
     ],
 })
 app.use(langMiddleware.listen());

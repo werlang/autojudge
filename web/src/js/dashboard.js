@@ -10,7 +10,13 @@ import '../less/dashboard.less';
 import LocalData from "./helpers/local-data.js";
 
 const translatePledge = new Pledge();
-new Translator(['en', 'pt'], ['components', 'dashboard', 'problem', 'common']).init().then(translate => translatePledge.resolve(translate));
+new Translator(['en', 'pt'], [
+    'components',
+    'dashboard',
+    'problem',
+    'common',
+    'contest',
+]).init().then(translate => translatePledge.resolve(translate));
 
 // handle redirect from google login
 function handleRedirect() {

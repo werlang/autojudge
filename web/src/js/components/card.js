@@ -8,27 +8,25 @@
 //   - customClass: custom class to be added in the card element
 // Methods:
 //   - get(): return the card element
-//   - addClass(className): add a class to the card element
+//   - addClass(className): add a class (or array os classes) to the card element
 //   - removeClass(className): remove a class from the card element
 //   - toggleClass(className): toggle a class in the card
 //   - click(callback): add a click event to the card
 
 
 export default class Card {
-    constructor(container, { id, icon, title, description, customClass, titlePosition }) {
+    constructor(container, { id, icon, title, description, customClass }) {
         container.classList.add('card-container');
 
         this.element = document.createElement('div');
         this.element.classList.add('card');
 
         const headElement = document.createElement('div');
-        if (icon || titlePosition === 'head') {
-            headElement.classList.add('head');
-            if (titlePosition !== 'head') {
-                headElement.innerHTML = `<i class="${ icon }"></i>`;
-            }
-            this.element.appendChild(headElement);
+        headElement.classList.add('head');
+        if (icon) {
+            headElement.innerHTML = `<i class="${ icon }"></i>`;
         }
+        this.element.appendChild(headElement);
 
         const bodyElement = document.createElement('div');
         bodyElement.classList.add('body');
@@ -37,11 +35,11 @@ export default class Card {
             const titleElement = document.createElement('div');
             titleElement.classList.add('title');
             titleElement.innerHTML = title;
-            if (titlePosition === 'head') {
-                headElement.appendChild(titleElement);
+            if (icon) {
+                bodyElement.appendChild(titleElement);
             }
             else {
-                bodyElement.appendChild(titleElement);
+                headElement.appendChild(titleElement);
             }
         }
 
@@ -55,7 +53,10 @@ export default class Card {
         this.element.appendChild(bodyElement);
 
         if (customClass) {
-            this.addClass(customClass);
+            if (!Array.isArray(customClass)) {
+                customClass = [customClass];
+            }
+            customClass.map(className => this.addClass(className));
         }
 
         if (id) {

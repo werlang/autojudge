@@ -14,6 +14,7 @@
     },
     "contests": {
         "description": "Crie novas competições, ou gerencie aquelas que você criou.",
-        "add": "Adicionar nova competição"
+        "add": "Adicionar nova competição",
+        "error": "Erro ao enviar competição."
     }
 }
