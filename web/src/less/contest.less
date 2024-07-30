@@ -7,9 +7,59 @@
     max-width: 900px;
     width: 100%;
 
-    .card.add {
-        .head {
-            background-color: var(--color-secondary);
+    .card {
+        align-items: baseline;
+        width: 250px;
+
+        &.add {
+            align-items: center;
+            text-align: center;
+
+            .head {
+                background-color: var(--color-secondary);
+            }
+
+            .body {
+                padding: 30px 10px 40px;
+            }
+        }
+
+        &.placeholder {
+            background-color: rgba(var(--color-text-raw), 0.7);
+
+            .head {
+                background-color: rgba(var(--color-main-raw), 0.5);
+
+                .title {
+                    border-radius: 5px;
+                    background-color: var(--color-text);
+                    animation: pulse 1.3s infinite;
+                }
+            }
+
+            .body .description div {
+                display: inline-block;
+                border-radius: 5px;
+                background-color: var(--color-background);
+                color: var(--color-background);
+                animation: pulse 1.6s infinite;
+
+                @keyframes pulse {
+                    0% { opacity: 0.3; }
+                    50% { opacity: 0.5; }
+                    100% { opacity: 0.3; }
+                }
+            }
+        }
+
+        .details {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-around;
+
+            i {
+                margin-right: 5px;
+            }
         }
     }
 }

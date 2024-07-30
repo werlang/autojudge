@@ -19,5 +19,6 @@
     "contest_other": "Contests",
     "name": "Name",
     "duration": "Duration",
-    "details": "Details"
+    "details": "Details",
+    "teams": "Teams"
 }

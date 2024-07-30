@@ -16,14 +16,24 @@ export default {
 
         const contestsPromise = Contest.getAll();
 
-        let { contests } = await contestsPromise;
-        console.log(contests);
+        // create placeholder cards for contests
+        this.createPlaceholderCards(container);
 
+        let { contests } = await contestsPromise;
+        // console.log(contests);
+
+        container.innerHTML = '';
         contests.map(contest => {
             new Card(container, {
                 title: contest.name,
-                description: contest.description,
                 customClass: 'contest',
+                description: `
+                    <div class="description">${contest.description}</div>
+                    <div class="details">
+                        <div class="teams" title="${this.translate('teams', 'common')}"><i class="fa-solid fa-users"></i> ${2}</div>
+                        <div class="duration" title="${this.translate('duration', 'common')}"><i class="fa-solid fa-clock"></i> ${contest.duration} min</div>
+                    </div>
+                `,
             })
             .click(async () => {
                 contest = await new Contest({ id: contest.id }).get();
@@ -50,6 +60,19 @@ export default {
             customClass: ['contest', 'add'],
         })
         .click(async () => this.add());
+    },
+
+    createPlaceholderCards: function(container, size = 5) {
+        for (let i = 0; i < size; i++) {
+            const lines = Math.floor(Math.random() * 4) + 1;
+            const content = Array.from({ length: lines }).map(() => Array(25).fill('0').join('').slice(0, Math.floor(Math.random() * 15) + 10)).map(e => `<div>${e}</div>`).join('');
+
+            new Card(container, {
+                title: 'Contest ' + i,
+                description: content,
+                customClass: ['contest', 'placeholder'],
+            });
+        }
     },
 
     add: function() {

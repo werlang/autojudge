@@ -159,7 +159,7 @@ export default {
 
     createCaseNode: function(input, output, ) {
         // check if the it is an existing case or a new one
-        const isCreate = !input && !output;
+        const isCreate = !input && !output && this.problem.author;
 
         const code = document.createElement('div');
         code.classList.add('code');
@@ -177,6 +177,8 @@ export default {
             </div>
         `;
 
+        if (!this.problem.author) return code;
+        
         // controls: add and remove buttons
         const controls = document.createElement('div');
         controls.classList.add('controls');
