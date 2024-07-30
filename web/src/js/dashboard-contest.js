@@ -36,7 +36,7 @@ export default {
                 `)
                 .addButton({ text: this.translate('close', 'common'), close: true })
                 .addButton({ 
-                    text: `${this.translate('open', 'common')} / ${this.translate('edit', 'common')}`,
+                    text: `${this.translate('details', 'common')} / ${this.translate('edit', 'common')}`,
                     isDefault: false,
                     callback: () => location.href = `/contests/${contest.id}` 
                 });

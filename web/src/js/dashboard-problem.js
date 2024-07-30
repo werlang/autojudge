@@ -94,7 +94,7 @@ export default {
         `, { id: 'problem' })
         .addButton({ text: this.translate('close', 'common'), close: true })
         .addButton({ 
-            text: `${this.translate('open', 'common')}${item.author ? ` / ${this.translate('edit', 'common')}` : ''}`,
+            text: `${this.translate('details', 'common')}${item.author ? ` / ${this.translate('edit', 'common')}` : ''}`,
             isDefault: false,
             callback: () => location.href = `/problems/${item.id}` 
         });
