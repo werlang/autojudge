@@ -12,13 +12,10 @@ router.post('/', auth({'user:exists': true}), async (req, res, next) => {
         if (!req.body.title) {
             throw new CustomError(400, 'Title is required.');
         }
-        if (!req.body.description) {
-            throw new CustomError(400, 'Description is required.');
-        }
 
         const problem = await new Problem({
             title: req.body.title,
-            description: req.body.description,
+            description: req.body.description || '',
             language: req.body.language || 'en',
             author: req.user.id,
         }).insert();
