@@ -15,16 +15,18 @@
 
 
 export default class Card {
-    constructor(container, { id, icon, title, description, customClass }) {
+    constructor(container, { id, icon, title, description, customClass, titlePosition }) {
         container.classList.add('card-container');
 
         this.element = document.createElement('div');
         this.element.classList.add('card');
 
-        if (icon) {
-            const headElement = document.createElement('div');
+        const headElement = document.createElement('div');
+        if (icon || titlePosition === 'head') {
             headElement.classList.add('head');
-            headElement.innerHTML = `<i class="${ icon }"></i>`;
+            if (titlePosition !== 'head') {
+                headElement.innerHTML = `<i class="${ icon }"></i>`;
+            }
             this.element.appendChild(headElement);
         }
 
@@ -35,7 +37,12 @@ export default class Card {
             const titleElement = document.createElement('div');
             titleElement.classList.add('title');
             titleElement.innerHTML = title;
-            bodyElement.appendChild(titleElement);
+            if (titlePosition === 'head') {
+                headElement.appendChild(titleElement);
+            }
+            else {
+                bodyElement.appendChild(titleElement);
+            }
         }
 
         if (description) {

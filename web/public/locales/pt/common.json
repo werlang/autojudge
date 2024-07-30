@@ -13,5 +13,7 @@
     "input": "Entrada",
     "output": "Saída",
     "added": "Adicionado",
-    "removed": "Removido"
+    "removed": "Removido",
+    "contest_one": "Competição",
+    "contest_other": "Competições"
 }

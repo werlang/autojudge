@@ -48,7 +48,7 @@ translatePledge.then(translate => {
         items: [
             { id: 'dashboard', text: translate('menu.dashboard', 'components'), icon: 'fas fa-tachometer-alt' },
             { id: 'problems', text: translate('menu.problems', 'components'), icon: 'fas fa-tasks', action: problemsMenuClick },
-            { id: 'contests', text: translate('menu.contests', 'components'), icon: 'fas fa-trophy' },
+            { id: 'contests', text: translate('menu.contests', 'components'), icon: 'fas fa-trophy', action: contestsMenuClick },
             { id: 'teams', text: translate('menu.teams', 'components'), icon: 'fas fa-users' },
             { id: 'logout', text: translate('menu.logout', 'components'), icon: 'fas fa-sign-out-alt' },
         ],
@@ -85,6 +85,13 @@ translatePledge.then(translate => {
         }
     })();
 
+    async function contestsMenuClick() {
+        // lazy load contests
+        const module = await import('./dashboard-contest.js');
+        const contests = module.default
+        contests.translate = translate;
+        contests.build();
+    }
 });
 
 Pledge.all([userPledge, menuPledge]).then(([{user}, menu]) => {
