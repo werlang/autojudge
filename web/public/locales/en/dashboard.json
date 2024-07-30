@@ -1,5 +1,6 @@
 {
     "problems": {
+        "description": "Browse, create, and manage problems on the platform.",
         "table": {
             "add": "Add Problem",
             "author": "Author",
@@ -7,8 +8,12 @@
         },
         "add": {
             "h1": "Add Problem",
-            "submit": "Submit Problem",
-            "error": "Error submitting problem."
+            "error": "Error submitting problem.",
+            "description": "Add the problem description."
         }
+    },
+    "contests": {
+        "description": "Create new contests, or manage those that you have created.",
+        "add": "Add new contest"
     }
 }

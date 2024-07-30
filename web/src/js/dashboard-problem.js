@@ -8,7 +8,10 @@ import Translator from "./helpers/translate.js";
 export default {
     build: async function() {
         const frame = document.querySelector('#frame');
-        frame.innerHTML = `<h1>${this.translate('problem', 'common', {count: 2})}</h1>`;
+        frame.innerHTML = `
+            <h1>${this.translate('problem', 'common', {count: 2})}</h1>
+            <p>${this.translate('problems.description', 'dashboard')}</p>
+        `;
 
         const problemsPromise = Problem.getAll();
 
@@ -45,8 +48,7 @@ export default {
             <h1>${this.translate('problems.add.h1', 'dashboard')}</h1>
             <form>
                 <input id="title" name="title" type="text" required placeholder="${this.translate('title', 'common')}">
-                <textarea id="description" name="description" required placeholder="${this.translate('description', 'common')}"></textarea>
-                <button class="default">${this.translate('problems.add.submit', 'dashboard')}</button>
+                <button class="default">${this.translate('send', 'common')}</button>
             </form>
         `;
         const modal = new Modal(content, { id: 'add-problem' });
@@ -55,6 +57,7 @@ export default {
         form.submit(async data => {
             // console.log(data);
             data.language = Translator.currentLanguage();
+            data.description = this.translate('problems.add.description', 'dashboard');
             try {
                 // create problem and redirect to it
                 const { problem } = await new Problem(data).create();

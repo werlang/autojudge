@@ -6,6 +6,7 @@
     "close": "Fechar",
     "edit": "Editar",
     "open": "Abrir",
+    "send": "Enviar",
     "yes": "Sim",
     "no": "Não",
     "save": "Salvar",
@@ -15,5 +16,7 @@
     "added": "Adicionado",
     "removed": "Removido",
     "contest_one": "Competição",
-    "contest_other": "Competições"
+    "contest_other": "Competições",
+    "name": "Nome",
+    "duration": "Duração"
 }

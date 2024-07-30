@@ -1,5 +1,6 @@
 {
     "problems": {
+        "description": "Navegue, crie, e gerencie problemas na plataforma.",
         "table": {
             "add": "Adicionar Problema",
             "author": "Autor",
@@ -7,8 +8,12 @@
         },
         "add": {
             "h1": "Adicionar Problema",
-            "submit": "Enviar Problema",
-            "error": "Erro ao enviar problema."
+            "error": "Erro ao enviar problema.",
+            "description": "Adicione a descrição do problema."
         }
+    },
+    "contests": {
+        "description": "Crie novas competições, ou gerencie aquelas que você criou.",
+        "add": "Adicionar nova competição"
     }
 }

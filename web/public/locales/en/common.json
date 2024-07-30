@@ -6,6 +6,7 @@
     "close": "Close",
     "edit": "Edit",
     "open": "Open",
+    "send": "Send",
     "yes": "Yes",
     "no": "No",
     "save": "Save",
@@ -15,5 +16,7 @@
     "added": "Added",
     "removed": "Removed",
     "contest_one": "Contest",
-    "contest_other": "Contests"
+    "contest_other": "Contests",
+    "name": "Name",
+    "duration": "Duration"
 }
