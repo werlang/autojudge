@@ -63,6 +63,13 @@ app.get('/problems/:id', (req, res) => {
     });
 });
 
+// route for contest
+app.get('/contests/:id', (req, res) => {
+    res.templateRender('dashboard', {
+        contestId: req.params.id,
+    });
+});
+
 // static assets
 app.use(express.static(import.meta.dirname + '/public/'));
 

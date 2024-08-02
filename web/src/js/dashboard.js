@@ -5,9 +5,9 @@ import Menu from "./components/menu.js";
 import Header from "./components/header.js";
 import Translator from "./helpers/translate.js";
 import Pledge from "./helpers/pledge.js";
+import LocalData from "./helpers/local-data.js";
 
 import '../less/dashboard.less';
-import LocalData from "./helpers/local-data.js";
 
 const translatePledge = new Pledge();
 new Translator(['en', 'pt'], [
@@ -98,6 +98,18 @@ translatePledge.then(translate => {
         contests.translate = translate;
         contests.build();
     }
+
+    // check for single contest page
+    (async () => {
+        const id = TemplateVar.get('contestId');
+        if (id && location.pathname === `/contests/${id}`) {
+            // lazy load contest
+            const module = await import('./dashboard-single-contest.js');
+            const contest = module.default
+            contest.translate = translate;
+            contest.load(id);
+        }
+    })();
 });
 
 Pledge.all([userPledge, menuPledge]).then(([{user}, menu]) => {

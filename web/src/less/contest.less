@@ -100,3 +100,86 @@
         gap: 20px;
     }
 }
+
+#frame #contest {
+    margin-top: 50px;
+    width: 100%;
+    max-width: 900px;
+
+    h1 .editable {
+        align-items: center;
+    }
+
+    p .editable {
+        align-items: flex-start;
+
+        .edit-icon {
+            margin-left: -40px;
+            margin-top: -30px;
+            
+            @media @size-600 {
+                margin: 0;
+            }
+        }
+    }
+
+    .editable {
+        transition: 0.3s all;
+        border-radius: 5px;
+        padding: 5px;
+        display: flex;
+        align-items: flex-start;
+        
+        &:hover {
+
+            .edit-icon {
+                color: rgba(var(--color-text-raw),1);
+                animation: pulse 1s infinite ease-in-out;
+
+                @keyframes pulse {
+                    0% {
+                        transform: scale(1);
+                    }
+                    50% {
+                        transform: scale(1.2);
+                        color: rgba(var(--color-main-raw),0.5);
+                    }
+                    100% {
+                        transform: scale(1);
+                    }
+                }
+            }
+        }
+
+        .field {
+            outline: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+
+            &[contenteditable="true"] {
+                background-color: rgba(var(--color-main-raw), 0.2);
+            }
+
+        }
+
+        .edit-icon {
+            border-radius: 4px;
+            flex-direction: column;
+            font-size: 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0 2px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            flex-shrink: 0;
+            color: rgba(var(--color-text-raw),0.3);
+
+            &.editing {
+                animation: none;
+                color: rgba(var(--color-text-raw),0.1);
+            }
+        }
+    }
+}

@@ -1,2 +1,21 @@
 {
+    "problems_zero": "Nenhum problema encontrado",
+    "problems_one": "Problema",
+    "problems_other": "Problemas",
+    "teams_zero": "Nenhuma equipe encontrada",
+    "teams_one": "Equipe",
+    "teams_other": "Equipes",
+    "save-changes": {
+        "h1": "Salvar Alterações",
+        "message": "Deseja salvar as alterações no campo <b>{{field}}</b>?",
+        "success": "Competição gravada com sucesso."
+    },
+    "field": {
+        "name": "Nome",
+        "description": "Descrição"
+    },
+    "add-problem": {
+        "h1": "Adicionar Problema",
+        "message": "Escolha um problema da lista abaixo para adicionar à competição."
+    }
 }

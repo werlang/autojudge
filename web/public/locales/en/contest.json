@@ -1,2 +1,21 @@
 {
+    "problems_zero": "No problems found",
+    "problems_one": "Problem",
+    "problems_other": "Problems",
+    "teams_zero": "No teams found",
+    "teams_one": "Team",
+    "teams_other": "Teams",
+    "save-changes": {
+        "h1": "Save Changes",
+        "message": "Do you want to save the changes to the <b>{{field}}</b> field?",
+        "success": "Contest saved successfully."
+    },
+    "field": {
+        "name": "Name",
+        "description": "Description"
+    },
+    "add-problem": {
+        "h1": "Add Problem",
+        "message": "Choose a problem from the list below to add to the contest."
+    }
 }

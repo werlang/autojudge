@@ -27,4 +27,10 @@ export default class Contest {
             });
             return contest;
         }
+
+        async update(fields) {
+            const resp = await new Api().put(`contests/${this.id}`, fields);
+            const contest = await this.get();
+            return { ...resp, ...contest };
+        }
 }

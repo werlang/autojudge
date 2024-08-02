@@ -1,4 +1,33 @@
+// Table class: a table with sortable columns and search functionality
+// const table = new Table({
+//   element: DOMElement,
+//   id: 'table-id',
+//   columns: [{ id: 'column1', name: 'Column 1', size: 'small' }, ...],
+//   controls: [control1, control2, ...],
+//   translate: function,
+// });
+// columns: an array of objects with the following properties:
+//   - id: the id of the column (required)
+//   - name: the name of the column (required)
+//   - size: 'small' for small columns
+// controls: an array of objects with the following properties:
+//   - id: the id of the control (required)
+//   - icon: the icon representing the control
+//   - title: the title for when hovering over the control
+//   - action: the callback function for when the control is clicked
+
+
+// Methods:
+//   - clear(): clears the table content
+//   - addItem(item): adds an item (row) to the table
+//   - addItemEvent(event, action): adds an event to the items
+//     - event: the event to listen for
+//     - action: the callback function. It receives the item and the event
+
+
 import Translator from "../helpers/translate.js";
+
+// TODO: allow instantiating without sort and search
 
 export default class Table {
 
@@ -10,7 +39,7 @@ export default class Table {
         this.controls = controls || [];
         this.translate = translate;
         this.domElement = document.createElement('div');
-        this.domElement.id = id;
+        if (id) this.domElement.id = id;
         this.domElement.classList.add('table');
         element.appendChild(this.domElement);
 

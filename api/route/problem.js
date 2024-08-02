@@ -5,6 +5,8 @@ import Problem from '../model/problem.js';
 
 const router = Router();
 
+// TODO: add pagination when getting all problems
+
 // create a new problem
 // must be logged as user
 router.post('/', auth({'user:exists': true}), async (req, res, next) => {

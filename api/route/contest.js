@@ -6,6 +6,7 @@ import Team from '../model/team.js';
 import contestProblem from './contestProblem.js';
 import config from '../helpers/config.js';
 import Submission from '../model/submission.js';
+import Problem from '../model/problem.js';
 
 const router = Router();
 
@@ -44,7 +45,8 @@ router.post('/', auth({'user:exists': true}), async (req, res, next) => {
 router.get('/', auth({'user:exists': true}), async (req, res, next) => {
     try {
         const contests = await Promise.all((await Contest.getAll({ admin: req.user.id })).map(async contest => {
-            let teams = await Team.getAll({ contest: contest.id });
+            let teams = Team.getAll({ contest: contest.id });
+            let problems = new Contest({ id: contest.id }).getProblems();
 
             return {
                 id: contest.id,
@@ -52,7 +54,8 @@ router.get('/', auth({'user:exists': true}), async (req, res, next) => {
                 description: contest.description,
                 duration: contest.duration,
                 startTime: contest.start_time,
-                teams: teams.length,
+                teams: (await teams).length,
+                problems: (await problems).length,
             }
         }));
         res.send({ contests });
@@ -72,12 +75,20 @@ router.get('/:id', auth({
         if (!req.contest) {
             req.contest = await new Contest({ id: req.params.id }).get();
         }
+        
         let teams = await Team.getAll({ contest: req.contest.id });
         teams = teams.map(team => ({
             id: team.id,
             name: team.name,
             score: team.score,
         }));
+
+        let problems = await new Contest({ id: req.contest.id }).getProblems();
+        problems = problems.map(problem => ({
+            id: problem.id,
+            title: problem.title,
+        }));
+
         res.send({ contest: {
             id: req.contest.id,
             name: req.contest.name,
@@ -88,6 +99,7 @@ router.get('/:id', auth({
             minScore: config.contest.minScore,
             bonusScore: config.contest.bonusScore,
             teams,
+            problems,
         } });
     }
     catch (error) {
