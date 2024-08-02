@@ -18,9 +18,9 @@ export default class Contest extends Model {
                 description,
                 admin,
                 duration,
-                started_at: null,
+                start_time: null,
             },
-            allowUpdate: ['name', 'description', 'duration', 'started_at'],
+            allowUpdate: ['name', 'description', 'duration', 'start_time'],
             insertFields: ['name', 'description', 'admin', 'duration'],
         });
 
@@ -52,16 +52,16 @@ export default class Contest extends Model {
     }
 
     isStarted() {
-        if (this.started_at === null) return false;
-        return new Date(this.started_at) < Date.now();
+        if (this.start_time === null) return false;
+        return new Date(this.start_time) < Date.now();
     }
 
     async start() {
         if (this.isStarted()) {
             throw new CustomError(403, 'Contest has already started');
         }
-        // this.started_at = Math.floor(Date.now() / 1000);
-        return this.update({ started_at: Db.toDateTime(Date.now()) });
+        // this.start_time = Math.floor(Date.now() / 1000);
+        return this.update({ start_time: Db.toDateTime(Date.now()) });
     }
 
     getRemainingTime(targetTime) {
@@ -69,8 +69,8 @@ export default class Contest extends Model {
             targetTime = Date.now();
         }
         if (!this.isStarted()) return 0;
-        const startedAt = new Date(this.started_at).getTime();
-        const elapsed = Math.floor((targetTime - startedAt) / 1000);
+        const startTime = new Date(this.start_time).getTime();
+        const elapsed = Math.floor((targetTime - startTime) / 1000);
         return this.duration * 60 - elapsed;
     }
 }

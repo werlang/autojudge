@@ -43,12 +43,17 @@ router.post('/', auth({'user:exists': true}), async (req, res, next) => {
 // GET /contests
 router.get('/', auth({'user:exists': true}), async (req, res, next) => {
     try {
-        const contests = (await Contest.getAll({ admin: req.user.id })).map(contest => ({
-            id: contest.id,
-            name: contest.name,
-            description: contest.description,
-            duration: contest.duration,
-            startedAt: contest.started_at,
+        const contests = await Promise.all((await Contest.getAll({ admin: req.user.id })).map(async contest => {
+            let teams = await Team.getAll({ contest: contest.id });
+
+            return {
+                id: contest.id,
+                name: contest.name,
+                description: contest.description,
+                duration: contest.duration,
+                startTime: contest.start_time,
+                teams: teams.length,
+            }
         }));
         res.send({ contests });
     }
@@ -78,7 +83,7 @@ router.get('/:id', auth({
             name: req.contest.name,
             description: req.contest.description,
             duration: req.contest.duration,
-            startedAt: req.contest.started_at,
+            startTime: req.contest.start_time,
             maxScore: config.contest.maxScore,
             minScore: config.contest.minScore,
             bonusScore: config.contest.bonusScore,

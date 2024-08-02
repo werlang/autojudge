@@ -20,5 +20,7 @@
     "name": "Nome",
     "duration": "Duração",
     "details": "Detalhes",
-    "teams": "Equipes"
+    "teams": "Equipes",
+    "hours": "Horas",
+    "minutes": "Minutos"
 }

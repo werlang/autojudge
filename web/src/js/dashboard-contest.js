@@ -30,27 +30,12 @@ export default {
                 description: `
                     <div class="description">${contest.description}</div>
                     <div class="details">
-                        <div class="teams" title="${this.translate('teams', 'common')}"><i class="fa-solid fa-users"></i> ${2}</div>
+                        <div class="teams" title="${this.translate('teams', 'common')}"><i class="fa-solid fa-users"></i> ${contest.teams}</div>
                         <div class="duration" title="${this.translate('duration', 'common')}"><i class="fa-solid fa-clock"></i> ${contest.duration} min</div>
                     </div>
                 `,
             })
-            .click(async () => {
-                contest = await new Contest({ id: contest.id }).get();
-                console.log(contest);
-                contest = contest.contest;
-                // open the modal with the contest details
-                const modal = new Modal(`
-                    <h1>${contest.name}</h1>
-                    <p>${contest.description}</p>
-                `)
-                .addButton({ text: this.translate('close', 'common'), close: true })
-                .addButton({ 
-                    text: `${this.translate('details', 'common')} / ${this.translate('edit', 'common')}`,
-                    isDefault: false,
-                    callback: () => location.href = `/contests/${contest.id}` 
-                });
-            });
+            .click(async () => location.href = `/contests/${contest.id}`);
         });
 
         // create card for adding a new contest
@@ -82,7 +67,17 @@ export default {
             <form>
                 <input id="name" name="name" type="text" required placeholder="${this.translate('name', 'common')}">
                 <textarea id="description" name="description" required placeholder="${this.translate('description', 'common')}"></textarea>
-                <input id="duration" name="duration" type="number" required placeholder="${this.translate('duration', 'common')}" min="10" max="1440" step="10" value=180>
+                <div>
+                    <label id="duration-label">${this.translate('duration', 'common')}</label>
+                    <div id="duration-container">
+                        <select id="duration-h" name="duration-h" required placeholder="${this.translate('duration', 'common')} (h)">
+                            ${Array.from({ length: 12 }).map((_, i) => `<option value="${i}" ${i == 3 ? 'selected' : ''}>${i} ${this.translate('hours', 'common')}</option>`).join('')}
+                        </select>
+                        <select id="duration-m" name="duration-m" required placeholder="${this.translate('duration', 'common')} (m)">
+                            ${Array.from({ length: 4 }).map((_, i) => `<option value="${i*15}" ${i == 0 ? 'selected' : ''}>${i*15} ${this.translate('minutes', 'common')}</option>`).join('')}
+                        </select>
+                    </div>
+                </div>
                 <button class="default">${this.translate('send', 'common')}</button>
             </form>
         `;
@@ -91,6 +86,8 @@ export default {
 
         form.submit(async data => {
             // console.log(data);
+
+            data.duration = parseInt(data['duration-h']) * 60 + parseInt(data['duration-m']);
             try {
                 // create problem and redirect to it
                 const { contest } = await new Contest(data).create();
