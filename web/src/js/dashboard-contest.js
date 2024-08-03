@@ -51,7 +51,7 @@ export default {
     createPlaceholderCards: function(container, size = 5) {
         for (let i = 0; i < size; i++) {
             const lines = Math.floor(Math.random() * 4) + 1;
-            const content = Array.from({ length: lines }).map(() => Array(25).fill('0').join('').slice(0, Math.floor(Math.random() * 15) + 10)).map(e => `<div>${e}</div>`).join('');
+            const content = '<div>' + Array.from({ length: lines }).map(() => Array(25).fill('0').join('').slice(0, Math.floor(Math.random() * 15) + 10)).map(e => `<span>${e}</span>`).join('') + '</div>';
 
             new Card(container, {
                 title: 'Contest ' + i,

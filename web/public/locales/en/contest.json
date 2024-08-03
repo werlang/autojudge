@@ -15,7 +15,8 @@
         "description": "Description"
     },
     "add-problem": {
-        "h1": "Add Problem",
-        "message": "Choose a problem from the list below to add to the contest."
+        "h1": "Add Problems",
+        "message": "Choose problems from the list below to add to the contest.",
+        "success": "Problems added successfully."
     }
 }

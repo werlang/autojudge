@@ -3,6 +3,7 @@ import Modal from "./components/modal.js";
 import Table from "./components/table.js";
 import Toast from "./components/toast.js";
 import Contest from "./model/contest.js";
+import Problem from "./model/problem.js";
 
 export default {
 
@@ -31,13 +32,13 @@ export default {
         const problems = document.querySelector('#problems');
         problems.innerHTML = `<h3>${this.translate('problems', 'contest', {count: this.contest.problems.length})}</h3>`;
         this.listProblems(problems);
-        const addProblem = new Button({ id: 'add-problem', text: `${this.translate('add', 'common')} ${this.translate('problems_one', 'contest')}` }).click(() => this.addProblem());
+        const addProblem = new Button({ id: 'add-problem', text: `${this.translate('add', 'common')} ${this.translate('problems_one', 'contest')}` }).click(() => this.addProblemModal());
         problems.appendChild(addProblem.get());
 
         const teams = document.querySelector('#teams');
         teams.innerHTML = `<h3>${this.translate('teams', 'contest', {count: this.contest.teams.length})}</h3>`;
         this.listTeams(teams);
-        const addTeam = new Button({ id: 'add-team', text: `${this.translate('add', 'common')} ${this.translate('teams_one', 'contest')}` }).click(() => this.addTeam());
+        const addTeam = new Button({ id: 'add-team', text: `${this.translate('add', 'common')} ${this.translate('teams_one', 'contest')}` }).click(() => this.addTeamModal());
         teams.appendChild(addTeam.get());
 
 
@@ -141,7 +142,7 @@ export default {
         });
     },
 
-    addProblem: function() {
+    addProblemModal: async function() {
         const modal = new Modal(`
             <h1>${this.translate('add-problem.h1', 'contest')}</h1>
             <p>${this.translate('add-problem.message', 'contest')}</p>
@@ -155,11 +156,41 @@ export default {
                 { id: 'title', name: this.translate('title', 'common') },
             ],
             translate: this.translate,
+            selection: { enabled: true, multi: true },
+        });
+
+        modal.addButton({
+            id: 'add-problem',
+            text: this.translate('add', 'common'),
+            callback: async () => {
+                const selected = table.getSelected();
+                // console.log(selected);
+                if (selected.length === 0) return;
+                new Toast(this.translate('add-problem.success', 'contest'), { type: 'success' });
+                modal.close();
+                await this.addProblem(selected);
+                this.render();
+            }
+        });
+
+        const button = modal.getButton('add-problem');
+        button.disable(false);
+
+        const {problems} = await Problem.getAll();
+        table.clear();
+        problems.forEach(problem => table.addItem(problem));
+        table.addItemEvent('click', item => {
+            button.enable();
         });
 
     },
 
-    addTeam: function() {
+    addProblem: async function(problems) {
+        console.log('add problem', problems);
+        
+    },
+
+    addTeamModal: function() {
         console.log('add team');
     },
 
