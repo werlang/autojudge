@@ -150,8 +150,13 @@ export default class Modal {
             title,
         });
 
+        if (!this.buttonList) {
+            this.buttonList = {};
+        }
+        
         if (id) {
             button.get().id = id;
+            this.buttonList[id] = button;
         }
 
         let container = this.domObject.querySelector('#button-container');
@@ -236,5 +241,9 @@ export default class Modal {
 
     getInput(id) {
         return this.inputList[id];
+    }
+
+    getButton(id) {
+        return this.buttonList[id];
     }
 }
