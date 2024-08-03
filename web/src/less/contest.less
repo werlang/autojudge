@@ -33,18 +33,18 @@
                 .title {
                     border-radius: 5px;
                     background-color: var(--color-text);
-                    animation: pulse 1.3s infinite;
+                    animation: placeholder-card 1.3s infinite;
                 }
             }
 
-            .body .description div {
+            .body .description div span {
                 display: inline-block;
                 border-radius: 5px;
                 background-color: var(--color-background);
                 color: var(--color-background);
-                animation: pulse 1.6s infinite;
+                animation: placeholder-card 1.6s infinite;
 
-                @keyframes pulse {
+                @keyframes placeholder-card {
                     0% { opacity: 0.3; }
                     50% { opacity: 0.5; }
                     100% { opacity: 0.3; }
@@ -134,9 +134,9 @@
 
             .edit-icon {
                 color: rgba(var(--color-text-raw),1);
-                animation: pulse 1s infinite ease-in-out;
+                animation: edit-pulse 1s infinite ease-in-out;
 
-                @keyframes pulse {
+                @keyframes edit-pulse {
                     0% {
                         transform: scale(1);
                     }
