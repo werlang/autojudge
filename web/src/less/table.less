@@ -16,7 +16,8 @@
         box-sizing: border-box;
         cursor: pointer;
         color: var(--color-text);
-        border-bottom: 1px solid rgba(var(--color-main-raw), 0.3);
+        border: 1px solid transparent;
+        border-bottom-color: rgba(var(--color-main-raw), 0.3);
         transition: 0.3s all;
 
         &:last-child {
@@ -34,6 +35,11 @@
      
         &:hover {
             background-color: rgba(var(--color-main-raw), 0.2);
+        }
+
+        &.selected {
+            background-color: rgba(var(--color-main-raw), 0.4);
+            border-color: rgba(var(--color-main-raw), 0.7);
         }
 
         .column {

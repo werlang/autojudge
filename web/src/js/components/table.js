@@ -34,12 +34,19 @@ export default class Table {
     placeholderAmount = 10;
     content = [];
 
-    constructor({ element, id, columns, controls, translate }) {
+    constructor({ element, id, columns, controls, translate, selection }) {
         this.columns = columns;
         this.controls = controls || [];
         this.translate = translate;
         this.domElement = document.createElement('div');
         if (id) this.domElement.id = id;
+        
+        this.selection = selection || { enabled: false, multi: false };
+        if (this.selection === true || this.selection === false) {
+            this.selection = { enabled: this.selection, multi: false };
+        }
+        this.selectedItems = [];
+
         this.domElement.classList.add('table');
         element.appendChild(this.domElement);
 
@@ -162,6 +169,30 @@ export default class Table {
             if (item.hidden) return;
             const itemDOM = document.createElement('div');
             itemDOM.classList.add('item');
+
+            // create selection events
+            if (this.selection.enabled) {
+                itemDOM.addEventListener('click', () => {
+                    if (this.selection.multi) {
+                        if (this.selectedItems.includes(item)) {
+                            this.selectedItems = this.selectedItems.filter(i => i !== item);
+                        }
+                        else {
+                            this.selectedItems.push(item);
+                        }
+                    }
+                    else {
+                        this.selectedItems = [item];
+                    }
+                    this.render();
+                    // console.log(this.selectedItems);
+                    
+                });
+            }
+            if (this.selectedItems.includes(item)) {
+                itemDOM.classList.add('selected');
+            }
+
             if (item.customClass) {
                 itemDOM.classList.add(item.customClass);
             }
@@ -194,6 +225,10 @@ export default class Table {
         }
         this.itemEvents.push({ event, action });
         this.render();
+    }
+
+    getSelected() {
+        return this.selectedItems;
     }
 
 }
