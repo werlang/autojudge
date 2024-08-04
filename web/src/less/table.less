@@ -117,6 +117,15 @@
                 color: var(--color-text);
             }
 
+            .button.disabled {
+                cursor: not-allowed;
+                opacity: 0.5;
+
+                &:hover {
+                    background-color: transparent;
+                }
+            }
+
             .search.active {
                 width: auto;
                 padding: 0 10px;

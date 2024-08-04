@@ -15,6 +15,8 @@
 //   - icon: the icon representing the control
 //   - title: the title for when hovering over the control
 //   - action: the callback function for when the control is clicked
+//     - it receives the selected items and the event
+//   - enabled: whether the control is enabled or not
 
 
 // Methods:
@@ -23,21 +25,25 @@
 //   - addItemEvent(event, action): adds an event to the items
 //     - event: the event to listen for
 //     - action: the callback function. It receives the item and the event
+//   - getSelected(): returns the selected items
+//   - enableControl(id): enables a control
+//   - disableControl(id): disables a control
 
 
 import Translator from "../helpers/translate.js";
 
-// TODO: allow instantiating without sort and search
 
 export default class Table {
 
     placeholderAmount = 10;
     content = [];
 
-    constructor({ element, id, columns, controls, translate, selection }) {
+    constructor({ element, id, columns, controls, translate, selection, search, sort }) {
         this.columns = columns;
         this.controls = controls || [];
         this.translate = translate;
+        this.sort = sort !== false;
+        this.search = search !== false;
         this.domElement = document.createElement('div');
         if (id) this.domElement.id = id;
         
@@ -71,33 +77,35 @@ export default class Table {
             if (column.size === 'small') {
                 columnDOM.classList.add('small');
             }
-            columnDOM.innerHTML = `${column.name}<div class="button"><i class="fa-solid fa-arrow-down-a-z"></i></div>`;
+            columnDOM.innerHTML = `${column.name}${this.sort ? '<div class="button"><i class="fa-solid fa-arrow-down-a-z"></i></div>' : ''}`;
 
-            const button = columnDOM.querySelector('.button');
-            // click the sort button
-            button.addEventListener('click', () => {
-                // console.log('sort by', column.id, button.sort);
-                button.querySelector('i').classList.toggle('fa-arrow-down-a-z');
-                button.querySelector('i').classList.toggle('fa-arrow-up-a-z');
-                
-                // make active only the clicked button
-                columns.forEach(c => {
-                    c.querySelector('.button i').classList.remove('active');
+            if (this.sort) {
+                const button = columnDOM.querySelector('.button');
+                // click the sort button
+                button.addEventListener('click', () => {
+                    // console.log('sort by', column.id, button.sort);
+                    button.querySelector('i').classList.toggle('fa-arrow-down-a-z');
+                    button.querySelector('i').classList.toggle('fa-arrow-up-a-z');
+                    
+                    // make active only the clicked button
+                    columns.forEach(c => {
+                        c.querySelector('.button i').classList.remove('active');
+                    });
+                    button.querySelector('i').classList.add('active');
+                    
+                    // sort the content toggle asc/desc
+                    if (button.sort === 'asc') {
+                        button.sort = 'desc';
+                        this.content.sort((a, b) => a[column.id].localeCompare(b[column.id], Translator.currentLanguage(), { sensitivity: 'base' }));
+                    }
+                    else {
+                        button.sort = 'asc';
+                        this.content.sort((a, b) => b[column.id].localeCompare(a[column.id], Translator.currentLanguage(), { sensitivity: 'base' }));
+                    }
+    
+                    this.render();
                 });
-                button.querySelector('i').classList.add('active');
-                
-                // sort the content toggle asc/desc
-                if (button.sort === 'asc') {
-                    button.sort = 'desc';
-                    this.content.sort((a, b) => a[column.id].localeCompare(b[column.id], Translator.currentLanguage(), { sensitivity: 'base' }));
-                }
-                else {
-                    button.sort = 'asc';
-                    this.content.sort((a, b) => b[column.id].localeCompare(a[column.id], Translator.currentLanguage(), { sensitivity: 'base' }));
-                }
-
-                this.render();
-            });
+            }
 
             return columnDOM;
         });
@@ -107,17 +115,24 @@ export default class Table {
         this.head.innerHTML = `
             <div class="columns"></div>
             <div class="controls">
-                <div class="search button" title="${this.translate('table.search-title', 'components')}"><i class="fas fa-search"></i><input type="text"></div>
+                ${this.search ? `<div class="search button" title="${this.translate('table.search-title', 'components')}"><i class="fas fa-search"></i><input type="text"></div>` : ''}
             </div>
         `;
 
         // add custom controls
         const controlsDOM = this.head.querySelector('.controls');
         this.controls.forEach(control => {
+            control.enabled = control.enabled || true;
             const controlDOM = document.createElement('div');
             controlDOM.classList.add('button', control.id);
+            if (!control.enabled) {
+                controlDOM.classList.add('disabled');
+            }
             controlDOM.innerHTML = `<i class="${control.icon}"></i>`;
-            controlDOM.addEventListener('click', control.action);
+            controlDOM.addEventListener('click', ev => {
+                if (!control.enabled) return;
+                return control.action(this.selectedItems, ev);
+            });
             controlDOM.title = control.title;
             controlsDOM.appendChild(controlDOM);
         });
@@ -125,30 +140,32 @@ export default class Table {
         this.head.querySelector('.columns').append(...columns);
 
         // create the search function
-        const searchButton = this.head.querySelector('.search');
-        const input = searchButton.querySelector('input');
-        searchButton.addEventListener('click', () => {
-            searchButton.classList.add('active');
-            input.focus();
-        });
-        input.addEventListener('blur', e => {
-            e.stopPropagation();
-            if (input.value === '') {
-                searchButton.classList.remove('active');
-            }
-        });
-        input.addEventListener('input', () => {
-            const search = input.value.toLowerCase();
-            this.content.forEach(item => {
-                item.hidden = true;
-                this.columns.forEach(column => {
-                    if (item[column.id].toLowerCase().indexOf(search) !== -1) {
-                        item.hidden = false;
-                    }
-                });
+        if (this.search) {
+            const searchButton = this.head.querySelector('.search');
+            const input = searchButton.querySelector('input');
+            searchButton.addEventListener('click', () => {
+                searchButton.classList.add('active');
+                input.focus();
             });
-            this.render();
-        });
+            input.addEventListener('blur', e => {
+                e.stopPropagation();
+                if (input.value === '') {
+                    searchButton.classList.remove('active');
+                }
+            });
+            input.addEventListener('input', () => {
+                const search = input.value.toLowerCase();
+                this.content.forEach(item => {
+                    item.hidden = true;
+                    this.columns.forEach(column => {
+                        if (item[column.id].toLowerCase().indexOf(search) !== -1) {
+                            item.hidden = false;
+                        }
+                    });
+                });
+                this.render();
+            });
+        }
     }
 
     clear() {
@@ -229,6 +246,16 @@ export default class Table {
 
     getSelected() {
         return this.selectedItems;
+    }
+
+    enableControl(id) {
+        this.head.querySelector(`.controls .${id}`).classList.remove('disabled');
+        this.controls.find(c => c.id === id).enabled = true;
+    }
+
+    disableControl(id) {
+        this.head.querySelector(`.controls .${id}`).classList.add('disabled');
+        this.controls.find(c => c.id === id).enabled = false;
     }
 
 }
