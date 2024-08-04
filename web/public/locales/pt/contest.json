@@ -18,5 +18,11 @@
         "h1": "Adicionar Problemas",
         "message": "Escolha problemas da lista abaixo para adicionar à competição.",
         "success": "Problemas adicionados com sucesso."
+    },
+    "remove-problem": {
+        "title": "Remover Problemas",
+        "open": "Abrir problema em nova aba",
+        "success_one": "Problema removido com sucesso.",
+        "success_other": "Problemas removidos com sucesso."
     }
 }

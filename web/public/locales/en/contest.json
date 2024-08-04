@@ -18,5 +18,11 @@
         "h1": "Add Problems",
         "message": "Choose problems from the list below to add to the contest.",
         "success": "Problems added successfully."
+    },
+    "remove-problem": {
+        "title": "Remove Problems",
+        "open": "Open problem in new tab",
+        "success_one": "Problem removed successfully.",
+        "success_other": "Problems removed successfully."
     }
 }

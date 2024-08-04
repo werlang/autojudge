@@ -8,19 +8,20 @@ import Problem from "./model/problem.js";
 export default {
 
     load: async function(id) {
-        const {contest} = await new Contest({ id }).get();
-        // console.log(contest);
+        this.contestInstance = new Contest({ id });
+        this.contest = (await this.contestInstance.get()).contest;
+        // console.log(this.contest);
 
-        if (!contest) {
+        if (!this.contest) {
             location.href = '/contests';
             return;
         }
 
-        this.contest = contest;
         this.render();
     },
 
-    render: function() {
+    render: async function() {
+        this.contest = (await this.contestInstance.get()).contest;
         const frame = document.querySelector('#frame');
         frame.innerHTML = `<div id="contest">
             <h1 id="name">${this.contest.name}</h1>
@@ -31,7 +32,9 @@ export default {
 
         const problems = document.querySelector('#problems');
         problems.innerHTML = `<h3>${this.translate('problems', 'contest', {count: this.contest.problems.length})}</h3>`;
-        this.listProblems(problems);
+        if (this.contest.problems.length ) {
+            this.listProblems(problems);
+        }
         const addProblem = new Button({ id: 'add-problem', text: `${this.translate('add', 'common')} ${this.translate('problems_one', 'contest')}` }).click(() => this.addProblemModal());
         problems.appendChild(addProblem.get());
 
@@ -126,12 +129,48 @@ export default {
         }
     },
 
-    listProblems: function(container) {
-        this.contest.problems.forEach(problem => {
-            const p = document.createElement('p');
-            p.innerHTML = `${problem.title}`;
-            container.appendChild(p);
+    listProblems: async function(container) {
+
+        const table = new Table({
+            element: container,
+            columns: [ { id: 'title', name: this.translate('title', 'common') }, ],
+            controls: [
+                { id: 'remove', icon: 'fas fa-trash-alt', title: this.translate('remove-problem.title', 'contest'), action: async selected => {
+                    if (selected.length === 0) return;
+                    await Promise.all(selected.map(async problem => {
+                        await this.contestInstance.removeProblem(problem.id);
+                    }));
+                    new Toast(this.translate('remove-problem.success', 'contest', {count: selected.length}), { type: 'success' });
+                    this.render();
+                }},
+                { id: 'open', icon: 'fas fa-external-link-alt', title: this.translate('remove-problem.open', 'contest'), action: async selected => {
+                    if (!selected.length) return;
+                    window.open(`/problems/${selected[0].id}`, '_blank');
+                }},
+            ],
+            selection: { enabled: true, multi: true },
+            translate: this.translate,
+            search: false,
         });
+
+        const problems = await this.contestInstance.getProblems();
+        table.clear();
+        problems.forEach(problem => {
+            table.addItem(problem);
+        });
+        table.addItemEvent('click', item => {
+            const selected = table.getSelected();
+            if (selected.length) {
+                table.enableControl('remove');
+                table.enableControl('open');
+            }
+            else {
+                table.disableControl('remove');
+                table.disableControl('open');
+            }
+        });
+        table.disableControl('remove');
+        table.disableControl('open');
     },
 
     listTeams: function(container) {
@@ -152,9 +191,7 @@ export default {
         const problemList = modal.get().querySelector('#problem-list');
         const table = new Table({
             element: problemList,
-            columns: [
-                { id: 'title', name: this.translate('title', 'common') },
-            ],
+            columns: [ { id: 'title', name: this.translate('title', 'common') }, ],
             translate: this.translate,
             selection: { enabled: true, multi: true },
         });
@@ -178,16 +215,27 @@ export default {
 
         const {problems} = await Problem.getAll();
         table.clear();
-        problems.forEach(problem => table.addItem(problem));
+        problems.forEach(problem => {
+            if (this.contest.problems.find(p => p.id === problem.id)) return;
+            table.addItem(problem)
+        });
         table.addItemEvent('click', item => {
-            button.enable();
+            const selected = table.getSelected();
+            if (selected.length) {
+                button.enable();
+            }
+            else {
+                button.disable(false);
+            }
         });
 
     },
 
     addProblem: async function(problems) {
-        console.log('add problem', problems);
-        
+        // console.log('add problem', problems);
+        return Promise.all(problems.map(async problem => {
+            return this.contestInstance.addProblem(problem.id);
+        }));
     },
 
     addTeamModal: function() {
