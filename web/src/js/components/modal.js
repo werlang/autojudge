@@ -181,9 +181,9 @@ export default class Modal {
     addInput({ id, type, placeholder, value, label, required, disabled }) {
         let input = document.createElement('input');
         input.id = id;
-        input.type = type;
+        input.type = type || 'text';
         input.placeholder = placeholder || label;
-        input.value = value;
+        input.value = value || '';
         input.required = required;
         input.disabled = disabled;
 

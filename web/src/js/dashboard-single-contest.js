@@ -41,7 +41,7 @@ export default {
         const teams = document.querySelector('#teams');
         teams.innerHTML = `<h3>${this.translate('teams', 'contest', {count: this.contest.teams.length})}</h3>`;
         this.listTeams(teams);
-        const addTeam = new Button({ id: 'add-team', text: `${this.translate('add', 'common')} ${this.translate('teams_one', 'contest')}` }).click(() => this.addTeamModal());
+        const addTeam = new Button({ id: 'add-team', text: `${this.translate('create', 'common')} ${this.translate('teams_one', 'common')}` }).click(() => this.addTeamModal());
         teams.appendChild(addTeam.get());
 
 
@@ -174,11 +174,43 @@ export default {
     },
 
     listTeams: function(container) {
-        this.contest.teams.forEach(team => {
-            const p = document.createElement('p');
-            p.innerHTML = `${team.name}`;
-            container.appendChild(p);
+        const table = new Table({
+            element: container,
+            columns: [ { id: 'name', name: this.translate('name', 'common') }, ],
+            controls: [
+                { id: 'remove', icon: 'fas fa-trash-alt', title: this.translate('teams.remove-title', 'contest'), action: async selected => {
+                    if (selected.length === 0) return;
+                    new Toast(this.translate('teams.remove-success', 'contest', {count: selected.length}), { type: 'success' });
+                    this.render();
+                }},
+                { id: 'reset', icon: 'fas fa-redo-alt', title: this.translate('teams.reset-title', 'contest'), action: async selected => {
+                    if (selected.length === 0) return;
+                    new Toast(this.translate('teams.reset-success', 'contest', {count: selected.length}), { type: 'success' });
+                    this.render();
+                }},
+            ],
+            selection: true,
+            translate: this.translate,
+            search: false,
         });
+
+        table.clear();
+        this.contest.teams.forEach(team => {
+            table.addItem(team);
+        });
+        table.addItemEvent('click', item => {
+            const selected = table.getSelected();
+            if (selected.length) {
+                table.enableControl('remove');
+                table.enableControl('reset');
+            }
+            else {
+                table.disableControl('remove');
+                table.disableControl('reset');
+            }
+        });
+        table.disableControl('remove');
+        table.disableControl('reset');
     },
 
     addProblemModal: async function() {
@@ -238,9 +270,42 @@ export default {
         }));
     },
 
-    addTeamModal: function() {
-        console.log('add team');
+    addTeamModal: async function() {
+        const {team} = await this.contestInstance.addTeam({
+            name: `${this.translate('teams_one', 'common')} ${this.contest.teams.length + 1}`,
+        });
+        console.log(team);
+        
+        const modal = new Modal(`
+            <h1>${this.translate('add-team.h1', 'contest')}</h1>
+            <p>${this.translate('add-team.message-1', 'contest')}</p>
+            <pre id="password">
+                <code>${team.password}</code>
+                <div class="copy" title="${this.translate('copy', 'common')}"><i class="fas fa-copy"></i></div>
+            </pre>
+            <p>${this.translate('add-team.message-2', 'contest')}</p>
+            <pre>
+                <code>https://foo.bar/team/${team.id}</code>
+                <div class="copy" title="${this.translate('copy', 'common')}"><i class="fas fa-copy"></i></div>
+            </pre>
+        `, { id: 'add-team' })
+        .addButton({ id: 'close', text: this.translate('close', 'common'), close: true, isDefault: true });
+
+        // add copy events
+        modal.getAll('pre').forEach(copy => {
+            copy.addEventListener('click', () => {
+                const code = copy.querySelector('code');
+                navigator.clipboard.writeText(code.textContent);
+                new Toast(this.translate('copy-text', 'contest'), { type: 'success' });
+            });
+        });
+
+        modal.onClose(() => {
+            this.render();
+        });
+
     },
 
     // TODO: add start contest flow
+    // TODO: In problems, a control button adds a problem. But in contest is a button below the table. Make it consistent.
 }

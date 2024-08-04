@@ -101,6 +101,48 @@
     }
 }
 
+.modal#add-team {
+    pre {
+        text-align: center;
+        margin-top: 0;
+        margin-bottom: 25px;
+        cursor: pointer;
+        transition: 0.3s all;
+        display: flex;
+        justify-content: space-between;
+
+        &#password code {
+            font-size: 1.3rem;
+        }
+
+        &:hover {
+            filter: brightness(0.8);
+
+            .copy {
+                opacity: 1;
+            }
+        }
+
+        code {
+            flex-grow: 1;
+        }
+
+        .copy {
+            padding: 0 10px;
+            margin: -5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: 0.3s all;
+            opacity: 0.3;
+
+            &:hover {
+                background-color: rgba(var(--color-main-raw), 0.1);
+            }
+        }
+    }
+}
+
 #frame #contest {
     margin-top: 50px;
     width: 100%;

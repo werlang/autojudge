@@ -30,7 +30,7 @@ export default {
                 description: `
                     <div class="description">${contest.description}</div>
                     <div class="details">
-                        <div class="teams" title="${this.translate('teams', 'common')}"><i class="fa-solid fa-users"></i> ${contest.teams}</div>
+                        <div class="teams" title="${this.translate('teams_other', 'common')}"><i class="fa-solid fa-users"></i> ${contest.teams}</div>
                         <div class="problems" title="${this.translate('problem_other', 'common')}"><i class="fa-solid fa-tasks"></i> ${contest.problems}</div>
                         <div class="duration" title="${this.translate('duration', 'common')}"><i class="fa-solid fa-clock"></i> ${contest.duration} min</div>
                     </div>

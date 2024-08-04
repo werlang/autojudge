@@ -48,5 +48,9 @@ export default class Contest {
         const resp = await new Api().delete(`contests/${this.id}/problems/${id}`);
         return resp;
     }
-    
+
+    async addTeam(team) {
+        const resp = await new Api().post(`contests/${this.id}/teams`, team);
+        return resp;
+    }
 }

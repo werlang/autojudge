@@ -20,8 +20,11 @@
     "name": "Nome",
     "duration": "Duração",
     "details": "Detalhes",
-    "teams": "Equipes",
+    "teams_one": "Equipe",
+    "teams_other": "Equipes",
     "hours": "Horas",
     "minutes": "Minutos",
-    "add": "Adicionar"
+    "add": "Adicionar",
+    "create": "Criar",
+    "copy": "Copiar"
 }

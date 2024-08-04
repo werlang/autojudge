@@ -190,16 +190,14 @@ export default class Table {
             // create selection events
             if (this.selection.enabled) {
                 itemDOM.addEventListener('click', () => {
-                    if (this.selection.multi) {
-                        if (this.selectedItems.includes(item)) {
-                            this.selectedItems = this.selectedItems.filter(i => i !== item);
-                        }
-                        else {
-                            this.selectedItems.push(item);
-                        }
+                    if (this.selectedItems.includes(item)) {
+                        this.selectedItems = this.selectedItems.filter(i => i !== item);
                     }
                     else {
-                        this.selectedItems = [item];
+                        if (!this.selection.multi) {
+                            this.selectedItems = [];
+                        }
+                        this.selectedItems.push(item);
                     }
                     this.render();
                     // console.log(this.selectedItems);

@@ -24,5 +24,17 @@
         "open": "Open problem in new tab",
         "success_one": "Problem removed successfully.",
         "success_other": "Problems removed successfully."
+    },
+    "add-team": {
+        "h1": "New Team Created",
+        "message-1": "The new team was created successfully. Write down the password below and inform the team members.",
+        "message-2": "They will be able to access the contest through the link below."
+    },
+    "copy-text": "Text copied to clipboard",
+    "teams": {
+        "reset-title": "Reset Password",
+        "reset-success": "Password reset successfully.",
+        "remove-title": "Remove Team",
+        "remove-success": "Team removed successfully."
     }
 }
