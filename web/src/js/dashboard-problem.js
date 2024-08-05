@@ -4,28 +4,30 @@ import Modal from "./components/modal.js";
 import Form from "./components/form.js";
 import Toast from "./components/toast.js";
 import Translator from "./helpers/translate.js";
+import Button from "./components/button.js";
 
 export default {
     build: async function() {
         const frame = document.querySelector('#frame');
-        frame.innerHTML = `
+        frame.innerHTML = `<div id="problems-container">
             <h1>${this.translate('problem', 'common', {count: 2})}</h1>
             <p>${this.translate('problems.description', 'dashboard')}</p>
-        `;
+        </div>`;
+        const problemsDOM = frame.querySelector('#problems-container');
 
         const problemsPromise = Problem.getAll();
 
         const table = new Table({
-            element: frame,
+            element: problemsDOM,
             id: 'problems', 
             columns: [
                 {id: 'title', name: this.translate('title', 'common')},
             ],
-            controls: [
-                {id: 'add', icon: 'fa fa-plus', title: this.translate('problems.table.add', 'dashboard'), action: () => this.add()},
-            ],
             translate: this.translate,
         });
+
+        const addButton = new Button({ id: 'add-problem', text: this.translate('problems.table.add', 'dashboard'), }).click(() => this.add());
+        problemsDOM.appendChild(addButton.get());
 
         let { problems } = await problemsPromise;
         // console.log(problems);

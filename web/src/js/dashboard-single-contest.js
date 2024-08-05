@@ -4,24 +4,25 @@ import Table from "./components/table.js";
 import Toast from "./components/toast.js";
 import Contest from "./model/contest.js";
 import Problem from "./model/problem.js";
+import Team from "./model/teams.js";
 
 export default {
 
     load: async function(id) {
         this.contestInstance = new Contest({ id });
-        this.contest = (await this.contestInstance.get()).contest;
-        // console.log(this.contest);
+
+        await this.render();
 
         if (!this.contest) {
             location.href = '/contests';
             return;
         }
-
-        this.render();
     },
 
     render: async function() {
         this.contest = (await this.contestInstance.get()).contest;
+        // console.log(this.contest);
+        
         const frame = document.querySelector('#frame');
         frame.innerHTML = `<div id="contest">
             <h1 id="name">${this.contest.name}</h1>
@@ -135,14 +136,7 @@ export default {
             element: container,
             columns: [ { id: 'title', name: this.translate('title', 'common') }, ],
             controls: [
-                { id: 'remove', icon: 'fas fa-trash-alt', title: this.translate('remove-problem.title', 'contest'), action: async selected => {
-                    if (selected.length === 0) return;
-                    await Promise.all(selected.map(async problem => {
-                        await this.contestInstance.removeProblem(problem.id);
-                    }));
-                    new Toast(this.translate('remove-problem.success', 'contest', {count: selected.length}), { type: 'success' });
-                    this.render();
-                }},
+                { id: 'remove', icon: 'fas fa-trash-alt', title: this.translate('remove-problem.title', 'contest'), action: s => this.removeProblem(s) },
                 { id: 'open', icon: 'fas fa-external-link-alt', title: this.translate('remove-problem.open', 'contest'), action: async selected => {
                     if (!selected.length) return;
                     window.open(`/problems/${selected[0].id}`, '_blank');
@@ -161,16 +155,22 @@ export default {
         table.addItemEvent('click', item => {
             const selected = table.getSelected();
             if (selected.length) {
-                table.enableControl('remove');
-                table.enableControl('open');
+                table.enableControl('remove', 'open');
             }
             else {
-                table.disableControl('remove');
-                table.disableControl('open');
+                table.disableControl('remove', 'open');
             }
         });
-        table.disableControl('remove');
-        table.disableControl('open');
+        table.disableControl('remove', 'open');
+    },
+
+    removeProblem: async function(selected) {
+        if (selected.length === 0) return;
+        await Promise.all(selected.map(async problem => {
+            await this.contestInstance.removeProblem(problem.id);
+        }));
+        new Toast(this.translate('remove-problem.success', 'contest', {count: selected.length}), { type: 'success' });
+        this.render();
     },
 
     listTeams: function(container) {
@@ -178,16 +178,12 @@ export default {
             element: container,
             columns: [ { id: 'name', name: this.translate('name', 'common') }, ],
             controls: [
-                { id: 'remove', icon: 'fas fa-trash-alt', title: this.translate('teams.remove-title', 'contest'), action: async selected => {
-                    if (selected.length === 0) return;
-                    new Toast(this.translate('teams.remove-success', 'contest', {count: selected.length}), { type: 'success' });
-                    this.render();
-                }},
-                { id: 'reset', icon: 'fas fa-redo-alt', title: this.translate('teams.reset-title', 'contest'), action: async selected => {
-                    if (selected.length === 0) return;
-                    new Toast(this.translate('teams.reset-success', 'contest', {count: selected.length}), { type: 'success' });
-                    this.render();
-                }},
+                // remove team
+                { id: 'remove', icon: 'fas fa-trash-alt', title: this.translate('teams.remove-title', 'contest'), action: s => this.removeTeam(s) },
+                // reset team password
+                { id: 'reset', icon: 'fas fa-redo-alt', title: this.translate('teams.reset-title', 'contest'), action: s => this.resetTeamPassword(s) },
+                // rename team
+                { id: 'rename', icon: 'fas fa-edit', title: this.translate('teams.rename-title', 'contest'), action: s => this.renameTeam(s) },
             ],
             selection: true,
             translate: this.translate,
@@ -201,16 +197,52 @@ export default {
         table.addItemEvent('click', item => {
             const selected = table.getSelected();
             if (selected.length) {
-                table.enableControl('remove');
-                table.enableControl('reset');
+                table.enableControl('remove', 'reset', 'rename');
             }
             else {
-                table.disableControl('remove');
-                table.disableControl('reset');
+                table.disableControl('remove', 'reset', 'rename');
             }
         });
-        table.disableControl('remove');
-        table.disableControl('reset');
+        table.disableControl('remove', 'reset', 'rename');
+    },
+
+    removeTeam: async function(selected) {
+        if (selected.length === 0) return;
+        console.log(selected);
+        await new Team({ id: selected[0].id }).remove();
+        new Toast(this.translate('teams.remove-success', 'contest', {count: selected.length}), { type: 'success' });
+        this.render();
+    },
+
+    resetTeamPassword: async function(selected) {
+        if (selected.length === 0) return;
+        const team = await new Team({ id: selected[0].id }).resetPassword();
+        new Toast(this.translate('teams.reset-success', 'contest', {count: selected.length}), { type: 'success' });
+
+        this.modalResetPassword(team);
+        this.render();
+    },
+
+    renameTeam: async function(selected) {
+        if (selected.length === 0) return;
+        const team = selected[0];
+        new Modal(`<h1>${this.translate('teams.rename-title', 'contest')}</h1>`)
+        .addInput({ id: 'team-name', label: this.translate('teams.rename-name', 'contest'), value: team.name })
+        .addButton({ 
+            id: 'rename-team',
+            text: this.translate('rename', 'common'),
+            callback: async (e, modal) => {
+                const name = modal.get('#team-name').value;
+                if (!name) {
+                    new Toast(this.translate('add-team.error-name', 'contest'), { type: 'error' });
+                    return;
+                }
+                modal.close();
+                await new Team({ id: team.id }).update({ name });
+                new Toast(this.translate('teams.rename-success', 'contest'), { type: 'success' });
+                this.render();
+            }
+        });
     },
 
     addProblemModal: async function() {
@@ -271,13 +303,40 @@ export default {
     },
 
     addTeamModal: async function() {
-        const {team} = await this.contestInstance.addTeam({
-            name: `${this.translate('teams_one', 'common')} ${this.contest.teams.length + 1}`,
+        new Modal(`<h1>${this.translate('add-team.h1-name', 'contest')}</h1>`)
+        .addInput({ id: 'team-name', label: this.translate('add-team.team-name', 'contest') })
+        .addButton({ 
+            id: 'add-team',
+            text: this.translate('create', 'common'),
+            callback: async (e, modal) => {
+                const name = modal.get('#team-name').value;
+                if (!name) {
+                    new Toast(this.translate('add-team.error-name', 'contest'), { type: 'error' });
+                    return;
+                }
+                modal.close();
+                await this.addTeam(name);
+            }
         });
+    },
+
+    addTeam: async function(name) {
+        const team = await new Team({
+            contest: this.contest.id,
+            name,
+        }).add();
+        // console.log(team);
+
+        this.modalResetPassword(team);
+        new Toast(this.translate('add-team.success', 'contest'), { type: 'success' });
+        this.render();
+    },
+
+    modalResetPassword: async function(team) {
         console.log(team);
         
         const modal = new Modal(`
-            <h1>${this.translate('add-team.h1', 'contest')}</h1>
+            <h1>${this.translate('teams_one', 'common')} ${team.name}</h1>
             <p>${this.translate('add-team.message-1', 'contest')}</p>
             <pre id="password">
                 <code>${team.password}</code>
@@ -285,7 +344,7 @@ export default {
             </pre>
             <p>${this.translate('add-team.message-2', 'contest')}</p>
             <pre>
-                <code>https://foo.bar/team/${team.id}</code>
+                <code>${location.origin}/teams/${team.id}</code>
                 <div class="copy" title="${this.translate('copy', 'common')}"><i class="fas fa-copy"></i></div>
             </pre>
         `, { id: 'add-team' })
@@ -299,13 +358,7 @@ export default {
                 new Toast(this.translate('copy-text', 'contest'), { type: 'success' });
             });
         });
-
-        modal.onClose(() => {
-            this.render();
-        });
-
     },
 
     // TODO: add start contest flow
-    // TODO: In problems, a control button adds a problem. But in contest is a button below the table. Make it consistent.
 }

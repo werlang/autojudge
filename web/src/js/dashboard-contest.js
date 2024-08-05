@@ -3,6 +3,8 @@ import Contest from "./model/contest.js";
 import Modal from "./components/modal.js";
 import Form from "./components/form.js";
 
+// TODO; Create contest password, so users can enter and create their own teams instead of being assigned to a team by the contest admin
+
 export default {
     build: async function() {
         const frame = document.querySelector('#frame');
