@@ -26,15 +26,21 @@
         "success_other": "Problemas removidos com sucesso."
     },
     "add-team": {
-        "h1": "Nova Equipe Criada",
-        "message-1": "A nova equipe foi criada com sucesso. Anote a senha abaixo e informe aos membros da equipe.",
-        "message-2": "Eles poderão acessar a competição através do link abaixo."
+        "h1-name": "Criar Nova Equipe",
+        "team-name": "Nome da Equipe",
+        "error-name": "O nome da equipe é obrigatório.",
+        "message-1": "Anote a senha abaixo e informe aos membros da equipe.",
+        "message-2": "Eles poderão acessar a competição através do link abaixo.",
+        "success": "Equipe criada com sucesso."
     },
     "copy-text": "Texto copiado para a área de transferência",
     "teams": {
         "reset-title": "Redefinir Senha",
         "reset-success": "Senha redefinida com sucesso.",
         "remove-title": "Remover Equipe",
-        "remove-success": "Equipe removida com sucesso."
+        "remove-success": "Equipe removida com sucesso.",
+        "rename-title": "Renomear Equipe",
+        "rename-name": "Novo Nome da Equipe",
+        "rename-success": "Equipe renomeada com sucesso."
     }
 }

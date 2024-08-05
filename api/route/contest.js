@@ -6,7 +6,6 @@ import Team from '../model/team.js';
 import contestProblem from './contestProblem.js';
 import config from '../helpers/config.js';
 import Submission from '../model/submission.js';
-import Problem from '../model/problem.js';
 
 const router = Router();
 
@@ -45,7 +44,7 @@ router.post('/', auth({'user:exists': true}), async (req, res, next) => {
 router.get('/', auth({'user:exists': true}), async (req, res, next) => {
     try {
         const contests = await Promise.all((await Contest.getAll({ admin: req.user.id })).map(async contest => {
-            let teams = Team.getAll({ contest: contest.id });
+            let teams = Team.getAll({ contest: contest.id, is_active: 1 });
             let problems = new Contest({ id: contest.id }).getProblems();
 
             return {
@@ -76,7 +75,7 @@ router.get('/:id', auth({
             req.contest = await new Contest({ id: req.params.id }).get();
         }
         
-        let teams = await Team.getAll({ contest: req.contest.id });
+        let teams = await Team.getAll({ contest: req.contest.id, is_active: 1 });
         teams = teams.map(team => ({
             id: team.id,
             name: team.name,

@@ -26,15 +26,21 @@
         "success_other": "Problems removed successfully."
     },
     "add-team": {
-        "h1": "New Team Created",
-        "message-1": "The new team was created successfully. Write down the password below and inform the team members.",
-        "message-2": "They will be able to access the contest through the link below."
+        "h1-name": "Create New Team",
+        "team-name": "Team Name",
+        "error-name": "The team name is required.",
+        "message-1": "Write down the password below and inform the team members.",
+        "message-2": "They will be able to access the contest through the link below.",
+        "success": "Team created successfully."
     },
     "copy-text": "Text copied to clipboard",
     "teams": {
         "reset-title": "Reset Password",
         "reset-success": "Password reset successfully.",
         "remove-title": "Remove Team",
-        "remove-success": "Team removed successfully."
+        "remove-success": "Team removed successfully.",
+        "rename-title": "Rename Team",
+        "rename-name": "New Team Name",
+        "rename-success": "Team renamed successfully."
     }
 }

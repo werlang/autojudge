@@ -246,14 +246,30 @@ export default class Table {
         return this.selectedItems;
     }
 
-    enableControl(id) {
-        this.head.querySelector(`.controls .${id}`).classList.remove('disabled');
-        this.controls.find(c => c.id === id).enabled = true;
+    enableControl(...ids) {
+        ids.forEach(id => {
+            const control = this.head.querySelector(`.controls .${id}`);
+            if (!control) return;
+            control.classList.remove('disabled');
+
+            const controlObj = this.controls.find(c => c.id === id);
+            if (controlObj) {
+                controlObj.enabled = true;
+            }
+        });
     }
 
-    disableControl(id) {
-        this.head.querySelector(`.controls .${id}`).classList.add('disabled');
-        this.controls.find(c => c.id === id).enabled = false;
+    disableControl(...ids) {
+        ids.forEach(id => {
+            const control = this.head.querySelector(`.controls .${id}`);
+            if (!control) return;
+            control.classList.add('disabled');
+
+            const controlObj = this.controls.find(c => c.id === id);
+            if (controlObj) {
+                controlObj.enabled = false;
+            }
+        });
     }
 
 }
