@@ -31,23 +31,36 @@ export default {
             <div id="teams"></div>
         </div>`;
 
-        const problems = document.querySelector('#problems');
+        this.renderProblems(false);
+        this.renderTeams(false);
+        this.createEditableFields();
+
+    },
+
+    renderProblems: async function(update = true) {
+        if (update) {
+            this.contest = (await this.contestInstance.get()).contest;
+        }
+        const frame = document.querySelector('#frame');
+        const problems = frame.querySelector('#problems');
         problems.innerHTML = `<h3>${this.translate('problems', 'contest', {count: this.contest.problems.length})}</h3>`;
         if (this.contest.problems.length ) {
             this.listProblems(problems);
         }
         const addProblem = new Button({ id: 'add-problem', text: `${this.translate('add', 'common')} ${this.translate('problems_one', 'contest')}` }).click(() => this.addProblemModal());
         problems.appendChild(addProblem.get());
+    },
 
-        const teams = document.querySelector('#teams');
+    renderTeams: async function(update = true) {
+        if (update) {
+            this.contest = (await this.contestInstance.get()).contest;
+        }
+        const frame = document.querySelector('#frame');
+        const teams = frame.querySelector('#teams');
         teams.innerHTML = `<h3>${this.translate('teams', 'contest', {count: this.contest.teams.length})}</h3>`;
         this.listTeams(teams);
         const addTeam = new Button({ id: 'add-team', text: `${this.translate('create', 'common')} ${this.translate('teams_one', 'common')}` }).click(() => this.addTeamModal());
         teams.appendChild(addTeam.get());
-
-
-        this.createEditableFields();
-
     },
 
     createEditableFields: function() {
@@ -147,7 +160,8 @@ export default {
             search: false,
         });
 
-        const problems = await this.contestInstance.getProblems();
+        // const problems = await this.contestInstance.getProblems();
+        const problems = this.contest.problems;
         table.clear();
         problems.forEach(problem => {
             table.addItem(problem);
@@ -170,7 +184,7 @@ export default {
             await this.contestInstance.removeProblem(problem.id);
         }));
         new Toast(this.translate('remove-problem.success', 'contest', {count: selected.length}), { type: 'success' });
-        this.render();
+        this.renderProblems();
     },
 
     listTeams: function(container) {
@@ -208,10 +222,10 @@ export default {
 
     removeTeam: async function(selected) {
         if (selected.length === 0) return;
-        console.log(selected);
+        // console.log(selected);
         await new Team({ id: selected[0].id }).remove();
         new Toast(this.translate('teams.remove-success', 'contest', {count: selected.length}), { type: 'success' });
-        this.render();
+        this.renderTeams();
     },
 
     resetTeamPassword: async function(selected) {
@@ -220,7 +234,7 @@ export default {
         new Toast(this.translate('teams.reset-success', 'contest', {count: selected.length}), { type: 'success' });
 
         this.modalResetPassword(team);
-        this.render();
+        this.renderTeams();
     },
 
     renameTeam: async function(selected) {
@@ -240,7 +254,7 @@ export default {
                 modal.close();
                 await new Team({ id: team.id }).update({ name });
                 new Toast(this.translate('teams.rename-success', 'contest'), { type: 'success' });
-                this.render();
+                this.renderTeams();
             }
         });
     },
@@ -270,7 +284,7 @@ export default {
                 new Toast(this.translate('add-problem.success', 'contest'), { type: 'success' });
                 modal.close();
                 await this.addProblem(selected);
-                this.render();
+                this.renderProblems();
             }
         });
 
@@ -329,11 +343,11 @@ export default {
 
         this.modalResetPassword(team);
         new Toast(this.translate('add-team.success', 'contest'), { type: 'success' });
-        this.render();
+        this.renderTeams();
     },
 
     modalResetPassword: async function(team) {
-        console.log(team);
+        // console.log(team);
         
         const modal = new Modal(`
             <h1>${this.translate('teams_one', 'common')} ${team.name}</h1>
