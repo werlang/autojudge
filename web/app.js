@@ -25,7 +25,8 @@ langMiddleware.init({
         'dashboard',
         'problem',
         'common',
-        'contest'
+        'contest',
+        'team',
     ],
 })
 app.use(langMiddleware.listen());
@@ -53,7 +54,6 @@ app.get([
     '/dashboard',
     '/problems',
     '/contests',
-    '/teams',
 ], dashboardRoute);
 
 // route for problem
@@ -67,6 +67,13 @@ app.get('/problems/:id', (req, res) => {
 app.get('/contests/:id', (req, res) => {
     res.templateRender('dashboard', {
         contestId: req.params.id,
+    });
+});
+
+// route for team
+app.get('/teams/:id', (req, res) => {
+    res.templateRender('team', {
+        teamId: req.params.id,
     });
 });
 

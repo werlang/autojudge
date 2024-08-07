@@ -7,6 +7,7 @@ export default {
     entry: {
         index: './src/js/index.js',
         dashboard: './src/js/dashboard.js',
+        team: './src/js/team.js',
     },
     output: {
         filename: 'js/[name].min.js',

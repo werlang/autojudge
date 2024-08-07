@@ -55,7 +55,7 @@ translatePledge.then(translate => {
             { id: 'dashboard', text: translate('menu.dashboard', 'components'), icon: 'fas fa-tachometer-alt' },
             { id: 'problems', text: translate('menu.problems', 'components'), icon: 'fas fa-tasks', action: problemsMenuClick },
             { id: 'contests', text: translate('menu.contests', 'components'), icon: 'fas fa-trophy', action: contestsMenuClick },
-            { id: 'teams', text: translate('menu.teams', 'components'), icon: 'fas fa-users' },
+            // { id: 'teams', text: translate('menu.teams', 'components'), icon: 'fas fa-users' },
             { id: 'logout', text: translate('menu.logout', 'components'), icon: 'fas fa-sign-out-alt' },
         ],
         options: {
