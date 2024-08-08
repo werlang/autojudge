@@ -2,6 +2,7 @@ import path from 'path';
 import TerserPlugin from 'terser-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import CssMinimizerPlugin from "css-minimizer-webpack-plugin";
+import NodemonPlugin from 'nodemon-webpack-plugin';
 
 export default {
     entry: {
@@ -60,9 +61,17 @@ export default {
         new MiniCssExtractPlugin({
             filename: 'css/[name].min.css',
         }),
+        new NodemonPlugin({
+            watch: import.meta.dirname + '/app.js',
+            script: import.meta.dirname + '/app.js',
+            nodeArgs: ['--inspect=0.0.0.0:9229'],
+            ext: 'html, js, less, json',
+        }),
     ],
-    watch: true,
-    // devtool: process.env.NODE_ENV === 'production' ? false : 'eval-cheap-module-source-map',
+    watch: process.env.NODE_ENV !== 'production',
+    watchOptions: {
+        ignored: ['**/node_modules'],
+    },
     devtool: process.env.NODE_ENV === 'production' ? false : 'source-map',
     mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
 };

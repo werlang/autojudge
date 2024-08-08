@@ -13,7 +13,7 @@ services:
             - 127.0.0.1:9230:9229
         env_file:
             - .env
-        command: npm run ${NODE_ENV}
+        command: npm run ${NODE_ENV}:webpack
         # command: tail -f /dev/null #idle container
         networks:
             - autojudge

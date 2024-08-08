@@ -6,6 +6,8 @@
   "scripts": {
     "production": "node app.js",
     "development": "nodemon --inspect=0.0.0.0 app.js",
+    "production:webpack": "webpack && node app.js",
+    "development:webpack": "webpack",
     "compilers": "cd payload && echo $'TMPDIR=.\nFILE=a\nINPUT=b' > .env && docker compose -f compilers.yaml pull && rm .env"
   },
   "nodemonConfig": {
@@ -28,6 +30,7 @@
     "mustache-express": "^1.3.2",
     "mysql2": "^3.10.1",
     "nodemon": "^3.1.0",
+    "nodemon-webpack-plugin": "^4.8.2",
     "typeit": "^8.8.3",
     "unzipper": "^0.11.6",
     "uuid": "^9.0.1",
