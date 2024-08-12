@@ -2,16 +2,22 @@ import Api from "../helpers/api.js";
 
 export default class Team {
 
-    constructor({ id, contest, name, password }) {
+    constructor({ id, contest, name, password, token }) {
         this.id = id;
         this.name = name;
         this.contest = contest;
         this.password = password;
+        this.token = token
     }
 
     async get() {
-        const team = await new Api({ auth: true, token: this.password }).get(`teams/${this.id}`);
+        const team = await new Api({ token: this.token }).get(`teams/${this.id}`);
         return team;
+    }
+
+    async login() {
+        const token = await new Api({ token: this.password }).post(`teams/${this.id}/login`);
+        return token;
     }
 
     async add() {
@@ -33,6 +39,12 @@ export default class Team {
         await new Api().put(`teams/${this.id}`, fields);
         const team = await this.get();
         return team;
+    }
+
+    async getContest() {
+        const {team} = await this.get();
+        const contest = await new Api({ token: this.token }).get(`contests/${team.contest.id}`);
+        return contest;
     }
 
 }
