@@ -7,6 +7,18 @@ import Submission from '../model/submission.js';
 
 const router = Router();
 
+// Login a team
+// Only team members can login
+router.post('/:id/login', auth({'team:login': true}), async (req, res, next) => {
+    try {
+        const token = await req.team.login();
+        res.send({ token });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+
 // Get a team by id
 // Only team members can get their own team
 // Contest admin can access teams from GET /contests/:id

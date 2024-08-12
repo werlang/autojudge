@@ -4,6 +4,7 @@ import User from "../model/user.js";
 import Team from '../model/team.js';
 import bcrypt from 'bcrypt';
 import Contest from '../model/contest.js';
+import jwt from 'jsonwebtoken';
 
 async function checkToken(req) {
     const headers = req.headers;
@@ -34,6 +35,21 @@ async function checkUser(req) {
     return user;
 }
 
+async function authTeam(req) {
+    const headers = req.headers;
+    if (!headers.authorization) {
+        throw new CustomError(400, 'Password not found.');
+    }
+    const password = headers.authorization.split(' ')[1];
+
+    const team = await new Team({ id: req.params.id }).get();
+    const isValidPassword = await bcrypt.compare(password, team.password);
+    if (!isValidPassword) {
+        throw new CustomError(401, 'Invalid password.');
+    }
+    return jwt.sign({ team: team.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+}
+
 async function isTeamMember(req, context, id) {
     const headers = req.headers;
     if (!headers.authorization) {
@@ -41,19 +57,29 @@ async function isTeamMember(req, context, id) {
     }
     const password = headers.authorization.split(' ')[1];
 
+    const checkJWT = password => {
+        try {
+            const {team}  = jwt.verify(password, process.env.JWT_SECRET);
+            return team;
+        }
+        catch (error) {
+            console.log(error);
+            return false;
+        }
+    }
+    const jwtId = checkJWT(password);
+
     if (context === 'id') {
         const team = await new Team({ id }).get();
-        const isValidPassword = await bcrypt.compare(password, team.password);
-        if (!isValidPassword) {
-            throw new CustomError(401, 'Invalid password.');
+        if (jwtId && jwtId === team.id) {
+            req.team = team;
+            return team;
         }
-        req.team = team;
-        return team;
     }
     else if (context === 'contest') {
         const teams = await Team.getAll({ contest: id });
         for (const team of teams) {
-            if (await bcrypt.compare(password, team.password)) {
+            if (jwtId && jwtId === team.id) {
                 req.team = team;
                 return team;
             }
@@ -136,6 +162,19 @@ function auth(modes = {}) {
             catch (error) {
                 errorList.push(error);
             }
+        }
+
+        // login with team password, receives the jwt
+        if (modes['team:login']) {
+            try {
+                const token = await authTeam(req);
+                res.send({ token });
+                return;
+            }
+            catch (error) {
+                errorList.push(error);
+            }
+            
         }
 
         // check if the password matches a team (is a member of the team)
