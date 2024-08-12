@@ -1,3 +1,6 @@
 {
-    "hello": "Hello World"
+    "hello": "Hello World",
+    "ask-password": "Please enter the team password",
+    "join-team": "Join Team",
+    "wrong-password": "The provided password is incorrect"
 }

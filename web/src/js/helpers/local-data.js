@@ -49,7 +49,8 @@ class LocalData {
     set({ id, data, expires } = {}) {
         if (id) this.id = id;
         if (data) this.data = data;
-        if (expires) this.expires = this.formatExpires(expires);
+        if (expires) this.expires = expires;
+        this.expires = this.formatExpires(this.expires);
 
         localStorage.setItem(this.id, JSON.stringify({
             data: this.data,

@@ -4,7 +4,7 @@ import Table from "./components/table.js";
 import Toast from "./components/toast.js";
 import Contest from "./model/contest.js";
 import Problem from "./model/problem.js";
-import Team from "./model/teams.js";
+import Team from "./model/team.js";
 
 export default {
 

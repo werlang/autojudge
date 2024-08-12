@@ -27,5 +27,8 @@
     "add": "Add",
     "create": "Create",
     "copy": "Copy",
-    "rename": "Rename"
+    "rename": "Rename",
+    "password": "Password",
+    "submissions_one": "Submission",
+    "submissions_other": "Submissions"
 }

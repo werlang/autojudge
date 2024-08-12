@@ -27,5 +27,8 @@
     "add": "Adicionar",
     "create": "Criar",
     "copy": "Copiar",
-    "rename": "Renomear"
+    "rename": "Renomear",
+    "password": "Senha",
+    "submissions_one": "Submissão",
+    "submissions_other": "Submissões"
 }

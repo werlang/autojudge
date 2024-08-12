@@ -1,6 +1,6 @@
 export default class Header {
     constructor({ user, menu }) {
-        this.user = user;
+        this.user = user || {};
         this.menu = menu;
         
         this.domElement = document.createElement('header');
@@ -18,7 +18,11 @@ export default class Header {
             <div id="right">
                 <div class="container">
                     <div class="profile">
-                        <img src="${this.user.picture}" alt="Profile">
+                        ${
+                            this.user.picture ? 
+                                `<img src="${this.user.picture}" alt="Profile">` :
+                                `<div class="icon"><i class="fas fa-user"></i></div>`
+                        }
                     </div>
                 </div>
             </div>

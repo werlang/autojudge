@@ -4,8 +4,9 @@ import TemplateVar from "./template-var.js";
 
 export default class Api {
 
-    constructor({ auth }={}) {
+    constructor({ auth, token }={}) {
         this.auth = auth || true;
+        this.token = token;
         this.requestInstance = this.setInstance();
     }
 
@@ -17,7 +18,7 @@ export default class Api {
             return requestInstance;
         }
 
-        const token = GoogleLogin.getCredential();
+        const token = this.token || GoogleLogin.getCredential();
         if (!token) {
             throw new Error('Credential not found');
         }

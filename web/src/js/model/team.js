@@ -2,14 +2,15 @@ import Api from "../helpers/api.js";
 
 export default class Team {
 
-    constructor({ id, contest, name }) {
+    constructor({ id, contest, name, password }) {
         this.id = id;
         this.name = name;
         this.contest = contest;
+        this.password = password;
     }
 
     async get() {
-        const team = await new Api().get(`teams/${this.id}`);
+        const team = await new Api({ auth: true, token: this.password }).get(`teams/${this.id}`);
         return team;
     }
 
