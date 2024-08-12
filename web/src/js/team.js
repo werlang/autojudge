@@ -46,7 +46,7 @@ const teamHandler = {
                 return;
             }
             
-            modal.close();
+            location.reload();
         }});
     },
 

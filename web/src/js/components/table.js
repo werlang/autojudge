@@ -42,7 +42,7 @@ export default class Table {
         this.columns = columns;
         this.controls = controls || [];
         this.translate = translate;
-        this.sort = sort !== false;
+        this.sort = sort === false ? false : sort || true;
         this.search = search !== false;
         this.domElement = document.createElement('div');
         if (id) this.domElement.id = id;
@@ -77,10 +77,14 @@ export default class Table {
             if (column.size === 'small') {
                 columnDOM.classList.add('small');
             }
-            columnDOM.innerHTML = `${column.name}${this.sort ? '<div class="button"><i class="fa-solid fa-arrow-down-a-z"></i></div>' : ''}`;
 
-            if (this.sort) {
+            const orderIcon = column.sort === 'asc' ? 'fa-arrow-up-a-z' : 'fa-arrow-down-a-z';
+
+            columnDOM.innerHTML = `${column.name}${this.sort && column.sort !== false ? `<div class="button"><i class="fa-solid ${orderIcon}"></i></div>` : ''}`;
+            
+            if (this.sort && column.sort !== false) {
                 const button = columnDOM.querySelector('.button');
+                
                 // click the sort button
                 button.addEventListener('click', () => {
                     // console.log('sort by', column.id, button.sort);
@@ -89,6 +93,7 @@ export default class Table {
                     
                     // make active only the clicked button
                     columns.forEach(c => {
+                        if (!c.querySelector('.button')) return;
                         c.querySelector('.button i').classList.remove('active');
                     });
                     button.querySelector('i').classList.add('active');
@@ -270,6 +275,29 @@ export default class Table {
                 controlObj.enabled = false;
             }
         });
+    }
+
+    srt(column, order) {
+        // console.log('sort', column, order);
+
+        const columnDOM = this.head.querySelector(`.${column}`);
+        this.head.querySelectorAll(`.${column} .button i`).forEach(icon => icon.classList.remove('active'));
+        const button = columnDOM.querySelector('.button');
+        const sortIcon = button.querySelector('i');
+
+        if (order === 'asc') {
+            this.content.sort((a, b) => a[column].localeCompare(b[column], Translator.currentLanguage(), { sensitivity: 'base' }));
+            sortIcon.classList.add('fa-arrow-down-a-z', 'active');
+            sortIcon.classList.remove('fa-arrow-up-a-z');
+            button.sort = 'desc';
+        }
+        else {
+            this.content.sort((a, b) => b[column].localeCompare(a[column], Translator.currentLanguage(), { sensitivity: 'base' }));
+            sortIcon.classList.add('fa-arrow-up-a-z', 'active');
+            sortIcon.classList.remove('fa-arrow-down-a-z');
+            button.sort = 'asc';
+        }
+        this.render();
     }
 
 }
