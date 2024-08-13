@@ -45,35 +45,37 @@ export default {
 
         document.querySelector('#contest-description').innerHTML = contest.description;
 
-        const startTime = new Date(contest.startTime).getTime();
-        const duration = contest.duration * 60 * 1000;
-        const timeLeft = new Date(duration - (Date.now() - startTime)).getTime();
-
-        const timeLeftDOM = document.querySelector('#time-left');
-        // contest is finished
-        if (timeLeft < 0) {
-            timeLeftDOM.innerHTML = `
-                <span id="message">${this.translate('contest.finished', 'team')}</span>
-                <div id="clock">${this.formatClock(0)}</div>
-            `;
-        }
-        else {
-            let timeLeft = new Date(duration - (Date.now() - startTime)).getTime();
-            let message = this.translate('contest.ends', 'team');
-            
-            // contest is not started yet
-            if (startTime > Date.now()) {
-                timeLeft = new Date(startTime - Date.now()).getTime();
-                message = this.translate('contest.starts', 'team');
+        if (contest.startTime && contest.duration) {
+            const startTime = new Date(contest.startTime).getTime();
+            const duration = contest.duration * 60 * 1000;
+            const timeLeft = new Date(duration - (Date.now() - startTime)).getTime();
+            this.updateClock(timeLeft);
+    
+            const timeLeftDOM = document.querySelector('#time-left');
+            // contest is finished
+            if (timeLeft < 0) {
+                timeLeftDOM.innerHTML = `
+                    <span id="message">${this.translate('contest.finished', 'team')}</span>
+                    <div id="clock">${this.formatClock(0)}</div>
+                `;
             }
+            else {
+                let timeLeft = new Date(duration - (Date.now() - startTime)).getTime();
+                let message = this.translate('contest.ends', 'team');
+                
+                // contest is not started yet
+                if (startTime > Date.now()) {
+                    timeLeft = new Date(startTime - Date.now()).getTime();
+                    message = this.translate('contest.starts', 'team');
+                }
 
-            timeLeftDOM.innerHTML = `
-                <span id="message">${message}</span>
-                <div id="clock">${this.formatClock(timeLeft)}</div>
-            `;
-
-            const clock = timeLeftDOM.querySelector('#clock');
-            this.updateClock(clock, timeLeft, () => this.build());
+                timeLeftDOM.innerHTML = `
+                    <span id="message">${message}</span>
+                    <div id="clock">${this.formatClock(timeLeft)}</div>
+                `;
+    
+                this.renderClock();
+            }
         }
 
         table.clear();
@@ -102,14 +104,34 @@ export default {
         `;
     },
 
-    updateClock: function(clock, timeLeft, callback) {
-        const start = Date.now();
-        clock.innerHTML = this.formatClock(timeLeft);
-        if (timeLeft > 0) {
-            setTimeout(() => this.updateClock(clock, timeLeft - (Date.now() - start), callback), 1000);
+    renderClock: function() {
+        // check if clock is in the DOM
+        const clock = document.querySelector('#time-left #clock');
+        if (!clock) return;
+        
+        clock.innerHTML = this.formatClock(this.timeLeft);
+        // console.log(this.timeLeft);
+        
+        if (this.timeLeft <= 0) {
+            this.build();
         }
         else {
-            if (callback) callback();
+            setTimeout(() => this.renderClock(), 1000);
+        }
+    },
+
+    updateClock: function(timeLeft) {
+        if (this.clockTicking) return;
+        this.clockTicking = true;
+        this.timeLeft = timeLeft;
+        // console.log(timeLeft);
+        
+        const start = Date.now();
+        if (timeLeft > 0) {
+            setTimeout(() => {
+                this.clockTicking = false;
+                this.updateClock(timeLeft - (Date.now() - start));
+            }, 1000);
         }
     },
 
