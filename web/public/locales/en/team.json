@@ -2,5 +2,10 @@
     "hello": "Hello World",
     "ask-password": "Please enter the team password",
     "join-team": "Join Team",
-    "wrong-password": "The provided password is incorrect"
+    "wrong-password": "The provided password is incorrect",
+    "contest": {
+        "starts": "The contest starts in",
+        "finished": "The contest has finished",
+        "ends": "The contest ends in"
+    }
 }

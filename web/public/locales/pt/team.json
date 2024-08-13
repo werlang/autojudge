@@ -2,5 +2,10 @@
     "hello": "Olá Mundo",
     "ask-password": "Por favor, insira a senha da equipe",
     "join-team": "Ingressar na Equipe",
-    "wrong-password": "A senha fornecida está incorreta"
+    "wrong-password": "A senha fornecida está incorreta",
+    "contest": {
+        "starts": "A competição começa em",
+        "finished": "A competição terminou",
+        "ends": "A competição termina em"
+    }
 }
