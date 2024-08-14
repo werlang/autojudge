@@ -166,30 +166,6 @@ router.post('/:id/teams', auth({'contest:admin': true}), async (req, res, next) 
     }
 });
 
-// get information about all accepted submissions in the contest
-router.get('/:id/submissions/accepted', auth({'team:contest': true}), async (req, res, next) => {
-    try {
-        const contest = await new Contest({ id: req.params.id }).get();
-        const teamsInContest = await Team.getAll({ contest: contest.id });
-
-        let submissions = await Submission.getAll({
-            team: [...teamsInContest.map(t => t.id)],
-            status: 'ACCEPTED',
-        });
-        submissions = submissions.map(submission => ({
-            id: submission.id,
-            team: submission.team,
-            problem: submission.problem,
-            score: submission.score,
-            submittedAt: submission.submitted_at,
-        }));
-        res.send({ submissions });
-    }
-    catch (error) {
-        next(error);
-    }
-});
-
 // Router for problems in a contest
 router.use('/:id/problems', contestProblem);
 

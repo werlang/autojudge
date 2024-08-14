@@ -5,6 +5,7 @@ import Team from '../model/team.js';
 import bcrypt from 'bcrypt';
 import Contest from '../model/contest.js';
 import jwt from 'jsonwebtoken';
+import Submission from '../model/submission.js';
 
 async function checkToken(req) {
     const headers = req.headers;
@@ -50,16 +51,16 @@ async function authTeam(req) {
     return jwt.sign({ team: team.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 }
 
-async function isTeamMember(req, context, id) {
+async function checkTeam(req) {
     const headers = req.headers;
     if (!headers.authorization) {
-        throw new CustomError(400, 'Password not found.');
+        throw new CustomError(400, 'Token not provided.');
     }
-    const password = headers.authorization.split(' ')[1];
+    const token = headers.authorization.split(' ')[1];
 
-    const checkJWT = password => {
+    const checkJWT = token => {
         try {
-            const {team}  = jwt.verify(password, process.env.JWT_SECRET);
+            const {team}  = jwt.verify(token, process.env.JWT_SECRET);
             return team;
         }
         catch (error) {
@@ -67,26 +68,37 @@ async function isTeamMember(req, context, id) {
             return false;
         }
     }
-    const jwtId = checkJWT(password);
+    const jwtId = checkJWT(token);
+
+    if (!jwtId) {
+        throw new CustomError(401, 'Invalid token.');
+    }
+    const team = await new Team({ id: jwtId }).get();
+    if (jwtId && jwtId === team.id) {
+        req.team = team;
+        return team;
+    }
+
+    throw new CustomError(404, 'Team not found.');
+}
+
+async function isTeamMember(req, context, id) {
+    await checkTeam(req);
 
     if (context === 'id') {
-        const team = await new Team({ id }).get();
-        if (jwtId && jwtId === team.id) {
-            req.team = team;
-            return team;
-        }
+        return req.team;
     }
     else if (context === 'contest') {
         const teams = await Team.getAll({ contest: id });
         for (const team of teams) {
-            if (jwtId && jwtId === team.id) {
+            if (req.team.id === team.id) {
                 req.team = team;
                 return team;
             }
         };
     }
 
-    throw new CustomError(401, 'Invalid password.');
+    throw new CustomError(401, 'Invalid token.');
 }
 
 async function isContestAdmin(contestId, req) {
@@ -177,6 +189,17 @@ function auth(modes = {}) {
             
         }
 
+        // check if the user is authenticated as a team member
+        if (modes['team:exists']) {
+            try {
+                await checkTeam(req);
+                anyPassed = true;
+            }
+            catch (error) {
+                errorList.push(error);
+            }
+        }
+
         // check if the password matches a team (is a member of the team)
         if (modes['team:member']) {
             const key = modes['team:member'] === true ? 'id' : modes['team:member'];
@@ -196,6 +219,20 @@ function auth(modes = {}) {
             try {
                 const contestId = req.params[key] || req.body[key];
                 await isTeamMember(req, 'contest', contestId);
+                anyPassed = true;
+            }
+            catch (error) {
+                errorList.push(error);
+            }
+        }
+
+        // check if the user is the owner of the submission
+        if (modes['team:submission']) {
+            try {
+                const key = modes['team:submission'] === true ? 'id' : modes['team:submission'];
+                const submissionId = req.params[key] || req.body[key];
+                const submission = await new Submission({ id: submissionId }).get();
+                await isTeamMember(req, 'id', submission.team);
                 anyPassed = true;
             }
             catch (error) {

@@ -8,6 +8,29 @@ import Team from '../model/team.js';
 
 const router = Router();
 
+// get all submissions from a team
+// Only members of the team can call this endpoint
+router.get('/', auth({'team:exists': true}), async (req, res, next) => {
+    try {
+        let submissions = await Submission.getAll({
+            team: req.team.id,
+        });
+        res.send({ submissions: await Promise.all(submissions.map(async submission => ({
+            id: submission.id,
+            submittedAt: submission.submitted_at,
+            status: submission.status,
+            score: submission.score,
+            problem: await new Problem({ id: submission.problem }).get().then(problem => ({
+                id: problem.id,
+                title: problem.title,
+            })),
+        })))});
+    }
+    catch (error) {
+        next(error);
+    }
+});
+
 // get pending submissions
 // the background service is supposed to call this endpoint. it will show all pending submissions from all contests
 router.get('/pending', auth({'background': true}), async (req, res, next) => {
@@ -28,9 +51,37 @@ router.get('/pending', auth({'background': true}), async (req, res, next) => {
     }
 });
 
+// get the accepted submissions from all team in the contest
+// member of the contest can call this endpoint
+router.get('/accepted', auth({'team:exists': true}), async (req, res, next) => {
+    try {
+        const contest = await new Contest({ id: req.team.contest }).get();
+        const teamsInContest = await Team.getAll({ contest: contest.id });
+
+        let submissions = await Submission.getAll({
+            team: [...teamsInContest.map(t => t.id)],
+            status: 'ACCEPTED',
+        });
+        submissions = await Promise.all(submissions.map(async submission => ({
+            id: submission.id,
+            team: submission.team,
+            problem: await new Problem({ id: submission.problem }).get().then(problem => ({
+                id: problem.id,
+                title: problem.title,
+            })),
+            score: submission.score,
+            submittedAt: submission.submitted_at,
+        })));
+        res.send({ submissions });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+
 // get submission status
-// Anyone can get the status of a submission
-router.get('/:id', async (req, res, next) => {
+// Only the submission owner can call this endpoint
+router.get('/:id', auth({'team:submission': true}), async (req, res, next) => {
     try {
         const submission = await new Submission({ id: req.params.id }).get();
         res.send({ submission: {
