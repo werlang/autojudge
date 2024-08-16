@@ -20,7 +20,8 @@ export default {
     },
 
     render: async function() {
-        this.contest = (await this.contestInstance.get()).contest;
+        const resp = await this.contestInstance.get().catch(() => location.href = '/');
+        this.contest = resp.contest;
         // console.log(this.contest);
         
         const frame = document.querySelector('#frame');
@@ -39,7 +40,8 @@ export default {
 
     renderProblems: async function(update = true) {
         if (update) {
-            this.contest = (await this.contestInstance.get()).contest;
+            const resp = await this.contestInstance.get().catch(() => location.reload());
+            this.contest = resp.contest;
         }
         const frame = document.querySelector('#frame');
         const problems = frame.querySelector('#problems');
@@ -53,7 +55,8 @@ export default {
 
     renderTeams: async function(update = true) {
         if (update) {
-            this.contest = (await this.contestInstance.get()).contest;
+            const resp = await this.contestInstance.get().catch(() => location.reload());
+            this.contest = resp.contest;
         }
         const frame = document.querySelector('#frame');
         const teams = frame.querySelector('#teams');
