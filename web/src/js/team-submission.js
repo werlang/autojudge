@@ -60,7 +60,10 @@ export default {
         })).forEach(submission => table.addItem(submission));
         table.srt('time', 'desc');
 
-        setTimeout(() => this.updateSubmissions(table), 5000);
+        if (this.refresh) {
+            if (this.updateTimeout) clearTimeout(this.updateTimeout);
+            this.updateTimeout = setTimeout(() => this.updateSubmissions(table), 5000);
+        }
     },
 
     getElapsedTime: function(date) {

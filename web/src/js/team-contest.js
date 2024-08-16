@@ -15,14 +15,10 @@ export default {
         `;
 
         // console.log(this.team);
-        
-        const contest = new Team({ id: this.team.id, token: this.token }).getContest();
-        // console.log(this.contest);
-
-        this.showTeams(contest);
+        this.showTeams();
     },
 
-    showTeams: async function(promise) {
+    showTeams: async function() {
         const frame = document.querySelector('#frame');
         frame.innerHTML += `<div id="teams-container">
             <h2>${this.translate('teams_other', 'common')}</h2>
@@ -34,24 +30,59 @@ export default {
             id: 'teams', 
             columns: [
                 {id: 'name', name: this.translate('name', 'common'), sort: false},
-                {id: 'score', name: this.translate('score', 'common'), size: 'small'},
+                {id: 'score', name: this.translate('score', 'common'), sort: false, size: 'small'},
             ],
             translate: this.translate,
             search: false,
         });
 
-        const {contest} = await promise;
+        this.updateTeams(table);
+    },
+    
+    async updateTeams(table) {
+        const {contest} = await new Team({ id: this.team.id, token: this.token }).getContest();
         this.contest = contest;
+        this.createClock();
+        // console.log(this.contest);
+    
+        table.clear();
+        this.contest.teams.map(team => ({
+            name: team.name,
+            score: `<span>${parseFloat(team.score).toFixed(1)}</span>`,
+        })).forEach(team => table.addItem(team));
+        table.srt('score', 'desc');
 
+        if (this.refresh) {
+            if (this.updateTimeout) clearTimeout(this.updateTimeout);
+            this.updateTimeout = setTimeout(() => this.updateTeams(table), 5000);
+        }
+    },
+
+    formatClock: function(time) {
+        const date = new Date(time);
+        const hours = date.getUTCHours();
+        const minutes = date.getUTCMinutes();
+        const seconds = date.getUTCSeconds();
+        return `
+            <span>${hours.toString().padStart(2, '0')}</span>:
+            <span>${minutes.toString().padStart(2, '0')}</span>:
+            <span>${seconds.toString().padStart(2, '0')}</span>
+        `;
+    },
+
+    createClock: function() {
+        const timeLeftDOM = document.querySelector('#time-left');
+        if (!timeLeftDOM || timeLeftDOM.innerHTML) return;
+
+        const contest = this.contest;
         document.querySelector('#contest-description').innerHTML = contest.description;
-
+    
         if (contest.startTime && contest.duration) {
             const startTime = new Date(contest.startTime).getTime();
             const duration = contest.duration * 60 * 1000;
             const timeLeft = new Date(duration - (Date.now() - startTime)).getTime();
             this.updateClock(timeLeft);
     
-            const timeLeftDOM = document.querySelector('#time-left');
             // contest is finished
             if (timeLeft < 0) {
                 timeLeftDOM.innerHTML = `
@@ -68,7 +99,7 @@ export default {
                     timeLeft = new Date(startTime - Date.now()).getTime();
                     message = this.translate('contest.starts', 'team');
                 }
-
+    
                 timeLeftDOM.innerHTML = `
                     <span id="message">${message}</span>
                     <div id="clock">${this.formatClock(timeLeft)}</div>
@@ -77,31 +108,6 @@ export default {
                 this.renderClock();
             }
         }
-
-        table.clear();
-        // this.contest.teams.forEach(team => {
-        //     if (team.author) {
-        //         team.title += `<span class="author-card" title="${this.translate('problems.table.author-title', 'dashboard')}">${this.translate('problems.table.author', 'dashboard')}</span>`;
-        //     }
-        // });
-        this.contest.teams.forEach(team => table.addItem(team));
-        table.srt('score', 'desc');
-
-        // table.addItemEvent('click', async item => {
-        //     this.show(item);
-        // });
-    },
-
-    formatClock: function(time) {
-        const date = new Date(time);
-        const hours = date.getUTCHours();
-        const minutes = date.getUTCMinutes();
-        const seconds = date.getUTCSeconds();
-        return `
-            <span>${hours.toString().padStart(2, '0')}</span>:
-            <span>${minutes.toString().padStart(2, '0')}</span>:
-            <span>${seconds.toString().padStart(2, '0')}</span>
-        `;
     },
 
     renderClock: function() {

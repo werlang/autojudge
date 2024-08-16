@@ -49,17 +49,18 @@
         }
 
         .column.small {
-            flex: 0 0 120px;
+            max-width: 120px;
         }
     }
 
     .item.placeholder {
         
         .column span {
-            color: var(--color-text);
-            background-color: var(--color-text);
+            color: var(--color-text) !important;
+            background-color: var(--color-text) !important;
             border-radius: 3px;
             animation: text-fade-in-out 1.5s infinite;
+            width: auto !important;
 
             @keyframes text-fade-in-out {
                 0% {
@@ -106,7 +107,7 @@
             }
 
             .column.small {
-                flex: 0 0 120px;
+                max-width: 120px;
             }
         }
 

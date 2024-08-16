@@ -90,8 +90,8 @@ const teamHandler = {
 
 const menu = new Menu({
     items: [
-        { id: 'team', text: translate('teams_one', 'common'), icon: 'fas fa-users', action: () => moduleLoader('team-submission.js', {team: teamHandler.team, token: teamHandler.token}) },
-        { id: 'contests', text: translate('contest_one', 'common'), icon: 'fas fa-trophy', action: () => moduleLoader('team-contest.js', {team: teamHandler.team, token: teamHandler.token}) },
+        { id: 'team', text: translate('teams_one', 'common'), icon: 'fas fa-users', action: () => moduleLoader('team-submission.js', {team: teamHandler.team, token: teamHandler.token, refresh: true}) },
+        { id: 'contests', text: translate('contest_one', 'common'), icon: 'fas fa-trophy', action: () => moduleLoader('team-contest.js', {team: teamHandler.team, token: teamHandler.token, refresh: true}) },
         { id: 'problems', text: translate('problem_other', 'common'), icon: 'fas fa-tasks' },
         { id: 'logout', text: translate('menu.logout', 'components'), icon: 'fas fa-sign-out-alt', action: () => teamHandler.removeTeam() },
     ],

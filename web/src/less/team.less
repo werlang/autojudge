@@ -14,6 +14,31 @@
 #teams-container {
     width: 100%;
     max-width: 900px;
+
+    #teams {
+        margin: 0 -5px;
+        width: auto;
+
+        .item {
+            .score span {
+                background-color: rgba(var(--color-main-raw), 0.4);
+                font-weight: bold;
+                font-family: 'Quantico', monospace;
+                display: flex;
+                justify-content: center;
+                padding: 3px 0;
+                margin: -3px 0;
+                border-radius: 5px;
+                width: 80px;
+            }
+        }
+        
+        .score {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+    }
 }
 
 #submissions-container {
@@ -21,9 +46,33 @@
     max-width: 900px;
 
     #submissions {
+        overflow-x: auto;
+        margin: 0 -5px;
+        width: auto;
+
+        .item .time,
+        .head .time {
+            display: none;
+            max-width: 100px;
+
+            @media @size-600 {
+                display: flex;
+            }
+        }
+
+        .item .status,
+        .head .status {
+            max-width: 80px;
+        }
 
         .item {
             
+            .problem {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
             .status {
                 font-size: 1.5rem;
                 
