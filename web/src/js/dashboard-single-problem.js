@@ -6,7 +6,7 @@ import Problem from './model/problem.js'
 export default {
 
     load: async function(id) {
-        const {problem} = await new Problem({ id }).get();
+        const {problem} = await new Problem({ id }).get().catch(() => location.reload());
         // console.log(problem);
 
         if (!problem) {
@@ -146,7 +146,7 @@ export default {
 
     saveChanges: async function(field, content) {
         try {
-            const resp = await new Problem({ id: this.problem.id }).update({ [field]: content });
+            const resp = await new Problem({ id: this.problem.id }).update({ [field]: content }).catch(() => location.reload());
             // console.log(resp);
             new Toast(this.translate('save-changes.success', 'problem'), { type: 'success' });
             this.problem = resp.problem;
@@ -293,7 +293,7 @@ export default {
                 public: isPublic,
                 input: newInput,
                 output: newOutput
-            });
+            }).catch(() => location.reload());
             // console.log(resp);
             new Toast(this.translate('save-changes.success-case', 'problem', {operation: this.translate(operation === 'add' ? 'added' : 'removed', 'common')}), { type: 'success' });
             this.problem = resp.problem;

@@ -132,7 +132,7 @@ export default {
 
     saveChanges: async function(field, content) {
         try {
-            const resp = await new Contest({ id: this.contest.id }).update({ [field]: content });
+            const resp = await new Contest({ id: this.contest.id }).update({ [field]: content }).catch(() => location.reload());
             // console.log(resp);
             new Toast(this.translate('save-changes.success', 'contest'), { type: 'success' });
             this.problem = resp.problem;
@@ -223,14 +223,14 @@ export default {
     removeTeam: async function(selected) {
         if (selected.length === 0) return;
         // console.log(selected);
-        await new Team({ id: selected[0].id }).remove();
+        await new Team({ id: selected[0].id }).remove().catch(() => location.reload());
         new Toast(this.translate('teams.remove-success', 'contest', {count: selected.length}), { type: 'success' });
         this.renderTeams();
     },
 
     resetTeamPassword: async function(selected) {
         if (selected.length === 0) return;
-        const team = await new Team({ id: selected[0].id }).resetPassword();
+        const team = await new Team({ id: selected[0].id }).resetPassword().catch(() => location.reload());
         new Toast(this.translate('teams.reset-success', 'contest', {count: selected.length}), { type: 'success' });
 
         this.modalResetPassword(team);
@@ -252,7 +252,7 @@ export default {
                     return;
                 }
                 modal.close();
-                await new Team({ id: team.id }).update({ name });
+                await new Team({ id: team.id }).update({ name }).catch(() => location.reload());
                 new Toast(this.translate('teams.rename-success', 'contest'), { type: 'success' });
                 this.renderTeams();
             }
@@ -291,7 +291,8 @@ export default {
         const button = modal.getButton('add-problem');
         button.disable(false);
 
-        const {problems} = await Problem.getAll();
+        const {problems} = await Problem.getAll().catch(() => location.reload());
+
         table.clear();
         problems.forEach(problem => {
             if (this.contest.problems.find(p => p.id === problem.id)) return;
@@ -338,7 +339,7 @@ export default {
         const team = await new Team({
             contest: this.contest.id,
             name,
-        }).add();
+        }).add().catch(() => location.reload());
         // console.log(team);
 
         this.modalResetPassword(team);

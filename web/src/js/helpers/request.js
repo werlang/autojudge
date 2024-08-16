@@ -48,16 +48,11 @@ export default class Request {
             endpoint += '?' + queryString;
         }
 
-        const request = await fetch(`${this.url}/${endpoint}`, options);
-
-        const text = await request.text();
-        try {
-            return JSON.parse(text);
+        const response = await fetch(`${this.url}/${endpoint}`, options).then(data => data.json());
+        if (response.error) {
+            throw new Error(response.message);
         }
-        catch (e) {
-            console.error(e);
-            return text;
-        }
+        return response;
     }
 
 }

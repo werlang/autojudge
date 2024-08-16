@@ -1,6 +1,7 @@
 import Table from "./components/table.js";
 import Translator from "./helpers/translate.js";
 import Submission from "./model/submission.js";
+import Team from "./model/team.js";
 
 
 export default {
@@ -49,7 +50,9 @@ export default {
             'PENDING': { icon: 'fas fa-ellipsis fa-fade', class: 'pending' },
         };
 
-        const {submissions} = await new Submission({ token: this.token }).getAll();
+        const resp = await new Submission({ token: Team.getToken() }).getAll().catch(() => location.reload());
+        const submissions = resp.submissions;
+
         table.clear();
         // console.log(submissions);
         submissions.map(submission => ({

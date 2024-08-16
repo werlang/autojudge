@@ -40,8 +40,8 @@ export default {
     },
     
     async updateTeams(table) {
-        const {contest} = await new Team({ id: this.team.id, token: this.token }).getContest();
-        this.contest = contest;
+        const resp = await new Team({ id: this.team.id }).getContest().catch(() => location.reload());
+        this.contest = resp.contest;
         this.createClock();
         // console.log(this.contest);
     

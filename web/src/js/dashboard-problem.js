@@ -62,7 +62,7 @@ export default {
             data.description = this.translate('problems.add.description', 'dashboard');
             try {
                 // create problem and redirect to it
-                const { problem } = await new Problem(data).create();
+                const { problem } = await new Problem(data).create().catch(() => location.reload());
                 location.href = `/problems/${problem.id}`;
             }
             catch (error) {

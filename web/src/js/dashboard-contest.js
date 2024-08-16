@@ -21,7 +21,7 @@ export default {
         // create placeholder cards for contests
         this.createPlaceholderCards(container);
 
-        let { contests } = await contestsPromise;
+        let { contests } = await contestsPromise.catch(() => location.reload());
         // console.log(contests);
 
         container.innerHTML = '';
@@ -93,7 +93,7 @@ export default {
             data.duration = parseInt(data['duration-h']) * 60 + parseInt(data['duration-m']);
             try {
                 // create problem and redirect to it
-                const { contest } = await new Contest(data).create();
+                const { contest } = await new Contest(data).create().catch(() => location.reload());
                 location.href = `/contests/${contest.id}`;
             }
             catch (error) {

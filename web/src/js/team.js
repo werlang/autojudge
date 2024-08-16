@@ -1,7 +1,6 @@
 import Translator from "./helpers/translate.js";
 import Pledge from "./helpers/pledge.js";
 import Menu from "./components/menu.js";
-import LocalData from "./helpers/local-data.js";
 import Header from "./components/header.js";
 import Modal from "./components/modal.js";
 import Team from "./model/team.js";
@@ -22,14 +21,23 @@ const translate = await translatePledge;
 // check the logged team or create a modal asking for the password
 const teamHandler = {
     init: async function() {
-        const savedTeam = await this.getTeam();
-        // console.log(savedTeam);
-        if (!savedTeam) {
+        const token = Team.getToken();
+        if (!token) {
             this.showPasswordModal();
             return false;
         }
-        this.team = savedTeam;
-        return savedTeam;
+        this.token = token;
+
+        const team = await this.getTeam();
+        // console.log(team);
+        
+        if (!team) {
+            this.showPasswordModal();
+            return false;
+        }
+
+        this.team = team;
+        return team;
     },
 
     showPasswordModal: function() {
@@ -41,7 +49,10 @@ const teamHandler = {
         .addInput({ id: 'password', type: 'password', placeholder: translate('password', 'common') })
         .addButton({ id: 'submit', text: translate('send', 'common'), callback: async () => {
             const password = modal.getInput('password').value;
-            if (!await this.login(password)) {
+            const resp = await this.login(password);
+            // console.log(resp);
+            
+            if (!resp) {
                 new Toast(translate('wrong-password', 'team'), { type: 'error' });
                 return;
             }
@@ -52,46 +63,42 @@ const teamHandler = {
 
     login: async function(password) {
         if (!password) return false;
-        const resp = await new Team({
-            id: TemplateVar.get('teamId'),
-            password,
-        }).login();
-        // console.log(resp);
-        if (resp.error) {
+
+        try {
+            const resp = await new Team({
+                id: TemplateVar.get('teamId'),
+                password,
+            }).login();
+            // console.log(resp);
+            return true;
+        }
+        catch (error) {
             return false;
         }
-        return this.setCredential(resp.token);
-    },
-
-    setCredential: function(token) {
-        this.token = token;
-        return new LocalData({ id: 'team-credential' }).set({ data: token, expires: '12h' });
-    },
-
-    getCredential: function() {
-        if (this.token) return this.token;
-        const token = new LocalData({ id: 'team-credential' }).get();
-        if (!token) return false;
-        this.token = token;
-        return token;
     },
 
     getTeam: async function() {
         if (this.team) return this.team;
-        const token = this.getCredential();
-        if (!token) return false;
-        const {team} = await new Team({
-            id: TemplateVar.get('teamId'),
-            token,
-        }).get();
-        return team;
+
+        try {
+            const {team} = await new Team({ id: TemplateVar.get('teamId') }).get();
+            return team;
+        }
+        catch (error) {
+            return false;
+        }
     },
+
+    removeTeam: function() {
+        Team.removeToken();
+        location.reload();
+    }
 }
 
 const menu = new Menu({
     items: [
-        { id: 'team', text: translate('teams_one', 'common'), icon: 'fas fa-users', action: () => moduleLoader('team-submission.js', {team: teamHandler.team, token: teamHandler.token, refresh: true}) },
-        { id: 'contests', text: translate('contest_one', 'common'), icon: 'fas fa-trophy', action: () => moduleLoader('team-contest.js', {team: teamHandler.team, token: teamHandler.token, refresh: true}) },
+        { id: 'team', text: translate('teams_one', 'common'), icon: 'fas fa-users', action: () => moduleLoader('team-submission.js', {team: teamHandler.team, refresh: true}) },
+        { id: 'contests', text: translate('contest_one', 'common'), icon: 'fas fa-trophy', action: () => moduleLoader('team-contest.js', {team: teamHandler.team, refresh: true}) },
         { id: 'problems', text: translate('problem_other', 'common'), icon: 'fas fa-tasks' },
         { id: 'logout', text: translate('menu.logout', 'components'), icon: 'fas fa-sign-out-alt', action: () => teamHandler.removeTeam() },
     ],
