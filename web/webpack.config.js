@@ -62,10 +62,15 @@ export default {
             filename: 'css/[name].min.css',
         }),
         new NodemonPlugin({
-            watch: import.meta.dirname + '/app.js',
+            watch: import.meta.dirname + '/',
+            ignore: [
+                '**/node_modules/**',
+                '**/src/**',
+                '**/public/**',
+            ],
             script: import.meta.dirname + '/app.js',
             nodeArgs: ['--inspect=0.0.0.0:9229'],
-            ext: 'html, js, less, json',
+            ext: 'html, js, json',
         }),
     ],
     watch: process.env.NODE_ENV !== 'production',

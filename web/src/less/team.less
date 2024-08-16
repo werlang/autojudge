@@ -16,6 +16,64 @@
     max-width: 900px;
 }
 
+#submissions-container {
+    width: 100%;
+    max-width: 900px;
+
+    #submissions {
+
+        .item {
+            
+            .status {
+                font-size: 1.5rem;
+                
+                i {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    width: 25px;
+                    height: 25px;
+                }
+
+                .accepted {
+                    color: #67ee67;
+                }
+                .wrong-answer {
+                    color: #ff9494;
+                }
+                .time-limit {
+                    color: #ffff80;
+                }
+                .error {
+                    color: #ffbe73;
+                }
+                .pending {
+                    color: #90ffff;
+                }
+            }
+
+            .score span {
+                background-color: rgba(var(--color-main-raw), 0.4);
+                font-weight: bold;
+                font-family: 'Quantico', monospace;
+                display: flex;
+                justify-content: center;
+                padding: 3px 0;
+                margin: -3px 0;
+                border-radius: 5px;
+                width: 80px;
+            }
+        }
+
+        .status, .score, .time {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+        
+    }
+}
+
 #time-left {
     margin-top: 20px;
     font-size: 1.5rem;

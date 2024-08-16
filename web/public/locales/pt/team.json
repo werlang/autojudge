@@ -7,5 +7,9 @@
         "starts": "A competição começa em",
         "finished": "A competição terminou",
         "ends": "A competição termina em"
+    },
+    "submissions": {
+        "submitted": "Submetido",
+        "status": "Status"
     }
 }

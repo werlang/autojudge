@@ -8,4 +8,3 @@ api/runs/*
 .env
 .DS_Store
 config.js
-remote-debug-profile

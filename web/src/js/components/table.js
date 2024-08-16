@@ -283,19 +283,26 @@ export default class Table {
         const columnDOM = this.head.querySelector(`.${column}`);
         this.head.querySelectorAll(`.${column} .button i`).forEach(icon => icon.classList.remove('active'));
         const button = columnDOM.querySelector('.button');
-        const sortIcon = button.querySelector('i');
+        let sortIcon;
+        if (button) {
+            sortIcon = button.querySelector('i');
+        }
 
         if (order === 'asc') {
             this.content.sort((a, b) => a[column].localeCompare(b[column], Translator.currentLanguage(), { sensitivity: 'base' }));
-            sortIcon.classList.add('fa-arrow-down-a-z', 'active');
-            sortIcon.classList.remove('fa-arrow-up-a-z');
-            button.sort = 'desc';
+            if (button) {
+                button.sort = 'desc';
+                sortIcon.classList.add('fa-arrow-down-a-z', 'active');
+                sortIcon.classList.remove('fa-arrow-up-a-z');
+            }
         }
         else {
             this.content.sort((a, b) => b[column].localeCompare(a[column], Translator.currentLanguage(), { sensitivity: 'base' }));
-            sortIcon.classList.add('fa-arrow-up-a-z', 'active');
-            sortIcon.classList.remove('fa-arrow-down-a-z');
-            button.sort = 'asc';
+            if (button) {
+                button.sort = 'asc';
+                sortIcon.classList.add('fa-arrow-up-a-z', 'active');
+                sortIcon.classList.remove('fa-arrow-down-a-z');
+            }
         }
         this.render();
     }
