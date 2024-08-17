@@ -16,5 +16,6 @@
     "select-problem": "Select a problem",
     "error-select-problem": "Please select a problem",
     "error-upload-file": "Please upload a source code file",
-    "hint-source-code": "Source code file"
+    "hint-source-code": "Source code file",
+    "hint-file-type": "Please upload a source code file of the following types: .c, .cpp, .java, .py, .js, .php"
 }

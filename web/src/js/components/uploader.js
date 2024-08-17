@@ -7,12 +7,16 @@ import Dropzone from 'dropzone';
 //     - dropElement: DOM element where the dropzone will be created
 //     - onSend: function called when the file is sent
 //     - onUpload: function called when the file finishes uploading
+//     - onError: function called when the file is invalid
 //   - fetchFile(file): fetch file received from dropzone
+//   - setContent({ message, icon }): set the content of the dropzone
+//   - setError({ message, icon }): set the content of the dropzone as error
+//   - reset(): reset the dropzone to the default content
 
 
 export default class Uploader {
     
-    constructor(dropElement, { accept, onSend, onUpload, placeholder, translate }) {
+    constructor(dropElement, { accept, onSend, onUpload, onError, placeholder, translate }) {
         this.dropElement = dropElement;
         this.translate = translate;
         this.placeholder = placeholder || this.translate('uploader.hint-drop-file', 'components');
@@ -55,6 +59,9 @@ export default class Uploader {
                                     message: self.translate('uploader.error-invalid-file', 'components'),
                                     icon: 'fa-solid fa-exclamation-triangle',
                                 });
+                                if (onError) {
+                                    onError(file, data);
+                                }
                                 return;
                             }
 

@@ -123,7 +123,10 @@ export default {
     
                 form.setData({ file });
                 form.setData({ filename: data.name });
-            }
+            },
+            onError: () => {
+                new Toast(this.translate('hint-file-type', 'team'), { type: 'error', timeOut: 10000 });
+            },
         });
 
         form.submit(async data => {
@@ -136,7 +139,6 @@ export default {
             if (validation.fail.total > 0) return;
 
             // TODO: treat messages from the server using translate and show them in the toast.
-            // TODO: fix some modals across the app that are not using forms.
 
             try {
                 const response = await new Judge(data).run();
