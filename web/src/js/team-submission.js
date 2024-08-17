@@ -24,7 +24,7 @@ export default {
                 <h2>${this.translate('new-submission', 'team')}</h2>
                 <select name="problem" id="problem" required></select>
                 <div id="upload"></div>
-                <button type="submit" class="default">Upload</button>
+                <div id="button-container"><button type="submit" class="default">Upload</button></div>
             </form>
         `;
 
@@ -136,6 +136,7 @@ export default {
             if (validation.fail.total > 0) return;
 
             // TODO: treat messages from the server using translate and show them in the toast.
+            // TODO: fix some modals across the app that are not using forms.
 
             try {
                 const response = await new Judge(data).run();
