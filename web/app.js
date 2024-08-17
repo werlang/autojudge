@@ -27,6 +27,7 @@ langMiddleware.init({
         'common',
         'contest',
         'team',
+        'notfound',
     ],
 })
 app.use(langMiddleware.listen());
@@ -82,7 +83,7 @@ app.use(express.static(import.meta.dirname + '/public/'));
 
 // 404
 app.use((req, res) => {
-    res.status(404).render('notfound', {});
+    res.status(404).templateRender('notfound');
 });
 
 app.listen(port, host, () => {

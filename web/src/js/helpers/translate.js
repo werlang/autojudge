@@ -2,6 +2,7 @@ import Cookie from './cookies.js';
 import i18next from 'i18next';
 
 // bind the language switcher
+document.querySelector('footer #year').innerHTML = new Date().getFullYear();
 document.querySelectorAll('footer #language a').forEach(e => e.addEventListener('click', () => {
     new Cookie('language').set(e.id, 365);
     location.reload();

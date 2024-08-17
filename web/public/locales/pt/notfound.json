@@ -1,0 +1,5 @@
+{
+    "main-message": "Esta não é a página que você está procurando.",
+    "go-back": "Volte para a <a href=\"/\">$t(notfound:home)</a>.",
+    "home": "página inicial"
+}

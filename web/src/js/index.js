@@ -9,8 +9,6 @@ import LocalData from './helpers/local-data.js';
 
 import '../less/index.less';
 
-document.querySelector('footer #year').innerHTML = new Date().getFullYear();
-
 // set up typewriter effect
 document.querySelectorAll('section .col.text .content h1, #section-3 h1, #section-1 #welcome').forEach(e => {
     new TypeIt(e, {
