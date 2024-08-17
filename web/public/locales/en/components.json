@@ -11,5 +11,9 @@
     },
     "table": {
         "search-title": "Search"
+    },
+    "uploader": {
+        "error-invalid-file": "Invalid file",
+        "hint-drop-file": "Click or drop file here"   
     }
 }

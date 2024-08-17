@@ -11,5 +11,9 @@
     },
     "table": {
         "search-title": "Procurar"
+    },
+    "uploader": {
+        "error-invalid-file": "Arquivo inválido",
+        "hint-drop-file": "Clique ou arraste o arquivo aqui"
     }
 }

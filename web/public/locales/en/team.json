@@ -16,7 +16,5 @@
     "select-problem": "Select a problem",
     "error-select-problem": "Please select a problem",
     "error-upload-file": "Please upload a source code file",
-    "error-invalid-file": "Invalid file",
-    "hint-drop-file": "Click or drop file here",
     "hint-source-code": "Source code file"
 }
