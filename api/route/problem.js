@@ -2,6 +2,8 @@ import { Router } from 'express';
 import auth from '../middleware/auth.js';
 import CustomError from '../helpers/error.js';
 import Problem from '../model/problem.js';
+import Contest from '../model/contest.js';
+import Submission from '../model/submission.js';
 
 const router = Router();
 
@@ -130,6 +132,39 @@ router.put('/:id', auth({'user:exists': true}), async (req, res, next) => {
                 id: problem.id,
                 title: problem.title,
                 description: problem.description,
+            }
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+
+
+// Add a new submission
+// Only team members can submit
+router.post('/:id/judge', [
+    auth({'team:member': true}),
+], async (req, res, next) => {
+    try {
+        const problems = await new Contest({ id: req.team.contest }).getProblems();
+        if (!problems.map(p => p.id).includes(parseInt(req.params.id))) {
+            throw new CustomError(404, 'Problem not found in contest.');
+        }
+
+        // send submission to judging queue
+        const submission = await new Submission({
+            team: req.team.id,
+            problem: req.params.id,
+            code: req.body.code,
+            filename: req.body.filename,
+        }).insert();
+        
+        res.status(201).send({
+            message: 'Submission received.',
+            submission: {
+                id: submission.id,
+                status: submission.status,
             }
         });
     }

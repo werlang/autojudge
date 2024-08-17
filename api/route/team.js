@@ -97,37 +97,5 @@ router.delete('/:id', auth({'contest:admin:team': true}), async (req, res, next)
     }
 });
 
-// Add a new submission
-// Only team members can submit
-router.post('/:id/problems/:pid/submissions', [
-    auth({'team:member': true}),
-], async (req, res, next) => {
-    try {
-        const problems = await new Contest({ id: req.team.contest }).getProblems();
-        if (!problems.map(p => p.id).includes(parseInt(req.params.pid))) {
-            throw new CustomError(404, 'Problem not found in contest.');
-        }
-
-        // send submission to judging queue
-        const submission = await new Submission({
-            team: req.team.id,
-            problem: req.params.pid,
-            code: req.body.code,
-            filename: req.body.filename,
-        }).insert();
-        
-        res.status(201).send({
-            message: 'Submission received.',
-            submission: {
-                id: submission.id,
-                status: submission.status,
-            }
-        });
-    }
-    catch (error) {
-        next(error);
-    }
-});
-
 
 export default router;
