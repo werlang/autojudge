@@ -1,5 +1,9 @@
+import Form from "./components/form.js";
 import Table from "./components/table.js";
+import Toast from "./components/toast.js";
+import Uploader from "./components/uploader.js";
 import Translator from "./helpers/translate.js";
+import Judge from "./model/judge.js";
 import Submission from "./model/submission.js";
 import Team from "./model/team.js";
 
@@ -16,9 +20,16 @@ export default {
             <div id="submissions-container">
                 <h2>${this.translate('submissions_other', 'common')}</h2>
             </div>
+            <form id="new-submission-form">
+                <h2>${this.translate('new-submission', 'team')}</h2>
+                <select name="problem" id="problem" required></select>
+                <div id="upload"></div>
+                <button type="submit" class="default">Upload</button>
+            </form>
         `;
 
         this.showSubmissions();
+        this.fillProblems();
     },
 
     showSubmissions: async function() {
@@ -36,11 +47,13 @@ export default {
             translate: this.translate,
             search: false,
         });
+        this.table = table;
 
-        this.updateSubmissions(table);
+        this.updateSubmissions();
     },
 
-    async updateSubmissions(table) {
+    async updateSubmissions() {
+        const table = this.table;
 
         const statusIcons = {
             'ACCEPTED': { icon: 'fas fa-check-circle', class: 'accepted' },
@@ -85,4 +98,55 @@ export default {
         return 'now';
     },
 
+    fillProblems: async function() {
+        const form = new Form(document.querySelector('#new-submission-form'));
+        form.setData({ file: null });
+
+        const resp = await new Team({ id: this.team.id }).getContest().catch(() => location.reload());
+        const problems = resp.contest.problems;
+
+        form.getSelect('problem').addOptions([
+            { value: '0', text: this.translate('select-problem', 'team'), options: { disabled: true, selected: true } },
+            ...problems.map(problem => ({ value: problem.id, text: problem.title }))
+        ]);
+
+        const uploader = new Uploader(form.get('#upload'), {
+            placeholder: this.translate('hint-source-code', 'team'),
+            translate: this.translate,
+            accept: '.js, .c, .cpp, .py, .java, .php',
+            onUpload: (file, data) => {
+                // console.log(file, data);
+                if (data.accepted === false) {
+                    form.setData({ file: null });
+                    return;
+                }
+    
+                form.setData({ file });
+                form.setData({ filename: data.name });
+            }
+        });
+
+        form.submit(async data => {
+            // console.log(data)
+            const validation = form.validate([
+                { id: 'problem', rule: e => e && e != '0', message: this.translate('error-select-problem', 'team') },
+                { id: 'file', rule: e => e, message: this.translate('error-upload-file', 'team') },
+            ]);
+
+            if (validation.fail.total > 0) return;
+
+            // TODO: treat messages from the server using translate and show them in the toast.
+
+            try {
+                const response = await new Judge(data).run();
+                this.updateSubmissions();
+                new Toast(response.message, { type: 'success' });
+                console.log(response);
+            }
+            catch (error) {
+                new Toast(error.message, { type: 'error' });
+                console.log(error);
+            }
+        });
+    },
 }

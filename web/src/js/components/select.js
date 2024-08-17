@@ -7,6 +7,8 @@
 //   - change(callback): add a change event to the select
 //   - build(): create a custom select options list
 
+import Toast from "./toast.js";
+
 
 export default class Select {
     constructor(element, { search=false }={}) {
@@ -173,7 +175,8 @@ export default class Select {
     setError(message) {
         this.element.classList.add('error');
         this.element.focus();
-        throw new CustomError('VALIDATION_ERROR', message);
+        new Toast(message, { type: 'error' });
+        // throw new Error(message);
     }
     
     clearError() {

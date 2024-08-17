@@ -12,9 +12,10 @@ import Dropzone from 'dropzone';
 
 export default class Uploader {
     
-    constructor(dropElement, { accept, onSend, onUpload, placeholder }) {
+    constructor(dropElement, { accept, onSend, onUpload, placeholder, translate }) {
         this.dropElement = dropElement;
-        this.placeholder = placeholder || 'Click or Drop file here';
+        this.translate = translate;
+        this.placeholder = placeholder || this.translate('hint-drop-file', 'team');
         const self = this;
     
         this.dropElement.classList.add('dropzone');
@@ -51,7 +52,7 @@ export default class Uploader {
                         if (onUpload) {
                             if (data.accepted === false) {
                                 self.setError({
-                                    message: 'Invalid file',
+                                    message: self.translate('error-invalid-file', 'team'),
                                     icon: 'fa-solid fa-exclamation-triangle',
                                 });
                                 return;
@@ -83,7 +84,8 @@ export default class Uploader {
         return fileData;
     }
 
-    setContent({ message = 'Click or Drop file here', icon = 'fa-solid fa-upload' }) {
+    setContent({ message, icon = 'fa-solid fa-upload' }) {
+        message = message || this.translate('hint-drop-file', 'team');
         this.dropElement.classList.remove('error');
         this.dropElement.querySelector('button').innerHTML = `
             <div><i class="${icon}"></i></div>
@@ -91,7 +93,8 @@ export default class Uploader {
         `;
     }
 
-    setError({ message = 'Invalid file', icon = 'fa-solid fa-exclamation-triangle' }) {
+    setError({ message, icon = 'fa-solid fa-exclamation-triangle' }={}) {
+        message = message || this.translate('error-invalid-file', 'team');
         this.setContent({ message, icon });
         this.dropElement.classList.add('error');
         this.dropElement.classList.remove('success');
