@@ -178,7 +178,7 @@ export default class Modal {
         return this;
     }
 
-    addInput({ id, type, placeholder, value, label, required, disabled }) {
+    addInput({ id, type, placeholder, value, label, required, disabled, onEnter, focus }) {
         let input = document.createElement('input');
         input.id = id;
         input.type = type || 'text';
@@ -188,7 +188,20 @@ export default class Modal {
         input.disabled = disabled;
 
         input = new Input(input);
+
+        if (onEnter) {
+            input.keyUp(e => {
+                if (e.key == 'Enter') {
+                    onEnter(e, this);
+                }
+            });
+        }
+
         this.append(input.get().parentNode);
+
+        if (focus === true) {
+            input.focus();
+        }
 
         if (!this.inputList) {
             this.inputList = {};

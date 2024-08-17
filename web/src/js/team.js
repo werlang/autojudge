@@ -46,7 +46,7 @@ const teamHandler = {
             <h2>${translate('join-team', 'team')}</h2>
             <p>${translate('ask-password', 'team')}</p>
         `, { fog: { close: false, dark: true } })
-        .addInput({ id: 'password', type: 'password', placeholder: translate('password', 'common') })
+        .addInput({ id: 'password', type: 'password', placeholder: translate('password', 'common'), onEnter: () => modal.getButton('submit').click(), focus: true })
         .addButton({ id: 'submit', text: translate('send', 'common'), callback: async () => {
             const password = modal.getInput('password').value;
             const resp = await this.login(password);

@@ -1,4 +1,5 @@
 import Button from "./components/button.js";
+import Form from "./components/form.js";
 import Modal from "./components/modal.js";
 import Table from "./components/table.js";
 import Toast from "./components/toast.js";
@@ -321,20 +322,21 @@ export default {
     },
 
     addTeamModal: async function() {
-        new Modal(`<h1>${this.translate('add-team.h1-name', 'contest')}</h1>`)
-        .addInput({ id: 'team-name', label: this.translate('add-team.team-name', 'contest') })
-        .addButton({ 
-            id: 'add-team',
-            text: this.translate('create', 'common'),
-            callback: async (e, modal) => {
-                const name = modal.get('#team-name').value;
-                if (!name) {
-                    new Toast(this.translate('add-team.error-name', 'contest'), { type: 'error' });
-                    return;
-                }
-                modal.close();
-                await this.addTeam(name);
-            }
+        const modal = new Modal(`
+            <h1>${this.translate('add-team.h1-name', 'contest')}</h1>
+            <form>
+                <input id="team-name" name="team-name" type="text" required placeholder="${this.translate('add-team.team-name', 'contest')}">
+                <button id="add-team" class="default">${this.translate('create', 'common')}</button>
+            </form>
+        `);
+
+        const form = new Form(modal.get('form'));
+        form.submit(async data => {
+            const validation = form.validate([{ id: 'team-name', rule: v => v.length > 3, message: this.translate('add-team.error-name', 'contest') }]);
+            if (validation.fail.total > 0) return;
+
+            modal.close();
+            await this.addTeam(data['team-name']);
         });
     },
 

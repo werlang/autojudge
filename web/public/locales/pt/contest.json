@@ -28,7 +28,7 @@
     "add-team": {
         "h1-name": "Criar Nova Equipe",
         "team-name": "Nome da Equipe",
-        "error-name": "O nome da equipe é obrigatório.",
+        "error-name": "O nome da equipe deve ter mais de 3 caracteres.",
         "message-1": "Anote a senha abaixo e informe aos membros da equipe.",
         "message-2": "Eles poderão acessar a competição através do link abaixo.",
         "success": "Equipe criada com sucesso."

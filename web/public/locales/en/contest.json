@@ -28,7 +28,7 @@
     "add-team": {
         "h1-name": "Create New Team",
         "team-name": "Team Name",
-        "error-name": "The team name is required.",
+        "error-name": "The team name should be larger than 3 characters.",
         "message-1": "Write down the password below and inform the team members.",
         "message-2": "They will be able to access the contest through the link below.",
         "success": "Team created successfully."

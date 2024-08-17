@@ -214,4 +214,9 @@ export default class Input {
         return this;
     }
 
+    focus() {
+        this.get().focus();
+        return this;
+    }
+
 }
