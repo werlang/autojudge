@@ -46,6 +46,8 @@ export default {
             ],
             translate: this.translate,
             search: false,
+            maxItems: 10,
+            pagination: true,
         });
         this.table = table;
 

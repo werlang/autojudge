@@ -76,6 +76,46 @@
         }
     }
 
+    .item.pagination {
+        display: flex;
+        justify-content: flex-end;
+        gap: 5px;
+
+        .button {
+            width: 30px;
+            height: 30px;
+            border-radius: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: 0.3s all;
+
+            &:hover {
+                background-color: rgba(var(--color-secondary-raw), 0.3);
+            }
+
+            &.disabled {
+                cursor: not-allowed;
+                background-color: transparent;
+                opacity: 0.5;
+            }
+        }
+        
+        .pages {
+            display: flex;
+            justify-self: center;
+            align-items: center;
+
+            span {
+                width: 30px;
+                height: 30px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+        }
+    }
+
     .head {
         display: flex;
         justify-content: space-between;

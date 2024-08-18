@@ -38,12 +38,14 @@ export default class Table {
     placeholderAmount = 10;
     content = [];
 
-    constructor({ element, id, columns, controls, translate, selection, search, sort }) {
+    constructor({ element, id, columns, controls, translate, selection, search, sort, maxItems, pagination }) {
         this.columns = columns;
         this.controls = controls || [];
         this.translate = translate;
         this.sort = sort === false ? false : sort || true;
         this.search = search !== false;
+        this.maxItems = maxItems || false;
+        this.pagination = pagination || false;
         this.domElement = document.createElement('div');
         if (id) this.domElement.id = id;
         
@@ -52,6 +54,12 @@ export default class Table {
             this.selection = { enabled: this.selection, multi: false };
         }
         this.selectedItems = [];
+
+        this.pages = {
+            current: 1,
+            total: 1,
+            itemIndex: 0,
+        };
 
         this.domElement.classList.add('table');
         element.appendChild(this.domElement);
@@ -187,7 +195,12 @@ export default class Table {
     render() {
         this.domElement.querySelectorAll('.item').forEach(item => item.remove());
 
-        this.content.forEach(item => {
+        this.pages.total = Math.ceil(this.content.length / this.maxItems);
+        this.pages.current = Math.ceil((this.pages.itemIndex + 1) / this.maxItems);
+
+        for (let i = this.pages.itemIndex ; i < this.pages.itemIndex + this.maxItems ; i++) {
+            const item = this.content[i];
+            if (!this.content[i]) break;
             if (item.hidden) return;
             const itemDOM = document.createElement('div');
             itemDOM.classList.add('item');
@@ -224,7 +237,7 @@ export default class Table {
                 if (column.id) {
                     classes.push(column.id);
                 }
-                return `<div class="${classes.join(' ')}">${item[column.id]}</div>`
+                return `<div class="${classes.join(' ')}">${item[column.id]}</div>`;
             }).join('');
     
             if (this.itemEvents) {
@@ -236,7 +249,9 @@ export default class Table {
             }
 
             this.domElement.appendChild(itemDOM);
-        });
+        }
+
+        if (this.pagination) this.showPagination();
     }
 
     addItemEvent(event, action) {
@@ -307,4 +322,61 @@ export default class Table {
         this.render();
     }
 
+    showPagination() {
+        const itemDOM = document.createElement('div');
+        itemDOM.classList.add('item', 'pagination');
+        itemDOM.innerHTML = `
+            <div class="button"><i class="fas fa-angles-left"></i></div>
+            <div class="button"><i class="fas fa-angle-left"></i></div>
+            <div class="pages">
+                <span class="active">${this.pages.current}</span>
+                /
+                <span class="total">${this.pages.total}</span>
+            </div>
+            <div class="button"><i class="fas fa-angle-right"></i></div>
+            <div class="button"><i class="fas fa-angles-right"></i></div>
+        `;
+
+        const [firstButtons, prevButton, nextButton, lastButton] = Array.from(itemDOM.querySelectorAll('.button'));
+        [firstButtons, prevButton, nextButton, lastButton].forEach(button => button.classList.add('disabled'));
+
+        if (this.pages.current > 1) {
+            firstButtons.classList.remove('disabled');
+            prevButton.classList.remove('disabled');
+        }
+        if (this.pages.current < this.pages.total) {
+            nextButton.classList.remove('disabled');
+            lastButton.classList.remove('disabled');
+        }
+
+        firstButtons.addEventListener('click', () => {
+            if (firstButtons.classList.contains('disabled')) return;
+            this.pages.itemIndex = 0;
+            this.render();
+        });
+
+        prevButton.addEventListener('click', () => {
+            if (prevButton.classList.contains('disabled')) return;
+            if (this.pages.current > 1) {
+                this.pages.itemIndex -= this.maxItems;
+            }
+            this.render();
+        });
+
+        nextButton.addEventListener('click', () => {
+            if (nextButton.classList.contains('disabled')) return;
+            if (this.pages.current < this.pages.total) {
+                this.pages.itemIndex += this.maxItems;
+            }
+            this.render();
+        });
+
+        lastButton.addEventListener('click', () => {
+            if (lastButton.classList.contains('disabled')) return;
+            this.pages.itemIndex = this.maxItems * (this.pages.total - 1);
+            this.render();
+        });
+
+        this.domElement.appendChild(itemDOM);
+    }
 }
