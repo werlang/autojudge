@@ -28,6 +28,7 @@ langMiddleware.init({
         'contest',
         'team',
         'notfound',
+        'api',
     ],
 })
 app.use(langMiddleware.listen());

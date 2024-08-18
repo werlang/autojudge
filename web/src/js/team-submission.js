@@ -61,6 +61,7 @@ export default {
             'TIME_LIMIT_EXCEEDED': { icon: 'fas fa-clock', class: 'time-limit' },
             'ERROR': { icon: 'fas fa-exclamation-triangle', class: 'error' },
             'PENDING': { icon: 'fas fa-ellipsis fa-fade', class: 'pending' },
+            'PARSING_ERROR': { icon: 'fas fa-exclamation-triangle', class: 'error' },
         };
 
         const resp = await new Submission({ token: Team.getToken() }).getAll().catch(() => location.reload());
@@ -100,7 +101,7 @@ export default {
 
     fillProblems: async function() {
         const form = new Form(document.querySelector('#new-submission-form'));
-        form.setData({ file: null });
+        form.setData({ code: null });
 
         const resp = await new Team({ id: this.team.id }).getContest().catch(() => location.reload());
         const problems = resp.contest.problems;
@@ -117,11 +118,11 @@ export default {
             onUpload: (file, data) => {
                 // console.log(file, data);
                 if (data.accepted === false) {
-                    form.setData({ file: null });
+                    form.setData({ code: null });
                     return;
                 }
     
-                form.setData({ file });
+                form.setData({ code: file });
                 form.setData({ filename: data.name });
             },
             onError: () => {
@@ -131,23 +132,19 @@ export default {
 
         form.submit(async data => {
             // console.log(data)
-            const validation = form.validate([
+            if (!form.validate([
                 { id: 'problem', rule: e => e && e != '0', message: this.translate('error-select-problem', 'team') },
                 { id: 'file', rule: e => e, message: this.translate('error-upload-file', 'team') },
-            ]);
-
-            if (validation.fail.total > 0) return;
-
-            // TODO: treat messages from the server using translate and show them in the toast.
+            ])) return;
 
             try {
                 const response = await new Judge(data).run();
                 this.updateSubmissions();
-                new Toast(response.message, { type: 'success' });
-                console.log(response);
+                new Toast(this.translate(response.message, 'api'), { type: 'success' });
+                // console.log(response);
             }
             catch (error) {
-                new Toast(error.message, { type: 'error' });
+                new Toast(this.translate(error.message, 'api'), { type: 'error' });
                 console.log(error);
             }
         });

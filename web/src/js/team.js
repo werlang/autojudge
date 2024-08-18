@@ -14,6 +14,7 @@ new Translator(['en', 'pt'], [
     'components',
     'common',
     'team',
+    'api',
 ]).init().then(translate => translatePledge.resolve(translate));
 const translate = await translatePledge;
 
