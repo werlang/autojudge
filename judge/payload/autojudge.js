@@ -100,7 +100,7 @@ fs.readdir(inputDir, async (error, inputFiles) => {
                     message: stderr,
                 });
             }
-            else if (stdout !== outputContents) {
+            else if (stdout.trim() !== outputContents.trim()) {
                 fail += 1;
                 results.push({
                     file: inputFilePath,
