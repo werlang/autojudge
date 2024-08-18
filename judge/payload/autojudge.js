@@ -21,6 +21,8 @@ try {
 
 // Extract the file extension
 const extension = path.extname(file).slice(1);
+// file name without extension
+const fileName = path.basename(file, path.extname(file));
 
 let pass = 0;
 let fail = 0;
@@ -58,7 +60,7 @@ fs.readdir(inputDir, async (error, inputFiles) => {
         }
 
         // Create .env file and set TMPDIR, FILE, and INPUT
-        const envContent = `TMPDIR=${tmpdir}\nFILE=${file}\nINPUT=${inputFilePath}\nTIME_LIMIT=${timeLimit}`;
+        const envContent = `TMPDIR=${tmpdir}\nFILE=${file}\nFILE_NAME=${fileName}\nINPUT=${inputFilePath}\nTIME_LIMIT=${timeLimit}`;
         fs.writeFileSync('.env', envContent);
 
         let command = `docker compose -f compilers.yaml run --rm `;
@@ -67,6 +69,7 @@ fs.readdir(inputDir, async (error, inputFiles) => {
             js: 'node',
             php: 'php',
             py: 'python',
+            java: 'java',
         };
 
         if (compilers[extension]) {
