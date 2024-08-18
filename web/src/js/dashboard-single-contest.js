@@ -332,8 +332,7 @@ export default {
 
         const form = new Form(modal.get('form'));
         form.submit(async data => {
-            const validation = form.validate([{ id: 'team-name', rule: v => v.length > 3, message: this.translate('add-team.error-name', 'contest') }]);
-            if (validation.fail.total > 0) return;
+            if (!form.validate([{ id: 'team-name', rule: v => v.length > 3, message: this.translate('add-team.error-name', 'contest') }])) return;
 
             modal.close();
             await this.addTeam(data['team-name']);

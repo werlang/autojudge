@@ -71,7 +71,10 @@ export default class Form {
     //   - id: id of the input to be validated
     //   - rule: callback that should return true if the input is valid
     //   - message: message to be displayed if the input is invalid
-    validate(validationArray, silent = false) {
+    validate(validationArray, {
+        silent = false,
+        returnList = false,
+    }={}) {
         // response object: contains the total of valid and invalid inputs and a list of the ids of each
         const response = {
             success: { total: 0, list: []},
@@ -117,7 +120,11 @@ export default class Form {
             }
             
         }
-        return response;
+
+        if (returnList === true) {
+            return response;
+        }
+        return response.fail.total == 0;
     }
 
     // get all buttons or a specific button in the form
