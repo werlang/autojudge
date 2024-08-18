@@ -91,6 +91,7 @@ router.get('/:id', auth({'team:submission': true}), async (req, res, next) => {
             status: submission.status,
             score: submission.score,
             submittedAt: submission.submitted_at,
+            log: submission.log,
         }});
     }
     catch (error) {
@@ -145,7 +146,7 @@ router.post('/:id/judge', auth({'background': true}), async (req, res, next) => 
             }
         }
 
-        await submission.updateStatus(response.status);
+        await submission.updateStatus(response);
         res.send({ submission: response });
     }
     catch (error) {

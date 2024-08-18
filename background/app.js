@@ -19,8 +19,7 @@ const background = {
                 const submission = submissions.submissions[0];
     
                 const response = await this.request.post(`submissions/${submission.id}/judge`, {});
-                // console.log(response);
-                // console.log(response, response.submissions.results);
+                console.log(`[${new Date().toISOString()}] ${JSON.stringify(response, null, 2)}`);
             }
             else {
                 console.log(`[${new Date().toISOString()}] No pending submissions`);

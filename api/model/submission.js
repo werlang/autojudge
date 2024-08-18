@@ -22,8 +22,9 @@ export default class Submission extends Model {
                 status: null,
                 submitted_at: null,
                 score: null,
+                log: null,
             },
-            allowUpdate: ['status', 'score'],
+            allowUpdate: ['status', 'score', 'log'],
             insertFields: ['team', 'problem', 'code', 'filename'],
         });
     }
@@ -65,13 +66,15 @@ export default class Submission extends Model {
         return super.insert();
     }
 
-    async updateStatus(status) {
+    async updateStatus(response) {
+        const status = response.status;
         const { team, contest, remainingTime } = await this.isSubmissionEnabled();
 
         const data = { status };
         
         if (status !== 'ACCEPTED') {
             data.score = config.contest.penaltyScore;
+            data.log = response;
             await this.update(data);
             await team.updateScore();
             return this;
