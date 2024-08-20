@@ -80,6 +80,12 @@
         display: flex;
         justify-content: flex-end;
         gap: 5px;
+        background-color: rgba(var(--color-secondary-raw), 0.15);
+        padding: 5px 30px;
+
+        &:hover {
+            filter: none;
+        }
 
         .button {
             width: 30px;
@@ -91,7 +97,7 @@
             transition: 0.3s all;
 
             &:hover {
-                background-color: rgba(var(--color-secondary-raw), 0.3);
+                background-color: rgba(var(--color-secondary-raw), 0.7);
             }
 
             &.disabled {
@@ -172,7 +178,7 @@
             .search.active {
                 width: auto;
                 padding: 0 10px;
-                background-color: rgba(var(--color-secondary-raw), 0.3);
+                background-color: rgba(var(--color-secondary-raw), 0.7);
 
                 input {
                     width: 100px;
@@ -212,7 +218,7 @@
             margin: 0 5px;
                         
             &:hover {
-                background-color: rgba(var(--color-secondary-raw), 0.3);
+                background-color: rgba(var(--color-secondary-raw), 0.7);
             }
 
             i {

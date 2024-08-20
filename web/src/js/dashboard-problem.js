@@ -24,6 +24,9 @@ export default {
                 {id: 'title', name: this.translate('title', 'common')},
             ],
             translate: this.translate,
+            search: true,
+            pagination: true,
+            maxItems: 10,
         });
 
         const addButton = new Button({ id: 'add-problem', text: this.translate('problems.table.add', 'dashboard'), }).click(() => this.add());

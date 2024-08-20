@@ -44,7 +44,7 @@ export default class Table {
         this.translate = translate;
         this.sort = sort === false ? false : sort || true;
         this.search = search !== false;
-        this.maxItems = maxItems || false;
+        this.maxItems = maxItems || Infinity;
         this.pagination = pagination || false;
         this.domElement = document.createElement('div');
         if (id) this.domElement.id = id;
