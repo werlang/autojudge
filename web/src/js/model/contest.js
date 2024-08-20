@@ -1,4 +1,5 @@
 import Api from "../helpers/api.js";
+import Team from "./team.js";
 
 export default class Contest {
     
@@ -14,8 +15,12 @@ export default class Contest {
         return contests;
     }
 
-    async get() {
-        const contest = await new Api().get(`contests/${this.id}`);
+    async get(logAsTeam=false) {
+        const args = {};
+        if (logAsTeam) {
+            args.token = Team.getToken();
+        }
+        const contest = await new Api(args).get(`contests/${this.id}`);
         return contest;
     }
 
@@ -34,8 +39,12 @@ export default class Contest {
         return { ...resp, ...contest };
     }
 
-    async getProblems() {
-        const {problems} = await new Api().get(`contests/${this.id}/problems`);
+    async getProblems(logAsTeam=false) {
+        const args = {};
+        if (logAsTeam) {
+            args.token = Team.getToken();
+        }
+        const {problems} = await new Api(args).get(`contests/${this.id}/problems`);
         return problems;
     }
 

@@ -42,7 +42,11 @@ router.post('/', auth({'user:exists': true}), async (req, res, next) => {
 // if author, show hidden fields
 router.get('/', auth({'user:optional': true}), async (req, res, next) => {
     try {
-        const problems = await Problem.getAll({});
+        const query = {};
+        if (req.query.contest) {
+            query.contest = req.query.contest;
+        }
+        const problems = await Problem.getAll(query);
 
         const problemsData = problems.map(problem => {
             const problemData = {

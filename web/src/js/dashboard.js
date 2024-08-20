@@ -9,6 +9,8 @@ import LocalData from "./helpers/local-data.js";
 
 import '../less/dashboard.less';
 
+// TODO: Create dashboard view
+
 const translatePledge = new Pledge();
 new Translator(['en', 'pt'], [
     'components',

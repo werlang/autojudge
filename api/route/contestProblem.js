@@ -28,7 +28,7 @@ router.post('/:problemId', auth({'contest:admin': true}), async (req, res, next)
 // Only the contest admin can see hidden problems
 // Only team members can see public problems
 router.get('/', auth({
-    'team:member': true,
+    'team:contest': true,
     'contest:admin': true,
 }), async (req, res, next) => {
     try {

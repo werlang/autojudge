@@ -9,8 +9,8 @@ export default class Problem {
         this.language = language || 'en';
     }
 
-    static async getAll() {
-        const problems = await new Api().get('problems');
+    static async getAll(filter) {
+        const problems = await new Api().get('problems', filter);
         return problems;
     }
 
