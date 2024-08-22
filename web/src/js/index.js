@@ -61,10 +61,11 @@ async function redirectOrLogin(path) {
         new Toast(error.message, { type: 'error' });
     }
 }
-new Button({ element: document.querySelector('#section-1 #join') }).click(async () => redirectOrLogin('dashboard'));
+new Button({ element: document.querySelector('#section-1 #manage') }).click(async () => redirectOrLogin('dashboard'));
+new Button({ element: document.querySelector('#section-1 #compete') }).click(async () => location.href = '/teams');
 new Button({ element: document.querySelector('#section-4 #problems') }).click(async () => redirectOrLogin('problems'));
 new Button({ element: document.querySelector('#section-5 #contests') }).click(async () => redirectOrLogin('contests'));
-new Button({ element: document.querySelector('#section-6 #teams') }).click(async () => redirectOrLogin('teams'));
+new Button({ element: document.querySelector('#section-6 #teams') }).click(async () => location.href = '/teams');
 
 function showSignInModal() {
     const modal = new Modal(`
@@ -103,5 +104,5 @@ new Card(cardContainer, {
     title: translate('card.teams.title', 'index'),
     description: translate('card.teams.description', 'index'),
 }).click(async () => {
-    redirectOrLogin('teams');
+    location.href = '/teams';
 });

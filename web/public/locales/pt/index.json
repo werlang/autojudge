@@ -2,7 +2,8 @@
     "section1": {
         "welcome": "Bem-vindo!",
         "h3": "Juiz Online ao seu serviço. Eu posso te ajudar com problemas de programação e competições.",
-        "button": "Entrar"
+        "button-1": "Genenciar",
+        "button-2": "Competir"
     },
     "section3": {
         "h1": "O que eu posso fazer por você?",

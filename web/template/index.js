@@ -1,7 +1,8 @@
 export default [
     ['section1.welcome', { ns: 'index' }],
     ['section1.h3', { ns: 'index' }],
-    ['section1.button', { ns: 'index' }],
+    ['section1.button-1', { ns: 'index' }],
+    ['section1.button-2', { ns: 'index' }],
     ['section3.h1', { ns: 'index' }],
     ['section3.p', { ns: 'index' }],
     ['section4.h1', { ns: 'index' }],

@@ -2,7 +2,8 @@
     "section1": {
         "welcome": "Welcome!",
         "h3": "Online Judge at your service. I can help you with programming problems and contests.",
-        "button": "Join"
+        "button-1": "Manage",
+        "button-2": "Compete"
     },
     "section3": {
         "h1": "What can I do for you?",

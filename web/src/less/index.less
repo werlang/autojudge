@@ -5,6 +5,8 @@
 
 
 #frame {
+    padding: 0;
+
     section {
         
         justify-content: space-between;
@@ -27,11 +29,11 @@
         #col-left {
             max-width: 650px;
             width: 100%;
-            padding-left: 20px;
+            padding: 0 20px;
             box-sizing: border-box;
 
             @media @size-900 {
-                padding-left: 120px;
+                padding: 0 120px;
             }
 
             #logo {
@@ -60,12 +62,19 @@
     
             #button-container {
                 display: flex;
+                flex-direction: column;
                 gap: 15px;
-                margin-top: 20px;
-                margin-left: 20px;
+                margin: 20px 20px 0px 20px;
+
+                @media @size-600 {
+                    flex-direction: row;
+                }
     
                 button {
-                    max-width: 150px;
+                    
+                    @media @size-600 {
+                        max-width: 150px;
+                    }
                 }
             }
         }
