@@ -16,6 +16,7 @@ new Translator(['en', 'pt'], [
     'common',
     'team',
     'api',
+    'problem',
 ]).init().then(translate => translatePledge.resolve(translate));
 const translate = await translatePledge;
 
@@ -130,6 +131,13 @@ new Header({ menu, });
 
 teamHandler.init().then(team => {
     if (!team) return;
+
+    const problemId = TemplateVar.get('problemId');
+    if (problemId) {
+        moduleLoader('team-single-problem.js', {team: teamHandler.team, problemId });
+        return;
+    }
+    
     menu.click('team');
 });
     

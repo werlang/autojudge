@@ -11,16 +11,16 @@ export default class Api {
     }
 
     setInstance() {
+        const token = this.token || GoogleLogin.getCredential();
+        if (!token) {
+            this.auth = false;
+        }
+
         if (!this.auth) {
             const requestInstance = new Request({ 
                 url: `https://${TemplateVar.get('apiurl')}`,
             });
             return requestInstance;
-        }
-
-        const token = this.token || GoogleLogin.getCredential();
-        if (!token) {
-            throw new Error('Credential not found');
         }
 
         const requestInstance = new Request({ 

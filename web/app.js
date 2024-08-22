@@ -72,14 +72,22 @@ app.get('/contests/:id', (req, res) => {
     });
 });
 
-const teamsRoute = (req, res) => {
+// route for team
+app.get('/teams', (req, res) => {
+    res.templateRender('team');
+});
+app.get('/teams/:id', (req, res) => {
     res.templateRender('team', {
         teamId: req.params.id,
     });
-}
-// route for team
-app.get('/teams', teamsRoute);
-app.get('/teams/:id', teamsRoute);
+});
+
+// route for problem within a contest
+app.get('/contests/problems/:id', (req, res) => {
+    res.templateRender('team', {
+        problemId: req.params.id,
+    });
+});
 
 // static assets
 app.use(express.static(import.meta.dirname + '/public/'));

@@ -35,8 +35,7 @@ export default {
         contest.problems.forEach(problem => table.addItem(problem));
 
         table.addItemEvent('click', async item => {
-            window.open(`/problems/${item.id}`, '_blank');
-            // TODO: Make possible to check problem using team token instead of user token
+            location.href = `/contests/problems/${item.id}`;
         });
     },
 }
