@@ -6,6 +6,7 @@ import Modal from "./components/modal.js";
 import Team from "./model/team.js";
 import Toast from "./components/toast.js";
 import TemplateVar from "./helpers/template-var.js";
+import Form from "./components/form.js";
 
 import '../less/team.less';
 
@@ -46,11 +47,21 @@ const teamHandler = {
         const modal = new Modal(`
             <h2>${translate('join-team', 'team')}</h2>
             <p>${translate('ask-password', 'team')}</p>
+            <form>
+                <input id="password" type="password" placeholder="${translate('password', 'common')}">
+                ${TemplateVar.get('teamId') ? '' : `<input id="team-id" type="text" placeholder="${translate('team-id', 'team')}">`}
+                <div id="button-container"><button id="submit" class="default">${translate('send', 'common')}</button></div>
+            </form>
         `, { fog: { close: false, dark: true } })
-        .addInput({ id: 'password', type: 'password', placeholder: translate('password', 'common'), onEnter: () => modal.getButton('submit').click(), focus: true })
-        .addButton({ id: 'submit', text: translate('send', 'common'), callback: async () => {
-            const password = modal.getInput('password').value;
-            const resp = await this.login(password);
+
+        const form = new Form(modal.get('form'));
+        form.submit(async data => {
+            if (!form.validate([
+                { id: 'password', rule: value => value.length == 6 && !isNaN(value), message: translate('password-format', 'team') },
+                { id: 'team-id', rule: value => value.length == 4, message: translate('team-id-format', 'team') },
+            ])) return;
+
+            const resp = await this.login(data['password'], data['team-id']);
             // console.log(resp);
             
             if (!resp) {
@@ -59,15 +70,15 @@ const teamHandler = {
             }
             
             location.reload();
-        }});
+        });
     },
 
-    login: async function(password) {
+    login: async function(password, teamId) {
         if (!password) return false;
 
         try {
             const resp = await new Team({
-                id: TemplateVar.get('teamId'),
+                id: teamId || TemplateVar.get('teamId'),
                 password,
             }).login();
             // console.log(resp);
@@ -92,7 +103,7 @@ const teamHandler = {
 
     removeTeam: function() {
         Team.removeToken();
-        location.reload();
+        location.href = '/';
     }
 }
 

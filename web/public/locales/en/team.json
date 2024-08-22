@@ -1,8 +1,10 @@
 {
-    "hello": "Hello World",
-    "ask-password": "Please enter the team password",
     "join-team": "Join Team",
+    "ask-password": "Please enter the team password",
+    "team-id": "Team ID",
     "wrong-password": "The provided password is incorrect",
+    "password-format": "The password must have 6 numeric characters",
+    "team-id-format": "The team ID is invalid",
     "contest": {
         "starts": "The contest starts in",
         "finished": "The contest has finished",

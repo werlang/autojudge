@@ -285,9 +285,9 @@ export default {
                 const selected = table.getSelected();
                 // console.log(selected);
                 if (selected.length === 0) return;
-                new Toast(this.translate('add-problem.success', 'contest'), { type: 'success' });
                 modal.close();
-                await this.addProblem(selected);
+                await this.addProblem(selected).catch(() => location.reload());
+                new Toast(this.translate('add-problem.success', 'contest'), { type: 'success' });
                 this.renderProblems();
             }
         });
@@ -363,7 +363,7 @@ export default {
             </pre>
             <p>${this.translate('add-team.message-2', 'contest')}</p>
             <pre>
-                <code>${location.origin}/teams/${team.id}</code>
+                <code>${location.origin}/teams/${team.hash.slice(-4)}</code>
                 <div class="copy" title="${this.translate('copy', 'common')}"><i class="fas fa-copy"></i></div>
             </pre>
         `, { id: 'add-team' })

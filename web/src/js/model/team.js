@@ -19,7 +19,7 @@ export default class Team {
     }
 
     async get() {
-        const team = await new Api({ token: Team.getToken() }).get(`teams/${this.id}`);
+        const team = await new Api({ token: Team.getToken() }).get(`teams`);
         return team;
     }
 

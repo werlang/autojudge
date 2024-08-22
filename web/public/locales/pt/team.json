@@ -1,8 +1,10 @@
 {
-    "hello": "Olá Mundo",
-    "ask-password": "Por favor, insira a senha da equipe",
     "join-team": "Ingressar na Equipe",
+    "ask-password": "Por favor, insira a senha da equipe",
+    "team-id": "ID da Equipe",
     "wrong-password": "A senha fornecida está incorreta",
+    "password-format": "A senha deve possuir 6 caracteres numéricos",
+    "team-id-format": "O ID da equipe é inválido",
     "contest": {
         "starts": "A competição começa em",
         "finished": "A competição terminou",

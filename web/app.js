@@ -72,12 +72,14 @@ app.get('/contests/:id', (req, res) => {
     });
 });
 
-// route for team
-app.get('/teams/:id', (req, res) => {
+const teamsRoute = (req, res) => {
     res.templateRender('team', {
         teamId: req.params.id,
     });
-});
+}
+// route for team
+app.get('/teams', teamsRoute);
+app.get('/teams/:id', teamsRoute);
 
 // static assets
 app.use(express.static(import.meta.dirname + '/public/'));
