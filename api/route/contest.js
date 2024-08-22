@@ -5,7 +5,6 @@ import CustomError from '../helpers/error.js';
 import Team from '../model/team.js';
 import contestProblem from './contestProblem.js';
 import config from '../helpers/config.js';
-import Submission from '../model/submission.js';
 
 const router = Router();
 
@@ -156,6 +155,7 @@ router.post('/:id/teams', auth({'contest:admin': true}), async (req, res, next) 
             message: 'Team created. Please write down the password as it will not be shown again.',
             team: {
                 id: team.id,
+                hash: team.hash,
                 name: team.name,
                 password: team.password,
             }

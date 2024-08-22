@@ -3,7 +3,7 @@ import Team from '../model/team.js';
 import auth from '../middleware/auth.js';
 import CustomError from '../helpers/error.js';
 import Contest from '../model/contest.js';
-import Submission from '../model/submission.js';
+
 
 const router = Router();
 
@@ -22,12 +22,13 @@ router.post('/:id/login', auth({'team:login': true}), async (req, res, next) => 
 // Get a team by id
 // Only team members can get their own team
 // Contest admin can access teams from GET /contests/:id
-router.get('/:id', auth({'team:member': true}), async (req, res, next) => {
+router.get('/', auth({'team:member': true}), async (req, res, next) => {
     try {
         const contest = await new Contest({ id: req.team.contest }).get();
         const team = await new Team({ id: req.team.id }).getActive();
         res.send({ team: {
             id: team.id,
+            hash: team.hash,
             name: team.name,
             score: team.score,
             contest: {
@@ -75,6 +76,7 @@ router.put('/:id/reset', auth({'contest:admin:team': true}), async (req, res, ne
             message: 'Password reset.',
             team: {
                 id: req.team.id,
+                hash: req.team.hash,
                 name: req.team.name,
                 password,
             }

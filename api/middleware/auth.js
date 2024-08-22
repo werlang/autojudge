@@ -43,12 +43,29 @@ async function authTeam(req) {
     }
     const password = headers.authorization.split(' ')[1];
 
-    const team = await new Team({ id: req.params.id }).get();
-    const isValidPassword = await bcrypt.compare(password, team.password);
-    if (!isValidPassword) {
-        throw new CustomError(401, 'Invalid password.');
+    const createJWT = team => jwt.sign({ team }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+    // try to get the team using the hash
+    try {
+        const team = await new Team({ hash: req.params.id }).get();
+        const isValidPassword = await bcrypt.compare(password, team.password);
+        if (isValidPassword) {
+            return createJWT(team.id);
+        }
     }
-    return jwt.sign({ team: team.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    catch (error) {}
+    
+    // try to get the team using the id
+    try {
+        const team = await new Team({ id: req.params.id }).get();
+        const isValidPassword = await bcrypt.compare(password, team.password);
+        if (isValidPassword) {
+            return createJWT(team.id);
+        }
+    }
+    catch (error) {}
+
+    throw new CustomError(401, 'Invalid password.');
 }
 
 async function checkTeam(req) {
