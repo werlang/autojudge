@@ -50,7 +50,9 @@ async function authTeam(req) {
         const team = await new Team({ hash: req.params.id }).get();
         const isValidPassword = await bcrypt.compare(password, team.password);
         if (isValidPassword) {
-            return createJWT(team.id);
+            team.token = createJWT(team.id);
+            req.team = team;
+            return req.team;
         }
     }
     catch (error) {}
@@ -60,7 +62,9 @@ async function authTeam(req) {
         const team = await new Team({ id: req.params.id }).get();
         const isValidPassword = await bcrypt.compare(password, team.password);
         if (isValidPassword) {
-            return createJWT(team.id);
+            team.token = createJWT(team.id);
+            req.team = team;
+            return req.team;
         }
     }
     catch (error) {}
@@ -196,9 +200,8 @@ function auth(modes = {}) {
         // login with team password, receives the jwt
         if (modes['team:login']) {
             try {
-                const token = await authTeam(req);
-                res.send({ token });
-                return;
+                await authTeam(req);
+                anyPassed = true;
             }
             catch (error) {
                 errorList.push(error);

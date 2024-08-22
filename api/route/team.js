@@ -11,8 +11,7 @@ const router = Router();
 // Only team members can login
 router.post('/:id/login', auth({'team:login': true}), async (req, res, next) => {
     try {
-        const token = await req.team.login();
-        res.send({ token });
+        res.send({ token: req.team.token });
     }
     catch (error) {
         next(error);
