@@ -45,19 +45,7 @@ async function authTeam(req) {
 
     const createJWT = team => jwt.sign({ team }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-    // try to get the team using the hash
-    try {
-        const team = await new Team({ hash: req.params.id }).get();
-        const isValidPassword = await bcrypt.compare(password, team.password);
-        if (isValidPassword) {
-            team.token = createJWT(team.id);
-            req.team = team;
-            return req.team;
-        }
-    }
-    catch (error) {}
-    
-    // try to get the team using the id
+    // try to get the team using the id. the main mathod
     try {
         const team = await new Team({ id: req.params.id }).get();
         const isValidPassword = await bcrypt.compare(password, team.password);
@@ -67,9 +55,31 @@ async function authTeam(req) {
             return req.team;
         }
     }
-    catch (error) {}
+    catch (error) {
+    }
 
-    throw new CustomError(401, 'Invalid password.');
+    // try to get the team using the hash. It must allow parts of the hash, but only should authenticate if returns a single team
+    try {
+        const teams = await Team.getAll({ hash: { like: req.params.id }});
+        const filteredTeams = await Promise.all(teams.filter(async team => {
+            const isValidPassword = await bcrypt.compare(password, team.password);
+            return isValidPassword ? team : false;
+        }));
+        if (filteredTeams.length == 0) {
+            throw new CustomError(401, 'Invalid password.');
+        }
+        else if (filteredTeams.length > 1) {
+            throw new CustomError(401, 'Ambiguous hash.');
+        }
+
+        const team = filteredTeams[0];
+        team.token = createJWT(team.id);
+        req.team = team;
+        return req.team;
+    }
+    catch (error) {
+        throw error;
+    }
 }
 
 async function checkTeam(req) {
