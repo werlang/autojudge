@@ -1,4 +1,8 @@
+import Form from './components/form.js';
+import Toast from './components/toast.js';
+import Uploader from './components/uploader.js';
 import Contest from './model/contest.js';
+import Judge from './model/judge.js';
 import Problem from './model/problem.js'
 
 export default {
@@ -7,7 +11,7 @@ export default {
         for (const key in objects) {
             this[key] = objects[key];
         }
-        console.log(this.team);
+        // console.log(this.team);
         
 
         const {problem} = await new Problem({ id: this.problemId }).get().catch(() => location.href = '/teams');
@@ -34,6 +38,11 @@ export default {
             <h1 id="title">${this.problem.title}</h1>
             <p id="description">${this.problem.description}</p>
             <div id="public-codes"></div>
+            <form id="new-submission-form">
+                <h2>${this.translate('new-submission', 'team')}</h2>
+                <div id="upload"></div>
+                <div id="button-container"><button type="submit" class="default">Upload</button></div>
+            </form>
         </div>`;
 
         // add public cases: public test cases are always visible
@@ -45,6 +54,47 @@ export default {
         // render the cases in the container
         this.renderCases(codeContainerPublic, this.problem.input, this.problem.output);
         publicCodes.appendChild(codeContainerPublic);
+
+        const form = new Form(document.querySelector('#new-submission-form'));
+        form.setData({ code: null });
+
+        const uploader = new Uploader(form.get('#upload'), {
+            placeholder: this.translate('hint-source-code', 'team'),
+            translate: this.translate,
+            accept: '.js, .c, .cpp, .py, .java, .php',
+            onUpload: (file, data) => {
+                // console.log(file, data);
+                if (data.accepted === false) {
+                    form.setData({ code: null });
+                    return;
+                }
+    
+                form.setData({ code: file });
+                form.setData({ filename: data.name });
+            },
+            onError: () => {
+                new Toast(this.translate('hint-file-type', 'team'), { type: 'error', timeOut: 10000 });
+            },
+        });
+
+        form.submit(async data => {
+            // console.log(data)
+            if (!form.validate([
+                { id: 'code', rule: e => e, message: this.translate('error-upload-file', 'team') },
+            ])) return;
+
+            data.problem = this.problem.id;
+
+            try {
+                const response = await new Judge(data).run();
+                new Toast(this.translate(response.message, 'api'), { type: 'success' });
+                // console.log(response);
+            }
+            catch (error) {
+                new Toast(this.translate(error.message, 'api'), { type: 'error' });
+                console.log(error);
+            }
+        });
     },
 
     createCaseNode: function(input, output, ) {
@@ -83,3 +133,5 @@ export default {
         io.input.forEach((_, i) => container.appendChild(this.createCaseNode(io.input[i], io.output[i])));
     },
 }
+
+// TODO: Add feature to submit the code against the public test cases (and show the result)

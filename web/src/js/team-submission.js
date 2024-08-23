@@ -136,7 +136,7 @@ export default {
             // console.log(data)
             if (!form.validate([
                 { id: 'problem', rule: e => e && e != '0', message: this.translate('error-select-problem', 'team') },
-                { id: 'file', rule: e => e, message: this.translate('error-upload-file', 'team') },
+                { id: 'code', rule: e => e, message: this.translate('error-upload-file', 'team') },
             ])) return;
 
             try {
