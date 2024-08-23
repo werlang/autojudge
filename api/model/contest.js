@@ -73,4 +73,8 @@ export default class Contest extends Model {
         const elapsed = Math.floor((targetTime - startTime) / 1000);
         return this.duration * 60 - elapsed;
     }
+
+    isRunning() {
+        return this.isStarted() && this.getRemainingTime() > 0;
+    }
 }

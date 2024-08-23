@@ -211,6 +211,10 @@ function auth(modes = {}) {
         if (modes['team:login']) {
             try {
                 await authTeam(req);
+                const contest = await new Contest({ id: req.team.contest }).get();
+                if (!contest.isRunning()) {
+                    throw new CustomError(403, 'The contest is not running.');
+                }
                 anyPassed = true;
             }
             catch (error) {

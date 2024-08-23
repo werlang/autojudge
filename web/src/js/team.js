@@ -62,32 +62,21 @@ const teamHandler = {
                 { id: 'team-id', rule: value => value.length == 4, message: translate('team-id-format', 'team') },
             ])) return;
 
-            const resp = await this.login(data['password'], data['team-id']);
-            // console.log(resp);
-            
-            if (!resp) {
-                new Toast(translate('wrong-password', 'team'), { type: 'error' });
+            try {
+                const resp = await new Team({
+                    id: data['team-id'] || TemplateVar.get('teamId'),
+                    password: data['password']
+                }).login();
+                console.log(resp);
+            }
+            catch (error) {
+                new Toast(translate(error.message, 'api'), { type: 'error' });
+                console.log(error);
                 return;
             }
             
             location.reload();
         });
-    },
-
-    login: async function(password, teamId) {
-        if (!password) return false;
-
-        try {
-            const resp = await new Team({
-                id: teamId || TemplateVar.get('teamId'),
-                password,
-            }).login();
-            // console.log(resp);
-            return true;
-        }
-        catch (error) {
-            return false;
-        }
     },
 
     getTeam: async function() {

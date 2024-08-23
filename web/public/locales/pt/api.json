@@ -1,6 +1,7 @@
 {
     "Contest has ended.": "A competição terminou.",
     "Contest has not started yet.": "A competição ainda não começou.",
-    "Submission received.": "Submissão recebida."
-
+    "Submission received.": "Submissão recebida.",
+    "Invalid password.": "Senha inválida.",
+    "The contest is not running.": "A competição não está em andamento."
 }
