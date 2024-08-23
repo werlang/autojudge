@@ -27,6 +27,7 @@ router.post('/', auth({'user:exists': true}), async (req, res, next) => {
             message: 'Problem created.',
             problem: {
                 id: problem.id,
+                hash: problem.hash,
                 title: problem.title,
                 description: problem.description,
             }
@@ -51,6 +52,7 @@ router.get('/', auth({'user:optional': true}), async (req, res, next) => {
         const problemsData = problems.map(problem => {
             const problemData = {
                 id: problem.id,
+                hash: problem.hash,
                 title: problem.title,
                 description: problem.description,
                 input: problem.input_public,
@@ -71,15 +73,23 @@ router.get('/', auth({'user:optional': true}), async (req, res, next) => {
     }
 });
 
-// get a problem by id
+// get a problem partial hash
 // anyone can access public problems
 // if author, show hidden fields
-router.get('/:id', auth({'user:optional': true}), async (req, res, next) => {
+router.get('/:hash', auth({'user:optional': true}), async (req, res, next) => {
     try {
-        const problem = await new Problem({ id: req.params.id }).get();
+        const problems = await Problem.getAll({ hash: { like: req.params.hash }});
+        if (problems.length == 0) {
+            throw new CustomError(404, 'Problem not found.');
+        }
+        else if (problems.length > 1) {
+            throw new CustomError(401, 'Ambiguous hash.');
+        }
+        const problem = problems[0];
 
         const problemData = {
             id: problem.id,
+            hash: problem.hash,
             title: problem.title,
             description: problem.description,
             input: problem.input_public,
