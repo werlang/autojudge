@@ -22,6 +22,7 @@ router.post('/', auth({'user:exists': true}), async (req, res, next) => {
             description: req.body.description || '',
             language: req.body.language || 'en',
             author: req.user.id,
+            is_public: req.body.public === 'true' || req.body.public === true,
         }).insert();
         return res.status(201).send({
             message: 'Problem created.',
@@ -30,6 +31,7 @@ router.post('/', auth({'user:exists': true}), async (req, res, next) => {
                 hash: problem.hash,
                 title: problem.title,
                 description: problem.description,
+                public: problem.is_public === 1,
             }
         });
     }
@@ -43,7 +45,9 @@ router.post('/', auth({'user:exists': true}), async (req, res, next) => {
 // if author, show hidden fields
 router.get('/', auth({'user:optional': true}), async (req, res, next) => {
     try {
-        const query = {};
+        const query = {
+            is_public: 1,
+        };
         if (req.query.contest) {
             query.contest = req.query.contest;
         }
@@ -92,6 +96,7 @@ router.get('/:hash', auth({'user:optional': true}), async (req, res, next) => {
             hash: problem.hash,
             title: problem.title,
             description: problem.description,
+            public: problem.is_public === 1,
             input: problem.input_public,
             output: problem.output_public,
         }
@@ -118,34 +123,34 @@ router.put('/:id', auth({'user:exists': true}), async (req, res, next) => {
         }
         
         const data = req.body;
+        const toUpdate = {};
 
-        data.public = data.public === 'true' || data.public === true;
-
-        if (data.input && data.public) {
-            data.input_public = data.input;
-        }
-        else if (data.input) {
-            data.input_hidden = data.input;
-        }
-        
-        if (data.output && data.public) {
-            data.output_public = data.output;
-        }
-        else if (data.output) {
-            data.output_hidden = data.output;
+        if (data.public) {
+            toUpdate.is_public = data.public === 'true' || data.public === true;
         }
 
-        delete data.input;
-        delete data.output;
-        delete data.public;
+        if (data.inputPublic) {
+            toUpdate.input_public = data.inputPublic;
+        }
+        if (data.inputHidden) {
+            toUpdate.input_hidden = data.inputHidden;
+        }
 
-        await problem.update(data);
+        if (data.outputPublic) {
+            toUpdate.output_public = data.outputPublic;
+        }
+        if (data.outputHidden) {
+            toUpdate.output_hidden = data.outputHidden;
+        }
+
+        await problem.update(toUpdate);
         res.send({ 
             message: 'Problem updated.',
             problem: {
                 id: problem.id,
                 title: problem.title,
                 description: problem.description,
+                public: problem.is_public === 1,
             }
         });
     }
@@ -189,3 +194,5 @@ router.post('/:id/judge', [
 
 
 export default router;
+
+// TODO: Change front-end to reflect new use of problem routes

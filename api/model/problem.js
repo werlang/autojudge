@@ -15,6 +15,7 @@ export default class Problem extends Model {
         solution,
         author,
         language,
+        is_public,
     }) {
         super('problems', {
             fields: {
@@ -30,9 +31,10 @@ export default class Problem extends Model {
                 solution,
                 author,
                 language,
+                is_public,
             },
-            allowUpdate: ['title', 'description', 'input_public', 'output_public', 'input_hidden', 'output_hidden', 'solution', 'language'],
-            insertFields: ['title', 'description', 'author', 'language', 'hash'],
+            allowUpdate: ['title', 'description', 'input_public', 'output_public', 'input_hidden', 'output_hidden', 'solution', 'language', 'is_public'],
+            insertFields: ['title', 'description', 'author', 'language', 'hash', 'is_public'],
         });
     }
     
