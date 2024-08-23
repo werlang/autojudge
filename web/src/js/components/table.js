@@ -166,12 +166,13 @@ export default class Table {
                     searchButton.classList.remove('active');
                 }
             });
+            const removeAccents = str => str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
             input.addEventListener('input', () => {
                 const search = input.value.toLowerCase();
                 this.content.forEach(item => {
                     item.hidden = true;
                     this.columns.forEach(column => {
-                        if (item[column.id].toLowerCase().indexOf(search) !== -1) {
+                        if (removeAccents(item[column.id].toLowerCase()).includes(removeAccents(search))) {
                             item.hidden = false;
                         }
                     });
@@ -195,13 +196,15 @@ export default class Table {
     render() {
         this.domElement.querySelectorAll('.item').forEach(item => item.remove());
 
-        this.pages.total = Math.ceil(this.content.length / this.maxItems);
+        const availableItems = this.content.filter(item => !item.hidden);
+
+        this.pages.total = Math.ceil(availableItems.length / this.maxItems);
         this.pages.current = Math.ceil((this.pages.itemIndex + 1) / this.maxItems);
 
         for (let i = this.pages.itemIndex ; i < this.pages.itemIndex + this.maxItems ; i++) {
-            const item = this.content[i];
-            if (!this.content[i]) break;
-            if (item.hidden) return;
+            const item = availableItems[i];
+            if (!item) break;
+            if (item.hidden) continue;
             const itemDOM = document.createElement('div');
             itemDOM.classList.add('item');
 

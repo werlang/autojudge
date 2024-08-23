@@ -71,7 +71,7 @@ const teamHandler = {
             }
             catch (error) {
                 new Toast(translate(error.message, 'api'), { type: 'error' });
-                console.log(error);
+                // console.log(error);
                 return;
             }
             
