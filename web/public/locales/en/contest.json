@@ -42,5 +42,12 @@
         "rename-title": "Rename Team",
         "rename-name": "New Team Name",
         "rename-success": "Team renamed successfully."
+    },
+    "start-contest": {
+        "title": "Start Contest",
+        "message": "Do you want to start the contest now?",
+        "button": "Start",
+        "cancel": "Cancel",
+        "success": "Contest started successfully."
     }
 }

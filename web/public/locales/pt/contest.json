@@ -42,5 +42,12 @@
         "rename-title": "Renomear Equipe",
         "rename-name": "Novo Nome da Equipe",
         "rename-success": "Equipe renomeada com sucesso."
+    },
+    "start-contest": {
+        "title": "Iniciar Competição",
+        "message": "Deseja iniciar a competição agora?",
+        "button": "Iniciar",
+        "cancel": "Cancelar",
+        "success": "Competição iniciada com sucesso."
     }
 }

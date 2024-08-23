@@ -31,12 +31,18 @@ export default {
             <p id="description">${this.contest.description}</p>
             <div id="problems"></div>
             <div id="teams"></div>
+            <div id="start-contest"></div>
         </div>`;
 
         this.renderProblems(false);
         this.renderTeams(false);
         this.createEditableFields();
 
+        // start contest button
+        if (!this.contest.startTime) {
+            const startButton = new Button({ id: 'start-contest', text: this.translate('start-contest.title', 'contest'), customClass: 'default' }).click(() => this.startContest());
+            frame.querySelector('#start-contest').appendChild(startButton.get());
+        }
     },
 
     renderProblems: async function(update = true) {
@@ -379,5 +385,21 @@ export default {
         });
     },
 
-    // TODO: add start contest flow
+    startContest: async function() {
+        const modal = new Modal(`
+            <h1>${this.translate('start-contest.title', 'contest')}</h1>
+            <p>${this.translate('start-contest.message', 'contest')}</p>
+        `)
+        .addButton({
+            text: this.translate('start-contest.button', 'contest'),
+            callback: async () => {
+                modal.close();
+                await this.contestInstance.start().catch(() => location.reload());
+                new Toast(this.translate('start-contest.success', 'contest'), { type: 'success' });
+                this.render();
+            },
+            isDefault: false,
+        })
+        .addButton({ text: this.translate('start-contest.cancel', 'contest'), close: true, isDefault: true });
+    },
 }

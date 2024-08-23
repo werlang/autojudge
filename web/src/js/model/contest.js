@@ -57,4 +57,9 @@ export default class Contest {
         const resp = await new Api().delete(`contests/${this.id}/problems/${id}`);
         return resp;
     }
+
+    async start() {
+        const resp = await new Api().put(`contests/${this.id}/start`);
+        return resp;
+    }
 }
