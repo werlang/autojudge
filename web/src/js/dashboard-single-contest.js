@@ -292,9 +292,15 @@ export default {
                 // console.log(selected);
                 if (selected.length === 0) return;
                 modal.close();
-                await this.addProblem(selected).catch(() => location.reload());
-                new Toast(this.translate('add-problem.success', 'contest'), { type: 'success' });
-                this.renderProblems();
+                try {
+                    await this.addProblem(selected);;
+                    new Toast(this.translate('add-problem.success', 'contest'), { type: 'success' });
+                    this.renderProblems();
+                }
+                catch (error) {
+                    // console.error(error);
+                    new Toast(this.translate(error.message, 'api'), { type: 'error' });
+                }
             }
         });
 

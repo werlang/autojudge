@@ -2,6 +2,7 @@ import { Router } from 'express';
 import auth from '../middleware/auth.js';
 import Contest from '../model/contest.js';
 import Problem from '../model/problem.js';
+import CustomError from '../helpers/error.js';
 
 const router = Router({ mergeParams: true });
 
@@ -10,6 +11,9 @@ const router = Router({ mergeParams: true });
 router.post('/:problemId', auth({'contest:admin': true}), async (req, res, next) => {
     try {
         const problem = await new Problem({ id: req.params.problemId }).get();
+        if (!problem.input_hidden || !problem.output_hidden) {
+            throw new CustomError(400, 'Problem must have hidden test cases.');
+        }
         await req.contest.addProblem(problem.id);
         res.status(201).send({
             message: 'Problem added to contest.',

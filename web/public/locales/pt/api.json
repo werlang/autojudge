@@ -3,5 +3,6 @@
     "Contest has not started yet.": "A competição ainda não começou.",
     "Submission received.": "Submissão recebida.",
     "Invalid password.": "Senha inválida.",
-    "The contest is not running.": "A competição não está em andamento."
+    "The contest is not running.": "A competição não está em andamento.",
+    "Problem must have hidden test cases.": "O problema deve possuir casos de teste ocultos."
 }

@@ -18,6 +18,7 @@ new Translator(['en', 'pt'], [
     'problem',
     'common',
     'contest',
+    'api',
 ]).init().then(translate => translatePledge.resolve(translate));
 
 // handle redirect from google login
