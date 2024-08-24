@@ -2,12 +2,13 @@ import Api from "../helpers/api.js";
 
 export default class Problem {
 
-    constructor({ id, hash, title, description, language }) {
+    constructor({ id, hash, title, description, language, isPublic }) {
         this.id = id;
         this.hash = hash;
         this.title = title;
         this.description = description;
         this.language = language || 'en';
+        this.public = isPublic;
     }
 
     static async getAll(filter) {
@@ -25,6 +26,7 @@ export default class Problem {
             title: this.title,
             description: this.description,
             language: this.language,
+            public: this.public,
         });
         return problem;
     }

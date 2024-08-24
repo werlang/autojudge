@@ -55,6 +55,9 @@ export default class Input {
                 label.classList.add('disabled');
             }
 
+            this.element.addEventListener('change', () => this.setValue(this.element.checked) );
+            this.setValue(this.element.checked);
+
             label.appendChild(this.element);
             label.appendChild(span);
             wrapper.appendChild(label);

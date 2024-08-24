@@ -9,7 +9,9 @@
         "add": {
             "h1": "Adicionar Problema",
             "error": "Erro ao enviar problema.",
-            "description": "Adicione a descrição do problema."
+            "description": "Adicione a descrição do problema.",
+            "public-warn": "Problemas públicos podem ser vistos na lista de problemas por todos os usuários a qualquer momento. Se adicionado a uma competição, os participantes podem já conhecer o problema.",
+            "private-warn": "Marcando um problema como privado irá impedir que ele seja mostrado na lista de problemas públicos. Você ainda poderá acessá-lo através do link direto."
         }
     },
     "contests": {

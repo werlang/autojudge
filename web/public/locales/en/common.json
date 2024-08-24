@@ -31,5 +31,6 @@
     "password": "Password",
     "submissions_one": "Submission",
     "submissions_other": "Submissions",
-    "score": "Score"
+    "score": "Score",
+    "public": "Public"
 }

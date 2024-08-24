@@ -9,7 +9,9 @@
         "add": {
             "h1": "Add Problem",
             "error": "Error submitting problem.",
-            "description": "Add the problem description."
+            "description": "Add the problem description.",
+            "public-warn": "Public problems can be seen in the problem list by all users at any time. If added to a contest, the participants may already know the problem.",
+            "private-warn": "Marking a problem as private will prevent it from being listed in the public problem list. You can still access it through the direct link."
         }
     },
     "contests": {

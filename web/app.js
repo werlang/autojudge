@@ -90,6 +90,8 @@ app.get('/contests/problems/:hash', (req, res) => {
     });
 });
 
+// TODO: add page for each menu entry on team page
+
 // static assets
 app.use(express.static(import.meta.dirname + '/public/'));
 

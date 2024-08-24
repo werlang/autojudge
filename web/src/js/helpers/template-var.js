@@ -35,7 +35,7 @@ export default class TemplateVar {
     static format(value) {
         if (value === 'true') return true;
         if (value === 'false') return false;
-        if (!isNaN(value)) return Number(value);
+        if (!isNaN(value) && Number(value).toString() === value) return Number(value);
         return value;
     }
 

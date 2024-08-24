@@ -53,12 +53,19 @@ export default {
         content.innerHTML = `
             <h1>${this.translate('problems.add.h1', 'dashboard')}</h1>
             <form>
-                <input id="title" name="title" type="text" required placeholder="${this.translate('title', 'common')}">
+                <input id="title" type="text" required placeholder="${this.translate('title', 'common')}">
+                <input type="checkbox" id="isPublic" placeholder="${this.translate('public', 'common')}" checked>
+                <p id="public-warn" class="warn active">${this.translate('problems.add.public-warn', 'dashboard')}</p>
+                <p id="private-warn" class="warn">${this.translate('problems.add.private-warn', 'dashboard')}</p>
                 <button class="default">${this.translate('send', 'common')}</button>
             </form>
         `;
         const modal = new Modal(content, { id: 'add-problem' });
         const form = new Form(content.querySelector('form'));
+
+        form.getInput('isPublic').change(ev => {
+            modal.getAll('.warn').forEach(warn => warn.classList.toggle('active'));
+        });
 
         form.submit(async data => {
             // console.log(data);
