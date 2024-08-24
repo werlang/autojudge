@@ -184,6 +184,16 @@ router.post('/:id/judge', [
             throw new CustomError(403, 'Problem does not have hidden test cases.');
         }
 
+        // check if team has an accepted submission for this problem
+        const submissions = await Submission.getAll({
+            team: req.team.id,
+            problem: req.params.id,
+            status: 'ACCEPTED',
+        });
+        if (submissions.length > 0) {
+            throw new CustomError(403, 'Team already solved this problem.');
+        }
+
         // send submission to judging queue
         const submission = await new Submission({
             team: req.team.id,

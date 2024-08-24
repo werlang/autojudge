@@ -144,6 +144,8 @@ export default {
                 this.updateSubmissions();
                 new Toast(this.translate(response.message, 'api'), { type: 'success' });
                 // console.log(response);
+                form.clear();
+                uploader.reset();
             }
             catch (error) {
                 new Toast(this.translate(error.message, 'api'), { type: 'error' });
