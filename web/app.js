@@ -84,9 +84,9 @@ app.get('/teams/:id', (req, res) => {
 });
 
 // route for problem within a contest
-app.get('/contests/problems/:id', (req, res) => {
+app.get('/contests/problems/:hash', (req, res) => {
     res.templateRender('team', {
-        problemId: req.params.id,
+        problemHash: req.params.hash,
     });
 });
 

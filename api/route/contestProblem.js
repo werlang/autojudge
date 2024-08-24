@@ -41,6 +41,7 @@ router.get('/', auth({
         res.send({ problems: problems.map(problem => {
             const filteredProblem = {
                 id: problem.id,
+                hash: problem.hash,
                 title: problem.title,
                 description: problem.description,
                 input: problem.input_public,

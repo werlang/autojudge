@@ -14,7 +14,7 @@ export default {
         // console.log(this.team);
         
 
-        const {problem} = await new Problem({ id: this.problemId }).get().catch(() => location.href = '/teams');
+        const {problem} = await new Problem({ hash: this.problemHash }).get().catch(() => location.href = '/teams');
         // console.log(problem);
         const {contest} = await new Contest({ id: this.team.contest.id }).get(true).catch(() => location.href = '/teams');
         // console.log(contest);
@@ -89,6 +89,8 @@ export default {
                 const response = await new Judge(data).run();
                 new Toast(this.translate(response.message, 'api'), { type: 'success' });
                 // console.log(response);
+                form.clear();
+                uploader.reset();
             }
             catch (error) {
                 new Toast(this.translate(error.message, 'api'), { type: 'error' });

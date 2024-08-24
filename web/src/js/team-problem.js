@@ -1,4 +1,5 @@
 import Table from "./components/table.js";
+import TemplateVar from "./helpers/template-var.js";
 import Contest from "./model/contest.js";
 
 // TODO: Create some things to populate the problems table besides the title
@@ -35,7 +36,7 @@ export default {
         contest.problems.forEach(problem => table.addItem(problem));
 
         table.addItemEvent('click', async item => {
-            location.href = `/contests/problems/${item.id}`;
+            location.href = `/contests/problems/${item.hash.slice(-TemplateVar.get('problemHashLength'))}`;
         });
     },
 }

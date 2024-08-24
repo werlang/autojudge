@@ -282,6 +282,8 @@ export default {
             columns: [ { id: 'title', name: this.translate('title', 'common') }, ],
             translate: this.translate,
             selection: { enabled: true, multi: true },
+            pagination: true,
+            maxItems: 10,
         });
 
         modal.addButton({

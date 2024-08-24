@@ -85,6 +85,7 @@ router.get('/:id', auth({
         problems = problems.map(problem => ({
             id: problem.id,
             title: problem.title,
+            hash: problem.hash,
         }));
 
         res.send({ contest: {

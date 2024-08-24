@@ -121,9 +121,9 @@ new Header({ menu, });
 teamHandler.init().then(team => {
     if (!team) return;
 
-    const problemId = TemplateVar.get('problemId');
-    if (problemId) {
-        moduleLoader('team-single-problem.js', {team: teamHandler.team, problemId });
+    const problemHash = TemplateVar.get('problemHash');
+    if (problemHash) {
+        moduleLoader('team-single-problem.js', {team: teamHandler.team, problemHash });
         return;
     }
     
