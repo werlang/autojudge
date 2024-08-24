@@ -2,8 +2,9 @@ import Api from "../helpers/api.js";
 
 export default class Problem {
 
-    constructor({ id, title, description, language }) {
+    constructor({ id, hash, title, description, language }) {
         this.id = id;
+        this.hash = hash;
         this.title = title;
         this.description = description;
         this.language = language || 'en';
@@ -15,7 +16,7 @@ export default class Problem {
     }
 
     async get() {
-        const problem = await new Api().get(`problems/${this.id}`);
+        const problem = await new Api().get(`problems/${this.hash}`);
         return problem;
     }
 
@@ -30,6 +31,7 @@ export default class Problem {
 
     async update(fields) {
         const resp = await new Api().put(`problems/${this.id}`, fields);
+        this.hash = resp.problem.hash;
         const problem = await this.get();
         return { ...resp, ...problem };
     }

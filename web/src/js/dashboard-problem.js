@@ -5,6 +5,7 @@ import Form from "./components/form.js";
 import Toast from "./components/toast.js";
 import Translator from "./helpers/translate.js";
 import Button from "./components/button.js";
+import TemplateVar from "./helpers/template-var.js";
 
 export default {
     build: async function() {
@@ -66,7 +67,7 @@ export default {
             try {
                 // create problem and redirect to it
                 const { problem } = await new Problem(data).create().catch(() => location.reload());
-                location.href = `/problems/${problem.id}`;
+                location.href = `/problems/${problem.hash.slice(-TemplateVar.get('problemHashLength'))}`;
             }
             catch (error) {
                 console.error(error);
@@ -101,7 +102,7 @@ export default {
         .addButton({ 
             text: `${this.translate('details', 'common')}${item.author ? ` / ${this.translate('edit', 'common')}` : ''}`,
             isDefault: false,
-            callback: () => location.href = `/problems/${item.id}` 
+            callback: () => location.href = `/problems/${item.hash.slice(-TemplateVar.get('problemHashLength'))}` 
         });
     },
 }

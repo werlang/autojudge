@@ -22,7 +22,7 @@ router.post('/', auth({'user:exists': true}), async (req, res, next) => {
             description: req.body.description || '',
             language: req.body.language || 'en',
             author: req.user.id,
-            is_public: req.body.public === 'true' || req.body.public === true,
+            is_public: req.body.public !== false && req.body.public !== 'false',
         }).insert();
         return res.status(201).send({
             message: 'Problem created.',
@@ -82,6 +82,9 @@ router.get('/', auth({'user:optional': true}), async (req, res, next) => {
 // if author, show hidden fields
 router.get('/:hash', auth({'user:optional': true}), async (req, res, next) => {
     try {
+        if (req.params.hash.length < process.env.PROBLEM_HASH_LENGTH) {
+            throw new CustomError(400, 'Hash too short.');
+        }
         const problems = await Problem.getAll({ hash: { like: req.params.hash }});
         if (problems.length == 0) {
             throw new CustomError(404, 'Problem not found.');
@@ -125,19 +128,26 @@ router.put('/:id', auth({'user:exists': true}), async (req, res, next) => {
         const data = req.body;
         const toUpdate = {};
 
+        if (data.title) {
+            toUpdate.title = data.title;
+        }
+        if (data.description) {
+            toUpdate.description = data.description;
+        }
+
         if (data.public) {
             toUpdate.is_public = data.public === 'true' || data.public === true;
         }
 
-        if (data.inputPublic) {
-            toUpdate.input_public = data.inputPublic;
+        if (data.input) {
+            toUpdate.input_public = data.input;
         }
         if (data.inputHidden) {
             toUpdate.input_hidden = data.inputHidden;
         }
 
-        if (data.outputPublic) {
-            toUpdate.output_public = data.outputPublic;
+        if (data.output) {
+            toUpdate.output_public = data.output;
         }
         if (data.outputHidden) {
             toUpdate.output_hidden = data.outputHidden;
@@ -148,6 +158,7 @@ router.put('/:id', auth({'user:exists': true}), async (req, res, next) => {
             message: 'Problem updated.',
             problem: {
                 id: problem.id,
+                hash: problem.hash,
                 title: problem.title,
                 description: problem.description,
                 public: problem.is_public === 1,

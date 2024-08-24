@@ -84,13 +84,13 @@ translatePledge.then(translate => {
 
     // check for single problem page
     (async () => {
-        const id = TemplateVar.get('problemId');
-        if (id && location.pathname === `/problems/${id}`) {
+        const hash = TemplateVar.get('problemHash');
+        if (hash && location.pathname === `/problems/${hash}`) {
             // lazy load problem
             const module = await import('./dashboard-single-problem.js');
             const problem = module.default
             problem.translate = translate;
-            problem.load(id);
+            problem.load(hash);
         }
     })();
 

@@ -5,14 +5,9 @@ import Problem from './model/problem.js'
 
 export default {
 
-    load: async function(id) {
-        const {problem} = await new Problem({ id }).get().catch(() => location.reload());
+    load: async function(hash) {
+        const {problem} = await new Problem({ hash }).get().catch(() => location.href = '/problems');
         // console.log(problem);
-
-        if (!problem) {
-            location.href = '/problems';
-            return;
-        }
 
         this.problem = problem;
         this.render();
@@ -146,7 +141,7 @@ export default {
 
     saveChanges: async function(field, content) {
         try {
-            const resp = await new Problem({ id: this.problem.id }).update({ [field]: content }).catch(() => location.reload());
+            const resp = await new Problem({ id: this.problem.id }).update({ [field]: content })//.catch(() => location.reload());
             // console.log(resp);
             new Toast(this.translate('save-changes.success', 'problem'), { type: 'success' });
             this.problem = resp.problem;
@@ -288,12 +283,18 @@ export default {
             newOutput.splice(index, 1);
         }
 
+        const toUpdate = {};
+        if (isPublic) {
+            toUpdate.input = newInput;
+            toUpdate.output = newOutput;
+        }
+        else {
+            toUpdate.inputHidden = newInput;
+            toUpdate.outputHidden = newOutput;
+        }
+
         try {
-            const resp = await new Problem({ id: this.problem.id }).update({
-                public: isPublic,
-                input: newInput,
-                output: newOutput
-            }).catch(() => location.reload());
+            const resp = await new Problem({ id: this.problem.id }).update(toUpdate).catch(() => location.reload());
             // console.log(resp);
             new Toast(this.translate('save-changes.success-case', 'problem', {operation: this.translate(operation === 'add' ? 'added' : 'removed', 'common')}), { type: 'success' });
             this.problem = resp.problem;
