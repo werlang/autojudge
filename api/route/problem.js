@@ -7,8 +7,6 @@ import Submission from '../model/submission.js';
 
 const router = Router();
 
-// TODO: add pagination when getting all problems
-
 // create a new problem
 // must be logged as user
 router.post('/', auth({'user:exists': true}), async (req, res, next) => {
@@ -181,6 +179,10 @@ router.post('/:id/judge', [
         if (!problems.map(p => p.id).includes(parseInt(req.params.id))) {
             throw new CustomError(404, 'Problem not found in contest.');
         }
+        const problem = await new Problem({ id: req.params.id }).get();
+        if (!problem.input_hidden || !problem.output_hidden) {
+            throw new CustomError(403, 'Problem does not have hidden test cases.');
+        }
 
         // send submission to judging queue
         const submission = await new Submission({
@@ -205,5 +207,3 @@ router.post('/:id/judge', [
 
 
 export default router;
-
-// TODO: Change front-end to reflect new use of problem routes

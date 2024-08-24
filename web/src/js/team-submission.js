@@ -63,7 +63,7 @@ export default {
             'TIME_LIMIT_EXCEEDED': { icon: 'fas fa-clock', class: 'time-limit' },
             'ERROR': { icon: 'fas fa-exclamation-triangle', class: 'error' },
             'PENDING': { icon: 'fas fa-ellipsis fa-fade', class: 'pending' },
-            'PARSING_ERROR': { icon: 'fas fa-exclamation-triangle', class: 'error' },
+            'PARSING_ERROR': { icon: 'fas fa-hourglass-half', class: 'parsing-error' },
         };
 
         const resp = await new Submission({ token: Team.getToken() }).getAll().catch(() => location.reload());

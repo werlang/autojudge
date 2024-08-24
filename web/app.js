@@ -101,3 +101,5 @@ app.use((req, res) => {
 app.listen(port, host, () => {
     console.log(`Web Server running at http://${host}:${port}/`);
 });
+
+// TODO: add manual judge page

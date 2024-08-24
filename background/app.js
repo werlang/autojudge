@@ -29,6 +29,7 @@ const background = {
         }
         catch (error) {
             console.error(error);
+            setTimeout(() => this.watchSubmissions(), requestInterval);
         }
     },
 }

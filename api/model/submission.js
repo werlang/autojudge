@@ -73,7 +73,7 @@ export default class Submission extends Model {
         const data = { status };
         
         if (status !== 'ACCEPTED') {
-            data.score = config.contest.penaltyScore;
+            data.score = status == 'PARSING_ERROR' ? 0 : config.contest.penaltyScore;
             data.log = response;
             await this.update(data);
             await team.updateScore();
