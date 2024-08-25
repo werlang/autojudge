@@ -302,3 +302,49 @@
         }
     }
 }
+
+#frame #share {
+    h3 {
+        margin-top: 60px;
+        text-align: center;
+        font-size: 1.7rem;
+    }
+
+    .links {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+        margin-top: 20px;
+        font-size: 1.5rem;
+        color: var(--color-link);
+        
+        div {
+            width: 50px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: 0.3s all;
+            border-radius: 5px;
+            cursor: pointer;
+
+            &:hover {
+                background-color: rgba(var(--color-secondary-raw),0.1);
+                filter: brightness(1.2);
+            }
+        }
+    }
+
+}
+
+.modal#qr {
+    background-color: white;
+    color: var(--color-background-dark);
+    font-size: 3rem;
+
+    #content.loading {
+        flex-direction: row;
+        justify-content: center;
+    }
+}

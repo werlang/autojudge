@@ -41,6 +41,12 @@ const userPledge = new Pledge();
         userPledge.resolve(user);
     }
     catch (error) {
+        // allow to show problem even if not logged
+        if (TemplateVar.get('problemHash')) {
+            userPledge.resolve({});
+            return;
+        }
+
         console.error(error);
         // set expired token so index can show the message
         if (error.message === 'Invalid token.') {
@@ -116,5 +122,6 @@ translatePledge.then(translate => {
 });
 
 Pledge.all([userPledge, menuPledge]).then(([{user}, menu]) => {
+    if (!user) return;
     new Header({ user, menu, });
 });

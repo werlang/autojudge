@@ -22,7 +22,24 @@ export default {
             <p id="description">${this.problem.description}</p>
             <div id="public-codes"></div>
             <div id="hidden-codes"></div>
-        </div>`;
+            <div id="share">
+                <h3>${this.translate('share-section', 'problem')}</h3>
+                <div class="links">
+                    <div class="facebook">
+                        <a href="https://www.facebook.com/sharer/sharer.php?u=${location.href}" target="_blank"><i class="fab fa-facebook"></i></a>
+                    </div>
+                    <div class="twitter">
+                        <a href="https://twitter.com/intent/tweet?url=${location.href}" target="_blank"><i class="fab fa-x-twitter"></i></a>
+                    </div>
+                    <div class="link">
+                        <i class="fas fa-link"></i>
+                    </div>
+                    <div class="qr">
+                        <i class="fas fa-qrcode"></i>
+                    </div>
+                </div>
+                    
+            </div>`;
 
         // add public cases: public test cases are always visible
         const publicCodes = frame.querySelector('#problem #public-codes');
@@ -33,6 +50,25 @@ export default {
         // render the cases in the container
         this.renderCases(codeContainerPublic, this.problem.input, this.problem.output);
         publicCodes.appendChild(codeContainerPublic);
+
+        // add link actions
+        frame.querySelector('#share .link').addEventListener('click', () => {
+            navigator.clipboard.writeText(location.href);
+            new Toast(this.translate('copy-link', 'problem'), { type: 'success' });
+        });
+        frame.querySelector('#share .qr').addEventListener('click', () => {
+            const img = document.createElement('img');
+            img.src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${location.href}`;
+            img.alt = 'QR Code';
+            const modal = new Modal(`<i class="fa-solid fa-spinner fa-spin-pulse"></i>`, { id: 'qr' });
+            const content = modal.get('#content');
+            content.classList.add('loading');
+            img.onload = () => {
+                content.innerHTML = '';
+                modal.append(img);
+                content.classList.remove('loading');
+            }
+        });
 
         // do not add hidden cases if the problem has no author
         // also do not add editable fields
