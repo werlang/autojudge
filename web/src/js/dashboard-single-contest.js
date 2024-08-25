@@ -39,7 +39,7 @@ export default {
         this.createEditableFields();
 
         // start contest button
-        if (!this.contest.startTime) {
+        if (!this.contest.startTime && this.contest.problems.length > 0 && this.contest.teams.length > 0) {
             const startButton = new Button({ id: 'start-contest', text: this.translate('start-contest.title', 'contest'), customClass: 'default' }).click(() => this.startContest());
             frame.querySelector('#start-contest').appendChild(startButton.get());
         }
@@ -68,7 +68,9 @@ export default {
         const frame = document.querySelector('#frame');
         const teams = frame.querySelector('#teams');
         teams.innerHTML = `<h3>${this.translate('teams', 'contest', {count: this.contest.teams.length})}</h3>`;
-        this.listTeams(teams);
+        if (this.contest.teams.length ) {
+            this.listTeams(teams);
+        }
         const addTeam = new Button({ id: 'add-team', text: `${this.translate('create', 'common')} ${this.translate('teams_one', 'common')}` }).click(() => this.addTeamModal());
         teams.appendChild(addTeam.get());
     },
@@ -302,6 +304,7 @@ export default {
                 catch (error) {
                     // console.error(error);
                     new Toast(this.translate(error.message, 'api'), { type: 'error' });
+                    this.renderProblems();
                 }
             }
         });

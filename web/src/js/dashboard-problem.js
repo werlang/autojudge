@@ -16,8 +16,6 @@ export default {
         </div>`;
         const problemsDOM = frame.querySelector('#problems-container');
 
-        const problemsPromise = Problem.getAll();
-
         const table = new Table({
             element: problemsDOM,
             id: 'problems', 
@@ -33,15 +31,16 @@ export default {
         const addButton = new Button({ id: 'add-problem', text: this.translate('problems.table.add', 'dashboard'), }).click(() => this.add());
         problemsDOM.appendChild(addButton.get());
 
-        let { problems } = await problemsPromise;
+        const { problems } = await Problem.getAll();
         // console.log(problems);
         table.clear();
-        problems.forEach(problem => {
-            if (problem.author) {
-                problem.title += `<span class="author-card" title="${this.translate('problems.table.author-title', 'dashboard')}">${this.translate('problems.table.author', 'dashboard')}</span>`;
-            }
+        problems.filter(problem => problem.author)
+        .forEach(problem => {
+            // if (problem.author) {
+            //     problem.title += `<span class="author-card" title="${this.translate('problems.table.author-title', 'dashboard')}">${this.translate('problems.table.author', 'dashboard')}</span>`;
+            // }
+            table.addItem(problem);
         });
-        problems.forEach(problem => table.addItem(problem));
 
         table.addItemEvent('click', async item => {
             this.show(item);
@@ -54,18 +53,19 @@ export default {
             <h1>${this.translate('problems.add.h1', 'dashboard')}</h1>
             <form>
                 <input id="title" type="text" required placeholder="${this.translate('title', 'common')}">
-                <input type="checkbox" id="isPublic" placeholder="${this.translate('public', 'common')}" checked>
-                <p id="public-warn" class="warn active">${this.translate('problems.add.public-warn', 'dashboard')}</p>
-                <p id="private-warn" class="warn">${this.translate('problems.add.private-warn', 'dashboard')}</p>
                 <button class="default">${this.translate('send', 'common')}</button>
             </form>
         `;
+        // <input type="checkbox" id="isPublic" placeholder="${this.translate('public', 'common')}" checked>
+        // <p id="public-warn" class="warn active">${this.translate('problems.add.public-warn', 'dashboard')}</p>
+        // <p id="private-warn" class="warn">${this.translate('problems.add.private-warn', 'dashboard')}</p>
+        
         const modal = new Modal(content, { id: 'add-problem' });
         const form = new Form(content.querySelector('form'));
 
-        form.getInput('isPublic').change(ev => {
-            modal.getAll('.warn').forEach(warn => warn.classList.toggle('active'));
-        });
+        // form.getInput('isPublic').change(ev => {
+        //     modal.getAll('.warn').forEach(warn => warn.classList.toggle('active'));
+        // });
 
         form.submit(async data => {
             // console.log(data);
@@ -74,7 +74,7 @@ export default {
             try {
                 // create problem and redirect to it
                 const { problem } = await new Problem(data).create().catch(() => location.reload());
-                location.href = `/problems/${problem.hash.slice(-TemplateVar.get('problemHashLength'))}`;
+                location.href = `/problems/${problem.hash}`;
             }
             catch (error) {
                 console.error(error);
