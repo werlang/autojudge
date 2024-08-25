@@ -26,7 +26,7 @@ router.post('/', auth({'user:exists': true}), async (req, res, next) => {
             message: 'Problem created.',
             problem: {
                 id: problem.id,
-                hash: problem.hash,
+                hash: problem.hash.slice(-process.env.PROBLEM_HASH_LENGTH),
                 title: problem.title,
                 description: problem.description,
                 public: problem.is_public === 1,
@@ -39,32 +39,36 @@ router.post('/', auth({'user:exists': true}), async (req, res, next) => {
 });
 
 // get all problems
-// anyone can access public problems
 // if author, show hidden fields
+// if public or author, show public fields
+// otherwise, show only title and id
 router.get('/', auth({'user:optional': true}), async (req, res, next) => {
     try {
-        const query = {
-            is_public: 1,
-        };
-        if (req.query.contest) {
-            query.contest = req.query.contest;
-        }
+        const query = {};
         const problems = await Problem.getAll(query);
 
         const problemsData = problems.map(problem => {
-            const problemData = {
-                id: problem.id,
-                hash: problem.hash,
-                title: problem.title,
-                description: problem.description,
-                input: problem.input_public,
-                output: problem.output_public,
+            const problemData = {};
+
+            const isAuthor = req.user && problem.author === req.user.id;
+            const isPublic = problem.is_public === 1;
+
+            problemData.title = problem.title;
+            problemData.id = problem.id;
+            if (isAuthor || isPublic) {
+                problemData.hash = problem.hash.slice(-process.env.PROBLEM_HASH_LENGTH);
+                problemData.description = problem.description;
+                problemData.input = problem.input_public;
+                problemData.output = problem.output_public;
+                problemData.public = isPublic;
+                
+                if (isAuthor) {
+                    problemData.inputHidden = problem.input_hidden;
+                    problemData.outputHidden = problem.output_hidden;
+                    problemData.author = true;
+                }
             }
-            if (req.user && problem.author === req.user.id) {
-                problemData.inputHidden = problem.input_hidden;
-                problemData.outputHidden = problem.output_hidden;
-                problemData.author = true;
-            }
+            
             return problemData;
         });
 
@@ -94,7 +98,7 @@ router.get('/:hash', auth({'user:optional': true}), async (req, res, next) => {
 
         const problemData = {
             id: problem.id,
-            hash: problem.hash,
+            hash: problem.hash.slice(-process.env.PROBLEM_HASH_LENGTH),
             title: problem.title,
             description: problem.description,
             public: problem.is_public === 1,
@@ -156,7 +160,7 @@ router.put('/:id', auth({'user:exists': true}), async (req, res, next) => {
             message: 'Problem updated.',
             problem: {
                 id: problem.id,
-                hash: problem.hash,
+                hash: problem.hash.slice(-process.env.PROBLEM_HASH_LENGTH),
                 title: problem.title,
                 description: problem.description,
                 public: problem.is_public === 1,

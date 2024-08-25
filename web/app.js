@@ -37,7 +37,6 @@ app.use(langMiddleware.listen());
 app.use(renderMiddleware({
     apiurl: process.env.API,
     liveReload: process.env.LIVE_RELOAD,
-    problemHashLength: process.env.PROBLEM_HASH_LENGTH,
 }));
 
 app.get('/', (req, res) => {

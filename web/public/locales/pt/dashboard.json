@@ -1,6 +1,6 @@
 {
     "problems": {
-        "description": "Navegue, crie, e gerencie problemas na plataforma.",
+        "description": "Gerencie problemas que você criou.",
         "table": {
             "add": "Adicionar Problema",
             "author": "Autor",

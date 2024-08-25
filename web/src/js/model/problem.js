@@ -2,13 +2,13 @@ import Api from "../helpers/api.js";
 
 export default class Problem {
 
-    constructor({ id, hash, title, description, language, isPublic }) {
+    constructor({ id, hash, title, description, language }) {
         this.id = id;
         this.hash = hash;
         this.title = title;
         this.description = description;
         this.language = language || 'en';
-        this.public = isPublic;
+        this.public = false; // all problems are private for now
     }
 
     static async getAll(filter) {

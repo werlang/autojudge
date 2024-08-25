@@ -1,6 +1,6 @@
 {
     "problems": {
-        "description": "Browse, create, and manage problems on the platform.",
+        "description": "Manage problems that you have created.",
         "table": {
             "add": "Add Problem",
             "author": "Author",
