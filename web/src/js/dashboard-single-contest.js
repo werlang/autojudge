@@ -162,10 +162,6 @@ export default {
             columns: [ { id: 'title', name: this.translate('title', 'common') }, ],
             controls: [
                 { id: 'remove', icon: 'fas fa-trash-alt', title: this.translate('remove-problem.title', 'contest'), action: s => this.removeProblem(s) },
-                { id: 'open', icon: 'fas fa-external-link-alt', title: this.translate('remove-problem.open', 'contest'), action: async selected => {
-                    if (!selected.length) return;
-                    window.open(`/problems/${selected[0].id}`, '_blank');
-                }},
             ],
             selection: { enabled: true, multi: true },
             translate: this.translate,
@@ -380,7 +376,7 @@ export default {
             </pre>
             <p>${this.translate('add-team.message-2', 'contest')}</p>
             <pre>
-                <code>${location.origin}/teams/${team.hash.slice(-4)}</code>
+                <code>${location.origin}/teams/${team.hash}</code>
                 <div class="copy" title="${this.translate('copy', 'common')}"><i class="fas fa-copy"></i></div>
             </pre>
         `, { id: 'add-team' })

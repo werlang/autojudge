@@ -26,7 +26,7 @@ router.post('/', auth({'user:exists': true}), async (req, res, next) => {
             message: 'Problem created.',
             problem: {
                 id: problem.id,
-                hash: problem.hash.slice(-process.env.PROBLEM_HASH_LENGTH),
+                hash: problem.hash.slice(-process.env.HASH_LENGTH),
                 title: problem.title,
                 description: problem.description,
                 public: problem.is_public === 1,
@@ -56,7 +56,7 @@ router.get('/', auth({'user:optional': true}), async (req, res, next) => {
             problemData.title = problem.title;
             problemData.id = problem.id;
             if (isAuthor || isPublic) {
-                problemData.hash = problem.hash.slice(-process.env.PROBLEM_HASH_LENGTH);
+                problemData.hash = problem.hash.slice(-process.env.HASH_LENGTH);
                 problemData.description = problem.description;
                 problemData.input = problem.input_public;
                 problemData.output = problem.output_public;
@@ -84,7 +84,7 @@ router.get('/', auth({'user:optional': true}), async (req, res, next) => {
 // if author, show hidden fields
 router.get('/:hash', auth({'user:optional': true}), async (req, res, next) => {
     try {
-        if (req.params.hash.length < process.env.PROBLEM_HASH_LENGTH) {
+        if (req.params.hash.length < process.env.HASH_LENGTH) {
             throw new CustomError(400, 'Hash too short.');
         }
         const problems = await Problem.getAll({ hash: { like: req.params.hash }});
@@ -98,7 +98,7 @@ router.get('/:hash', auth({'user:optional': true}), async (req, res, next) => {
 
         const problemData = {
             id: problem.id,
-            hash: problem.hash.slice(-process.env.PROBLEM_HASH_LENGTH),
+            hash: problem.hash.slice(-process.env.HASH_LENGTH),
             title: problem.title,
             description: problem.description,
             public: problem.is_public === 1,
@@ -160,7 +160,7 @@ router.put('/:id', auth({'user:exists': true}), async (req, res, next) => {
             message: 'Problem updated.',
             problem: {
                 id: problem.id,
-                hash: problem.hash.slice(-process.env.PROBLEM_HASH_LENGTH),
+                hash: problem.hash.slice(-process.env.HASH_LENGTH),
                 title: problem.title,
                 description: problem.description,
                 public: problem.is_public === 1,

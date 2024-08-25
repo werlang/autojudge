@@ -85,7 +85,7 @@ router.get('/:id', auth({
         problems = problems.map(problem => ({
             id: problem.id,
             title: problem.title,
-            hash: problem.hash.slice(-process.env.PROBLEM_HASH_LENGTH),
+            hash: problem.hash.slice(-process.env.HASH_LENGTH),
         }));
 
         res.send({ contest: {
@@ -156,7 +156,7 @@ router.post('/:id/teams', auth({'contest:admin': true}), async (req, res, next) 
             message: 'Team created. Please write down the password as it will not be shown again.',
             team: {
                 id: team.id,
-                hash: team.hash,
+                hash: team.hash.slice(-process.env.HASH_LENGTH),
                 name: team.name,
                 password: team.password,
             }

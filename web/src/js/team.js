@@ -59,7 +59,7 @@ const teamHandler = {
         form.submit(async data => {
             if (!form.validate([
                 { id: 'password', rule: value => value.length == 6 && !isNaN(value), message: translate('password-format', 'team') },
-                { id: 'team-id', rule: value => value.length == 4, message: translate('team-id-format', 'team') },
+                { id: 'team-id', rule: value => value.length, message: translate('team-id-format', 'team') },
             ])) return;
 
             try {

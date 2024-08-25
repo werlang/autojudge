@@ -109,7 +109,7 @@ export default {
         .addButton({ 
             text: `${this.translate('details', 'common')}${item.author ? ` / ${this.translate('edit', 'common')}` : ''}`,
             isDefault: false,
-            callback: () => location.href = `/problems/${item.hash.slice(-TemplateVar.get('problemHashLength'))}` 
+            callback: () => location.href = `/problems/${item.hash}`
         });
     },
 }

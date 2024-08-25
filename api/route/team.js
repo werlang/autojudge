@@ -27,7 +27,7 @@ router.get('/', auth({'team:member': true}), async (req, res, next) => {
         const team = await new Team({ id: req.team.id }).getActive();
         res.send({ team: {
             id: team.id,
-            hash: team.hash,
+            hash: team.hash.slice(-process.env.HASH_LENGTH),
             name: team.name,
             score: team.score,
             contest: {
@@ -75,7 +75,7 @@ router.put('/:id/reset', auth({'contest:admin:team': true}), async (req, res, ne
             message: 'Password reset.',
             team: {
                 id: req.team.id,
-                hash: req.team.hash,
+                hash: req.team.hash.slice(-process.env.HASH_LENGTH),
                 name: req.team.name,
                 password,
             }
