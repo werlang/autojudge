@@ -90,6 +90,10 @@ router.put('/:id/reset', auth({'contest:admin:team': true}), async (req, res, ne
 // Only the contest admin can delete teams
 router.delete('/:id', auth({'contest:admin:team': true}), async (req, res, next) => {
     try {
+        const contest = await new Contest({ id: req.team.contest }).get();
+        if (contest.isStarted()) {
+            throw new CustomError(403, 'Contest has already started');
+        }
         await req.team.delete();
         res.send({ message: 'Team removed.' });
     }

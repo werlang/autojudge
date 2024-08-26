@@ -110,6 +110,9 @@ router.get('/:id', auth({
 // Only the contest admin can update the contest
 router.put('/:id', auth({'contest:admin': true}), async (req, res, next) => {
     try {
+        if (req.contest.isStarted()) {
+            throw new CustomError(400, 'Contest has already started');
+        }
         await req.contest.update({
             name: req.body.name,
             description: req.body.description,
