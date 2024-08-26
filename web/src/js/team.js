@@ -24,6 +24,8 @@ const translate = await translatePledge;
 // check the logged team or create a modal asking for the password
 const teamHandler = {
     init: async function() {
+        if (this.team) return this.team;
+
         const token = Team.getToken();
         if (!token) {
             this.showPasswordModal();
@@ -40,7 +42,17 @@ const teamHandler = {
         }
 
         this.team = team;
+        this.loaded = true;
         return team;
+    },
+
+    waitLoad: async function() {
+        if (this.loaded) return this.team;
+        return new Promise(resolve => {
+            setTimeout(async () => {
+                resolve(await this.waitLoad());
+            }, 100);
+        })
     },
 
     showPasswordModal: function() {
@@ -99,16 +111,23 @@ const teamHandler = {
 
 const menu = new Menu({
     items: [
-        { id: 'team', text: translate('teams_one', 'common'), icon: 'fas fa-users', action: () => moduleLoader('team-submission.js', {team: teamHandler.team, refresh: true}) },
-        { id: 'contests', text: translate('contest_one', 'common'), icon: 'fas fa-trophy', action: () => moduleLoader('team-contest.js', {team: teamHandler.team, refresh: true}) },
-        { id: 'problems', text: translate('problem_other', 'common'), icon: 'fas fa-tasks', action: () => moduleLoader('team-problem.js', {team: teamHandler.team }) },
+        { id: 'teams', text: translate('teams_one', 'common'), icon: 'fas fa-users', action: () => moduleLoader('team-submission.js', { refresh: true}) },
+        { id: 'contests', path:'teams/contest', text: translate('contest_one', 'common'), icon: 'fas fa-trophy', action: () => moduleLoader('team-contest.js', { refresh: true}) },
+        { id: 'problems', path: 'teams/problems', text: translate('problem_other', 'common'), icon: 'fas fa-tasks', action: () => moduleLoader('team-problem.js') },
         { id: 'logout', text: translate('menu.logout', 'components'), icon: 'fas fa-sign-out-alt', action: () => teamHandler.removeTeam() },
     ],
+    options: {
+        usePath: true,
+        reload: true,
+    },
 });
 
 
 async function moduleLoader(name, objects = {}) {
     // console.log(objects);
+    await teamHandler.waitLoad();
+    objects.team = teamHandler.team;
+    
     const module = await import('./'+ name);
     const entity = module.default;
     entity.build({ translate, ...objects });
@@ -126,7 +145,5 @@ teamHandler.init().then(team => {
         moduleLoader('team-single-problem.js', {team: teamHandler.team, problemHash });
         return;
     }
-    
-    menu.click('team');
 });
     

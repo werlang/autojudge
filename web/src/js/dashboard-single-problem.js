@@ -31,6 +31,9 @@ export default {
                     <div class="twitter">
                         <a href="https://twitter.com/intent/tweet?url=${location.href}" target="_blank"><i class="fab fa-x-twitter"></i></a>
                     </div>
+                    <div class="whatsapp">
+                        <a href="https://wa.me/?text=${location.href}" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                    </div>
                     <div class="link">
                         <i class="fas fa-link"></i>
                     </div>

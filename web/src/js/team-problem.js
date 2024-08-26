@@ -36,7 +36,7 @@ export default {
         contest.problems.forEach(problem => table.addItem(problem));
 
         table.addItemEvent('click', async item => {
-            location.href = `/contests/problems/${item.hash}`;
+            location.href = `/teams/problems/${item.hash}`;
         });
     },
 }

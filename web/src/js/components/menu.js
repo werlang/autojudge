@@ -61,7 +61,7 @@ export default class Menu {
                 this.active = index;
             }
             // check for pathname
-            if (this.options.usePath === true && location.pathname.slice(1) === item.id) {
+            if (this.options.usePath === true && location.pathname.slice(1) === (item.path || item.id)) {
                 this.active = index;
                 item.default = true;
             } 
@@ -112,7 +112,7 @@ export default class Menu {
 
             // execute action if it has one and it's not the active menu item (to avoid double click)
             if (this.options.reload === true && i !== this.active) {
-                location.pathname = `/${ e.id }`;
+                location.pathname = `/${ this.items[i].path || e.id }`;
             }
             if (this.action[e.id] && i !== this.active) {
                 // set here so the action also knows the active menu item

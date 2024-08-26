@@ -48,6 +48,8 @@ app.get('/', (req, res) => {
 const dashboardRoute = (req, res) => {
     res.templateRender('dashboard', {
         googleCredential: req.body.credential,
+        problemHash: req.params.problem,
+        contestId: req.params.contest,
     });
 }
 // routes for dashboard (menu)
@@ -55,41 +57,26 @@ app.post('/dashboard', dashboardRoute);
 app.get([
     '/dashboard',
     '/problems',
+    '/problems/:problem',
     '/contests',
+    '/contests/:contest',
 ], dashboardRoute);
 
-// route for problem
-app.get('/problems/:hash', (req, res) => {
-    res.templateRender('dashboard', {
-        problemHash: req.params.hash,
-    });
-});
-
-// route for contest
-app.get('/contests/:id', (req, res) => {
-    res.templateRender('dashboard', {
-        contestId: req.params.id,
-    });
-});
-
-// route for team
-app.get('/teams', (req, res) => {
-    res.templateRender('team');
-});
-app.get('/teams/:id', (req, res) => {
+const teamRoute = async (req, res) => {
     res.templateRender('team', {
-        teamId: req.params.id,
+        teamId: req.params.team,
+        problemHash: req.params.problem,
     });
-});
+}
+// route for team. ask for team id and password
+app.get([
+    '/teams',
+    '/teams/contest',
+    '/teams/problems',
+    '/teams/problems/:problem',
+    '/teams/:team',
+], teamRoute);
 
-// route for problem within a contest
-app.get('/contests/problems/:hash', (req, res) => {
-    res.templateRender('team', {
-        problemHash: req.params.hash,
-    });
-});
-
-// TODO: add page for each menu entry on team page
 
 // static assets
 app.use(express.static(import.meta.dirname + '/public/'));
