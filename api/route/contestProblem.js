@@ -12,7 +12,7 @@ router.post('/:problemId', auth({'contest:admin': true}), async (req, res, next)
     try {
         const problem = await new Problem({ id: req.params.problemId }).get();
         if (!problem.input_hidden || !problem.output_hidden) {
-            throw new CustomError(400, 'Problem must have hidden test cases.');
+            throw new CustomError(400, 'Problem must have hidden test cases');
         }
         await req.contest.addProblem(problem.id);
         res.status(201).send({

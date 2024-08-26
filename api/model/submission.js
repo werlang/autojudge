@@ -41,10 +41,10 @@ export default class Submission extends Model {
         let enabled = true;
 
         if (!isStarted && !forceReturn) {
-            throw new CustomError(400, 'Contest has not started yet.');
+            throw new CustomError(400, 'Contest has not started yet');
         }
         if (remainingTime <= 0 && !forceReturn){
-            throw new CustomError(400, 'Contest has ended.');
+            throw new CustomError(400, 'Contest has ended');
         }
 
         // if forceReturn and some error occurs, return the data anyway

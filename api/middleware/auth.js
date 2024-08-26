@@ -66,10 +66,10 @@ async function authTeam(req) {
             return isValidPassword ? team : false;
         }));
         if (filteredTeams.length == 0) {
-            throw new CustomError(401, 'Invalid password.');
+            throw new CustomError(401, 'Invalid password');
         }
         else if (filteredTeams.length > 1) {
-            throw new CustomError(401, 'Ambiguous hash.');
+            throw new CustomError(401, 'Ambiguous hash');
         }
 
         const team = filteredTeams[0];
@@ -213,7 +213,7 @@ function auth(modes = {}) {
                 await authTeam(req);
                 const contest = await new Contest({ id: req.team.contest }).get();
                 if (!contest.isRunning()) {
-                    throw new CustomError(403, 'The contest is not running.');
+                    throw new CustomError(403, 'The contest is not running');
                 }
                 anyPassed = true;
             }
