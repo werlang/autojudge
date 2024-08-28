@@ -6,6 +6,7 @@
 //     - icon: string with the icon class of the menu item (from fontawesome)
 //     - text: string with the text of the menu item
 //     - action: function to be executed when the menu item is clicked
+//     - customClass: string with the custom class of the menu item
 //   - domElement: DOM element to build the menu. If not provided, a new element will be created with a fog
 //   - width: number with the width of the menu
 //   - options: object with the following properties:
@@ -77,7 +78,7 @@ export default class Menu {
             }
 
             return `
-                <div class="menu-item ${ item.default ? 'active' : '' } ${ subitemsHTML ? 'parent' : '' }" id="${ item.id }">
+                <div class="menu-item ${ item.default ? 'active' : '' } ${ item.customClass || '' } ${ subitemsHTML ? 'parent' : '' }" id="${ item.id }">
                     <div class="icon"><i class="${ item.icon }"></i></div>
                     <div class="text">${ item.text }</div>
                 </div>

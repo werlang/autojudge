@@ -64,7 +64,6 @@ translatePledge.then(translate => {
             { id: 'dashboard', text: translate('menu.dashboard', 'components'), icon: 'fas fa-tachometer-alt' },
             { id: 'problems', text: translate('menu.problems', 'components'), icon: 'fas fa-tasks', action: problemsMenuClick },
             { id: 'contests', text: translate('menu.contests', 'components'), icon: 'fas fa-trophy', action: contestsMenuClick },
-            { id: 'teams', text: translate('menu.teams', 'components'), icon: 'fas fa-users', action: () => location.href = '/teams' },
             { id: 'logout', text: translate('menu.logout', 'components'), icon: 'fas fa-sign-out-alt' },
         ],
         options: {
@@ -122,6 +121,5 @@ translatePledge.then(translate => {
 });
 
 Pledge.all([userPledge, menuPledge]).then(([{user}, menu]) => {
-    if (!user) return;
     new Header({ user, menu, });
 });
