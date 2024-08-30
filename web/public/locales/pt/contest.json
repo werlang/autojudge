@@ -38,6 +38,7 @@
         "reset-title": "Redefinir Senha",
         "reset-success": "Senha redefinida com sucesso.",
         "remove-title": "Remover Equipe",
+        "remove-message": "Deseja remover a equipe?",
         "remove-success": "Equipe removida com sucesso.",
         "rename-title": "Renomear Equipe",
         "rename-name": "Novo Nome da Equipe",

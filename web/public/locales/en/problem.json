@@ -22,5 +22,9 @@
     "empty-case": "Please fill in the input and output fields.",
     "duplicate-case": "This test case already exists.",
     "share-section": "Share this problem",
-    "copy-link": "Link copied to clipboard"
+    "copy-link": "Link copied to clipboard",
+    "remove-case": {
+        "h1": "Remove test case",
+        "message": "Do you want to remove the test case?"
+    }
 }

@@ -38,6 +38,7 @@
         "reset-title": "Reset Password",
         "reset-success": "Password reset successfully.",
         "remove-title": "Remove Team",
+        "remove-message": "Do you want to remove the team?",
         "remove-success": "Team removed successfully.",
         "rename-title": "Rename Team",
         "rename-name": "New Team Name",

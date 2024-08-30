@@ -223,11 +223,23 @@ export default {
         buttonRemove.title = this.translate('discard', 'common');
         buttonRemove.innerHTML = '<i class="fa-solid fa-trash"></i>';
         buttonRemove.addEventListener('click', async () => {
-            const isPublic = code.closest('#public-codes') ? true : false;
-            if (!isCreate) {
-                await this.removeCase(input, output, isPublic);
-            }
-            this.render();
+            const modal = new Modal(`
+                <h1>${this.translate('remove-case.h1', 'problem')}</h1>
+                <p>${this.translate('remove-case.message', 'problem')}</p>
+            `)
+            .addButton({
+                text: this.translate('remove', 'common'),
+                close: true,
+                isDefault: false,
+                callback: async () => {
+                    const isPublic = code.closest('#public-codes') ? true : false;
+                    await this.removeCase(input, output, isPublic);
+                    this.render();
+                }
+            })
+            .addButton({ text: this.translate('cancel', 'common'), close: true, isDefault: true, callback: () => {
+                this.render();
+            } });
         });
 
         // append the buttons to the controls

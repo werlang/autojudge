@@ -250,7 +250,21 @@ export default {
         if (selected.length === 0) return;
         // console.log(selected);
         try {
-            await new Team({ id: selected[0].id }).remove();
+            new Modal(`
+                <h1>${this.translate('teams.remove-title', 'contest')}</h1>
+                <p>${this.translate('teams.remove-message', 'contest', {count: selected.length})}</p>
+            `)
+            .addButton({
+                text: this.translate('remove', 'common'),
+                isDefault: false,
+                close: true,
+                callback: async () => {
+                    await new Team({ id: selected[0].id }).remove();
+                    new Toast(this.translate('teams.remove-success', 'contest', {count: selected.length}), { type: 'success' });
+                    this.renderTeams();
+                }
+            })
+            .addButton({ text: this.translate('cancel', 'common'), close: true, isDefault: true });
         }
         catch (error) {
             // console.error(error);
@@ -258,8 +272,6 @@ export default {
             this.renderTeams();
             return;
         }
-        new Toast(this.translate('teams.remove-success', 'contest', {count: selected.length}), { type: 'success' });
-        this.renderTeams();
     },
 
     resetTeamPassword: async function(selected) {
@@ -385,16 +397,15 @@ export default {
                 name,
             }).add();
             // console.log(team);
+            this.modalResetPassword(team);
+            new Toast(this.translate('add-team.success', 'contest'), { type: 'success' });
+            this.renderTeams();
         }
         catch (error) {
             // console.error(error);
             new Toast(this.translate(error.message, 'api'), { type: 'error' });
-            return;
+            this.renderTeams();
         }
-
-        this.modalResetPassword(team);
-        new Toast(this.translate('add-team.success', 'contest'), { type: 'success' });
-        this.renderTeams();
     },
 
     modalResetPassword: async function(team) {
