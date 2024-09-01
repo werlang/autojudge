@@ -9,6 +9,7 @@ export default {
         index: './src/js/index.js',
         dashboard: './src/js/dashboard.js',
         team: './src/js/team.js',
+        contest: './src/js/contest.js',
     },
     output: {
         filename: 'js/[name].min.js',

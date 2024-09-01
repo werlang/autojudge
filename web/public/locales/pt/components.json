@@ -7,7 +7,8 @@
         "problems": "Problemas",
         "contests": "Competições",
         "teams": "Equipes",
-        "logout": "Sair"
+        "logout": "Sair",
+        "submissions": "Submissões"
     },
     "table": {
         "search-title": "Procurar"

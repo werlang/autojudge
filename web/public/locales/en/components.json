@@ -7,7 +7,8 @@
         "problems": "Problems",
         "contests": "Contests",
         "teams": "Teams",
-        "logout": "Logout"
+        "logout": "Logout",
+        "submissions": "Submissions"
     },
     "table": {
         "search-title": "Search"

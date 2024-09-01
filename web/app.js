@@ -71,12 +71,24 @@ const teamRoute = async (req, res) => {
 // route for team. ask for team id and password
 app.get([
     '/teams',
+    '/teams/submissions',
     '/teams/contest',
     '/teams/problems',
     '/teams/problems/:problem',
     '/teams/:team',
 ], teamRoute);
 
+// route for contest admin
+app.get([
+    '/contests/:contest/dashboard',
+    '/contests/:contest/submissions',
+    '/contests/:contest/problems',
+    '/contests/:contest/teams',
+], (req, res) => {
+    res.templateRender('contest', {
+        contestId: req.params.contest,
+    });
+});
 
 // static assets
 app.use(express.static(import.meta.dirname + '/public/'));

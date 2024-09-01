@@ -38,7 +38,10 @@ export default {
                     </div>
                 `,
             })
-            .click(async () => location.href = `/contests/${contest.id}`);
+            .click(async () => {
+                // console.log(contest);
+                location.href = `/contests/${contest.id}${ contest.startTime ? '/dashboard' : '' }`;
+            });
         });
 
         // create card for adding a new contest
