@@ -18,5 +18,11 @@
         "description": "Create new contests, or manage those that you have created.",
         "add": "Add new contest",
         "error": "Error submitting contest."
+    },
+    "home": {
+        "h1": "Dashboard",
+        "description": "Create and manage problems and contests.",
+        "problems": "You have created <b>{{count}}</b> problems on the platform.",
+        "contests": "You manage <b>{{count}}</b> contests."
     }
 }

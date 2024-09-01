@@ -66,7 +66,10 @@ export default class Card {
         container.appendChild(this.element);
     }
 
-    get() {
+    get(selector) {
+        if (selector) {
+            return this.element.querySelector(selector);
+        }
         return this.element;
     }
 

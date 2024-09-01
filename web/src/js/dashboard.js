@@ -61,9 +61,9 @@ const menuPledge = new Pledge();
 translatePledge.then(translate => {
     const menu = new Menu({
         items: [
-            { id: 'dashboard', text: translate('menu.dashboard', 'components'), icon: 'fas fa-tachometer-alt' },
-            { id: 'problems', text: translate('menu.problems', 'components'), icon: 'fas fa-tasks', action: problemsMenuClick },
-            { id: 'contests', text: translate('menu.contests', 'components'), icon: 'fas fa-trophy', action: contestsMenuClick },
+            { id: 'dashboard', text: translate('menu.dashboard', 'components'), icon: 'fas fa-tachometer-alt', action: () => moduleLoader('dashboard-home.js') },
+            { id: 'problems', text: translate('menu.problems', 'components'), icon: 'fas fa-tasks', action: () => moduleLoader('dashboard-problem.js') },
+            { id: 'contests', text: translate('menu.contests', 'components'), icon: 'fas fa-trophy', action: () => moduleLoader('dashboard-contest.js') },
             { id: 'logout', text: translate('menu.logout', 'components'), icon: 'fas fa-sign-out-alt' },
         ],
         options: {
@@ -79,12 +79,16 @@ translatePledge.then(translate => {
     
     menuPledge.resolve(menu);
 
-    async function problemsMenuClick() {
-        // lazy load problems
-        const module = await import('./dashboard-problem.js');
-        const problems = module.default
-        problems.translate = translate;
-        problems.build();
+    async function moduleLoader(name, objects = {}) {
+        // console.log(objects);
+        const module = await import('./'+ name);
+        const entity = module.default;
+        entity.translate = translate;
+        for (const key in objects) {
+            entity[key] = objects[key];
+        }
+        entity.build();
+        return entity;
     }
 
     // check for single problem page
@@ -98,14 +102,6 @@ translatePledge.then(translate => {
             problem.load(hash);
         }
     })();
-
-    async function contestsMenuClick() {
-        // lazy load contests
-        const module = await import('./dashboard-contest.js');
-        const contests = module.default
-        contests.translate = translate;
-        contests.build();
-    }
 
     // check for single contest page
     (async () => {

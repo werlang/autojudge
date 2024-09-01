@@ -18,5 +18,11 @@
         "description": "Crie novas competições, ou gerencie aquelas que você criou.",
         "add": "Adicionar nova competição",
         "error": "Erro ao enviar competição."
+    },
+    "home": {
+        "h1": "Painel",
+        "description": "Crie e gerencie problemas e competições.",
+        "problems": "Você criou <b>{{count}}</b> problemas na plataforma.",
+        "contests": "Você administra <b>{{count}}</b> competições."
     }
 }
