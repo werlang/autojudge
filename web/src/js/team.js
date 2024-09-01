@@ -7,6 +7,7 @@ import Team from "./model/team.js";
 import Toast from "./components/toast.js";
 import TemplateVar from "./helpers/template-var.js";
 import Form from "./components/form.js";
+import ModuleLoader from "./helpers/module-loader.js";
 
 import '../less/team.less';
 
@@ -109,41 +110,31 @@ const teamHandler = {
     }
 }
 
-const menu = new Menu({
-    items: [
-        { id: 'teams', text: translate('teams_one', 'common'), icon: 'fas fa-users', action: () => moduleLoader('team-submission.js', { refresh: true}) },
-        { id: 'contests', path:'teams/contest', text: translate('contest_one', 'common'), icon: 'fas fa-trophy', action: () => moduleLoader('team-contest.js', { refresh: true}) },
-        { id: 'problems', path: 'teams/problems', text: translate('problem_other', 'common'), icon: 'fas fa-tasks', action: () => moduleLoader('team-problem.js') },
-        { id: 'logout', text: translate('menu.logout', 'components'), icon: 'fas fa-sign-out-alt', action: () => teamHandler.removeTeam() },
-    ],
-    options: {
-        usePath: true,
-        reload: true,
-    },
-});
-
-
-async function moduleLoader(name, objects = {}) {
-    // console.log(objects);
-    await teamHandler.waitLoad();
-    objects.team = teamHandler.team;
-    
-    const module = await import('./'+ name);
-    const entity = module.default;
-    entity.build({ translate, ...objects });
-    return entity;
-}
-
-
 
 teamHandler.init().then(team => {
+    const ml = new ModuleLoader({ translate, team });
+    
+    const menu = new Menu({
+        items: [
+            { id: 'teams', text: translate('teams_one', 'common'), icon: 'fas fa-users', action: () => ml.load('team-submission.js', { refresh: true}) },
+            { id: 'contests', path:'teams/contest', text: translate('contest_one', 'common'), icon: 'fas fa-trophy', action: () => ml.load('team-contest.js', { refresh: true}) },
+            { id: 'problems', path: 'teams/problems', text: translate('problem_other', 'common'), icon: 'fas fa-tasks', action: () => ml.load('team-problem.js') },
+            { id: 'logout', text: translate('menu.logout', 'components'), icon: 'fas fa-sign-out-alt', action: () => teamHandler.removeTeam() },
+        ],
+        options: {
+            usePath: true,
+            reload: true,
+        },
+    });
+    
     new Header({ menu, team });
     
     if (!team) return;
+    
 
     const problemHash = TemplateVar.get('problemHash');
     if (problemHash) {
-        moduleLoader('team-single-problem.js', {team: teamHandler.team, problemHash });
+        ml.load('team-single-problem.js', {team: teamHandler.team, problemHash });
         return;
     }
 });

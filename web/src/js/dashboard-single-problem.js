@@ -5,7 +5,7 @@ import Problem from './model/problem.js'
 
 export default {
 
-    load: async function(hash) {
+    load: async function({hash}) {
         const {problem} = await new Problem({ hash }).get().catch(() => location.href = '/problems');
         // console.log(problem);
 

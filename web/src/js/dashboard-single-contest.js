@@ -9,7 +9,7 @@ import Team from "./model/team.js";
 
 export default {
 
-    load: async function(id) {
+    load: async function({id}) {
         this.contestInstance = new Contest({ id });
 
         await this.render();

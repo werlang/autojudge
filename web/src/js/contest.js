@@ -6,6 +6,7 @@ import Header from "./components/header.js";
 import Translator from "./helpers/translate.js";
 import Pledge from "./helpers/pledge.js";
 import LocalData from "./helpers/local-data.js";
+import ModuleLoader from "./helpers/module-loader.js";
 
 import '../less/dashboard.less';
 import Contest from "./model/contest.js";
@@ -52,12 +53,14 @@ translatePledge.then(async translate => {
     const contest = await contestPledge;
     // console.log(contest);
     
+    const ml = new ModuleLoader({ contest, translate });
+
     const menu = new Menu({
         items: [
-            { id: 'dashboard', path: `contests/${contest.id}/dashboard`, text: translate('menu.dashboard', 'components'), icon: 'fas fa-tachometer-alt', action: async () => moduleLoader('contest-dashboard.js') },
-            { id: 'submissions', path: `contests/${contest.id}/submissions`, text: translate('menu.submissions', 'components'), icon: 'fas fa-file-code', action: async () => moduleLoader('contest-submission.js') },
-            { id: 'problems', path: `contests/${contest.id}/problems`, text: translate('menu.problems', 'components'), icon: 'fas fa-tasks', action: async () => moduleLoader('contest-problem.js') },
-            { id: 'teams', path: `contests/${contest.id}/teams`, text: translate('menu.teams', 'components'), icon: 'fas fa-users', action: async () => moduleLoader('contest-team.js') },
+            { id: 'dashboard', path: `contests/${contest.id}/dashboard`, text: translate('menu.dashboard', 'components'), icon: 'fas fa-tachometer-alt', action: async () => ml.load('contest-dashboard.js') },
+            { id: 'submissions', path: `contests/${contest.id}/submissions`, text: translate('menu.submissions', 'components'), icon: 'fas fa-file-code', action: async () => ml.load('contest-submission.js') },
+            { id: 'problems', path: `contests/${contest.id}/problems`, text: translate('menu.problems', 'components'), icon: 'fas fa-tasks', action: async () => ml.load('contest-problem.js') },
+            { id: 'teams', path: `contests/${contest.id}/teams`, text: translate('menu.teams', 'components'), icon: 'fas fa-users', action: async () => ml.load('contest-team.js') },
             { id: 'logout', text: translate('menu.logout', 'components'), icon: 'fas fa-sign-out-alt', action: () => teamHandler.removeTeam() },
         ],
         options: {
@@ -72,19 +75,6 @@ translatePledge.then(async translate => {
     });
     
     menuPledge.resolve(menu);
-
-    async function moduleLoader(name, objects = {}) {
-        // console.log(objects);
-        const module = await import('./'+ name);
-        const entity = module.default;
-        entity.translate = translate;
-        entity.contest = contest;
-        for (const key in objects) {
-            entity[key] = objects[key];
-        }
-        entity.build();
-        return entity;
-    }
 });
 
 Pledge.all([userPledge, menuPledge]).then(([{user}, menu]) => {

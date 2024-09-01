@@ -5,11 +5,7 @@ import Contest from "./model/contest.js";
 // TODO: Create some things to populate the problems table besides the title
 
 export default {
-    build: async function(objects) {
-        for (const key in objects) {
-            this[key] = objects[key];
-        }
-
+    build: async function() {
         const frame = document.querySelector('#frame');
         frame.innerHTML = `
             <h1>${this.translate('problem_other', 'common')}</h1>

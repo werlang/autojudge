@@ -6,6 +6,7 @@ import Header from "./components/header.js";
 import Translator from "./helpers/translate.js";
 import Pledge from "./helpers/pledge.js";
 import LocalData from "./helpers/local-data.js";
+import ModuleLoader from "./helpers/module-loader.js";
 
 import '../less/dashboard.less';
 
@@ -59,11 +60,14 @@ const userPledge = new Pledge();
 
 const menuPledge = new Pledge();
 translatePledge.then(translate => {
+
+    const ml = new ModuleLoader({ translate });
+
     const menu = new Menu({
         items: [
-            { id: 'dashboard', text: translate('menu.dashboard', 'components'), icon: 'fas fa-tachometer-alt', action: () => moduleLoader('dashboard-home.js') },
-            { id: 'problems', text: translate('menu.problems', 'components'), icon: 'fas fa-tasks', action: () => moduleLoader('dashboard-problem.js') },
-            { id: 'contests', text: translate('menu.contests', 'components'), icon: 'fas fa-trophy', action: () => moduleLoader('dashboard-contest.js') },
+            { id: 'dashboard', text: translate('menu.dashboard', 'components'), icon: 'fas fa-tachometer-alt', action: () => ml.load('dashboard-home.js') },
+            { id: 'problems', text: translate('menu.problems', 'components'), icon: 'fas fa-tasks', action: () => ml.load('dashboard-problem.js') },
+            { id: 'contests', text: translate('menu.contests', 'components'), icon: 'fas fa-trophy', action: () => ml.load('dashboard-contest.js') },
             { id: 'logout', text: translate('menu.logout', 'components'), icon: 'fas fa-sign-out-alt' },
         ],
         options: {
@@ -79,27 +83,11 @@ translatePledge.then(translate => {
     
     menuPledge.resolve(menu);
 
-    async function moduleLoader(name, objects = {}) {
-        // console.log(objects);
-        const module = await import('./'+ name);
-        const entity = module.default;
-        entity.translate = translate;
-        for (const key in objects) {
-            entity[key] = objects[key];
-        }
-        entity.build();
-        return entity;
-    }
-
     // check for single problem page
     (async () => {
         const hash = TemplateVar.get('problemHash');
         if (hash && location.pathname === `/problems/${hash}`) {
-            // lazy load problem
-            const module = await import('./dashboard-single-problem.js');
-            const problem = module.default
-            problem.translate = translate;
-            problem.load(hash);
+            new ModuleLoader({ translate, hash }, 'load').load('dashboard-single-problem.js');
         }
     })();
 
@@ -107,11 +95,7 @@ translatePledge.then(translate => {
     (async () => {
         const id = TemplateVar.get('contestId');
         if (id && location.pathname === `/contests/${id}`) {
-            // lazy load contest
-            const module = await import('./dashboard-single-contest.js');
-            const contest = module.default
-            contest.translate = translate;
-            contest.load(id);
+            new ModuleLoader({ translate, id }, 'load').load('dashboard-single-contest.js');
         }
     })();
 });

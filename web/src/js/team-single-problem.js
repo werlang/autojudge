@@ -7,10 +7,7 @@ import Problem from './model/problem.js'
 
 export default {
 
-    build: async function(objects) {
-        for (const key in objects) {
-            this[key] = objects[key];
-        }
+    build: async function() {
         // console.log(this.team);
         
 

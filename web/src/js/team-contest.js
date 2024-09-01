@@ -3,11 +3,7 @@ import Team from "./model/team.js";
 import createClock from "./components/contest-clock.js";
 
 export default {
-    build: async function(objects={}) {
-        for (const key in objects) {
-            this[key] = objects[key];
-        }
-
+    build: async function() {
         const frame = document.querySelector('#frame');
         frame.innerHTML = `
             <h1>${this.translate('contest_one', 'common')} ${this.team.contest.name}</h1>
