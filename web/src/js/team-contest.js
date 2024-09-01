@@ -1,5 +1,6 @@
 import Table from "./components/table.js";
 import Team from "./model/team.js";
+import createClock from "./components/contest-clock.js";
 
 export default {
     build: async function(objects={}) {
@@ -42,7 +43,10 @@ export default {
     async updateTeams(table) {
         const resp = await new Team({ id: this.team.id }).getContest().catch(() => location.reload());
         this.contest = resp.contest;
-        this.createClock();
+        createClock(document.querySelector('#time-left'), {
+            contest: this.contest,
+            translate: this.translate,
+        });
         // console.log(this.contest);
     
         table.clear();
@@ -57,88 +61,4 @@ export default {
             this.updateTimeout = setTimeout(() => this.updateTeams(table), 5000);
         }
     },
-
-    formatClock: function(time) {
-        const date = new Date(time);
-        const hours = date.getUTCHours();
-        const minutes = date.getUTCMinutes();
-        const seconds = date.getUTCSeconds();
-        return `
-            <span>${hours.toString().padStart(2, '0')}</span>:
-            <span>${minutes.toString().padStart(2, '0')}</span>:
-            <span>${seconds.toString().padStart(2, '0')}</span>
-        `;
-    },
-
-    createClock: function() {
-        const timeLeftDOM = document.querySelector('#time-left');
-        if (!timeLeftDOM || timeLeftDOM.innerHTML) return;
-
-        const contest = this.contest;
-        document.querySelector('#contest-description').innerHTML = contest.description;
-    
-        if (contest.startTime && contest.duration) {
-            const startTime = new Date(contest.startTime).getTime();
-            const duration = contest.duration * 60 * 1000;
-            const timeLeft = new Date(duration - (Date.now() - startTime)).getTime();
-            this.updateClock(timeLeft);
-    
-            // contest is finished
-            if (timeLeft < 0) {
-                timeLeftDOM.innerHTML = `
-                    <span id="message">${this.translate('contest.finished', 'team')}</span>
-                    <div id="clock">${this.formatClock(0)}</div>
-                `;
-            }
-            else {
-                let timeLeft = new Date(duration - (Date.now() - startTime)).getTime();
-                let message = this.translate('contest.ends', 'team');
-                
-                // contest is not started yet
-                if (startTime > Date.now()) {
-                    timeLeft = new Date(startTime - Date.now()).getTime();
-                    message = this.translate('contest.starts', 'team');
-                }
-    
-                timeLeftDOM.innerHTML = `
-                    <span id="message">${message}</span>
-                    <div id="clock">${this.formatClock(timeLeft)}</div>
-                `;
-    
-                this.renderClock();
-            }
-        }
-    },
-
-    renderClock: function() {
-        // check if clock is in the DOM
-        const clock = document.querySelector('#time-left #clock');
-        if (!clock) return;
-        
-        clock.innerHTML = this.formatClock(this.timeLeft);
-        // console.log(this.timeLeft);
-        
-        if (this.timeLeft <= 0) {
-            this.build();
-        }
-        else {
-            setTimeout(() => this.renderClock(), 1000);
-        }
-    },
-
-    updateClock: function(timeLeft) {
-        if (this.clockTicking) return;
-        this.clockTicking = true;
-        this.timeLeft = timeLeft;
-        // console.log(timeLeft);
-        
-        const start = Date.now();
-        if (timeLeft > 0) {
-            setTimeout(() => {
-                this.clockTicking = false;
-                this.updateClock(timeLeft - (Date.now() - start));
-            }, 1000);
-        }
-    },
-
 }

@@ -18,6 +18,9 @@ export default {
             location.href = '/contests';
             return;
         }
+        if (this.contest.startTime) {
+            location.href = `/contests/${this.contest.id}/dashboard`;
+        }
     },
 
     render: async function() {

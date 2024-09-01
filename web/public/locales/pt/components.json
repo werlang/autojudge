@@ -16,5 +16,10 @@
     "uploader": {
         "error-invalid-file": "Arquivo inválido",
         "hint-drop-file": "Clique ou arraste o arquivo aqui"
+    },
+    "contest-clock": {
+        "starts": "A competição começa em",
+        "finished": "A competição terminou",
+        "ends": "A competição termina em"
     }
 }

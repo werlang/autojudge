@@ -16,5 +16,10 @@
     "uploader": {
         "error-invalid-file": "Invalid file",
         "hint-drop-file": "Click or drop file here"   
+    },
+    "contest-clock": {
+        "starts": "The contest starts in",
+        "finished": "The contest has finished",
+        "ends": "The contest ends in"
     }
 }

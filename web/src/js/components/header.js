@@ -1,12 +1,12 @@
 export default class Header {
-    constructor({ user, menu }) {
+    constructor({ user, team, menu }) {
         this.user = user || {};
         this.menu = menu;
         
         this.domElement = document.createElement('header');
         this.domElement.innerHTML = `
             <div id="left">
-                ${ user ? `
+                ${ user || team ? `
                 <div class="menu">
                     <div class="icon"><i class="fas fa-bars"></i></div>
                 </div>` : ''}
@@ -31,7 +31,7 @@ export default class Header {
         `;
         document.body.insertAdjacentElement('afterbegin', this.domElement);
 
-        if (!user) return;
+        if (!user && !team) return;
         this.domElement.querySelector('.menu').addEventListener('click', () => {
             this.menu.open();
         });

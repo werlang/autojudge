@@ -135,9 +135,10 @@ async function moduleLoader(name, objects = {}) {
 }
 
 
-new Header({ menu, });
 
 teamHandler.init().then(team => {
+    new Header({ menu, team });
+    
     if (!team) return;
 
     const problemHash = TemplateVar.get('problemHash');

@@ -54,10 +54,10 @@ translatePledge.then(async translate => {
     
     const menu = new Menu({
         items: [
-            { id: 'dashboard', path: `contests/${contest.id}/dashboard`, text: translate('menu.dashboard', 'components'), icon: 'fas fa-tachometer-alt' },
-            { id: 'submissions', path: `contests/${contest.id}/submissions`, text: translate('menu.submissions', 'components'), icon: 'fas fa-file-code', action: async () => moduleLoader('contest-submission.js', {contest}) },
-            { id: 'problems', path: `contests/${contest.id}/problems`, text: translate('menu.problems', 'components'), icon: 'fas fa-tasks', action: async () => moduleLoader('contest-problem.js', {contest}) },
-            { id: 'teams', path: `contests/${contest.id}/teams`, text: translate('menu.teams', 'components'), icon: 'fas fa-users', action: async () => moduleLoader('contest-team.js', {contest}) },
+            { id: 'dashboard', path: `contests/${contest.id}/dashboard`, text: translate('menu.dashboard', 'components'), icon: 'fas fa-tachometer-alt', action: async () => moduleLoader('contest-dashboard.js') },
+            { id: 'submissions', path: `contests/${contest.id}/submissions`, text: translate('menu.submissions', 'components'), icon: 'fas fa-file-code', action: async () => moduleLoader('contest-submission.js') },
+            { id: 'problems', path: `contests/${contest.id}/problems`, text: translate('menu.problems', 'components'), icon: 'fas fa-tasks', action: async () => moduleLoader('contest-problem.js') },
+            { id: 'teams', path: `contests/${contest.id}/teams`, text: translate('menu.teams', 'components'), icon: 'fas fa-users', action: async () => moduleLoader('contest-team.js') },
             { id: 'logout', text: translate('menu.logout', 'components'), icon: 'fas fa-sign-out-alt', action: () => teamHandler.removeTeam() },
         ],
         options: {
@@ -77,7 +77,12 @@ translatePledge.then(async translate => {
         // console.log(objects);
         const module = await import('./'+ name);
         const entity = module.default;
-        entity.build({ translate, ...objects });
+        entity.translate = translate;
+        entity.contest = contest;
+        for (const key in objects) {
+            entity[key] = objects[key];
+        }
+        entity.build();
         return entity;
     }
 });

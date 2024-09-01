@@ -5,11 +5,6 @@
     "wrong-password": "The provided password is incorrect",
     "password-format": "The password must have 6 numeric characters",
     "team-id-format": "The team ID is invalid",
-    "contest": {
-        "starts": "The contest starts in",
-        "finished": "The contest has finished",
-        "ends": "The contest ends in"
-    },
     "submissions": {
         "submitted": "Submitted",
         "status": "Status"

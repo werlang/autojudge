@@ -5,11 +5,6 @@
     "wrong-password": "A senha fornecida está incorreta",
     "password-format": "A senha deve possuir 6 caracteres numéricos",
     "team-id-format": "O ID da equipe é inválido",
-    "contest": {
-        "starts": "A competição começa em",
-        "finished": "A competição terminou",
-        "ends": "A competição termina em"
-    },
     "submissions": {
         "submitted": "Submetido",
         "status": "Status"
