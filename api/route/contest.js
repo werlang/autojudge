@@ -5,6 +5,7 @@ import CustomError from '../helpers/error.js';
 import Team from '../model/team.js';
 import contestProblem from './contestProblem.js';
 import config from '../helpers/config.js';
+import Submission from '../model/submission.js';
 
 const router = Router();
 
@@ -164,6 +165,19 @@ router.post('/:id/teams', auth({'contest:admin': true}), async (req, res, next) 
                 password: team.password,
             }
         });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+
+// Get all submissions for a contest
+// Only the contest admin can get submissions
+router.get('/:id/submissions', auth({'contest:admin': true}), async (req, res, next) => {
+    try {
+        const teams = await Team.getAll({ contest: req.contest.id });
+        const submissions = await Submission.getAll({ team: teams.map(team => team.id) });
+        res.send({ submissions });
     }
     catch (error) {
         next(error);
