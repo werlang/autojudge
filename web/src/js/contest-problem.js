@@ -24,14 +24,14 @@ export default {
             search: false,
         });
 
-        const {contest} = await new Contest({ id: this.team.contest.id }).get(true);
+        const {contest} = await new Contest({ id: this.contest.id }).get();
         // console.log(contest);
 
         table.clear();
         contest.problems.forEach(problem => table.addItem(problem));
 
         table.addItemEvent('click', async item => {
-            location.href = `/teams/problems/${item.hash}`;
+            location.href = `/problems/${item.hash}`;
         });
     },
 }

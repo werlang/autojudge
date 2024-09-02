@@ -60,7 +60,7 @@ translatePledge.then(async translate => {
             { id: 'contest', path: `contests/${contest.id}/dashboard`, text: translate('contest_one', 'common'), icon: 'fas fa-trophy', action: async () => ml.load('contest-dashboard.js') },
             { id: 'submissions', path: `contests/${contest.id}/submissions`, text: translate('menu.submissions', 'components'), icon: 'fas fa-file-code', action: async () => ml.load('contest-submission.js') },
             { id: 'problems', path: `contests/${contest.id}/problems`, text: translate('menu.problems', 'components'), icon: 'fas fa-tasks', action: async () => ml.load('contest-problem.js') },
-            { id: 'teams', path: `contests/${contest.id}/teams`, text: translate('menu.teams', 'components'), icon: 'fas fa-users', action: async () => ml.load('contest-team.js') },
+            { id: 'teams', path: `contests/${contest.id}/teams`, text: translate('menu.teams', 'components'), icon: 'fas fa-users', action: async () => ml.load('contest-team.js', {refresh: true}) },
             { id: 'logout', text: translate('menu.logout', 'components'), icon: 'fas fa-sign-out-alt', action: () => teamHandler.removeTeam() },
         ],
         options: {
