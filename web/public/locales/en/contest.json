@@ -50,5 +50,18 @@
         "button": "Start",
         "cancel": "Cancel",
         "success": "Contest started successfully."
+    },
+    "dashboard": {
+        "submissions": {
+            "total_one": "Submissions sent",
+            "total_other": "Submissions sent",
+            "accepted_one": "correct submission",
+            "accepted_other": "correct submissions"
+        },
+        "problems": {
+            "total": "Problems in the contest",
+            "accepted": "Have at least one correct submission"
+        },
+        "teams": "Total Teams in this contest"
     }
 }

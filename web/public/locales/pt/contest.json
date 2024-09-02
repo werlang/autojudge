@@ -50,5 +50,18 @@
         "button": "Iniciar",
         "cancel": "Cancelar",
         "success": "Competição iniciada com sucesso."
+    },
+    "dashboard": {
+        "submissions": {
+            "total_one": "Submissões enviadas",
+            "total_other": "Submissões enviadas",
+            "accepted_one": "submissão correta",
+            "accepted_other": "submissões corretas"
+        },
+        "problems": {
+            "total": "Problemas na competição",
+            "accepted": "com submissão correta"
+        },
+        "teams": "Total de Equipes nesta competição"
     }
 }
