@@ -58,6 +58,7 @@ translatePledge.then(async translate => {
 
     const menu = new Menu({
         items: [
+            { id: 'dashboard', text: translate('menu.dashboard', 'components'), icon: 'fas fa-tachometer-alt', action: async () => location.href = '/dashboard' },
             { id: 'contest', path: `contests/${contest.id}/dashboard`, text: translate('contest_one', 'common'), icon: 'fas fa-trophy', action: async () => ml.load('contest-dashboard.js') },
             { id: 'submissions', path: `contests/${contest.id}/submissions`, text: translate('menu.submissions', 'components'), icon: 'fas fa-file-code', action: async () => ml.load('contest-submission.js', {refresh: true}) },
             { id: 'problems', path: `contests/${contest.id}/problems`, text: translate('menu.problems', 'components'), icon: 'fas fa-tasks', action: async () => ml.load('contest-problem.js') },

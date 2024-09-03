@@ -308,8 +308,13 @@ export default class Table {
 
         if (order === 'asc') {
             this.content.sort((a, b) => {
-                if (!isNaN(a[column]) && !isNaN(b[column])) {
-                    return parseFloat(a[column]) - parseFloat(b[column]);
+                const el = document.createElement('div');
+                el.innerHTML = a[column];
+                const aText = el.textContent;
+                el.innerHTML = b[column];
+                const bText = el.textContent;
+                if (!isNaN(aText) && !isNaN(bText)) {
+                    return parseFloat(aText) - parseFloat(bText);
                 }
                 return a[column].localeCompare(b[column], Translator.currentLanguage(), { sensitivity: 'base' })
             });
@@ -321,8 +326,13 @@ export default class Table {
         }
         else {
             this.content.sort((a, b) => {
-                if (!isNaN(a[column]) && !isNaN(b[column])) {
-                    return parseFloat(b[column]) - parseFloat(a[column]);
+                const el = document.createElement('div');
+                el.innerHTML = a[column];
+                const aText = el.textContent;
+                el.innerHTML = b[column];
+                const bText = el.textContent;
+                if (!isNaN(aText) && !isNaN(bText)) {
+                    return parseFloat(bText) - parseFloat(aText);
                 }
                 return b[column].localeCompare(a[column], Translator.currentLanguage(), { sensitivity: 'base' })
             });

@@ -3,7 +3,6 @@ import Table from "./components/table.js";
 import Toast from "./components/toast.js";
 import Translator from "./helpers/translate.js";
 import Contest from "./model/contest.js";
-import Judge from "./model/judge.js";
 import Submission from "./model/submission.js";
 
 

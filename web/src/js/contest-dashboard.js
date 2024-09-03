@@ -4,9 +4,7 @@ import Contest from './model/contest.js';
 
 export default {
     build: async function() {
-        console.log(this.contest);
-        
-
+        // console.log(this.contest);
         const frame = document.querySelector('#frame');
         frame.innerHTML = `
             <h1>${this.translate('contest_one', 'common')} ${this.contest.name}</h1>
