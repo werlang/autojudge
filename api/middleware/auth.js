@@ -61,10 +61,10 @@ async function authTeam(req) {
     // try to get the team using the hash. It must allow parts of the hash, but only should authenticate if returns a single team
     try {
         const teams = await Team.getAll({ hash: { like: req.params.id }});
-        const filteredTeams = await Promise.all(teams.filter(async team => {
+        const filteredTeams = (await Promise.all(teams.map(async team => {
             const isValidPassword = await bcrypt.compare(password, team.password);
             return isValidPassword ? team : false;
-        }));
+        }))).filter(e => e);
         if (filteredTeams.length == 0) {
             throw new CustomError(401, 'Invalid password');
         }

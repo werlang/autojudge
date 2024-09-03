@@ -72,8 +72,9 @@ export default {
             status: `<i class="${statusIcons[submission.status].icon} ${statusIcons[submission.status].class}" title="${submission.status}"></i>`,
             score: `<span>${parseFloat(submission.score).toFixed(1)}</span>`,
             time: `<span title="${new Date(submission.submittedAt).toLocaleString(Translator.currentLanguage())}">${this.getElapsedTime(submission.submittedAt)}</span>`,
+            timeSort: new Date(submission.submittedAt).getTime(),
         })).forEach(submission => table.addItem(submission));
-        table.srt('time', 'desc');
+        table.srt('timeSort', 'asc');
 
         if (this.refresh) {
             if (this.updateTimeout) clearTimeout(this.updateTimeout);

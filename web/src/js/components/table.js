@@ -298,12 +298,15 @@ export default class Table {
     srt(column, order) {
         // console.log('sort', column, order);
 
+        let button;
         const columnDOM = this.head.querySelector(`.${column}`);
-        this.head.querySelectorAll(`.${column} .button i`).forEach(icon => icon.classList.remove('active'));
-        const button = columnDOM.querySelector('.button');
-        let sortIcon;
-        if (button) {
-            sortIcon = button.querySelector('i');
+        if (columnDOM) {
+            this.head.querySelectorAll(`.${column} .button i`).forEach(icon => icon.classList.remove('active'));
+            button = columnDOM.querySelector('.button');
+            let sortIcon;
+            if (button) {
+                sortIcon = button.querySelector('i');
+            }
         }
 
         if (order === 'asc') {

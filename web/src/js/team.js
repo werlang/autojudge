@@ -82,14 +82,13 @@ const teamHandler = {
                     password: data['password']
                 }).login();
                 // console.log(resp);
+                location.href = '/teams';
             }
             catch (error) {
                 new Toast(translate(error.message, 'api'), { type: 'error' });
                 // console.log(error);
                 return;
             }
-            
-            location.reload();
         });
     },
 

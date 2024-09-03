@@ -43,7 +43,7 @@ export default class Submission extends Model {
         if (!isStarted && !forceReturn) {
             throw new CustomError(400, 'Contest has not started yet');
         }
-        if (new Date(this.submitted_at).getTime() < contest.start_time.getTime()) {
+        if (this.submitted_at && new Date(this.submitted_at).getTime() < contest.start_time.getTime()) {
             throw new CustomError(400, 'Submission is before contest start time');
         }
         if (remainingTime <= 0 && !forceReturn){
