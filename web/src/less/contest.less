@@ -280,4 +280,60 @@
             }
         }
     }
+
+}
+
+#new-submission-form #code {
+    border-radius: 5px;
+    padding: 20px;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 0;
+    transition: 0.3s all;
+    background-image: none;
+    box-shadow: 0 0 5px rgba(var(--color-main-raw), 0.5);
+    background-color: rgba(var(--color-main-raw), 0.1);
+    border: 2px dashed rgba(var(--color-main-raw), 0.7);
+    filter: grayscale(0.8);
+
+    &.success {
+        border-style: solid;
+        filter: none;
+
+        .message .button {
+            opacity: 1;
+            cursor: pointer;
+        }
+    }
+
+    .message {
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        transition: 0.3s all;
+        
+        .button {
+            margin: 0;
+            font-weight: bold;
+            border: none;
+            box-shadow: none;
+            background-color: transparent;
+            color: var(--color-text);
+            opacity: 0.4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: 0.3s all;
+            cursor: not-allowed;
+            width: 100%;
+            padding: 10px 0;
+
+            i {
+                font-size: 2rem;
+                margin-bottom: 10px;
+            }
+        }
+    }
 }

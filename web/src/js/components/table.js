@@ -307,7 +307,12 @@ export default class Table {
         }
 
         if (order === 'asc') {
-            this.content.sort((a, b) => a[column].localeCompare(b[column], Translator.currentLanguage(), { sensitivity: 'base' }));
+            this.content.sort((a, b) => {
+                if (!isNaN(a[column]) && !isNaN(b[column])) {
+                    return parseFloat(a[column]) - parseFloat(b[column]);
+                }
+                return a[column].localeCompare(b[column], Translator.currentLanguage(), { sensitivity: 'base' })
+            });
             if (button) {
                 button.sort = 'desc';
                 sortIcon.classList.add('fa-arrow-down-a-z', 'active');
@@ -315,7 +320,12 @@ export default class Table {
             }
         }
         else {
-            this.content.sort((a, b) => b[column].localeCompare(a[column], Translator.currentLanguage(), { sensitivity: 'base' }));
+            this.content.sort((a, b) => {
+                if (!isNaN(a[column]) && !isNaN(b[column])) {
+                    return parseFloat(b[column]) - parseFloat(a[column]);
+                }
+                return b[column].localeCompare(a[column], Translator.currentLanguage(), { sensitivity: 'base' })
+            });
             if (button) {
                 button.sort = 'asc';
                 sortIcon.classList.add('fa-arrow-up-a-z', 'active');

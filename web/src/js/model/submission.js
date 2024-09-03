@@ -17,4 +17,9 @@ export default class Submission {
         return submissions;
     }
 
+    async updateStatus(status) {
+        const submission = await new Api().put(`submissions/${this.id}/status`, { status });
+        return submission;
+    }
+
 }

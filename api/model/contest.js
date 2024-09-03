@@ -53,7 +53,7 @@ export default class Contest extends Model {
 
     isStarted() {
         if (this.start_time === null) return false;
-        return new Date(this.start_time) < Date.now();
+        return new Date(this.start_time).getTime() < Date.now();
     }
 
     async start() {
@@ -68,6 +68,7 @@ export default class Contest extends Model {
         if (!targetTime) {
             targetTime = Date.now();
         }
+        targetTime = new Date(targetTime).getTime();
         if (!this.isStarted()) return 0;
         const startTime = new Date(this.start_time).getTime();
         const elapsed = Math.floor((targetTime - startTime) / 1000);

@@ -63,5 +63,11 @@
             "accepted": "com submissão correta"
         },
         "teams": "Total de Equipes nesta competição"
+    },
+    "judge": {
+        "title": "Julgar Submissão",
+        "file": "Selecione a submissão que deseja julgar",
+        "select": "Selecione o status da submissão",
+        "success": "Status da submissão alterado com sucesso."
     }
 }

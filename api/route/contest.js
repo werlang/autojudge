@@ -177,7 +177,16 @@ router.get('/:id/submissions', auth({'contest:admin': true}), async (req, res, n
     try {
         const teams = await Team.getAll({ contest: req.contest.id });
         const submissions = await Submission.getAll({ team: teams.map(team => team.id) });
-        res.send({ submissions });
+        res.send({ submissions: submissions.map(submission => ({
+            id: submission.id,
+            team: submission.team,
+            problem: submission.problem,
+            submittedAt: submission.submitted_at,
+            status: submission.status,
+            score: submission.score,
+            code: submission.code,
+            filename: submission.filename,
+        })) });
     }
     catch (error) {
         next(error);

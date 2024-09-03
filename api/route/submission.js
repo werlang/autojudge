@@ -158,7 +158,7 @@ router.post('/:id/judge', auth({'background': true}), async (req, res, next) => 
 // only the contest admin can call this endpoint
 router.put('/:id/status', auth({'user:exists': true}), async (req, res, next) => {
     try {
-        const submission = await new Submission({ id: req.params.id }).get();
+        let submission = await new Submission({ id: req.params.id }).get();
         const team = await new Team({ id: submission.team }).get();
         const contest = await new Contest({ id: team.contest }).get();
         if (contest.admin !== req.user.id) {
@@ -166,13 +166,13 @@ router.put('/:id/status', auth({'user:exists': true}), async (req, res, next) =>
             return;
         }
 
-        const allowedStatus = ['ACCEPTED', 'WRONG_ANSWER', 'TIME_LIMIT_EXCEEDED', 'ERROR'];
+        const allowedStatus = ['ACCEPTED', 'WRONG_ANSWER', 'TIME_LIMIT_EXCEEDED', 'ERROR', 'PENDING'];
         if (!allowedStatus.includes(req.body.status)) {
             res.status(400).send({ message: 'Invalid status' });
             return;
         }
 
-        await submission.updateStatus(req.body.status);
+        submission = await submission.updateStatus({ status: req.body.status });
         res.send({ submission: {
             id: submission.id,
             team: submission.team,

@@ -36,8 +36,9 @@ const teamHandler = {
 
         const team = await this.getTeam();
         // console.log(team);
-        
+
         if (!team) {
+            Team.removeToken();
             this.showPasswordModal();
             return false;
         }
@@ -80,7 +81,7 @@ const teamHandler = {
                     id: data['team-id'] || TemplateVar.get('teamId'),
                     password: data['password']
                 }).login();
-                console.log(resp);
+                // console.log(resp);
             }
             catch (error) {
                 new Toast(translate(error.message, 'api'), { type: 'error' });
@@ -112,6 +113,8 @@ const teamHandler = {
 
 
 teamHandler.init().then(team => {
+    if (!team) return;
+    
     const ml = new ModuleLoader({ translate, team });
     
     const menu = new Menu({
@@ -126,11 +129,8 @@ teamHandler.init().then(team => {
             reload: true,
         },
     });
-    
+
     new Header({ menu, team });
-    
-    if (!team) return;
-    
 
     const problemHash = TemplateVar.get('problemHash');
     if (problemHash) {

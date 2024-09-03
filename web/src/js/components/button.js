@@ -44,6 +44,10 @@ export default class Button {
         if (id) {
             this.element.id = id;
         }
+
+        if (this.element.disabled) {
+            this.disable(false);
+        }
     }
 
     get() {
@@ -57,6 +61,7 @@ export default class Button {
 
     // disable the button and show a loading icon
     disable(spin = true) {
+        if (this.isDisabled) return this;
         this.element.setAttribute('disabled', true);
         this.oldHTML = this.element.innerHTML;
         if (spin) {
@@ -68,6 +73,7 @@ export default class Button {
 
     // enable the button and show the original text
     enable() {
+        if (!this.isDisabled) return this;
         this.element.innerHTML = this.oldHTML;
         this.element.removeAttribute('disabled');
         this.isDisabled = false;

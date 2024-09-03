@@ -448,9 +448,9 @@ export default {
             text: this.translate('start-contest.button', 'contest'),
             callback: async () => {
                 modal.close();
-                await this.contestInstance.start().catch(() => location.reload());
+                await this.contestInstance.start();
                 new Toast(this.translate('start-contest.success', 'contest'), { type: 'success' });
-                this.render();
+                location.reload();
             },
             isDefault: false,
         })

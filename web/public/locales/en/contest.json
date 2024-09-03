@@ -63,5 +63,11 @@
             "accepted": "Have at least one correct submission"
         },
         "teams": "Total Teams in this contest"
+    },
+    "judge": {
+        "title": "Judge Submission",
+        "file": "Select the submission to judge",
+        "select": "Select the submission status",
+        "success": "Submission status updated successfully."
     }
 }
