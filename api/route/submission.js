@@ -84,6 +84,18 @@ router.get('/accepted', auth({'team:exists': true}), async (req, res, next) => {
 router.get('/:id', auth({'team:submission': true}), async (req, res, next) => {
     try {
         const submission = await new Submission({ id: req.params.id }).get();
+
+        let log = submission.log ? JSON.parse(submission.log) : null;
+        if (log && log.failed > 0 && submission.status === 'WRONG_ANSWER') {
+            log = log.results.find(r => r.status == 'WA');
+            if (log) {
+                log = {
+                    expected: log.expected,
+                    received: log.got,
+                }
+            }
+        }
+
         res.send({ submission: {
             id: submission.id,
             team: submission.team,
@@ -91,7 +103,7 @@ router.get('/:id', auth({'team:submission': true}), async (req, res, next) => {
             status: submission.status,
             score: submission.score,
             submittedAt: submission.submitted_at,
-            log: submission.log,
+            log,
         }});
     }
     catch (error) {
