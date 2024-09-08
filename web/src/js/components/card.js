@@ -63,6 +63,8 @@ export default class Card {
             this.element.id = id;
         }
 
+        this.setColor();
+
         container.appendChild(this.element);
     }
 
@@ -95,6 +97,11 @@ export default class Card {
         }
 
         this.element.addEventListener('click', callback);
+        return this;
+    }
+
+    setColor(color) {
+        this.element.style.setProperty('--color-card', color || 'var(--color-main)');
         return this;
     }
 }

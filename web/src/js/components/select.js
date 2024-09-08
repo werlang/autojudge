@@ -168,7 +168,10 @@ export default class Select {
     }
 
     change(callback) {
-        this.get().addEventListener('change', callback);
+        this.get().addEventListener('change', e => {
+            this.value = e.target.value;
+            callback(e, this.value, this);
+        });
         return this;
     }
 
@@ -211,6 +214,7 @@ export default class Select {
         // add keyup event to the search input
         this.searchInput.addEventListener('keyup', e => {
             const value = e.target.value.toLowerCase();
+            this.value = value;
             this.searchInput.parentNode.querySelectorAll('.option').forEach(option => {
                 if (option.innerHTML.toLowerCase().indexOf(value) == -1) {
                     option.classList.add('hidden');
