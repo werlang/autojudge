@@ -167,13 +167,18 @@ export default {
 
     listProblems: async function(container) {
 
+        const controls = [{ id: 'color', icon: 'fas fa-palette', title: this.translate('color-modal.hint', 'contest'), action: (s,e) => this.setColor(s) }];
+        if (!this.contest.startTime) {
+            controls.push({ id: 'remove', icon: 'fas fa-trash-alt', title: this.translate('remove-problem.title', 'contest'), action: s => this.removeProblem(s) });
+        }
+
         const table = new Table({
             element: container,
-            columns: [ { id: 'title', name: this.translate('title', 'common') }, ],
-            controls: this.contest.startTime ? [] : [
-                { id: 'remove', icon: 'fas fa-trash-alt', title: this.translate('remove-problem.title', 'contest'), action: s => this.removeProblem(s) },
-                { id: 'color', icon: 'fas fa-palette', title: this.translate('set-color', 'contest'), action: (s,e) => this.setColor(s) },
+            columns: [
+                { id: 'color', name: this.translate('color', 'common'), size: 'small', sort: false },
+                { id: 'title', name: this.translate('title', 'common') },
             ],
+            controls,
             selection: { enabled: true, multi: true },
             translate: this.translate,
             search: false,
@@ -183,6 +188,13 @@ export default {
         const problems = this.contest.problems;
         table.clear();
         problems.forEach(problem => {
+            problem.colorData = problem.color;
+            if (problem.color) {
+                problem.color = `<div class="color" style="--color-problem: ${problem.color}"></div>`;
+            }
+            else {
+                problem.color = `<div class="color empty"></div>`;
+            }
             table.addItem(problem);
         });
         table.addItemEvent('click', item => {
@@ -470,6 +482,8 @@ export default {
     setColor: async function(selected) {
         if (selected.length === 0) return;
         const problem = selected[0];
+        // console.log(problem);
+        
         const modal = new Modal(`
             <h1>${this.translate('color-modal.title', 'contest')}</h1>
             <p>${this.translate('color-modal.message', 'contest')}</p>
@@ -478,7 +492,7 @@ export default {
             
         const picker = new iro.ColorPicker(modal.get('#picker'), {
             width: 200,
-            color: problem.color || '#ff0000',
+            color: problem.colorData || '#ff0000',
             layoutDirection: 'horizontal',
         });
 

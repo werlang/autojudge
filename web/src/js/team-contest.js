@@ -58,3 +58,5 @@ export default {
         }
     },
 }
+
+// TODO: show on the table the color for the problems solved by each team

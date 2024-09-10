@@ -243,6 +243,22 @@
     }
 }
 
+#frame #problems-container,
+#frame #problems {
+    .column .color {
+        background-color: var(--color-problem);
+        width: 25px;
+        height: 25px;
+        border-radius: 100%;
+        border: 1px solid rgba(var(--color-text-raw), 0.6);
+
+        &.empty {
+            border: none;
+        }
+    }
+
+}
+
 #frame #dashboard-cards {
     .card {
         width: 250px;

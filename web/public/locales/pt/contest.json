@@ -71,6 +71,7 @@
         "success": "Status da submissão alterado com sucesso."
     },
     "color-modal": {
+        "hint": "Altere a cor do problema",
         "title": "Escolha uma cor",
         "message": "Escolha uma cor para o problema",
         "submit": "Salvar",

@@ -26,3 +26,6 @@ export default {
         });
     },
 }
+// TODO: show on the cards
+//   1. how many teams have solved the problem
+//   2. team's score for the problem OR score if the team solves the problem

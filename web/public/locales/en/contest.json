@@ -71,6 +71,7 @@
         "success": "Submission status updated successfully."
     },
     "color-modal": {
+        "hint": "Change the color of the problem",
         "title": "Select Color",
         "message": "Select the color for the problem",
         "submit": "Submit",
