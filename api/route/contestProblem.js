@@ -46,6 +46,8 @@ router.get('/', auth({
                 description: problem.description,
                 input: problem.input_public,
                 output: problem.output_public,
+                color: problem.color,
+                order: problem.order,
             }
             if (req.user && problem.author === req.user.id) {
                 filteredProblem.inputHidden = problem.input_hidden;

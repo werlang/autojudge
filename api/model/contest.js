@@ -39,8 +39,13 @@ export default class Contest extends Model {
     }
 
     async getProblems() {
-        let problems = await this.getRelation('problem');
-        problems = problems.map(async problem => new Problem({ id: problem }).get());
+        let relations = await this.getRelation('problem');
+        const problems = relations.map(async relation => {
+            const problem = await new Problem({ id: relation.problem }).get();
+            problem.order = relation.order;
+            problem.color = relation.color;
+            return problem;
+        });
         return Promise.all(problems);
     }
 

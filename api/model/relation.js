@@ -2,9 +2,9 @@ import CustomError from '../helpers/error.js';
 import Db from '../helpers/mysql.js';
 
 // Relation class to handle many-to-many relationships
-// tableName: name of the table to store the relation: e.g. contest_problems
-// nativeObject: object containing the field values of the current object: e.g. { contest: 1 }
-// relatedField: field name of the related object: e.g. 'problem'
+//   tableName: name of the table to store the relation: e.g. contest_problems
+//   nativeObject: object containing the field values of the current object: e.g. { contest: 1 }
+//   relatedField: field name of the related object: e.g. 'problem'
 // Methods:
 // check(fieldValue): check if the relation exists
 // insert(fieldValue): insert a new relation
@@ -49,9 +49,8 @@ export default class Relation {
     }
 
     async get() {
-        const relations = await Db.find(this.tableName, { filter: {
+        return await Db.find(this.tableName, { filter: {
             ...this.nativeObject,
         } });
-        return relations.map(relation => relation[this.relatedField]);
     }
 }

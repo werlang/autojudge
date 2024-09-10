@@ -87,6 +87,8 @@ router.get('/:id', auth({
             id: problem.id,
             title: problem.title,
             hash: problem.hash.slice(-process.env.HASH_LENGTH),
+            color: problem.color,
+            order: problem.order,
         }));
 
         res.send({ contest: {
