@@ -120,4 +120,11 @@ export default class Model {
         }
         return this.relations[name].get();
     }
+
+    async updateRelation(name, value, data) {
+        if (!this.relations[name]) {
+            throw new CustomError(400, 'Relation not found');
+        }
+        return this.relations[name].update(value, data);
+    }
 }
