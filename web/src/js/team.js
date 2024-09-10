@@ -43,6 +43,11 @@ const teamHandler = {
             return false;
         }
 
+        // if the team is already logged, but the teamId is in the URL, redirect to the team page
+        if (TemplateVar.get('teamId')) {
+            location.href = '/teams';
+        }
+
         this.team = team;
         this.loaded = true;
         return team;
