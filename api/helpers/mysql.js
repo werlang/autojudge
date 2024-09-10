@@ -40,7 +40,7 @@ export default class Mysql {
         return Promise.all(data.map(row => {
             const values = Object.values(row);
             const fields = Object.keys(row).map(k => `\`${k}\``);
-            let sql = `INSERT INTO ${table} (${fields.join(',')}) VALUES (${values.map(() => '?').join(',')})`;
+            let sql = `INSERT INTO \`${table}\` (${fields.join(',')}) VALUES (${values.map(() => '?').join(',')})`;
             return Mysql.query(sql, values);
         }));
     }
@@ -50,6 +50,9 @@ export default class Mysql {
         if (!Object.keys(data).length) {
             throw new CustomError(400, 'No data to update.');
         }
+
+        // remove undefined values
+        data = Object.fromEntries(Object.entries(data).filter(([k,v]) => v !== undefined));
 
         const values = Object.values(data);
         const fielsdSql = Object.entries(data).map(([k,v],i) => {
@@ -76,7 +79,7 @@ export default class Mysql {
             id = '\`id\` = ?';
         }
 
-        const sql = `UPDATE ${table} SET ${fielsdSql} WHERE ${id}`;
+        const sql = `UPDATE \`${table}\` SET ${fielsdSql} WHERE ${id}`;
         // console.log(Mysql.format(sql, data));
         // replicateDB.saveUpdate(table, sql, data, this);
         return Mysql.query(sql, values);
@@ -93,14 +96,14 @@ export default class Mysql {
             filter = '\`id\` = ?';
         }
 
-        const sql = `DELETE FROM ${table} WHERE ${filter};`;
+        const sql = `DELETE FROM \`${table}\` WHERE ${filter};`;
         return Mysql.query(sql, value);
     }
 
     // db.find('users', { filter: { name: 'John' }, view: ['name', 'age'], opt: { limit: 1, sort: { age: -1 }, skip: 1 } });
     static async find(table, { filter={}, view=[], opt={}}) {
         view = Array.isArray(view) ? view : [ view ];
-        view = view.length > 0 ? view.join(',') : '*';
+        view = view.length > 0 ? view.map(v => `\`${v}\``).join(',') : '*';
 
         const filterNames = Object.keys(filter);
         const values = Object.values(filter);
@@ -153,7 +156,7 @@ export default class Mysql {
         // OFFSET 10
         const offset = opt.skip ? `OFFSET ${ opt.skip }` : '';
 
-        const sql = `SELECT ${view} FROM ${table} ${where} ${order} ${limit} ${offset}`;
+        const sql = `SELECT ${view} FROM \`${table}\` ${where} ${order} ${limit} ${offset}`;
         // console.log(sql, values);
         return Mysql.query(sql, values);
     }

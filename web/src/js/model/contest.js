@@ -58,6 +58,11 @@ export default class Contest {
         return resp;
     }
 
+    async updateProblem(id, fields) {
+        const resp = await new Api().put(`contests/${this.id}/problems/${id}`, fields);
+        return resp;
+    }
+
     async start() {
         const resp = await new Api().put(`contests/${this.id}/start`);
         return resp;

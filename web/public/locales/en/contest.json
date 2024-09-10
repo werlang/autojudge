@@ -69,5 +69,11 @@
         "file": "Select the submission to judge",
         "select": "Select the submission status",
         "success": "Submission status updated successfully."
+    },
+    "color-modal": {
+        "title": "Select Color",
+        "message": "Select the color for the problem",
+        "submit": "Submit",
+        "success": "Problem color updated successfully."
     }
 }

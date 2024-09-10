@@ -20,7 +20,7 @@ export default class Relation {
     }
 
     async check(fieldValue) {
-        const relation = (await this.get()).find(r => parseInt(r) === parseInt(fieldValue));
+        const relation = (await this.get()).find(r => parseInt(r[this.relatedField]) === parseInt(fieldValue));
         return relation ? true : false;
     }
 
@@ -42,7 +42,13 @@ export default class Relation {
 
     async update(fieldValue, data) {
         if (!await this.check(fieldValue)) throw new CustomError(404, 'Relation does not exist.');
-        return Db.update(this.tableName, data, {
+        const toChange = {};
+        for (const key of Object.keys(data)) {
+            if (data[key] !== undefined) {
+                toChange[key] = data[key];
+            }
+        }
+        return Db.update(this.tableName, toChange, {
             ...this.nativeObject,
             [this.relatedField]: fieldValue,
         });

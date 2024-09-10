@@ -337,3 +337,18 @@
         }
     }
 }
+
+#color-modal.modal {
+    max-width: 400px;
+
+    #picker {
+        margin: 20px auto;
+    }
+
+    #button-container button {
+        --color-problem: var(--color-secondary);
+        background-color: var(--color-problem);
+        text-shadow: 0 0 4px rgba(var(--color-background-dark-raw), 1);
+        max-width: none;
+    }
+}

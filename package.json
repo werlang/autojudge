@@ -16,6 +16,7 @@
   "author": "Pablo Werlang",
   "license": "MIT",
   "dependencies": {
+    "@jaames/iro": "^5.5.2",
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",

@@ -69,5 +69,11 @@
         "file": "Selecione a submissão que deseja julgar",
         "select": "Selecione o status da submissão",
         "success": "Status da submissão alterado com sucesso."
+    },
+    "color-modal": {
+        "title": "Escolha uma cor",
+        "message": "Escolha uma cor para o problema",
+        "submit": "Salvar",
+        "success": "Cor do problema alterada com sucesso."
     }
 }

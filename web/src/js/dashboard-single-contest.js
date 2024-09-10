@@ -6,6 +6,7 @@ import Toast from "./components/toast.js";
 import Contest from "./model/contest.js";
 import Problem from "./model/problem.js";
 import Team from "./model/team.js";
+import iro from '@jaames/iro';
 
 export default {
 
@@ -171,6 +172,7 @@ export default {
             columns: [ { id: 'title', name: this.translate('title', 'common') }, ],
             controls: this.contest.startTime ? [] : [
                 { id: 'remove', icon: 'fas fa-trash-alt', title: this.translate('remove-problem.title', 'contest'), action: s => this.removeProblem(s) },
+                { id: 'color', icon: 'fas fa-palette', title: this.translate('set-color', 'contest'), action: (s,e) => this.setColor(s) },
             ],
             selection: { enabled: true, multi: true },
             translate: this.translate,
@@ -185,14 +187,17 @@ export default {
         });
         table.addItemEvent('click', item => {
             const selected = table.getSelected();
+            const toEnable = [];
             if (selected.length) {
-                table.enableControl('remove', 'open');
+                toEnable.push('remove');
             }
-            else {
-                table.disableControl('remove', 'open');
+            if (selected.length === 1) {
+                toEnable.push('color');
             }
+            table.disableControl('remove', 'color');
+            table.enableControl(...toEnable);
         });
-        table.disableControl('remove', 'open');
+        table.disableControl('remove', 'color');
     },
 
     removeProblem: async function(selected) {
@@ -239,12 +244,16 @@ export default {
         });
         table.addItemEvent('click', item => {
             const selected = table.getSelected();
+            const toEnable = [];
+
             if (selected.length) {
-                table.enableControl('remove', 'reset', 'rename');
+                toEnable.push('remove');
             }
-            else {
-                table.disableControl('remove', 'reset', 'rename');
+            if (selected.length === 1) {
+                toEnable.push('reset', 'rename');
             }
+            table.disableControl('remove', 'reset', 'rename');
+            table.enableControl(...toEnable);
         });
         table.disableControl('remove', 'reset', 'rename');
     },
@@ -456,4 +465,38 @@ export default {
         })
         .addButton({ text: this.translate('start-contest.cancel', 'contest'), close: true, isDefault: true });
     },
+
+    // create a color picker
+    setColor: async function(selected) {
+        if (selected.length === 0) return;
+        const problem = selected[0];
+        const modal = new Modal(`
+            <h1>${this.translate('color-modal.title', 'contest')}</h1>
+            <p>${this.translate('color-modal.message', 'contest')}</p>
+            <div id="picker"></div>
+        `, { id: 'color-modal' });
+            
+        const picker = new iro.ColorPicker(modal.get('#picker'), {
+            width: 200,
+            color: problem.color || '#ff0000',
+            layoutDirection: 'horizontal',
+        });
+
+        modal.addButton({
+            id: 'set-color',
+            text: this.translate('color-modal.submit', 'contest'),
+            isDefault: true,
+            callback: async () => {
+                await new Contest({ id: this.contest.id }).updateProblem(problem.id, { color: picker.color.hexString });
+                new Toast(this.translate('color-modal.success', 'contest'), { type: 'success' });
+                modal.close();
+                this.renderProblems();
+            },
+        });
+
+        picker.on(['color:init', 'color:change'], color => {
+            const button = modal.get('#set-color');
+            button.style.setProperty('--color-problem', color.hexString);
+        });
+    }
 }
