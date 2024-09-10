@@ -56,24 +56,24 @@ export default class Mysql {
             if (typeof v === 'object') {
                 if (Object.keys(v)[0] === 'inc'){
                     values[i] = v.inc;
-                    return `${k} = ${k} + ?`;
+                    return `\`${k}\` = ${k} + ?`;
                 }
                 else if (Object.keys(v)[0] === 'dec'){
                     values[i] = v.dec;
-                    return `${k} = ${k} - ?`;
+                    return `\`${k}\` = ${k} - ?`;
                 }
             }
 
-            return `${k} = ?`;
+            return `\`${k}\` = ?`;
         }).join(', ');
 
         if (typeof id === 'object') {
-            id = Object.keys(id).map(k => `${k} = ?`).join(' AND ');
             values.push(...Object.values(id));
+            id = Object.keys(id).map(k => `\`${k}\` = ?`).join(' AND ');
         }
         else {
             values.push(id);
-            id = 'id = ?';
+            id = '\`id\` = ?';
         }
 
         const sql = `UPDATE ${table} SET ${fielsdSql} WHERE ${id}`;
@@ -86,11 +86,11 @@ export default class Mysql {
         let value;
         if (typeof filter === 'object') {
             value = Object.values(filter);
-            filter = Object.keys(filter).map(k => `${k} = ?`).join(' AND ');
+            filter = Object.keys(filter).map(k => `\`${k}\` = ?`).join(' AND ');
         }
         else {
             value = [filter];
-            filter = 'id = ?';
+            filter = '\`id\` = ?';
         }
 
         const sql = `DELETE FROM ${table} WHERE ${filter};`;
@@ -109,7 +109,7 @@ export default class Mysql {
             if (Array.isArray(v)) {
                 // age: [18, 19, 20]
                 values.splice(i, 1, ...v);
-                return `${k} IN (${v.map(() => '?').join(',')})`;
+                return `\`${k}\` IN (${v.map(() => '?').join(',')})`;
             }
             else if (typeof v === 'object'){
                 // age: { in: [18, 19, 20] }
@@ -118,29 +118,29 @@ export default class Mysql {
                     
                     // add all values to the values array
                     values.splice(i, 1, ...v.in);
-                    return `${k} IN (${v.in.map(() => '?').join(',')})`;
+                    return `\`${k}\` IN (${v.in.map(() => '?').join(',')})`;
                 }
 
                 // age: { between: [18, 20] }
                 if (Object.keys(v)[0] === 'between'){
                     // add 2 values to the values array
                     values.splice(i, 1, v.between[0], v.between[1]);
-                    return `${k} BETWEEN ? AND ?`;
+                    return `\`${k}\` BETWEEN ? AND ?`;
                 }
 
                 // name: { like: 'John' }
                 if (Object.keys(v)[0] === 'like'){
                     values[i] = `%${v.like}%`;
-                    return `${k} LIKE ?`;
+                    return `\`${k}\` LIKE ?`;
                 }
                 
                 // age: { '>=': 18 }
                 const e = Object.keys(v)[0];
                 values[i] = Object.values(v)[0];
-                return `${k} ${e} ?`;
+                return `\`${k}\` ${e} ?`;
             }
             // name: 'John'
-            return `${k} = ?`;
+            return `\`${k}\` = ?`;
         }).join(' AND ');
         const where = filterNames.length > 0 ? `WHERE ${ whereStatements }` : '';
 
