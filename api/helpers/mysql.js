@@ -68,15 +68,15 @@ export default class Mysql {
         }).join(', ');
 
         if (typeof id === 'object') {
-            values.push(Object.values(id)[0]);
-            id = Object.keys(id)[0];
+            id = Object.keys(id).map(k => `${k} = ?`).join(' AND ');
+            values.push(...Object.values(id));
         }
         else {
             values.push(id);
-            id = 'id';
+            id = 'id = ?';
         }
 
-        const sql = `UPDATE ${table} SET ${fielsdSql} WHERE ${id} = ?`;
+        const sql = `UPDATE ${table} SET ${fielsdSql} WHERE ${id}`;
         // console.log(Mysql.format(sql, data));
         // replicateDB.saveUpdate(table, sql, data, this);
         return Mysql.query(sql, values);
