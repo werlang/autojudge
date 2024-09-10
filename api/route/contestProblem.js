@@ -71,4 +71,20 @@ router.delete('/:problemId', auth({'contest:admin': true}), async (req, res, nex
     }
 });
 
+// update a problem in a contest
+// Only the contest admin can update problems in the contest
+router.put('/:problemId', auth({'contest:admin': true}), async (req, res, next) => {
+    try {
+        const problem = await new Problem({ id: req.params.problemId }).get();
+        await req.contest.updateProblem(problem.id, {
+            color: req.body.color,
+            order: req.body.order,
+        });
+        res.send({ message: 'Problem updated.' });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+
 export default router;

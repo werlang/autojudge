@@ -51,6 +51,10 @@ export default class Contest extends Model {
         return this.deleteRelation('problem', problemValue);
     }
 
+    async updateProblem(problemValue, data) {
+        return this.updateRelation('problem', problemValue, data);
+    }
+
     isStarted() {
         if (this.start_time === null) return false;
         return new Date(this.start_time).getTime() < Date.now();
