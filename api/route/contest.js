@@ -76,10 +76,15 @@ router.get('/:id', auth({
         }
         
         let teams = await Team.getAll({ contest: req.contest.id, is_active: 1 });
-        teams = teams.map(team => ({
-            id: team.id,
-            name: team.name,
-            score: team.score,
+        teams = await Promise.all(teams.map(async team => {
+            const solvedProblems = (await Submission.getAll({ team: team.id, status: 'ACCEPTED' })).map(s => s.problem);
+
+            return {
+                id: team.id,
+                name: team.name,
+                score: team.score,
+                solvedProblems,
+            }
         }));
 
         let problems = await new Contest({ id: req.contest.id }).getProblems();
