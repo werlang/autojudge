@@ -153,6 +153,7 @@ router.put('/:id/reset', auth({'contest:admin': true}), async (req, res, next) =
 
         let teams = await Team.getAll({ contest: req.contest.id });
         teams.forEach(async team => {
+            new Team({ id: team.id }).update({ score: 0 });
             let submissions = await Submission.getAll({
                 team: team.id,
             });
