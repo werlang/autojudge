@@ -146,6 +146,28 @@ router.put('/:id/start', auth({'contest:admin': true}), async (req, res, next) =
     }
 });
 
+// reset a contest
+router.put('/:id/reset', auth({'contest:admin': true}), async (req, res, next) => {
+    try {
+        await req.contest.update({ start_time: null });
+
+        let teams = await Team.getAll({ contest: req.contest.id });
+        teams.forEach(async team => {
+            let submissions = await Submission.getAll({
+                team: team.id,
+            });
+            submissions.forEach(async submission => {
+                new Submission({ id: submission.id }).delete();
+            });
+        });
+
+        res.send({ message: 'Contest reset.' });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+
 // Create a new team
 // Only the contest admin can create teams
 router.post('/:id/teams', auth({'contest:admin': true}), async (req, res, next) => {

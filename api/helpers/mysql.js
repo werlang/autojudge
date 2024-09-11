@@ -56,7 +56,7 @@ export default class Mysql {
 
         const values = Object.values(data);
         const fielsdSql = Object.entries(data).map(([k,v],i) => {
-            if (typeof v === 'object') {
+            if (v !== null && typeof v === 'object') {
                 if (Object.keys(v)[0] === 'inc'){
                     values[i] = v.inc;
                     return `\`${k}\` = ${k} + ?`;

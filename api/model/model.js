@@ -93,6 +93,10 @@ export default class Model {
         return this.get();
     }
 
+    async delete() {
+        return Db.delete(this.#tableName, this.id);
+    }
+
     addRelation(relationName, tableName, nativeField, relatedField) {
         if (!this.relations) {
             this.relations = [];
