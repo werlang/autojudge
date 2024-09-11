@@ -61,15 +61,9 @@ export default {
         this.contest = contest;
         // console.log(contest);
 
-        const {submissions} = await new Contest({ id: this.contest.id }).getSubmissions();
-        const accepted = submissions.filter(submission => submission.status === 'ACCEPTED');
-        // console.log(accepted);
-
         table.clear();
         this.contest.teams.map(team => {
-            // console.log(team.id, accepted.map(s => s.team));
-            const problems = accepted.filter(s => s.team === team.id).map(s => s.problem);
-            const colors = this.contest.problems.filter(p => problems.includes(p.id)).map(p => p.color);
+            const colors = this.contest.problems.filter(p => team.solvedProblems.includes(p.id)).map(p => p.color);
             const colorBadges = colors.map(color => `<div class="color" style="--color-problem: ${color}"></div>`);
 
             return {
