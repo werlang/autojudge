@@ -1,5 +1,7 @@
+import Button from './components/button.js';
 import Card from './components/card.js';
 import createClock from './components/contest-clock.js';
+import Modal from './components/modal.js';
 import Contest from './model/contest.js';
 
 export default {
@@ -11,6 +13,7 @@ export default {
             <p id="contest-description">${this.contest.description}</p>
             <div id="time-left"></div>
             <div id="dashboard-cards"></div>
+            <button id="reset-contest" class="default">${this.translate('dashboard.reset-contest', 'contest')}</button>
         `;
 
         createClock(document.querySelector('#time-left'), {
@@ -66,5 +69,30 @@ export default {
                 <i class="fas fa-star"></i> ${this.contest.teams.toSorted((a,b) => b.score - a.score)[0].name}
             </div>`,
         }).click(() => location.href = `/contests/${this.contest.id}/teams`);
+
+        const resetButton = new Button({
+            element: frame.querySelector('#reset-contest'),
+            callback: () => {
+                new Modal(`
+                    <h1>${this.translate('dashboard.reset-contest', 'contest')}</h1>
+                    <p>${this.translate('dashboard.reset-contest-message', 'contest')}</p>
+                `)
+                .addButton({
+                    text: this.translate('yes', 'common'),
+                    callback: async (e, modal) => {
+                        modal.close();
+                        resetButton.disable();
+                        await new Contest({ id: this.contest.id }).reset();
+                        resetButton.enable();
+                        location.href = `/contests/${this.contest.id}`;
+                    },
+                    isDefault: false,
+                })
+                .addButton({
+                    text: this.translate('no', 'common'),
+                    close: true,
+                });
+            },
+        })
     },
 }

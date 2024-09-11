@@ -62,7 +62,9 @@
             "total": "Problems in the contest",
             "accepted": "Have at least one correct submission"
         },
-        "teams": "Total Teams in this contest"
+        "teams": "Total Teams in this contest",
+        "reset-contest": "Reset Contest",
+        "reset-contest-message": "Are you sure you want to reset the contest? This action is irreversible and will delete all submissions from the contest."
     },
     "judge": {
         "title": "Judge Submission",

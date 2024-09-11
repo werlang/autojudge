@@ -4,8 +4,6 @@ import Toast from "./components/toast.js";
 import Contest from "./model/contest.js";
 import iro from '@jaames/iro';
 
-// TODO: Create some things to populate the problems table besides the title
-
 export default {
     build: async function() {
         const frame = document.querySelector('#frame');

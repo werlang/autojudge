@@ -10,8 +10,6 @@ import ModuleLoader from "./helpers/module-loader.js";
 
 import '../less/dashboard.less';
 
-// TODO: Create dashboard view
-
 const translatePledge = new Pledge();
 new Translator(['en', 'pt'], [
     'components',

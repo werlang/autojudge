@@ -62,7 +62,10 @@
             "total": "Problemas na competição",
             "accepted": "com submissão correta"
         },
-        "teams": "Total de Equipes nesta competição"
+        "teams": "Total de Equipes nesta competição",
+        "reset-contest": "Redefinir Competição",
+        "reset-contest-message": "Tem certeza que deseja redefinir a competição? Esta ação é irreversível e apagará todas as submissões da competição."
+
     },
     "judge": {
         "title": "Julgar Submissão",

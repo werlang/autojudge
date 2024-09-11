@@ -46,6 +46,11 @@ const contestPledge = new Pledge();
     const contestId = TemplateVar.get('contestId');
     if (!contestId) location.href = '/contests';
     const {contest} = await new Contest({ id: contestId }).get();
+    // console.log(contest);
+    
+    if (!contest.startTime) {
+        location.href = `/contests/${contest.id}`;
+    }
     contestPledge.resolve(contest);
 })();
 
