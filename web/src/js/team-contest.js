@@ -1,6 +1,7 @@
 import Table from "./components/table.js";
 import Team from "./model/team.js";
 import createClock from "./components/contest-clock.js";
+import Contest from "./model/contest.js";
 
 export default {
     build: async function() {
@@ -26,8 +27,9 @@ export default {
             element: teamsDOM,
             id: 'teams', 
             columns: [
-                {id: 'name', name: this.translate('name', 'common'), sort: false},
                 {id: 'score', name: this.translate('score', 'common'), sort: false, size: 'small'},
+                {id: 'name', name: this.translate('name', 'common'), sort: false},
+                {id: 'solved', name: this.translate('solved', 'common'), sort: false},
             ],
             translate: this.translate,
             search: false,
@@ -44,12 +46,23 @@ export default {
             translate: this.translate,
         });
         // console.log(this.contest);
+
+        const {submissions} = await new Contest({ id: this.contest.id }).getSubmissions();
+        const accepted = submissions.filter(submission => submission.status === 'ACCEPTED');
+        // console.log(accepted);
     
         table.clear();
-        this.contest.teams.map(team => ({
-            name: team.name,
-            score: `<span>${parseFloat(team.score).toFixed(1)}</span>`,
-        })).forEach(team => table.addItem(team));
+        this.contest.teams.map(team => {
+            const problems = accepted.filter(s => s.team === team.id).map(s => s.problem);
+            const colors = this.contest.problems.filter(p => problems.includes(p.id)).map(p => p.color);
+            const colorBadges = colors.map(color => `<div class="color" style="--color-problem: ${color}"></div>`);
+
+            return {
+                name: team.name,
+                score: `<span>${parseFloat(team.score).toFixed(1)}</span>`,
+                solved: colorBadges.join(''),
+            }
+        }).forEach(team => table.addItem(team));
         table.srt('score', 'desc');
 
         if (this.refresh) {
@@ -58,5 +71,3 @@ export default {
         }
     },
 }
-
-// TODO: show on the table the color for the problems solved by each team
