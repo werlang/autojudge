@@ -125,7 +125,7 @@ teamHandler.init().then(team => {
         items: [
             { id: 'teams', text: translate('teams_one', 'common'), icon: 'fas fa-users', action: () => ml.load('team-submission.js', { refresh: true}) },
             { id: 'contests', path:'teams/contest', text: translate('contest_one', 'common'), icon: 'fas fa-trophy', action: () => ml.load('team-contest.js', { refresh: true}) },
-            { id: 'problems', path: 'teams/problems', text: translate('problem_other', 'common'), icon: 'fas fa-tasks', action: () => ml.load('team-problem.js') },
+            { id: 'problems', path: 'teams/problems', text: translate('problem_other', 'common'), icon: 'fas fa-tasks', action: () => ml.load('team-problem.js', { refresh: true}) },
             { id: 'logout', text: translate('menu.logout', 'components'), icon: 'fas fa-sign-out-alt', action: () => teamHandler.removeTeam() },
         ],
         options: {

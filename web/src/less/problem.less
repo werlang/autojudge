@@ -35,6 +35,24 @@
         flex-direction: row;
         flex-wrap: wrap;
         justify-content: center;
+
+        .description {
+            
+            .info-container {
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+                margin-top: 30px;
+
+                i {
+                    font-size: 1.2rem;
+                    margin-right: 10px;
+                }
+                .solved {
+                    color: rgba(var(--color-success-raw),1);
+                }
+            }
+        }
     }
 
     #add-problem {

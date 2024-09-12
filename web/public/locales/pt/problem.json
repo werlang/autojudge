@@ -26,5 +26,8 @@
     "remove-case": {
         "h1": "Remover caso de teste",
         "message": "Deseja remover o caso de teste?"
-    }
+    },
+    "teams-solved": "Equipes que resolveram este problema",
+    "score-solved": "Sua pontuação para este problema",
+    "score-unsolved": "Pontuação por resolver este problema"
 }
