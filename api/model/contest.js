@@ -2,6 +2,9 @@ import CustomError from '../helpers/error.js';
 import Model from './model.js';
 import Problem from './problem.js';
 import Db from '../helpers/mysql.js';
+import config from '../helpers/config.js';
+import Team from './team.js';
+import Submission from './submission.js';
 
 export default class Contest extends Model {
     constructor({
@@ -86,5 +89,34 @@ export default class Contest extends Model {
 
     isRunning() {
         return this.isStarted() && this.getRemainingTime() > 0;
+    }
+
+    async getSolveScore(problem) {
+        if (!this.duration) {
+            await this.get();
+        }
+        // score between 80 and 100 based on the time elapsed
+        const elapsedTimeRatio = this.getRemainingTime() / (this.duration * 60);
+        let score = config.contest.minScore + (config.contest.maxScore - config.contest.minScore) * elapsedTimeRatio;
+
+        // get all teams in this contest
+        const teamsInContest = await Team.getAll({ contest: this.id });
+
+        // check how many have been accepted before to the same problem
+        const acceptedSubmissions = await Submission.getAll({
+            problem,
+            team: [...teamsInContest.map(t => t.id)],
+            status: 'ACCEPTED',
+        });
+
+        // bonus for the first and second accepted submission
+        if (acceptedSubmissions.length === 0) {
+            score *= 1 + config.contest.bonusScore * 2;
+        }
+        else if (acceptedSubmissions.length === 1) {
+            score *= 1 + config.contest.bonusScore;
+        }
+
+        return score;
     }
 }

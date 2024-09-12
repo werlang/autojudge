@@ -87,13 +87,19 @@ router.get('/:id', auth({
             }
         }));
 
-        let problems = await new Contest({ id: req.contest.id }).getProblems();
-        problems = problems.map(problem => ({
-            id: problem.id,
-            title: problem.title,
-            hash: problem.hash.slice(-process.env.HASH_LENGTH),
-            color: problem.color,
-            order: problem.order,
+        const contest = new Contest({ id: req.contest.id });
+        let problems = await contest.getProblems();
+        problems = await Promise.all(problems.map(async problem => {
+            const score = await contest.getSolveScore(problem.id);
+
+            return {
+                id: problem.id,
+                title: problem.title,
+                hash: problem.hash.slice(-process.env.HASH_LENGTH),
+                color: problem.color,
+                order: problem.order,
+                score,
+            }
         }));
 
         res.send({ contest: {

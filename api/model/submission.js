@@ -83,27 +83,8 @@ export default class Submission extends Model {
             return this;
         }
 
-        // score between 80 and 100 based on the time elapsed
-        const elapsedTimeRatio = remainingTime / (contest.duration * 60);
-        data.score = config.contest.minScore + (config.contest.maxScore - config.contest.minScore) * elapsedTimeRatio;
-
-        // get all teams in this contest
-        const teamsInContest = await Team.getAll({ contest: contest.id });
-
-        // check how many have been accepted before to the same problem
-        const acceptedSubmissions = await Submission.getAll({
-            problem: this.problem,
-            team: [...teamsInContest.map(t => t.id)],
-            status: 'ACCEPTED',
-        });
-
-        // bonus for the first and second accepted submission
-        if (acceptedSubmissions.length === 0) {
-            data.score *= 1 + config.contest.bonusScore * 2;
-        }
-        else if (acceptedSubmissions.length === 1) {
-            data.score *= 1 + config.contest.bonusScore;
-        }
+        // get the score for the submission
+        data.score = await new Contest({ id: contest.id }).getSolveScore(this.problem);
 
         // update team score
         await this.update(data);
