@@ -38,6 +38,7 @@ export default class Submission extends Model {
         const contest = await new Contest({ id: team.contest }).get();
         const isStarted = contest.isStarted();
         const remainingTime = contest.getRemainingTime(this.submitted_at);
+        const elapsedTime = contest.getElapsedTime(this.submitted_at);
         let enabled = true;
 
         if (!isStarted && !forceReturn) {
@@ -58,6 +59,7 @@ export default class Submission extends Model {
         return {
             enabled,
             isStarted,
+            elapsedTime,
             remainingTime,
             team,
             contest,
@@ -71,20 +73,20 @@ export default class Submission extends Model {
 
     async updateStatus(response) {
         const status = response.status;
-        const { team, contest, remainingTime } = await this.isSubmissionEnabled();
+        const { team, elapsedTime } = await this.isSubmissionEnabled();
 
-        const data = { status };
+        const data = {
+            status,
+            score: elapsedTime,
+        };
         
         if (status !== 'ACCEPTED') {
-            data.score = status == 'PARSING_ERROR' ? 0 : config.contest.penaltyScore;
+            data.score = status == 'PARSING_ERROR' ? 0 : config.contest.penaltyTime * 60 * 1000;
             data.log = response;
             await this.update(data);
             await team.updateScore();
             return this;
         }
-
-        // get the score for the submission
-        data.score = await new Contest({ id: contest.id }).getSolveScore(this.problem);
 
         // update team score
         await this.update(data);

@@ -75,30 +75,16 @@ router.get('/:id', auth({
             req.contest = await new Contest({ id: req.params.id }).get();
         }
         
-        let teams = await Team.getAll({ contest: req.contest.id, is_active: 1 });
-        teams = await Promise.all(teams.map(async team => {
-            const solvedProblems = (await Submission.getAll({ team: team.id, status: 'ACCEPTED' })).map(s => s.problem);
-
-            return {
-                id: team.id,
-                name: team.name,
-                score: team.score,
-                solvedProblems,
-            }
-        }));
-
+        const teams = await req.contest.getTeams();
         const contest = new Contest({ id: req.contest.id });
         let problems = await contest.getProblems();
         problems = await Promise.all(problems.map(async problem => {
-            const score = await contest.getSolveScore(problem.id);
-
             return {
                 id: problem.id,
                 title: problem.title,
                 hash: problem.hash.slice(-process.env.HASH_LENGTH),
                 color: problem.color,
                 order: problem.order,
-                score,
             }
         }));
 
@@ -108,9 +94,6 @@ router.get('/:id', auth({
             description: req.contest.description,
             duration: req.contest.duration,
             startTime: req.contest.start_time,
-            maxScore: config.contest.maxScore,
-            minScore: config.contest.minScore,
-            bonusScore: config.contest.bonusScore,
             teams,
             problems,
         } });

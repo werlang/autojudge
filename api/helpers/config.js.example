@@ -8,9 +8,6 @@ export default {
     },
     contest: {
         duration: 180,
-        maxScore: 100,
-        minScore: 80,
-        bonusScore: 0.1,
-        penaltyScore: -1,
+        penaltyTime: 20,
     },
 }

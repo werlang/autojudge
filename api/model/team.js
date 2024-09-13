@@ -66,8 +66,21 @@ export default class Team extends Model {
     async updateScore() {
         // get all submissions
         const submissions = await Submission.getAll({ team: this.id });
-        // calculate score
-        const score = submissions.reduce((acc, submission) => acc + parseFloat(submission.score), 0);
+        // get all accepted problems (unique)
+        const acceptedProblems = submissions.filter(submission => submission.status === 'ACCEPTED').map(submission => submission.problem).filter((value, index, self) => self.indexOf(value) === index);
+        // for each accepted problem, get all submissions up to the first accepted
+        const validSubmissions = acceptedProblems.map(problem => {
+            const acceptedSubmissions = submissions.filter(submission => submission.problem === problem && submission.status === 'ACCEPTED');
+            // first accepted submission for this problem
+            const firstAccepted = acceptedSubmissions.sort((a, b) => a.submitted_at - b.submitted_at)[0];
+
+            // get all submissions before up to the first accepted
+            return submissions.filter(submission => submission.problem == problem && (new Date(submission.submitted_at).getTime() < new Date(firstAccepted.submitted_at).getTime() || submission.id === firstAccepted.id));
+        });
+
+        // sum the scores of all valid submissions for each problem
+        const score = validSubmissions.reduce((p,c) => p + c.reduce((p,c) => p + c.score, 0), 0);
+        
         return this.update({ score });
     }
 

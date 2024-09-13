@@ -77,46 +77,37 @@ export default class Contest extends Model {
     }
 
     getRemainingTime(targetTime) {
+        if (!this.isStarted()) return 0;
+        const elapsed = this.getElapsedTime(targetTime);
+        return this.duration * 60 * 1000 - elapsed;
+    }
+
+    getElapsedTime(targetTime) {
         if (!targetTime) {
             targetTime = Date.now();
         }
         targetTime = new Date(targetTime).getTime();
         if (!this.isStarted()) return 0;
         const startTime = new Date(this.start_time).getTime();
-        const elapsed = Math.floor((targetTime - startTime) / 1000);
-        return this.duration * 60 - elapsed;
+        return targetTime - startTime;
     }
 
     isRunning() {
         return this.isStarted() && this.getRemainingTime() > 0;
     }
 
-    async getSolveScore(problem) {
-        if (!this.duration) {
-            await this.get();
-        }
-        // score between 80 and 100 based on the time elapsed
-        const elapsedTimeRatio = this.getRemainingTime() / (this.duration * 60);
-        let score = config.contest.minScore + (config.contest.maxScore - config.contest.minScore) * elapsedTimeRatio;
+    async getTeams() {
+        let teams = await Team.getAll({ contest: this.id, is_active: 1 });
+        return await Promise.all(teams.map(async team => {
+            let solvedProblems = (await Submission.getAll({ team: team.id, status: 'ACCEPTED' })).map(s => s.problem);
+            solvedProblems = solvedProblems.reduce((p,c) => p.includes(c) ? p : [...p, c], []);
 
-        // get all teams in this contest
-        const teamsInContest = await Team.getAll({ contest: this.id });
-
-        // check how many have been accepted before to the same problem
-        const acceptedSubmissions = await Submission.getAll({
-            problem,
-            team: [...teamsInContest.map(t => t.id)],
-            status: 'ACCEPTED',
-        });
-
-        // bonus for the first and second accepted submission
-        if (acceptedSubmissions.length === 0) {
-            score *= 1 + config.contest.bonusScore * 2;
-        }
-        else if (acceptedSubmissions.length === 1) {
-            score *= 1 + config.contest.bonusScore;
-        }
-
-        return score;
+            return {
+                id: team.id,
+                name: team.name,
+                score: team.score,
+                solvedProblems,
+            }
+        }));
     }
 }
