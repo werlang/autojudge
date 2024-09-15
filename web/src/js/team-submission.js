@@ -38,7 +38,7 @@ export default {
                 {id: 'problem', name: this.translate('problem_one', 'common'), sort: false},
                 {id: 'time', name: this.translate('submissions.submitted', 'team'), sort: false, size: 'small'},
                 {id: 'status', name: this.translate('submissions.status', 'team'), sort: false, size: 'small'},
-                {id: 'score', name: this.translate('score', 'common'), sort: false, size: 'small'},
+                {id: 'score', name: this.translate('time', 'common'), sort: false, size: 'small'},
             ],
             translate: this.translate,
             search: false,
@@ -70,7 +70,7 @@ export default {
         submissions.map(submission => ({
             problem: submission.problem.title,
             status: `<i class="${statusIcons[submission.status].icon} ${statusIcons[submission.status].class}" title="${submission.status}"></i>`,
-            score: `<span>${parseFloat(submission.score).toFixed(1)}</span>`,
+            score: `<span>${(parseFloat(submission.score) / 1000).toFixed(1)}</span>`,
             time: `<span title="${new Date(submission.submittedAt).toLocaleString(Translator.currentLanguage())}">${this.getElapsedTime(submission.submittedAt)}</span>`,
             timeSort: new Date(submission.submittedAt).getTime(),
         })).forEach(submission => table.addItem(submission));

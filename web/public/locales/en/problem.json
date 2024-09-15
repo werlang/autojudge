@@ -28,6 +28,6 @@
         "message": "Do you want to remove the test case?"
     },
     "teams-solved": "Teams that solved this problem",
-    "score-solved": "Your score for this problem",
-    "score-unsolved": "Score for resolving this problem"
+    "score-solved": "Your time addition for this problem",
+    "score-unsolved": "Your attempts for this problem"
 }

@@ -28,7 +28,7 @@ export default {
             element: teamsDOM,
             id: 'teams', 
             columns: [
-                {id: 'score', name: this.translate('score', 'common'), sort: false, size: 'small'},
+                {id: 'score', name: this.translate('time', 'common'), sort: false, size: 'small'},
                 {id: 'name', name: this.translate('name', 'common'), sort: false},
                 {id: 'solved', name: this.translate('solved', 'common'), sort: false},
             ],
@@ -69,11 +69,15 @@ export default {
             return {
                 id: team.id,
                 name: team.name,
-                score: `<span>${parseFloat(team.score).toFixed(1)}</span>`,
+                score: `<span>${(parseFloat(team.score) / 1000).toFixed(1)}</span>`,
+                // 1: number of solved problems. 2: lowest time of solved problems.
+                // number of solved problems * (big number) makes the problems solved to be the most important sorting criteria
+                // the score is subtracted to make a higher time score to decrease the scoreSort. But it will never be enough to offset the solved problems
+                scoreSort: team.solvedProblems.length * 1e9 - team.score,
                 solved: colorBadges.join(''),
             }
         }).forEach(team => table.addItem(team));
-        table.srt('score', 'desc');
+        table.srt('scoreSort', 'desc');
 
         if (this.refresh) {
             if (this.updateTimeout) clearTimeout(this.updateTimeout);

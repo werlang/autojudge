@@ -27,7 +27,7 @@ export default {
             element: teamsDOM,
             id: 'teams', 
             columns: [
-                {id: 'score', name: this.translate('score', 'common'), sort: false, size: 'small'},
+                {id: 'score', name: this.translate('time', 'common'), sort: false, size: 'small'},
                 {id: 'name', name: this.translate('name', 'common'), sort: false},
                 {id: 'solved', name: this.translate('solved', 'common'), sort: false},
             ],
@@ -54,11 +54,12 @@ export default {
 
             return {
                 name: team.name,
-                score: `<span>${parseFloat(team.score).toFixed(1)}</span>`,
+                score: `<span>${(parseFloat(team.score) / 1000).toFixed(1)}</span>`,
+                scoreSort: team.solvedProblems.length * 1e9 - team.score,
                 solved: colorBadges.join(''),
             }
         }).forEach(team => table.addItem(team));
-        table.srt('score', 'desc');
+        table.srt('scoreSort', 'desc');
 
         if (this.refresh) {
             if (this.updateTimeout) clearTimeout(this.updateTimeout);

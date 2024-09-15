@@ -66,7 +66,7 @@ export default {
                 <span>${this.translate('dashboard.teams', 'contest')}</span>
             </div>
             <div id="winner">
-                <i class="fas fa-star"></i> ${this.contest.teams.toSorted((a,b) => b.score - a.score)[0].name}
+                <i class="fas fa-star"></i> ${this.contest.teams.toSorted((a,b) => (b.solvedProblems.length * 1e9 - b.score) - (a.solvedProblems.length * 1e9 - a.score))[0].name}
             </div>`,
         }).click(() => location.href = `/contests/${this.contest.id}/teams`);
 

@@ -23,16 +23,22 @@ export default {
 
         contest.problems.forEach(problem => {
             const teamsSolved = contest.teams.filter(team => team.solvedProblems.includes(problem.id));
-            const solved = submissions.find(s => s.problem.id === problem.id && s.status === 'ACCEPTED');
+            const submissionsForProblem = submissions.filter(s => s.problem.id === problem.id);
+            const solved = submissionsForProblem.find(s => s.status === 'ACCEPTED');
             // console.log(solved);
+            const problemSum = (() => {
+                if (!solved) return 0;
+                const submissionsUpToSolved = submissionsForProblem.filter(s => s.id === solved.id || new Date(s.submittedAt).getTime() <= new Date(solved.submittedAt).getTime());
+                return submissionsUpToSolved.reduce((acc, s) => acc + s.score, 0);
+            })();
 
             const card = new Card(problemsDOM, {
                 title: problem.title,
                 description: `<div class="info-container">
                     <div class="teams" title="${this.translate('teams-solved', 'problem')}"><i class="fas fa-users"></i> ${teamsSolved.length}</div>
                     ${solved ? 
-                        `<div class="solved" title="${this.translate('score-solved', 'problem')}"><i class="fas fa-star"></i> ${parseFloat(solved.score).toFixed(1)}</div>` : 
-                        `<div class="score" title="${this.translate('score-unsolved', 'problem')}"><i class="far fa-star"></i> ${parseFloat(problem.score).toFixed(1)}</div>`
+                        `<div class="solved" title="${this.translate('score-solved', 'problem')}"><i class="fas fa-hourglass-half"></i> ${(problemSum / 1000).toFixed(1)}</div>` : 
+                        `<div class="score" title="${this.translate('score-unsolved', 'problem')}"><i class="fas fa-bullseye"></i> ${submissionsForProblem.length}</div>`
                     }
                 </div>`,
                 icon: 'fas fa-lightbulb',
@@ -48,5 +54,3 @@ export default {
         }
     },
 }
-
-// TODO: check to prevent multiple submissions of the same problem at the same time
