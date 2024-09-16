@@ -95,7 +95,7 @@ async function checkTeam(req) {
             return team;
         }
         catch (error) {
-            console.log(error);
+            // console.log(error);
             return false;
         }
     }

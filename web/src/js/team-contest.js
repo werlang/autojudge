@@ -1,7 +1,6 @@
 import Table from "./components/table.js";
 import Team from "./model/team.js";
 import createClock from "./components/contest-clock.js";
-import Contest from "./model/contest.js";
 
 export default {
     build: async function() {

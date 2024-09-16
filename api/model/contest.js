@@ -2,7 +2,6 @@ import CustomError from '../helpers/error.js';
 import Model from './model.js';
 import Problem from './problem.js';
 import Db from '../helpers/mysql.js';
-import config from '../helpers/config.js';
 import Team from './team.js';
 import Submission from './submission.js';
 
