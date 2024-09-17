@@ -74,7 +74,7 @@ export default {
             time: `<span title="${new Date(submission.submittedAt).toLocaleString(Translator.currentLanguage())}">${this.getElapsedTime(submission.submittedAt)}</span>`,
             timeSort: new Date(submission.submittedAt).getTime(),
         })).forEach(submission => table.addItem(submission));
-        table.srt('timeSort', 'asc');
+        table.srt('timeSort', 'desc');
 
         if (this.refresh) {
             if (this.updateTimeout) clearTimeout(this.updateTimeout);

@@ -103,7 +103,8 @@ fs.readdir(inputDir, async (error, inputFiles) => {
                     message: stderr,
                 });
             }
-            else if (stdout.trim() !== outputContents.trim()) {
+            // remove the presentation error from end on both sides
+            else if (stdout.trim().replace(/\s+$/, '') !== outputContents.trim().replace(/\s+$/, '')) {
                 fail += 1;
                 results.push({
                     file: inputFilePath,

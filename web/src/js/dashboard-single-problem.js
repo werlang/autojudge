@@ -202,11 +202,11 @@ export default {
             <div class="case-container">
                 <div class="case">
                     <span class="label">${this.translate('input', 'problem')}</span>
-                    ${input || ''}
+                    <span class="value">${input || ''}</span>
                 </div>
                 <div class="case">
                     <span class="label">${this.translate('output', 'problem')}</span>
-                    ${output || ''}
+                    <span class="value">${output || ''}</span>
                 </div>
             </div>
         `;

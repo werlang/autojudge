@@ -78,8 +78,9 @@ export default {
             statusData: submission.status,
             status: `<i class="${statusIcons[submission.status].icon} ${statusIcons[submission.status].class}" title="${submission.status}"></i>`,
             time: `<span title="${new Date(submission.submittedAt).toLocaleString(Translator.currentLanguage())}">${this.getElapsedTime(submission.submittedAt)}</span>`,
+            timeRaw: new Date(submission.submittedAt).getTime(),
         })).forEach(submission => table.addItem(submission));
-        table.srt('time', 'desc');
+        table.srt('timeRaw', 'desc');
 
         if (this.refresh) {
             if (this.updateTimeout) clearTimeout(this.updateTimeout);
