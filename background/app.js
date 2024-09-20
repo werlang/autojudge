@@ -10,7 +10,7 @@ const background = {
     },
     
     watchSubmissions: async function() {
-        const requestInterval = 5000;
+        const requestInterval = process.env.BACKGROUND_INTERVAL || 5000;
         try {
             const submissions = await this.request.get(`submissions/pending`, {});
             // console.log(submissions);
