@@ -37,5 +37,7 @@
     "submit": "Enviar",
     "color": "Cor",
     "solved": "Resolvidos",
-    "time": "Tempo"
+    "time": "Tempo",
+    "expected": "Esperado",
+    "received": "Obtido"
 }

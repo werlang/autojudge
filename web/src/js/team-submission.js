@@ -1,4 +1,5 @@
 import Form from "./components/form.js";
+import Modal from "./components/modal.js";
 import Table from "./components/table.js";
 import Toast from "./components/toast.js";
 import Uploader from "./components/uploader.js";
@@ -47,6 +48,23 @@ export default {
         });
         this.table = table;
 
+        table.addItemEvent('click', async item => {
+            console.log(item.hint);
+            new Modal(`
+                <h1>${item.status}${item.statusRaw}</h1>
+                ${item.statusRaw === 'WRONG_ANSWER' || item.statusRaw === 'ERROR' ?
+                    item.hint.message ?
+                        `<pre><code>${item.hint.message || ''}</code></pre>` :
+                        `<div>${this.translate('expected', 'common')}</div>
+                        <pre><code>${item.hint.expected || ''}</code></pre>
+                        <div>${this.translate('received', 'common')}</div>
+                        <pre><code>${item.hint.received || ''}</code></pre>`
+                    : ''
+                }
+                <button id='close' class="default">OK</button>
+            `, { id: 'submission-hint', buttonClose: 'close' });
+        });
+
         this.updateSubmissions();
     },
 
@@ -70,9 +88,11 @@ export default {
         submissions.map(submission => ({
             problem: submission.problem.title,
             status: `<i class="${statusIcons[submission.status].icon} ${statusIcons[submission.status].class}" title="${submission.status}"></i>`,
-            score: `<span>${(parseFloat(submission.score) / 1000).toFixed(1)}</span>`,
+            statusRaw: submission.status,
+            score: `<span>${(parseFloat(submission.score) / 1000 / 60).toFixed(2)}</span>`,
             time: `<span title="${new Date(submission.submittedAt).toLocaleString(Translator.currentLanguage())}">${this.getElapsedTime(submission.submittedAt)}</span>`,
             timeSort: new Date(submission.submittedAt).getTime(),
+            hint: submission.hint,
         })).forEach(submission => table.addItem(submission));
         table.srt('timeSort', 'desc');
 
