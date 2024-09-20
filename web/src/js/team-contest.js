@@ -53,7 +53,7 @@ export default {
 
             return {
                 name: team.name,
-                score: `<span>${(parseFloat(team.score) / 1000).toFixed(1)}</span>`,
+                score: `<span>${(parseFloat(team.score) / 1000 / 60).toFixed(2)}</span>`,
                 scoreSort: team.solvedProblems.length * 1e9 - team.score,
                 solved: colorBadges.join(''),
             }

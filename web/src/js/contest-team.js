@@ -69,7 +69,7 @@ export default {
             return {
                 id: team.id,
                 name: team.name,
-                score: `<span>${(parseFloat(team.score) / 1000).toFixed(1)}</span>`,
+                score: `<span>${(parseFloat(team.score) / 1000 / 60).toFixed(2)}</span>`,
                 // 1: number of solved problems. 2: lowest time of solved problems.
                 // number of solved problems * (big number) makes the problems solved to be the most important sorting criteria
                 // the score is subtracted to make a higher time score to decrease the scoreSort. But it will never be enough to offset the solved problems

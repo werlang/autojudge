@@ -37,7 +37,7 @@ export default {
                 description: `<div class="info-container">
                     <div class="teams" title="${this.translate('teams-solved', 'problem')}"><i class="fas fa-users"></i> ${teamsSolved.length}</div>
                     ${solved ? 
-                        `<div class="solved" title="${this.translate('score-solved', 'problem')}"><i class="fas fa-hourglass-half"></i> ${(problemSum / 1000).toFixed(1)}</div>` : 
+                        `<div class="solved" title="${this.translate('score-solved', 'problem')}"><i class="fas fa-hourglass-half"></i> ${(problemSum / 1000 / 60).toFixed(2)}</div>` : 
                         `<div class="score" title="${this.translate('score-unsolved', 'problem')}"><i class="fas fa-bullseye"></i> ${submissionsForProblem.length}</div>`
                     }
                 </div>`,
