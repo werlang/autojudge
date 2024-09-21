@@ -4,7 +4,7 @@ import path from 'path';
 
 const file = process.argv[2];
 const tmpdir = process.argv[3];
-const timeLimit = 2;
+let timeLimit = 3;
 
 if (!file) {
     console.log(JSON.stringify({ error: true, message: "Usage: node script.js <script_file> <tmpdir>"}));
@@ -59,6 +59,16 @@ fs.readdir(inputDir, async (error, inputFiles) => {
             process.exit(1);
         }
 
+        // Give extra time for each language
+        const extraTime = {
+            c: 0.8,
+            js: 0.6,
+            php: 0.7,
+            py: 0.6,
+            java: 2,
+        };
+        timeLimit += extraTime[extension];
+
         // Create .env file and set TMPDIR, FILE, and INPUT
         const envContent = `TMPDIR=${tmpdir}\nFILE=${file}\nFILE_NAME=${fileName}\nINPUT=${inputFilePath}\nTIME_LIMIT=${timeLimit}`;
         fs.writeFileSync('.env', envContent);
@@ -94,6 +104,7 @@ fs.readdir(inputDir, async (error, inputFiles) => {
         });
 
         // Execute the command
+        const startTime = Date.now();
         const exePromise = new Promise(resolve => exec(command, (error, stdout, stderr) => {
             if (stderr.length > 0) {
                 fail += 1;
@@ -117,7 +128,8 @@ fs.readdir(inputDir, async (error, inputFiles) => {
                 pass += 1;
                 results.push({
                     file: inputFilePath,
-                    status: "PASS"
+                    status: "PASS",
+                    time: Date.now() - startTime,
                 });
             }
 

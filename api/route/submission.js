@@ -146,6 +146,7 @@ router.post('/:id/judge', auth({'background': true}), async (req, res, next) => 
             code,
             tests: { input, output },
         });
+        // console.log(response);
 
         response.status = 'ACCEPTED';
         // this is the TLE check for the entire process. the autojudge script itself

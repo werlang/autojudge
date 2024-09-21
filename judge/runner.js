@@ -4,7 +4,6 @@ import { v4 as uuidv4 } from 'uuid';
 import { exec } from 'child_process';
 import unzipper from 'unzipper';
 import Pledge from './pledge.js';
-import CustomError from './error.js';
 
 class Runner {
     constructor({ filename, code, tests, format }) {
@@ -84,27 +83,28 @@ class Runner {
     async runAutoJudge() {
         // console.log('Running autojudge...');
 
+        const timeout = process.env.RUNNER_TIMEOUT || 30000;
         const pledge = new Pledge();
 
         try {
             // exec(`ls -la`, { cwd: this.tmpDir }, (error, stdout, stderr) => {
             exec(`node autojudge.js ${this.filename} ${this.tmpDir.split('/').slice(-1)[0]}`, { cwd: this.tmpDir }, (error, stdout, stderr) => {
                 if (error) {
-                    // console.error(`exec error: ${error}`);
+                    console.error(`exec error: ${error}`);
                     pledge.reject(error);
                 }
                 if (stderr) {
-                    // console.error(`stderr: ${stderr}`);
+                    console.error(`stderr: ${stderr}`);
                     pledge.reject(stderr);
                 }
                 if (stdout) {
-                    // console.log(`stdout: ${stdout}`);
+                    console.log(`stdout: ${stdout}`);
                     pledge.resolve(stdout);
                 }
             });
     
             // return pledge.get();
-            const response = await pledge.timeout(5000);
+            const response = await pledge.timeout(timeout);
             if (response === 'Request Timeout') {
                 return { error: 'TLE', message: 'Request Timeout' };
             }
@@ -122,7 +122,7 @@ class Runner {
         catch (error) {
             console.error(error);
             pledge.reject(JSON.stringify(error));
-            return pledge.timeout(5000);
+            return pledge.timeout(timeout);
         }
     }
 

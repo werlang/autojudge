@@ -78,11 +78,11 @@ export default class Submission extends Model {
         const data = {
             status,
             score: elapsedTime,
+            log: response,
         };
         
         if (status !== 'ACCEPTED') {
             data.score = status == 'PARSING_ERROR' ? 0 : config.contest.penaltyTime * 60 * 1000;
-            data.log = response;
             await this.update(data);
             await team.updateScore();
             return this;
