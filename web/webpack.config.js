@@ -14,6 +14,7 @@ export default {
     output: {
         filename: 'js/[name].min.js',
         path: path.resolve(import.meta.dirname, './public/'),
+        publicPath: '/',
     },
     optimization: {
         minimize: true,
