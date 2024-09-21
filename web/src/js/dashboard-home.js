@@ -17,15 +17,13 @@ export default {
         const cardProblems = new Card(container, {
             title: this.translate('problem_other', 'common'),
             icon: 'fas fa-tasks',
-            description: this.translate('home.problems', 'dashboard', {count: 0}),
-            customClass: 'placeholder',
+            description: this.translate('home.problems', 'dashboard', {count: '<span class="placeholder">00</span>', interpolation: {escapeValue: false}}),
         }).click(() => location.href = '/problems');
 
         const cardContests = new Card(container, {
             title: this.translate('contest_other', 'common'),
             icon: 'fas fa-trophy',
-            description: this.translate('home.contests', 'dashboard', {count: 0}),
-            customClass: 'placeholder',
+            description: this.translate('home.contests', 'dashboard', {count: '<span class="placeholder">00</span>', interpolation: {escapeValue: false}}),
         }).click(() => location.href = '/contests');
 
         let [contests, problems] = await Promise.all([
