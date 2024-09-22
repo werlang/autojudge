@@ -28,6 +28,10 @@
 //   - getSelected(): returns the selected items
 //   - enableControl(id): enables a control
 //   - disableControl(id): disables a control
+//   - srt(column, order): sorts the table by a column
+//     - column: the column to sort by
+//     - order: 'asc' or 'desc'
+//   - select: programmatically select items
 
 
 import Translator from "../helpers/translate.js";
@@ -404,5 +408,10 @@ export default class Table {
         });
 
         this.domElement.appendChild(itemDOM);
+    }
+
+    select(ids) {
+        this.selectedItems = this.content.filter(item => ids.includes(item.id));
+        this.render();
     }
 }

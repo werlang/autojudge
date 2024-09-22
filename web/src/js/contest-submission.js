@@ -67,6 +67,8 @@ export default {
         const resp = await new Contest({ id: this.contest.id }).getSubmissions().catch(() => location.reload());
         const submissions = resp.submissions;
 
+        const selected = table.getSelected();
+
         table.clear();
         // console.log(submissions);
         submissions.map(submission => ({
@@ -81,6 +83,10 @@ export default {
             timeRaw: new Date(submission.submittedAt).getTime(),
         })).forEach(submission => table.addItem(submission));
         table.srt('timeRaw', 'desc');
+
+        if (selected.length) {
+            table.select(selected.map(s => s.id));
+        }
 
         if (this.refresh) {
             if (this.updateTimeout) clearTimeout(this.updateTimeout);
