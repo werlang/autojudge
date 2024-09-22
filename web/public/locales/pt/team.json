@@ -14,5 +14,13 @@
     "error-select-problem": "Por favor, selecione um problema",
     "error-upload-file": "Por favor, faça o upload de um arquivo de código fonte",
     "hint-source-code": "Arquivo de código fonte",
-    "hint-file-type": "Por favor, faça o upload de um arquivo de código fonte dos seguintes formatos: .c, .cpp, .java, .py, .js, .php"
+    "hint-file-type": "Por favor, faça o upload de um arquivo de código fonte dos seguintes formatos: .c, .cpp, .java, .py, .js, .php",
+    "status": {
+        "accepted": "A submissão foi aceita",
+        "wrong-answer": "A submissão produziu uma resposta errada",
+        "time-limit": "A submissão excedeu o limite de tempo",
+        "error": "O código submetido produziu um erro",
+        "pending": "A submissão está pendente de avaliação",
+        "parsing-error": "Houve um erro de análise com a submissão, por favor, entre em contato com o administrador do concurso"
+    }
 }

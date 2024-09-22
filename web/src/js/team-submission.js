@@ -25,6 +25,15 @@ export default {
             </form>
         `;
 
+        this.statusIcons = {
+            'ACCEPTED': { icon: 'fas fa-check-circle', class: 'accepted', description: this.translate('status.accepted', 'team') },
+            'WRONG_ANSWER': { icon: 'fas fa-square-xmark', class: 'wrong-answer', description: this.translate('status.wrong-answer', 'team') },
+            'TIME_LIMIT_EXCEEDED': { icon: 'fas fa-clock', class: 'time-limit', description: this.translate('status.time-limit', 'team') },
+            'ERROR': { icon: 'fas fa-exclamation-triangle', class: 'error', description: this.translate('status.error', 'team') },
+            'PENDING': { icon: 'fas fa-ellipsis fa-fade', class: 'pending', description: this.translate('status.pending', 'team') },
+            'PARSING_ERROR': { icon: 'fas fa-hourglass-half', class: 'parsing-error', description: this.translate('status.parsing-error', 'team') },
+        }
+
         this.showSubmissions();
         this.fillProblems();
     },
@@ -52,6 +61,7 @@ export default {
             // console.log(item.hint);
             new Modal(`
                 <h1>${item.status}${item.statusRaw}</h1>
+                <p>${this.statusIcons[item.statusRaw].description}</p>
                 ${
                     item.hint && item.hint.message ? `<pre><code>${item.hint.message || ''}</code></pre>` :
                     item.hint && item.hint.expected ?
@@ -72,15 +82,6 @@ export default {
     async updateSubmissions() {
         const table = this.table;
 
-        const statusIcons = {
-            'ACCEPTED': { icon: 'fas fa-check-circle', class: 'accepted' },
-            'WRONG_ANSWER': { icon: 'fas fa-square-xmark', class: 'wrong-answer' },
-            'TIME_LIMIT_EXCEEDED': { icon: 'fas fa-clock', class: 'time-limit' },
-            'ERROR': { icon: 'fas fa-exclamation-triangle', class: 'error' },
-            'PENDING': { icon: 'fas fa-ellipsis fa-fade', class: 'pending' },
-            'PARSING_ERROR': { icon: 'fas fa-hourglass-half', class: 'parsing-error' },
-        };
-
         const resp = await new Submission({ token: Team.getToken() }).getAll().catch(() => location.reload());
         const submissions = resp.submissions;
 
@@ -88,7 +89,7 @@ export default {
         // console.log(submissions);
         submissions.map(submission => ({
             problem: submission.problem.title,
-            status: `<i class="${statusIcons[submission.status].icon} ${statusIcons[submission.status].class}" title="${submission.status}"></i>`,
+            status: `<i class="${this.statusIcons[submission.status].icon} ${this.statusIcons[submission.status].class}" title="${submission.status}"></i>`,
             statusRaw: submission.status,
             score: `<span>${(parseFloat(submission.score) / 1000 / 60).toFixed(2)}</span>`,
             time: `<span title="${new Date(submission.submittedAt).toLocaleString(Translator.currentLanguage())}">${this.getElapsedTime(submission.submittedAt)}</span>`,
