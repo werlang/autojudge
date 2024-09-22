@@ -49,17 +49,18 @@ export default {
         this.table = table;
 
         table.addItemEvent('click', async item => {
-            console.log(item.hint);
+            // console.log(item.hint);
             new Modal(`
                 <h1>${item.status}${item.statusRaw}</h1>
-                ${item.statusRaw === 'WRONG_ANSWER' || item.statusRaw === 'ERROR' ?
-                    item.hint.message ?
-                        `<pre><code>${item.hint.message || ''}</code></pre>` :
+                ${
+                    item.hint && item.hint.message ? `<pre><code>${item.hint.message || ''}</code></pre>` :
+                    item.hint && item.hint.expected ?
                         `<div>${this.translate('expected', 'common')}</div>
                         <pre><code>${item.hint.expected || ''}</code></pre>
                         <div>${this.translate('received', 'common')}</div>
-                        <pre><code>${item.hint.received || ''}</code></pre>`
-                    : ''
+                        <pre><code>${item.hint.received || ''}</code></pre>` :
+                    item.hint ? `<pre><code>${item.hint || ''}</code></pre>` :
+                    ''
                 }
                 <button id='close' class="default">OK</button>
             `, { id: 'submission-hint', buttonClose: 'close' });

@@ -24,17 +24,23 @@ router.get('/', auth({'team:exists': true}), async (req, res, next) => {
                 id: problem.id,
                 title: problem.title,
             })),
-            hint: submission.status === 'WRONG_ANSWER' || submission.status === 'ERROR' ? 
-                (r => ({
-                    expected: r.expected,
-                    received: r.got,
-                    message: r.message, // in case of RTE
-                }))(JSON.parse(submission.log)
-                    // pick the first result that is WA or RTE
-                    .results.find(r => r.status === 'WA' || r.status === 'RTE')
-                ) 
-                // JSON.parse(submission.log)
-                : null,
+            hint: (() => {
+                if (submission.status !== 'WRONG_ANSWER' && submission.status !== 'ERROR') return null;
+                try {
+                    const log = JSON.parse(submission.log);
+                    if (!log.results) return null;
+                    const firstLog = log.results.find(r => r.status === 'WA' || r.status === 'RTE');
+                    if (!firstLog) return null;
+                    return {
+                        expected: firstLog.expected,
+                        received: firstLog.got,
+                        message: firstLog.message,
+                    }
+                }
+                catch {
+                    return null;
+                }
+            })(),
         })))});
     }
     catch (error) {
