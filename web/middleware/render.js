@@ -33,7 +33,7 @@ export default fixedVars => (req, res, next) => {
 
         const vars = {
             // send the templateVars to a hidden input in the template. Frontend will read this and store it in a class
-            'template-vars': new URLSearchParams(templateVars).toString(),
+            'template-vars': `<input id="template-vars" type="hidden" value="${new URLSearchParams(templateVars).toString()}">`,
             // send the templateVars to replace the view
             ...templateVars,
             // send the translations to the view
