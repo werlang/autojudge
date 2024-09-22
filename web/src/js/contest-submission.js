@@ -1,4 +1,5 @@
 import Form from "./components/form.js";
+import Modal from "./components/modal.js";
 import Table from "./components/table.js";
 import Toast from "./components/toast.js";
 import Translator from "./helpers/translate.js";
@@ -11,7 +12,7 @@ export default {
         const frame = document.querySelector('#frame');
         frame.innerHTML = `
             <h1>${this.translate('submissions_other', 'common')}</h1>
-            <div id="submissions-container"></div>
+            <div id="submissions-container" class="admin"></div>
             <form id="new-submission-form">
                 <h2>${this.translate('judge.title', 'contest')}</h2>
                 <select id="answer" name="answer" required disabled></select>
@@ -31,10 +32,13 @@ export default {
             element: submissionsDOM,
             id: 'submissions', 
             columns: [
-                {id: 'team', name: this.translate('teams_one', 'common'), sort: false},
-                {id: 'problem', name: this.translate('problem_one', 'common'), sort: false},
-                {id: 'time', name: this.translate('submissions.submitted', 'team'), sort: false, size: 'small'},
                 {id: 'status', name: this.translate('submissions.status', 'team'), sort: false, size: 'small'},
+                {id: 'time', name: this.translate('submissions.submitted', 'team'), sort: false, size: 'small'},
+                {id: 'problem', name: this.translate('problem_one', 'common'), sort: false},
+                {id: 'team', name: this.translate('teams_one', 'common'), sort: false},
+            ],
+            controls: [
+                { id: 'log', icon: 'far fa-file-code', title: this.translate('judge.log', 'contest'), action: item => this.showLog(item[0]) },
             ],
             translate: this.translate,
             search: false,
@@ -47,7 +51,16 @@ export default {
         table.addItemEvent('click', async item => {
             this.selectedSubmission = table.getSelected()[0];
             this.loadSubmission();
+
+            const selected = table.getSelected();
+            const toEnable = [];
+            if (selected.length) {
+                toEnable.push('log');
+            }
+            table.disableControl('log');
+            table.enableControl(...toEnable);
         });
+        table.disableControl('log');
 
         this.updateSubmissions();
     },
@@ -81,6 +94,7 @@ export default {
             status: `<i class="${statusIcons[submission.status].icon} ${statusIcons[submission.status].class}" title="${submission.status}"></i>`,
             time: `<span title="${new Date(submission.submittedAt).toLocaleString(Translator.currentLanguage())}">${this.getElapsedTime(submission.submittedAt)}</span>`,
             timeRaw: new Date(submission.submittedAt).getTime(),
+            log: submission.log,
         })).forEach(submission => table.addItem(submission));
         table.srt('timeRaw', 'desc');
 
@@ -186,5 +200,18 @@ export default {
             <div>${submission.filename}</div>
         </div></div>`;
         form.get('#code').classList.add('success');
-    }
+    },
+
+    showLog: function(submission) {
+        // console.log(submission);
+        if (!submission.log) {
+            new Toast(this.translate('judge.no-log', 'contest'), { type: 'error' });
+            return;
+        }
+        new Modal(`
+            <h1>${this.translate('judge.log', 'contest')}</h1>
+            <pre><code>${JSON.stringify(JSON.parse(submission.log), null, 2)}</code></pre>
+            <button id="close" class="default">${this.translate('close', 'common')}</button>
+        `, { id: 'log-modal', buttonClose: 'close' });
+    },
 }

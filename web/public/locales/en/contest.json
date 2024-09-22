@@ -70,7 +70,9 @@
         "title": "Judge Submission",
         "file": "Select the submission to judge",
         "select": "Select the submission status",
-        "success": "Submission status updated successfully."
+        "success": "Submission status updated successfully.",
+        "log": "Check the autojudge log",
+        "no-log": "No log available"
     },
     "color-modal": {
         "hint": "Change the color of the problem",

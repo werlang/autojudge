@@ -205,6 +205,7 @@ router.get('/:id/submissions', auth({'contest:admin': true}), async (req, res, n
             score: submission.score,
             code: submission.code,
             filename: submission.filename,
+            log: submission.log,
         })) });
     }
     catch (error) {

@@ -71,7 +71,9 @@
         "title": "Julgar Submissão",
         "file": "Selecione a submissão que deseja julgar",
         "select": "Selecione o status da submissão",
-        "success": "Status da submissão alterado com sucesso."
+        "success": "Status da submissão alterado com sucesso.",
+        "log": "Verifique o log do autojudge",
+        "no-log": "Nenhum log disponível"
     },
     "color-modal": {
         "hint": "Altere a cor do problema",
