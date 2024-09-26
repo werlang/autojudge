@@ -71,7 +71,6 @@
             "name": "Develop in Edge",
             "configurations": [
                 "Launch Edge",
-                "Devtools Edge",
                 "Debug Edge"
             ]
         }
