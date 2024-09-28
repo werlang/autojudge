@@ -1,7 +1,7 @@
 node_modules
 web/public/css/*
 web/public/js/*
-web/public/img/generated
+web/public/assets/img/generated
 */package*.json
 nginx/*
 api/runs/*

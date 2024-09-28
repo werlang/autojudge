@@ -91,7 +91,7 @@ export default class Menu {
             <div id="top">
                 <div id="logo">
                     <a href="/">
-                        <img src="/img/autojudge.webp" alt="AutoJudge">
+                        <img src="/assets/img/autojudge.webp" alt="AutoJudge">
                         <span>AutoJudge</span>
                     </a>
                 </div>
