@@ -223,6 +223,10 @@ export default {
         buttonRemove.title = this.translate('discard', 'common');
         buttonRemove.innerHTML = '<i class="fa-solid fa-trash"></i>';
         buttonRemove.addEventListener('click', async () => {
+            if (isCreate) {
+                this.render();
+                return;
+            }
             const modal = new Modal(`
                 <h1>${this.translate('remove-case.h1', 'problem')}</h1>
                 <p>${this.translate('remove-case.message', 'problem')}</p>

@@ -39,5 +39,6 @@
     "solved": "Resolvidos",
     "time": "Tempo",
     "expected": "Esperado",
-    "received": "Obtido"
+    "received": "Obtido",
+    "cancel": "Cancelar"
 }
