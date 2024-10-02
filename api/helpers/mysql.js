@@ -1,6 +1,7 @@
 import mysql from 'mysql2/promise';
 import config from './config.js';
 import CustomError from './error.js';
+import mysqldump from 'mysqldump';
 
 export default class Mysql {
         
@@ -85,32 +86,38 @@ export default class Mysql {
         return Mysql.query(sql, values);
     }
 
-    static async delete(table, filter) {
-        let value;
-        if (typeof filter === 'object') {
-            value = Object.values(filter);
-            filter = Object.keys(filter).map(k => `\`${k}\` = ?`).join(' AND ');
+    static async delete(table, clause, opt={}) {
+        const limit = opt.limit ? `LIMIT ${ opt.limit }` : '';
+
+        let sql = '';
+        const data = [];
+
+        // check if clause is an object
+        if (typeof clause === 'object'){
+            const { statement, values } = Mysql.getWhereStatements(clause);
+            sql = `DELETE FROM \`${table}\` WHERE ${statement} ${limit}`;
+            data.push(...values);
         }
         else {
-            value = [filter];
-            filter = '\`id\` = ?';
+            sql = `DELETE FROM \`${table}\` WHERE id = ?`;
+            data.push(clause);
         }
-
-        const sql = `DELETE FROM \`${table}\` WHERE ${filter};`;
-        return Mysql.query(sql, value);
+        
+        return this.query(sql, data);
     }
 
-    // db.find('users', { filter: { name: 'John' }, view: ['name', 'age'], opt: { limit: 1, sort: { age: -1 }, skip: 1 } });
-    static async find(table, { filter={}, view=[], opt={}}) {
-        view = Array.isArray(view) ? view : [ view ];
-        view = view.length > 0 ? view.map(v => `\`${v}\``).join(',') : '*';
+    static getWhereStatements(filter) {
+        let values = Object.values(filter);
 
-        const filterNames = Object.keys(filter);
-        const values = Object.values(filter);
-        // WHERE name = ? AND age >= ?
-        const whereStatements = Object.entries(filter).map(([k,v],i) => {
-            if (Array.isArray(v)) {
+        const statement = Object.entries(filter).map(([k,v],i) => {
+            // email = null
+            if (v === null) return `\`${k}\` IS NULL`;
+
+            if (Array.isArray(v)){
                 // age: [18, 19, 20]
+                if (v.length === 0) return '1=0';
+                
+                // add all values to the values array
                 values.splice(i, 1, ...v);
                 return `\`${k}\` IN (${v.map(() => '?').join(',')})`;
             }
@@ -131,20 +138,48 @@ export default class Mysql {
                     return `\`${k}\` BETWEEN ? AND ?`;
                 }
 
-                // name: { like: 'John' }
+                // name: { like: '%John%' }
                 if (Object.keys(v)[0] === 'like'){
+                    // replace the value with the like value
                     values[i] = `%${v.like}%`;
                     return `\`${k}\` LIKE ?`;
                 }
-                
+
+                // name: { not: 'John' }
+                if (Object.keys(v)[0] === 'not'){
+                    values[i] = v.not;
+                    // name: { not: null }
+                    if (v.not === null) return `\`${k}\` IS NOT NULL`;
+                    return `\`${k}\` != ?`;
+                }
+
                 // age: { '>=': 18 }
                 const e = Object.keys(v)[0];
                 values[i] = Object.values(v)[0];
                 return `\`${k}\` ${e} ?`;
             }
+
             // name: 'John'
             return `\`${k}\` = ?`;
         }).join(' AND ');
+
+        return { statement, values };
+    }
+
+    // db.find('users', { filter: { name: 'John' }, view: ['name', 'age'], opt: { limit: 1, sort: { age: -1 }, skip: 1 } });
+    static async find(table, { filter={}, view=[], opt={}}) {
+        view = Array.isArray(view) ? view : [ view ];
+        view = view.length > 0 ? view.map(v => `\`${v}\``).join(',') : '*';
+
+        const filterNames = Object.keys(filter);
+        let values = Object.values(filter);
+        // WHERE name = ? AND age >= ?
+        const {
+            statement: whereStatements,
+            values: whereValues,
+        } = Mysql.getWhereStatements(filter);
+        values = whereValues;
+
         const where = filterNames.length > 0 ? `WHERE ${ whereStatements }` : '';
 
         // ORDER BY id DESC
@@ -226,4 +261,11 @@ export default class Mysql {
         return { '>=': value };
     }
 
+    static async dump(path, options={}) {
+        return mysqldump({
+            connection: config.mysql.connection,
+            dumpToFile: path,
+            ...options,
+        });
+    }
 }
