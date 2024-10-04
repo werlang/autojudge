@@ -29,11 +29,104 @@ async function checkToken(req) {
     }
 }
 
-async function checkUser(req) {
+// check if the user is logged with a google token
+async function checkUserGoogle(req) {
     const payload = await checkToken(req);
     const user = await new User({ google_id: payload.sub }).get();
     req.user = user;
     return user;
+}
+
+// authenticate the user with email and password and create a JWT token
+async function authUser(req) {
+    if (!req.body.email || !req.body.password) {
+        throw new CustomError(400, 'Email and password are required.');
+    }
+    const password = req.body.password;
+    const email = req.body.email;
+
+    const createJWT = user => jwt.sign({ user }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+    let user;
+    try {
+        user = await new User({ email }).getBy('email');
+    }
+    catch (error) {
+        // throw new CustomError(404, 'User not found.');
+        req.user = null;
+        return req.user;
+    }
+
+    // user found but has no password: google user (need to create a password)
+    if (!user.password) {
+        // throw new CustomError(403, 'User has no password.');
+        req.user = user;
+        return req.user;
+    }
+
+    const isValidPassword = await bcrypt.compare(password, user.password);
+    if (isValidPassword) {
+        user.token = createJWT(user.email);
+        req.user = user;
+        return req.user;
+    }
+    else {
+        throw new CustomError(401, 'Invalid password');
+    }
+}
+
+// check if the user is logged with a JWT token
+async function checkUserJWT(req) {
+    const headers = req.headers;
+    if (!headers.authorization) {
+        throw new CustomError(400, 'Token not provided.');
+    }
+    const token = headers.authorization.split(' ')[1];
+
+    const checkJWT = token => {
+        try {
+            const {user}  = jwt.verify(token, process.env.JWT_SECRET);
+            return user;
+        }
+        catch (error) {
+            return false;
+        }
+    }
+    const jwtId = checkJWT(token);
+
+    if (!jwtId) {
+        throw new CustomError(401, 'Invalid token.');
+    }
+    const user = await new User({ email: jwtId }).getBy('email');
+    if (jwtId && jwtId === user.email) {
+        req.user = user;
+        return user;
+    }
+
+    throw new CustomError(404, 'User not found.');
+}
+
+// check if the user is logged in. Works either with google token or with a password
+async function checkUser(req) {
+    const errorList = [];
+
+    try {
+        await checkUserGoogle(req);
+        return req.user;
+    }
+    catch (error) {
+        errorList.push(error);
+    }
+
+    try {
+        await checkUserJWT(req);
+        return req.user;
+    }
+    catch (error) {
+        errorList.push(error);
+    }
+
+    throw new CustomError(401, errorList.map(error => error.message).join(' '));
 }
 
 async function authTeam(req) {
@@ -165,6 +258,17 @@ function auth(modes = {}) {
         if (modes['user:token']) {
             try {
                 await checkToken(req);
+                anyPassed = true;
+            }
+            catch (error) {
+                errorList.push(error);
+            }
+        }
+
+        // check if the user is logging with the password
+        if (modes['user:password']) {
+            try {
+                await authUser(req);
                 anyPassed = true;
             }
             catch (error) {
