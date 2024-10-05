@@ -15,6 +15,7 @@ import TemplateVar from './template-var.js';
 import DynamicScript from './dynamic-script.js';
 import Pledge from './pledge.js';
 import LocalData from './local-data.js';
+import Translator from './translate.js';
 
 
 export default class GoogleLogin {
@@ -66,7 +67,12 @@ export default class GoogleLogin {
         // You can skip the next instruction if you don't want to show the "Sign-in" button
         google.accounts.id.renderButton(
             element, // Ensure the element exist and it is a div to display correcctly
-            { theme: "outline", size: "large" }  // Customization attributes
+            {
+                theme: "outline",
+                size: "large",
+                locale: Translator.currentLanguage(),
+                width: '350',
+            }
         );
     }
 

@@ -18,13 +18,13 @@ export default class Api {
 
         if (!this.auth) {
             const requestInstance = new Request({ 
-                url: `https://${TemplateVar.get('apiurl')}`,
+                url: `${location.protocol}//${TemplateVar.get('apiurl')}`,
             });
             return requestInstance;
         }
 
         const requestInstance = new Request({ 
-            url: `https://${TemplateVar.get('apiurl')}`,
+            url: `${location.protocol}//${TemplateVar.get('apiurl')}`,
             headers: { 'Authorization': `Bearer ${token}` }
         });
         return requestInstance;

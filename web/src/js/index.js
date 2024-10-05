@@ -6,6 +6,7 @@ import Button from './components/button.js';
 import Translator from './helpers/translate.js';
 import Toast from './components/toast.js';
 import LocalData from './helpers/local-data.js';
+import Form from './components/form.js';
 
 import '../less/index.less';
 
@@ -69,11 +70,25 @@ new Button({ element: document.querySelector('#section-6 #teams') }).click(async
 
 function showSignInModal() {
     const modal = new Modal(`
-        <h1>${translate('signup.h1', 'index')}</h1>
-        <p>${translate('signup.p', 'index')}</p>
-        <div id="button"></div>
-    `, { id: 'signup' });
-    GoogleLogin.renderButton(modal.get('#button'));
+        <form>
+            <h1>${translate('signin.h1', 'index')}</h1>
+            <input id="email" type="email" name="email" placeholder="${translate('signin.email', 'index')}" required>
+            <input id="password" type="password" name="password" placeholder="${translate('signin.password', 'index')}" required>
+            <div id="button-container">
+                <button id="button" type="submit" class="default">${translate('signin.button', 'index')}</button>
+                <div id="google-signin"></div>
+            </div>
+            <div id="signup-container">
+                <span>${translate('signin.no-account', 'index')}<a href="/signup">${translate('signin.signup', 'index')}</a></span>
+            </div>
+        </form>
+    `, { id: 'signin' });
+    
+    new Form(modal.get('form')).submit(async data => {
+        console.log(data);
+    });
+
+    GoogleLogin.renderButton(modal.get('#google-signin'));
 }
 
 // add cards

@@ -25,8 +25,14 @@
         "button": "Gather your Team"
     },
     "signup": {
-        "h1": "Sign up",
-        "p": "Use your Google account to sign up and access the platform."
+    },
+    "signin": {
+        "h1": "Sign in",
+        "email": "Email",
+        "password": "Password",
+        "button": "Sign in",
+        "no-account": "Don't have an account?",
+        "signup": "Sign up"
     },
     "card": {
         "problems": {

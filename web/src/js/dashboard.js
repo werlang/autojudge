@@ -48,7 +48,7 @@ const userPledge = new Pledge();
 
         console.error(error);
         // set expired token so index can show the message
-        if (error.message === 'Invalid token.') {
+        if (error.message.toLowerCase().includes('invalid token')) {
             GoogleLogin.removeCredential();
             new LocalData({ id: 'redirect-message' }).set({ data: 'expired' });
         }

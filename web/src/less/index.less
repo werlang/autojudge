@@ -2,6 +2,7 @@
 @import 'card.less';
 @import 'modal.less';
 @import 'toast.less';
+@import 'form.less';
 
 
 #frame {
@@ -279,13 +280,46 @@
 
 }
 
-.modal#signup {
-    #button {
-        display: flex;
-        justify-content: center;
-        margin-top: 15px;
-        margin-bottom: 30px;
+.modal#signin {
+    width: 400px;
+
+    #content {
+        padding-left: 0;
+        padding-right: 0; 
+
+        form {
+            width: 350px;
+            margin: auto;
+
+            h1 {
+                text-align: center;
+            }
+
+            #button-container {
+                flex-direction: column;
+        
+                #button {
+                    margin-bottom: 15px;
+                    max-width: 100%;
+                }
+            }
+
+            #signup-container {
+                margin-top: 30px;
+                border-top: 1px solid rgba(var(--color-text-raw), 0.3);
+                padding-top: 15px;
+                display: flex;
+                justify-content: center;
+                font-size: 0.9rem;
+
+                a {
+                    margin-left: 5px;
+                }
+            }
+        }
+    
     }
+
 }
 
 .modal#instructions {

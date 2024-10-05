@@ -25,8 +25,14 @@
         "button": "Reunir sua Equipe"
     },
     "signup": {
-        "h1": "Inscrever-se",
-        "p": "Use sua conta do Google para se inscrever e acessar a plataforma."
+    },
+    "signin": {
+        "h1": "Entrar",
+        "email": "E-mail",
+        "password": "Senha",
+        "button": "Entrar",
+        "no-account": "Não tem uma conta?",
+        "signup": "Cadastre-se"
     },
     "card": {
         "problems": {
