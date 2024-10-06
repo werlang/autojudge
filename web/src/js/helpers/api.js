@@ -1,3 +1,4 @@
+import User from "../model/user.js";
 import GoogleLogin from "./google-login.js";
 import Request from "./request.js";
 import TemplateVar from "./template-var.js";
@@ -11,7 +12,7 @@ export default class Api {
     }
 
     setInstance() {
-        const token = this.token || GoogleLogin.getCredential();
+        const token = this.token || User.getToken() || GoogleLogin.getCredential();
         if (!token) {
             this.auth = false;
         }

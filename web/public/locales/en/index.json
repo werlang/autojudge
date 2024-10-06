@@ -24,15 +24,39 @@
         "p": "Join a contest with your team and compete with others. You can see the standings in real-time and see how you are doing compared to others. I will judge your submissions and keep track of everything.",
         "button": "Gather your Team"
     },
-    "signup": {
-    },
     "signin": {
         "h1": "Sign in",
         "email": "Email",
         "password": "Password",
         "button": "Sign in",
         "no-account": "Don't have an account?",
-        "signup": "Sign up"
+        "signup": "Sign up",
+        "response": {
+            "success": "Successfully signed in!",
+            "invalid": "Invalid email or password"
+        }
+    },
+    "signup": {
+        "h1": "Sign up",
+        "name": "Name",
+        "last-name": "Last name",
+        "email": "Email",
+        "password": "Password",
+        "confirm-password": "Confirm password",
+        "button": "Sign up",
+        "have-account": "Already have an account?",
+        "signin": "Sign in",
+        "validation": {
+            "name": "Name is required",
+            "last-name": "Last name is required",
+            "email": "Invalid email",
+            "password": "Password must be at least 8 characters long",
+            "confirm": "Passwords do not match"
+        },
+        "response": {
+            "success": "Successfully signed up!",
+            "updated": "Successfully updated!"
+        }
     },
     "card": {
         "problems": {

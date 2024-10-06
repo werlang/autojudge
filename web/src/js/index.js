@@ -7,6 +7,7 @@ import Translator from './helpers/translate.js';
 import Toast from './components/toast.js';
 import LocalData from './helpers/local-data.js';
 import Form from './components/form.js';
+import User from './model/user.js';
 
 import '../less/index.less';
 
@@ -22,21 +23,29 @@ document.querySelectorAll('section .col.text .content h1, #section-3 h1, #sectio
 const splashVideo = document.querySelector('#section-1 video');
 splashVideo.playbackRate = 0.4;
 
-const translate = await new Translator(['en', 'pt'], ['index', 'components']).init();
+const translate = await new Translator(['en', 'pt'], [
+    'index',
+    'components',
+    'api',
+]).init();
 
 
 GoogleLogin.init({ redirectUri: `https://${window.location.hostname}/dashboard` });
 GoogleLogin.onFail(showSignInModal);
 
 let redirectMessage = new LocalData({ id: 'redirect-message' });
-let credential = GoogleLogin.getCredential();
+let googleCredential = GoogleLogin.getCredential();
+let userToken = User.getToken();
 // console.log(credential);
 // check if the credential is expired and show a message
 if (redirectMessage.get() === 'expired') {
     // GoogleLogin.removeCredential();
     new Toast(translate('login.expired', 'index'), { type: 'error' });
     redirectMessage.remove();
-    credential = null;
+    googleCredential = null;
+    userToken = null;
+    GoogleLogin.removeCredential();
+    User.removeToken();
 }
 
 // bind buttons to google login
@@ -46,7 +55,7 @@ async function redirectOrLogin(path) {
         location.href = `/${path}`;
     });
     
-    if (credential) {
+    if (googleCredential || userToken) {
         location.href = `/${path}`;
         return;
     }
@@ -68,27 +77,145 @@ new Button({ element: document.querySelector('#section-4 #problems') }).click(as
 new Button({ element: document.querySelector('#section-5 #contests') }).click(async () => redirectOrLogin('contests'));
 new Button({ element: document.querySelector('#section-6 #teams') }).click(async () => location.href = '/teams');
 
-function showSignInModal() {
-    const modal = new Modal(`
-        <form>
-            <h1>${translate('signin.h1', 'index')}</h1>
-            <input id="email" type="email" name="email" placeholder="${translate('signin.email', 'index')}" required>
-            <input id="password" type="password" name="password" placeholder="${translate('signin.password', 'index')}" required>
-            <div id="button-container">
-                <button id="button" type="submit" class="default">${translate('signin.button', 'index')}</button>
-                <div id="google-signin"></div>
-            </div>
-            <div id="signup-container">
-                <span>${translate('signin.no-account', 'index')}<a href="/signup">${translate('signin.signup', 'index')}</a></span>
-            </div>
-        </form>
-    `, { id: 'signin' });
-    
-    new Form(modal.get('form')).submit(async data => {
-        console.log(data);
-    });
 
-    GoogleLogin.renderButton(modal.get('#google-signin'));
+let formSignin = null;
+let formSignup = null;
+
+function showSignInModal() {
+    let modal = null;
+
+    if (!formSignin) {
+        formSignin = new Form((() => {
+            const form = document.createElement('form');
+            form.id = 'signin';
+            form.innerHTML = `
+                <h1>${translate('signin.h1', 'index')}</h1>
+                <input id="email" type="email" name="email" placeholder="${translate('signin.email', 'index')}" required>
+                <input id="password" type="password" name="password" placeholder="${translate('signin.password', 'index')}" required>
+                <div id="button-container">
+                    <button id="button" type="submit" class="default">${translate('signin.button', 'index')}</button>
+                    <div id="google-signin"></div>
+                </div>
+                <div id="signup-container" class="bottom-link">
+                    <span>${translate('signin.no-account', 'index')}<a>${translate('signin.signup', 'index')}</a></span>
+                </div>
+            `;
+        
+            form.querySelector('#signup-container a').addEventListener('click', e => {
+                const content = modal.get('#content');
+                content.innerHTML = '';
+                content.appendChild(formSignup.get());
+            });
+            
+            return form;
+        })());
+        formSignin.submit(async data => {
+            // console.log(data);
+            try {
+                const response = await new User({
+                    email: data['email'],
+                    password: data['password'],
+                }).login();
+                // console.log(response);
+    
+                new Toast(translate('signin.response.success', 'index'), { type: 'success' });
+                location.href = '/dashboard';
+            }
+            catch (error) {
+                // console.error(error);
+                new Toast(translate('signin.response.invalid', 'index'), { type: 'error' });
+            }
+        });
+    }
+    if (!formSignup) {
+        formSignup = new Form((() => {
+            const form = document.createElement('form');
+            form.id = 'signup';
+            form.innerHTML = `
+                <h1>${translate('signup.h1', 'index')}</h1>
+                <input id="name" type="text" name="name" placeholder="${translate('signup.name', 'index')}" required>
+                <input id="last-name" type="text" name="last-name" placeholder="${translate('signup.last-name', 'index')}" required>
+                <input id="email" type="email" name="email" placeholder="${translate('signup.email', 'index')}" required>
+                <input id="password" type="password" name="password" placeholder="${translate('signup.password', 'index')}" required>
+                <input id="confirm" type="password" name="confirm" placeholder="${translate('signup.confirm-password', 'index')}" required>
+                <div id="button-container">
+                    <button id="button" type="submit" class="default">${translate('signup.button', 'index')}</button>
+                </div>
+                <div id="signin-container" class="bottom-link">
+                    <span>${translate('signup.have-account', 'index')}<a>${translate('signup.signin', 'index')}</a></span>
+                </div>
+            `;
+    
+            GoogleLogin.renderButton(formSignin.get('#google-signin'));
+            
+            form.querySelector('#signin-container a').addEventListener('click', e => {
+                const content = modal.get('#content');
+                content.innerHTML = '';
+                content.appendChild(formSignin.get());
+            });
+            
+            return form;
+        })());
+        formSignup.submit(async data => {
+            // console.log(data);
+            if (!formSignup.validate([
+                {
+                    id: 'name',
+                    rule: value => value.length,
+                    message: translate('signup.validation.name', 'index')
+                },
+                {
+                    id: 'last-name',
+                    rule: value => value.length,
+                    message: translate('signup.validation.last-name', 'index')
+                },
+                {
+                    id: 'email',
+                    rule: Form.VALIDATION_RULES.EMAIL,
+                    message: translate('signup.validation.email', 'index')
+                },
+                {
+                    id: 'password',
+                    rule: value => value.length >= 8,
+                    message: translate('signup.validation.password', 'index')
+                },
+                {
+                    id: 'confirm',
+                    rule: (value, inputs) => value === inputs.password.value,
+                    message: translate('signup.validation.confirm', 'index')
+                },
+            ])) return;
+
+            try {
+                const response = await new User({
+                    name: data['name'],
+                    lastName: data['last-name'],
+                    email: data['email'],
+                    password: data['password'],
+                }).add();
+                console.log(response);
+    
+                // if the user was created, show a success message
+                if (response.status === 201) {
+                    new Toast(translate('signup.response.success', 'index'), { type: 'success' });
+                    modal.close();
+                }
+                // user exists and password was updated
+                else if (response.status === 200 && response.updated === true) {
+                    new Toast(translate('signup.response.updated', 'index'), { type: 'success' });
+                    modal.close();
+                }
+            }
+            catch (error) {
+                // console.error(error);
+                new Toast(translate(error.message, 'api'), { type: 'error' });
+            }
+
+        });
+    }
+    
+    // TODO: check why modal link is not working after first click
+    modal = new Modal(formSignin.get(), { id: 'signin' });
 }
 
 // add cards

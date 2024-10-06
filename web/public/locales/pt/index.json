@@ -24,15 +24,39 @@
         "p": "Participe de uma competição e desafie outras equipes. Você pode ver a classificação em tempo real e ver como está se saindo em comparação com os outros. Eu julgarei suas submissões e acompanharei tudo.",
         "button": "Reunir sua Equipe"
     },
-    "signup": {
-    },
     "signin": {
-        "h1": "Entrar",
+        "h1": "Login",
         "email": "E-mail",
         "password": "Senha",
         "button": "Entrar",
         "no-account": "Não tem uma conta?",
-        "signup": "Cadastre-se"
+        "signup": "Cadastre-se",
+        "response": {
+            "success": "Login realizado com sucesso!",
+            "invalid": "E-mail ou senha inválidos"
+        }
+    },
+    "signup": {
+        "h1": "Cadastre-se",
+        "name": "Nome",
+        "last-name": "Sobrenome",
+        "email": "E-mail",
+        "password": "Senha",
+        "confirm-password": "Confirme a senha",
+        "button": "Cadastrar",
+        "have-account": "Já tem uma conta?",
+        "signin": "Faça login",
+        "validation": {
+            "name": "Nome é obrigatório",
+            "last-name": "Sobrenome é obrigatório",
+            "email": "E-mail inválido",
+            "password": "A senha deve ter pelo menos 8 caracteres",
+            "confirm": "As senhas não coincidem"
+        },
+        "response": {
+            "success": "Cadastro realizado com sucesso!",
+            "updated": "Cadastro atualizado com sucesso!"
+        }
     },
     "card": {
         "problems": {

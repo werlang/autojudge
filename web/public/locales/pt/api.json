@@ -7,5 +7,8 @@
     "The contest is not running": "A competição não está em andamento",
     "Problem must have hidden test cases": "O problema deve possuir casos de teste ocultos",
     "Problem does not have hidden test cases": "O problema não possui casos de teste ocultos",
-    "Team already solved this problem": "Equipe já resolveu este problema"
+    "Team already solved this problem": "Equipe já resolveu este problema",
+    "User already exists": "Usuário já existe",
+    "Missing required fields": "Campos obrigatórios faltando",
+    "User not found": "Usuário não encontrado"
 }
