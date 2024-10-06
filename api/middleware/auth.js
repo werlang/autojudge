@@ -405,7 +405,7 @@ function auth(modes = {}) {
         }
 
         if (!anyPassed) {
-            next(new CustomError(errorList[0].code, errorList.map(error => error.message).join(' ')));
+            next(new CustomError(errorList.map(e => e.code).sort((a,b) => b-a)[0], errorList.map(error => error.message).join(' ')));
             return;
         }
 
