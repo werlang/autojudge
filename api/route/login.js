@@ -6,12 +6,11 @@ import CustomError from '../helpers/error.js';
 const router = Router();
 
 // Login a user with email and password
-
 router.post('/', auth({ 'user:password': true }), async (req, res, next) => {
     try {
         // auth passed, but user not found: create a new user
         if (req.user === null) {
-            throw new CustomError(404, 'User not found.');
+            throw new CustomError(404, 'User not found');
         }
         else if (!req.user.password) {
             throw new CustomError(401, 'Password not set. Please use the register endpoint.');
@@ -19,7 +18,6 @@ router.post('/', auth({ 'user:password': true }), async (req, res, next) => {
 
         res.status(200).send({
             status: 200,
-            type: 'password',
             user: {
                 email: req.user.email,
                 name: req.user.name,
@@ -43,7 +41,7 @@ router.post('/register', auth({ 'user:password': true }), async (req, res, next)
         const { email, password, name, lastName } = req.body;
 
         if (!email || !password || !name || !lastName) {
-            throw new CustomError(400, 'Missing required fields.');
+            throw new CustomError(400, 'Missing required fields');
         }
         
         // auth passed, but user not found: create a new user
@@ -56,7 +54,6 @@ router.post('/register', auth({ 'user:password': true }), async (req, res, next)
             }).insert();
             res.status(201).send({
                 status: 201,
-                type: 'password',
                 created: true,
                 message: 'User created.',
                 user: {
@@ -85,7 +82,7 @@ router.post('/register', auth({ 'user:password': true }), async (req, res, next)
             return;
         }
         
-        throw new CustomError(409, 'User already exists.');
+        throw new CustomError(409, 'User already exists');
     }
     catch (error) {
         next(error);
@@ -145,6 +142,24 @@ router.post('/google', auth({ 'user:token': true }), async (req, res, next) => {
         })();
 
         res.status(user.status).send({ ...user});
+    }
+    catch (error) {
+        next(error);
+    }
+});
+
+// Get user data. Must be authenticated
+router.get('/user', auth({ 'user:exists': true }), async (req, res, next) => {
+    try {
+        res.status(200).send({
+            status: 200,
+            user: {
+                email: req.user.email,
+                name: req.user.name,
+                lastName: req.user.last_name,
+                picture: req.user.picture,
+            }
+        });
     }
     catch (error) {
         next(error);
