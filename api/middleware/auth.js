@@ -32,7 +32,7 @@ async function checkToken(req) {
 // check if the user is logged with a google token
 async function checkUserGoogle(req) {
     const payload = await checkToken(req);
-    const user = await new User({ google_id: payload.sub }).get();
+    const user = await new User({ google_id: payload.sub }).getBy('google_id');
     req.user = user;
     return user;
 }

@@ -6,6 +6,7 @@ export default class User extends Model {
     constructor({
         google_id,
         email,
+        password,
         name,
         last_name,
         picture,
@@ -13,21 +14,17 @@ export default class User extends Model {
         super('users', {
             fields: {
                 id: null,
-                google_id,
+                google_id: google_id || null,
                 email,
-                password: null,
+                password: password ? bcrypt.hashSync(password, 10) : null,
                 name,
                 last_name,
-                picture,
+                picture: picture || null,
                 created_at: null,
             },
             insertFields: ['google_id', 'email', 'password', 'name', 'last_name', 'picture'],
             allowUpdate: ['email', 'password', 'name', 'last_name', 'picture'],
         });
-    }
-
-    async get() {
-        return this.getBy('google_id');
     }
 
     async updatePassword(password) {

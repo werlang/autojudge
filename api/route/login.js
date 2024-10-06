@@ -22,7 +22,7 @@ router.post('/', auth({
             user = await (async () => {
                 // Check if the user already exists
                 try {
-                    const user = await new User({ google_id: payload.sub }).get();
+                    const user = await new User({ google_id: payload.sub }).getBy('google_id');
                     return { 
                         status: 200,
                         user: {
@@ -66,12 +66,19 @@ router.post('/', auth({
             const { email, password } = req.body;
             // auth passed, but user not found: create a new user
             if (req.user === null) {
-                const newUser = await new User({ email, password }).insert();
+                const newUser = await new User({
+                    email,
+                    password,
+                    name: req.body.name,
+                    last_name: req.body.lastName,
+                }).insert();
                 user = {
                     status: 201,
                     message: 'User created.',
                     user: {
                         email: newUser.email,
+                        name: newUser.name,
+                        lastName: newUser.last_name,
                     }
                 }
             }
