@@ -35,7 +35,8 @@ app.use(langMiddleware.listen());
 
 // render middleware, setting some variables to be used in all views
 app.use(renderMiddleware({
-    apiurl: process.env.API,
+    apiurl: process.env.LOCAL_SERVER === 'false' ? process.env.API : `${process.env.LOCAL_SERVER}:3030`,
+    localServer: process.env.LOCAL_SERVER !== 'false',
     liveReload: process.env.LIVE_RELOAD,
 }));
 

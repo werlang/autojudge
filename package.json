@@ -16,6 +16,11 @@
   "author": "Pablo Werlang",
   "license": "MIT",
   "dependencies": {
+    "@fontsource-variable/roboto-mono": "^5.1.0",
+    "@fontsource/lato": "^5.1.0",
+    "@fontsource/quantico": "^5.1.0",
+    "@fontsource/roboto": "^5.1.0",
+    "@fortawesome/fontawesome-free": "^6.6.0",
     "@google-cloud/storage": "^7.13.0",
     "@jaames/iro": "^5.5.2",
     "bcrypt": "^5.1.1",

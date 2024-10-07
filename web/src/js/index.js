@@ -8,6 +8,7 @@ import Toast from './components/toast.js';
 import LocalData from './helpers/local-data.js';
 import Form from './components/form.js';
 import User from './model/user.js';
+import TemplateVar from './helpers/template-var.js';
 
 import '../less/index.less';
 
@@ -29,9 +30,10 @@ const translate = await new Translator(['en', 'pt'], [
     'api',
 ]).init();
 
-
-GoogleLogin.init({ redirectUri: `https://${window.location.hostname}/dashboard` });
-GoogleLogin.onFail(showSignInModal);
+if (!TemplateVar.get('localServer')) {
+    GoogleLogin.init({ redirectUri: `https://${window.location.hostname}/dashboard` });
+    GoogleLogin.onFail(showSignInModal);
+}
 
 let redirectMessage = new LocalData({ id: 'redirect-message' });
 let googleCredential = GoogleLogin.getCredential();
@@ -50,6 +52,11 @@ if (redirectMessage.get() === 'expired') {
 
 // bind buttons to google login
 async function redirectOrLogin(path) {
+    if (TemplateVar.get('localServer')) {
+        showSignInModal();
+        return;
+    }
+
     GoogleLogin.onSignIn(async () => {
         redirectMessage.remove();
         location.href = `/${path}`;
@@ -110,7 +117,9 @@ function showSignInModal() {
             return form;
         })());
 
-        GoogleLogin.renderButton(formSignin.get('#google-signin'));
+        if (!TemplateVar.get('localServer')) {
+            GoogleLogin.renderButton(formSignin.get('#google-signin'));
+        }
 
         formSignin.submit(async data => {
             // console.log(data);
@@ -125,7 +134,7 @@ function showSignInModal() {
                 location.href = '/dashboard';
             }
             catch (error) {
-                // console.error(error);
+                console.error(error);
                 new Toast(translate('signin.response.invalid', 'index'), { type: 'error' });
             }
         });
