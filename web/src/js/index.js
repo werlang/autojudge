@@ -102,13 +102,16 @@ function showSignInModal() {
             `;
         
             form.querySelector('#signup-container a').addEventListener('click', e => {
-                const content = modal.get('#content');
+                const content = document.querySelector('.modal#signin #content');
                 content.innerHTML = '';
                 content.appendChild(formSignup.get());
             });
             
             return form;
         })());
+
+        GoogleLogin.renderButton(formSignin.get('#google-signin'));
+
         formSignin.submit(async data => {
             // console.log(data);
             try {
@@ -146,10 +149,8 @@ function showSignInModal() {
                 </div>
             `;
     
-            GoogleLogin.renderButton(formSignin.get('#google-signin'));
-            
             form.querySelector('#signin-container a').addEventListener('click', e => {
-                const content = modal.get('#content');
+                const content = document.querySelector('.modal#signin #content');
                 content.innerHTML = '';
                 content.appendChild(formSignin.get());
             });
@@ -214,7 +215,6 @@ function showSignInModal() {
         });
     }
     
-    // TODO: check why modal link is not working after first click
     modal = new Modal(formSignin.get(), { id: 'signin' });
 }
 

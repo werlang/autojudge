@@ -75,6 +75,7 @@ translatePledge.then(translate => {
     })
     .addAction('logout', async () => {
         GoogleLogin.removeCredential();
+        User.removeToken();
         new LocalData({ id: 'redirect-message' }).set({ data: 'logout' });
         location.href = '/';
     });

@@ -31,7 +31,7 @@ export default {
             Problem.getAll(),
         ]);
         contests = contests.contests;
-        problems = problems.problems//.filter(problem => problem.author);
+        problems = problems.problems.filter(problem => problem.author);
 
         cardProblems.get('.description').innerHTML = this.translate('home.problems', 'dashboard', {count: problems.length});
         cardContests.get('.description').innerHTML = this.translate('home.contests', 'dashboard', {count: contests.length});
