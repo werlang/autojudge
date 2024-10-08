@@ -1,0 +1,17 @@
+services:
+    pdf:
+        image: surnet/alpine-python-wkhtmltopdf:3.12.4-0.12.6-small
+        volumes:
+            - runs:/app
+        working_dir: /app/${TEMP_DIR}
+        networks:
+            - runner
+        command: "wkhtmltopdf --page-size A4 --orientation Portrait template.html file.pdf"
+networks:
+    runner:
+        name: judge_runner
+        external: true
+volumes:
+    runs:
+        name: judge_tmp_run
+        external: true

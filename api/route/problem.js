@@ -4,6 +4,7 @@ import CustomError from '../helpers/error.js';
 import Problem from '../model/problem.js';
 import Contest from '../model/contest.js';
 import Submission from '../model/submission.js';
+import fs from 'fs/promises';
 
 const router = Router();
 
@@ -219,5 +220,42 @@ router.post('/:id/judge', [
     }
 });
 
+// create pdf
+router.get('/:hash/pdf', auth({'user:optional': true}), async (req, res, next) => {
+    try {
+        if (req.params.hash.length < process.env.HASH_LENGTH) {
+            throw new CustomError(400, 'Hash too short.');
+        }
+        const problems = await Problem.getAll({ hash: { like: req.params.hash }});
+        if (problems.length == 0) {
+            throw new CustomError(404, 'Problem not found.');
+        }
+        else if (problems.length > 1) {
+            throw new CustomError(401, 'Ambiguous hash.');
+        }
+        const problem = problems[0];
+
+        let template = await fs.readFile('./template/pdf-template.html', 'utf8');
+        template = template.replace(/{{title}}/g, problem.title);
+        template = template.replace(/{{description}}/g, problem.description);
+
+        // use the judge service to generate the pdf because it has the access to docker
+        const response = await fetch(`http://judge:3000/pdf`, {
+            method: 'POST',
+            // send the template
+            headers: { 'Content-Type': 'application/json', },
+            body: JSON.stringify({ template }),
+        });
+        const blob = await response.blob();
+        const buffer = Buffer.from(await blob.arrayBuffer());
+
+        res.contentType('application/pdf');
+        res.send(buffer);
+
+    }
+    catch (error) {
+        next(error);
+    }
+});
 
 export default router;
