@@ -241,7 +241,7 @@ router.post('/:hash/pdf', auth({'user:optional': true}), async (req, res, next) 
         const headerFS = await PDFUtils.getReplacedBuffer('./template/pdf-header.html');
         const footerFS = await PDFUtils.getReplacedBuffer('./template/pdf-footer.html');
 
-        Chromiumly.configure({ endpoint: "http://gotenberg:3000" });
+        Chromiumly.configure({ endpoint: process.env.GOTENBERG_SERVER });
         const htmlConverter = new HtmlConverter();
         const buffer = await htmlConverter.convert({
             html: templateFS,
@@ -250,7 +250,9 @@ router.post('/:hash/pdf', auth({'user:optional': true}), async (req, res, next) 
             // preferCSSPageSize: true,
         });
 
-        res.contentType('application/pdf');
+        res.setHeader('Content-Type', 'application/pdf');
+        const normalize = text => text.toLowerCase().replace(/\s/, '-').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        res.setHeader('Content-Disposition', `attachment; filename="${normalize(problem.title)}.pdf"`);
         res.send(buffer);
 
     }

@@ -1,5 +1,4 @@
 import fs from 'fs';
-import { Transform } from 'stream';
 
 export default {
     // Function to convert image URL to Base64
@@ -42,55 +41,36 @@ export default {
         return htmlContent;
     },
 
-    // Helper function to stream content to a buffer
-    streamToBuffer: function(stream) {
-        return new Promise((resolve, reject) => {
-            const chunks = [];
-            stream.on('data', (chunk) => chunks.push(chunk));
-            stream.on('end', () => resolve(Buffer.concat(chunks)));
-            stream.on('error', reject);
-        });
-    },
+    replaceText: async function(text) {
+        let template = text.replace(/{{title}}/g, this.problem.title);
+        template = template.replace(/{{description}}/g, this.problem.description);
 
-    getTransform: function() {
-        const self = this;
+        // generate the table with the input and output
+        const inputList = JSON.parse(this.problem.input_public);
+        const outputList = JSON.parse(this.problem.output_public);
+        const rows = inputList.map((input, i) => `<tr>
+            <td>${input}</td>
+            <td>${outputList[i]}</td>
+        </tr>`).join('');
+        template = template.replace('{{io}}', rows);
+    
+        // replace the body args
+        for (const key in this.args) {
+            template = template.replace(new RegExp(`{{${key}}}`, 'g'), this.args[key]);
+        }
 
-        return new Transform({
-            async transform(chunk, encoding, callback) {
-                // Convert the chunk to string, replace the desired text, and push the modified chunk
-                let template = chunk.toString().replace(/{{title}}/g, self.problem.title);
-                template = template.replace(/{{description}}/g, self.problem.description);
-    
-                // generate the table with the input and output
-                const inputList = JSON.parse(self.problem.input_public);
-                const outputList = JSON.parse(self.problem.output_public);
-                const rows = inputList.map((input, i) => `<tr>
-                    <td>${input}</td>
-                    <td>${outputList[i]}</td>
-                </tr>`).join('');
-                template = template.replace('{{io}}', rows);
-        
-                // replace the body args
-                for (const key in self.args) {
-                    template = template.replace(new RegExp(`{{${key}}}`, 'g'), self.args[key]);
-                }
-    
-                // Convert all external image URLs in the template to Base64 using regex
-                template = await self.convertImagesToBase64UsingRegex(template);
-                
-                this.push(template);
-                callback();
-            }
-        });
+        // Convert all external image URLs in the template to Base64 using regex
+        template = await this.convertImagesToBase64UsingRegex(template);
+
+        return template;
     },
 
     getReplacedBuffer: async function(path, problem, args) {
         this.problem = problem || this.problem;
         this.args = args || this.args;
-        const fileStream = fs.createReadStream(path);
-        const transform = this.getTransform();
-        const transformedStream = fileStream.pipe(transform);
-        const transformedBuffer = await this.streamToBuffer(transformedStream);
+        const file = fs.readFileSync(path, 'utf8');
+        const replacedFile = await this.replaceText(file);
+        const transformedBuffer = Buffer.from(replacedFile);
         return transformedBuffer;
     },
 
