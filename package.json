@@ -24,6 +24,7 @@
     "@google-cloud/storage": "^7.13.0",
     "@jaames/iro": "^5.5.2",
     "bcrypt": "^5.1.1",
+    "chromiumly": "^3.8.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "css-loader": "^7.1.1",

@@ -108,7 +108,11 @@ services:
         depends_on:
             - web
             - api
-            
+    gotenberg:
+        container_name: gotenberg
+        image: gotenberg/gotenberg:8
+        networks:
+            - autojudge
 volumes:
     node_modules:
     runs:

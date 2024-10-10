@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+    <style>
+        :root {
+            --font-size: 12pt;
+            --line-height: 1.6;
+            --table-border-color: #ccc;
+            --table-padding: 5pt 10pt;
+            --page-margin: 20mm;
+            --border-color: #ddd;
+            --header-bg-color: #f0f0f0;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: var(--line-height);
+            color: #333;
+            box-sizing: border-box;
+        }
+
+        /* Main Content */
+
+        h1 {
+            text-align: center;
+            font-size: 2rem;
+        }
+
+        p {
+            text-align: justify;
+            margin-bottom: 10mm;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10mm;
+        }
+
+        th, td {
+            padding: var(--table-padding);
+            font-family: monospace;
+            text-align: left;
+            border: 1px solid var(--table-border-color);
+        }
+
+        th {
+            background-color: var(--header-bg-color);
+            font-weight: bold;
+            text-align: center;
+        }
+
+        td {
+            white-space: pre-wrap; /* Allows wrapping of long text */
+        }
+
+        /* Ensure table doesn't break across pages */
+        table, tr, th, td {
+            page-break-inside: avoid;
+        }
+
+        /* Styling for Print-Specific Layout (for fixed A4 output) */
+        @page {
+            size: A4;
+            margin: 40mm 20mm;
+        }
+
+
+    </style>
+</head>
+<body>
+    <h1>{{title}}</h1>
+    <p>{{description}}</p>
+    <p>{{description}}</p>
+    <p>{{description}}</p>
+    <p>{{description}}</p>
+    <p>{{description}}</p>
+    <p>{{description}}</p>
+    <p>{{description}}</p>
+    <p>{{description}}</p>
+    <p>{{description}}</p>
+    <p>{{description}}</p>
+    <img src="{{logo-1}}" style="height: 100px;">
+
+
+    <!-- Input/Output Table -->
+    <table>
+        <thead>
+            <tr>
+                <th>{{input}}</th>
+                <th>{{output}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{io}}
+        </tbody>
+    </table>
+</body>
+</html>

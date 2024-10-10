@@ -92,7 +92,11 @@ services:
             - 127.0.0.1:${MYSQL_PORT}:3306
         networks:
             - autojudge
-            
+    gotenberg:
+        container_name: gotenberg
+        image: gotenberg/gotenberg:8
+        networks:
+            - autojudge
 volumes:
     node_modules:
     runs:

@@ -4,7 +4,8 @@ import CustomError from '../helpers/error.js';
 import Problem from '../model/problem.js';
 import Contest from '../model/contest.js';
 import Submission from '../model/submission.js';
-import fs from 'fs/promises';
+import { Chromiumly, HtmlConverter } from "chromiumly";
+import PDFUtils from '../helpers/pdf.js';
 
 const router = Router();
 
@@ -221,7 +222,7 @@ router.post('/:id/judge', [
 });
 
 // create pdf
-router.get('/:hash/pdf', auth({'user:optional': true}), async (req, res, next) => {
+router.post('/:hash/pdf', auth({'user:optional': true}), async (req, res, next) => {
     try {
         if (req.params.hash.length < process.env.HASH_LENGTH) {
             throw new CustomError(400, 'Hash too short.');
@@ -235,19 +236,19 @@ router.get('/:hash/pdf', auth({'user:optional': true}), async (req, res, next) =
         }
         const problem = problems[0];
 
-        let template = await fs.readFile('./template/pdf-template.html', 'utf8');
-        template = template.replace(/{{title}}/g, problem.title);
-        template = template.replace(/{{description}}/g, problem.description);
+        PDFUtils.set({ problem, args: req.body });
+        const templateFS = await PDFUtils.getReplacedBuffer('./template/pdf-index.html');
+        const headerFS = await PDFUtils.getReplacedBuffer('./template/pdf-header.html');
+        const footerFS = await PDFUtils.getReplacedBuffer('./template/pdf-footer.html');
 
-        // use the judge service to generate the pdf because it has the access to docker
-        const response = await fetch(`http://judge:3000/pdf`, {
-            method: 'POST',
-            // send the template
-            headers: { 'Content-Type': 'application/json', },
-            body: JSON.stringify({ template }),
+        Chromiumly.configure({ endpoint: "http://gotenberg:3000" });
+        const htmlConverter = new HtmlConverter();
+        const buffer = await htmlConverter.convert({
+            html: templateFS,
+            header: headerFS,
+            footer: footerFS,
+            // preferCSSPageSize: true,
         });
-        const blob = await response.blob();
-        const buffer = Buffer.from(await blob.arrayBuffer());
 
         res.contentType('application/pdf');
         res.send(buffer);
