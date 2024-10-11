@@ -46,6 +46,51 @@ app.get('/', (req, res) => {
     });
 });
 
+
+// route for pdf generation (single problem)
+// Params for generating custom header
+//   header.title: title of the header
+//   header.subtitle: subtitle of the header
+//   custom-logo: custom logo to be used in the header. Can be a URL or base64 image
+app.get('/problems/:hash/pdf', async (req, res) => {
+    const blob = await fetch(`http://api:3000/problems/${req.params.hash}/pdf`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', },
+        body: JSON.stringify({
+            input: res.locals.t('input_samples', { ns: 'problem' }),
+            output: res.locals.t('output_samples', { ns: 'problem' }),
+            'header.title': '',
+            'header.subtitle': '',
+            ...req.query,
+        }),
+    }).then(response => response.blob());
+    const buffer = await blob.arrayBuffer();
+    res.setHeader('Content-Type', 'application/pdf');
+    res.send(Buffer.from(buffer));
+});
+
+// route for pdf generation (multiple problems)
+// Params for generating custom header are the same as the single problem route
+app.get('/problems/pdf', async (req, res) => {
+    const problems = req.query.p.split(',');
+    const blob = await fetch(`http://api:3000/problems/pdf`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', },
+        body: JSON.stringify({
+            problems,
+            input: res.locals.t('input_samples', { ns: 'problem' }),
+            output: res.locals.t('output_samples', { ns: 'problem' }),
+            'header.title': req.query.t || '',
+            'header.subtitle': req.query.s || '',
+            ...req.query,
+        }),
+    }).then(response => response.blob());
+    const buffer = await blob.arrayBuffer();
+    res.setHeader('Content-Type', 'application/pdf');
+    res.send(Buffer.from(buffer));
+});
+
+
 const dashboardRoute = (req, res) => {
     res.templateRender('dashboard', {
         googleCredential: req.body.credential,

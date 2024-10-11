@@ -69,20 +69,14 @@ export default {
         }
 
         const pdfProblems = new Button({ id: 'get-pdf', text: this.translate('pdf-problems', 'problem') }).click(async () => {
-            try {
-                const blob = await this.contestInstance.getPDF({
-                    input: this.translate('input_samples', 'problem'),
-                    output: this.translate('output_samples', 'problem'),
-                });
-                const pdf = URL.createObjectURL(blob);
-                window.open(pdf);
-                return;
-            }
-            catch (error) {
-                console.error(error);
-                new Toast(error.message, { type: 'error' });
-                return;
-            }
+            const hashes = this.contest.problems.map(p => p.hash);
+            const usp = new URLSearchParams({
+                p: hashes.join(','),
+                t: this.contest.name,
+                s: this.contest.description,
+            }).toString();
+            // console.log(usp);
+            window.open(`/problems/pdf?${usp}`);
         });
         problems.appendChild(pdfProblems.get());
     },

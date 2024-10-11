@@ -254,4 +254,43 @@ router.post('/:hash/pdf', auth({'user:optional': true}), async (req, res, next) 
     }
 });
 
+// create pdf from multiple problems
+router.post('/pdf', auth({'user:optional': true}), async (req, res, next) => {
+    try {
+        const hashes = req.body.problems;
+        const problems = await Promise.all(hashes.map(async hash => {
+            if (hash.length < process.env.HASH_LENGTH) {
+                throw new CustomError(400, 'Hash too short.');
+            }
+            const problems = await Problem.getAll({ hash: { like: hash }});
+            if (problems.length == 0) {
+                throw new CustomError(404, 'Problem not found.');
+            }
+            else if (problems.length > 1) {
+                throw new CustomError(401, 'Ambiguous hash.');
+            }
+
+            return problems[0];
+        }));
+
+        const pdfs = await Promise.all(problems.map(async problem => new PDFUtils({
+            problem,
+            args: req.body,
+            template: './template/pdf-index.html',
+            header: './template/pdf-header.html',
+            footer: './template/pdf-footer.html',
+        }).create()));
+
+        const buffer = await PDFUtils.merge(pdfs);
+
+        res.setHeader('Content-Type', 'application/pdf');
+        const normalize = text => text.toLowerCase().replace(/\s/, '-').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        res.setHeader('Content-Disposition', `attachment; filename="${normalize('problems')}.pdf"`);
+        res.send(buffer);
+    }
+    catch (error) {
+        next(error);
+    }
+});
+
 export default router;

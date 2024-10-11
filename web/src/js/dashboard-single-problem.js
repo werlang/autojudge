@@ -41,7 +41,7 @@ export default {
                         <i class="fas fa-qrcode"></i>
                     </div>
                     <div class="pdf">
-                        <i class="fas fa-file-pdf"></i>
+                        <a href="/problems/${this.problem.hash}/pdf" target="_blank"><i class="fas fa-file-pdf"></i></a>
                     </div>
                 </div>
                     
@@ -73,26 +73,6 @@ export default {
                 content.innerHTML = '';
                 modal.append(img);
                 content.classList.remove('loading');
-            }
-        });
-        frame.querySelector('#share .pdf').addEventListener('click', async e => {
-            try {
-                e.target.classList.remove('fa-file-pdf');
-                e.target.classList.add('fa-spinner', 'fa-pulse');
-                const blob = await this.problem.getPDF({
-                    input: this.translate('input_samples', 'problem'),
-                    output: this.translate('output_samples', 'problem'),
-                    'header.title': '',
-                    'header.subtitle': '',
-                });
-                e.target.classList.remove('fa-spinner', 'fa-pulse');
-                e.target.classList.add('fa-file-pdf');
-                const pdf = URL.createObjectURL(blob);
-                window.open(pdf);
-            }
-            catch (error) {
-                console.error(error);
-                new Toast(error.message, { type: 'error' });
             }
         });
 

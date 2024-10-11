@@ -62,20 +62,14 @@ export default {
         table.disableControl('color', 'open');
 
         new Button({ element: frame.querySelector('#get-pdf') }).click(async () => {
-            try {
-                const blob = await contestInstance.getPDF({
-                    input: this.translate('input_samples', 'problem'),
-                    output: this.translate('output_samples', 'problem'),
-                });
-                const pdf = URL.createObjectURL(blob);
-                window.open(pdf);
-                return;
-            }
-            catch (error) {
-                console.error(error);
-                new Toast(error.message, { type: 'error' });
-                return;
-            }
+            const hashes = this.contest.problems.map(p => p.hash);
+            const usp = new URLSearchParams({
+                p: hashes.join(','),
+                t: this.contest.name,
+                s: this.contest.description,
+            }).toString();
+            // console.log(usp);
+            window.open(`/problems/pdf?${usp}`);
         });
     },
 
