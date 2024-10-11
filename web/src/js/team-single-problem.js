@@ -11,7 +11,7 @@ export default {
         // console.log(this.team);
         
 
-        const {problem} = await new Problem({ hash: this.problemHash }).get().catch(() => location.href = '/teams');
+        const problem = await new Problem({ hash: this.problemHash }).get().catch(() => location.href = '/teams');
         // console.log(problem);
         const {contest} = await new Contest({ id: this.team.contest.id }).get(true).catch(() => location.href = '/teams');
         // console.log(contest);

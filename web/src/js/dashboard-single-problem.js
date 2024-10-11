@@ -6,7 +6,7 @@ import Problem from './model/problem.js'
 export default {
 
     load: async function({hash}) {
-        const {problem} = await new Problem({ hash }).get().catch(() => location.href = '/problems');
+        const problem = await new Problem({ hash }).get().catch(() => location.href = '/problems');
         // console.log(problem);
 
         this.problem = problem;
@@ -40,6 +40,9 @@ export default {
                     <div class="qr">
                         <i class="fas fa-qrcode"></i>
                     </div>
+                    <div class="pdf">
+                        <i class="fas fa-file-pdf"></i>
+                    </div>
                 </div>
                     
             </div>`;
@@ -70,6 +73,22 @@ export default {
                 content.innerHTML = '';
                 modal.append(img);
                 content.classList.remove('loading');
+            }
+        });
+        frame.querySelector('#share .pdf').addEventListener('click', async () => {
+            try {
+                const blob = await this.problem.getPDF({
+                    input: this.translate('input_samples', 'problem'),
+                    output: this.translate('output_samples', 'problem'),
+                    'header.title': '',
+                    'header.subtitle': '',
+                });
+                const pdf = URL.createObjectURL(blob);
+                window.open(pdf);
+            }
+            catch (error) {
+                console.error(error);
+                new Toast(error.message, { type: 'error' });
             }
         });
 
@@ -180,10 +199,9 @@ export default {
 
     saveChanges: async function(field, content) {
         try {
-            const resp = await new Problem({ id: this.problem.id }).update({ [field]: content })//.catch(() => location.reload());
+            await this.problem.update({ [field]: content })//.catch(() => location.reload());
             // console.log(resp);
             new Toast(this.translate('save-changes.success', 'problem'), { type: 'success' });
-            this.problem = resp.problem;
         }
         catch (error) {
             console.error(error);
@@ -349,15 +367,14 @@ export default {
         }
 
         try {
-            const resp = await new Problem({ id: this.problem.id }).update(toUpdate).catch(() => location.reload());
+            await this.problem.update(toUpdate).catch(() => location.reload());
             // console.log(resp);
             new Toast(this.translate('save-changes.success-case', 'problem', {operation: this.translate(operation === 'add' ? 'added' : 'removed', 'common')}), { type: 'success' });
-            this.problem = resp.problem;
         }
         catch (error) {
             console.error(error);
             new Toast(error.message, { type: 'error' });
         }
-    }
+    },
 
 }

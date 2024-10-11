@@ -50,6 +50,7 @@ export default {
         template = template.replace(/{{problem.description}}/g, this.problem.description);
         template = template.replace(/{{problem.hash}}/g, this.problem.hash.slice(-process.env.HASH_LENGTH));
         template = template.replace(/{{logo-autojudge}}/g, `http://web:3000/assets/img/autojudge.webp`);
+        template = template.replace(/{{production-domain}}/g, process.env.PRODUCTION_DOMAIN);
 
         // generate the table with the input and output
         const inputList = JSON.parse(this.problem.input_public);

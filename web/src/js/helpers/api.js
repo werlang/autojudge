@@ -5,9 +5,10 @@ import TemplateVar from "./template-var.js";
 
 export default class Api {
 
-    constructor({ auth, token }={}) {
+    constructor({ auth, token, options }={}) {
         this.auth = auth || true;
         this.token = token;
+        this.options = options || {};
         this.requestInstance = this.setInstance();
     }
 
@@ -20,13 +21,15 @@ export default class Api {
         if (!this.auth) {
             const requestInstance = new Request({ 
                 url: `${location.protocol}//${TemplateVar.get('apiurl')}`,
+                options: this.options,
             });
             return requestInstance;
         }
 
         const requestInstance = new Request({ 
             url: `${location.protocol}//${TemplateVar.get('apiurl')}`,
-            headers: { 'Authorization': `Bearer ${token}` }
+            headers: { 'Authorization': `Bearer ${token}` },
+            options: this.options,
         });
         return requestInstance;
     }

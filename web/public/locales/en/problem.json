@@ -2,6 +2,8 @@
     "inout_zero": "No {{hidden}} Input/Output Samples found",
     "inout_one": "{{hidden}} Input/Output Sample",
     "inout_other": "{{hidden}} Input/Output Samples",
+    "input_samples": "Input Samples",
+    "output_samples": "Output Samples",
     "hidden": "Hidden",
     "case": "Case",
     "input": "Input",

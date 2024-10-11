@@ -8,8 +8,9 @@
 
 
 export default class Request {
-    constructor({ url, headers }) {
+    constructor({ url, headers, options }) {
         this.url = url;
+        this.options = options || {};
         this.headers = new Headers(headers || {});
     }
 
@@ -33,14 +34,14 @@ export default class Request {
         return this.request('DELETE', endpoint, args);
     }
 
-    async request(method, endpoint, data={}) {
-        const options = {
+    async request(method, endpoint, data={}, options={}) {
+        const fetchOptions = {
             method,
             headers: this.headers,
         };
 
         if (method === 'POST' || method === 'PUT') {
-            options.body = JSON.stringify(data);
+            fetchOptions.body = JSON.stringify(data);
             this.headers.set('Content-Type', 'application/json');
         }
         if (method === 'GET') {
@@ -48,7 +49,10 @@ export default class Request {
             endpoint += '?' + queryString;
         }
 
-        const response = await fetch(`${this.url}/${endpoint}`, options).then(data => data.json());
+        options = { ...this.options, ...options };
+        const responseMode = options.responseMode || 'json';
+
+        const response = await fetch(`${this.url}/${endpoint}`, fetchOptions).then(data => data[responseMode]());
         if (response.error) {
             throw new Error(response.message);
         }

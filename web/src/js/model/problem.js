@@ -17,24 +17,36 @@ export default class Problem {
     }
 
     async get() {
-        const problem = await new Api().get(`problems/${this.hash}`);
-        return problem;
+        const {problem} = await new Api().get(`problems/${this.hash}`);
+        for (const key in problem) {
+            this[key] = problem[key];
+        }
+        return this;
     }
 
     async create() {
-        const problem = await new Api().post('problems', {
+        const {problem} = await new Api().post('problems', {
             title: this.title,
             description: this.description,
             language: this.language,
             public: this.public,
         });
-        return problem;
+        this.hash = problem.hash;
+        return this.get();
     }
 
     async update(fields) {
+        if (!this.id) {
+            await this.get();
+        }
         const resp = await new Api().put(`problems/${this.id}`, fields);
         this.hash = resp.problem.hash;
-        const problem = await this.get();
-        return { ...resp, ...problem };
+        return this.get();
+    }
+
+    async getPDF(args) {
+        await this.get();
+        let blob = await new Api({ options: { responseMode: 'blob' }}).post(`problems/${this.hash}/pdf`, args);
+        return blob;
     }
 }

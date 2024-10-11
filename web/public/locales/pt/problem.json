@@ -2,6 +2,8 @@
     "inout_zero": "Nenhum Exemplo de Entrada/Saída {{hidden}} encontrado",
     "inout_one": "Exemplo de Entrada/Saída {{hidden}}",
     "inout_other": "Exemplos de Entrada/Saída {{hidden}}",
+    "input_samples": "Exemplos de Entrada",
+    "output_samples": "Exemplos de Saída",
     "hidden": "Oculto",
     "case": "Caso",
     "input": "Entrada",
