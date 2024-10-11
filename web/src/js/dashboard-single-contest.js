@@ -62,10 +62,29 @@ export default {
         if (this.contest.problems.length ) {
             this.listProblems(problems);
         }
+
         if (!this.contest.startTime) {
             const addProblem = new Button({ id: 'add-problem', text: `${this.translate('add', 'common')} ${this.translate('problems_one', 'contest')}` }).click(() => this.addProblemModal());
             problems.appendChild(addProblem.get());
         }
+
+        const pdfProblems = new Button({ id: 'get-pdf', text: this.translate('pdf-problems', 'problem') }).click(async () => {
+            try {
+                const blob = await this.contestInstance.getPDF({
+                    input: this.translate('input_samples', 'problem'),
+                    output: this.translate('output_samples', 'problem'),
+                });
+                const pdf = URL.createObjectURL(blob);
+                window.open(pdf);
+                return;
+            }
+            catch (error) {
+                console.error(error);
+                new Toast(error.message, { type: 'error' });
+                return;
+            }
+        });
+        problems.appendChild(pdfProblems.get());
     },
 
     renderTeams: async function(update = true) {

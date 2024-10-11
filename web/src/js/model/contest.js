@@ -77,4 +77,9 @@ export default class Contest {
         const submissions = await new Api().get(`contests/${this.id}/submissions`);
         return submissions;
     }
+
+    async getPDF(args) {
+        let blob = await new Api({ options: { responseMode: 'blob' }}).post(`contests/${this.id}/pdf`, args);
+        return blob;
+    }
 }

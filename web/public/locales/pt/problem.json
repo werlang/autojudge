@@ -31,5 +31,6 @@
     },
     "teams-solved": "Equipes que resolveram este problema",
     "score-solved": "Seu acréscimo de tempo para este problema",
-    "score-unsolved": "Suas tentativas para este problema"
+    "score-unsolved": "Suas tentativas para este problema",
+    "pdf-problems": "Gerar PDF com problemas"
 }

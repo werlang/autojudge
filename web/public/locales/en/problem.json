@@ -31,5 +31,6 @@
     },
     "teams-solved": "Teams that solved this problem",
     "score-solved": "Your time addition for this problem",
-    "score-unsolved": "Your attempts for this problem"
+    "score-unsolved": "Your attempts for this problem",
+    "pdf-problems": "Generate PDF with problems"
 }

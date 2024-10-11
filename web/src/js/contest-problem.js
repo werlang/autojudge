@@ -1,3 +1,4 @@
+import Button from "./components/button.js";
 import Modal from "./components/modal.js";
 import Table from "./components/table.js";
 import Toast from "./components/toast.js";
@@ -9,7 +10,9 @@ export default {
         const frame = document.querySelector('#frame');
         frame.innerHTML = `
             <h1>${this.translate('problem_other', 'common')}</h1>
-            <div id="problems-container">
+            <div id="problems-container"></div>
+            <div id="button-container">
+                <button id="get-pdf" class="default">${this.translate('pdf-problems', 'problem')}</button>
             </div>
         `;
 
@@ -31,7 +34,8 @@ export default {
             search: false,
         });
 
-        const {contest} = await new Contest({ id: this.contest.id }).get();
+        const contestInstance = new Contest({ id: this.contest.id });
+        const {contest} = await contestInstance.get();
         // console.log(contest);
 
         table.clear();
@@ -56,6 +60,23 @@ export default {
             table.enableControl(...toEnable);
         });
         table.disableControl('color', 'open');
+
+        new Button({ element: frame.querySelector('#get-pdf') }).click(async () => {
+            try {
+                const blob = await contestInstance.getPDF({
+                    input: this.translate('input_samples', 'problem'),
+                    output: this.translate('output_samples', 'problem'),
+                });
+                const pdf = URL.createObjectURL(blob);
+                window.open(pdf);
+                return;
+            }
+            catch (error) {
+                console.error(error);
+                new Toast(error.message, { type: 'error' });
+                return;
+            }
+        });
     },
 
     setColor: async function(selected) {

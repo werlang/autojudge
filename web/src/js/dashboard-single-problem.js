@@ -75,14 +75,18 @@ export default {
                 content.classList.remove('loading');
             }
         });
-        frame.querySelector('#share .pdf').addEventListener('click', async () => {
+        frame.querySelector('#share .pdf').addEventListener('click', async e => {
             try {
+                e.target.classList.remove('fa-file-pdf');
+                e.target.classList.add('fa-spinner', 'fa-pulse');
                 const blob = await this.problem.getPDF({
                     input: this.translate('input_samples', 'problem'),
                     output: this.translate('output_samples', 'problem'),
                     'header.title': '',
                     'header.subtitle': '',
                 });
+                e.target.classList.remove('fa-spinner', 'fa-pulse');
+                e.target.classList.add('fa-file-pdf');
                 const pdf = URL.createObjectURL(blob);
                 window.open(pdf);
             }
