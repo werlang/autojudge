@@ -4,7 +4,6 @@ import CustomError from '../helpers/error.js';
 import Problem from '../model/problem.js';
 import Contest from '../model/contest.js';
 import Submission from '../model/submission.js';
-import { Chromiumly, HtmlConverter } from "chromiumly";
 import PDFUtils from '../helpers/pdf.js';
 
 const router = Router();
@@ -236,19 +235,13 @@ router.post('/:hash/pdf', auth({'user:optional': true}), async (req, res, next) 
         }
         const problem = problems[0];
 
-        PDFUtils.set({ problem, args: req.body });
-        const templateFS = await PDFUtils.getReplacedBuffer('./template/pdf-index.html');
-        const headerFS = await PDFUtils.getReplacedBuffer('./template/pdf-header.html');
-        const footerFS = await PDFUtils.getReplacedBuffer('./template/pdf-footer.html');
-
-        Chromiumly.configure({ endpoint: process.env.GOTENBERG_SERVER });
-        const htmlConverter = new HtmlConverter();
-        const buffer = await htmlConverter.convert({
-            html: templateFS,
-            header: headerFS,
-            footer: footerFS,
-            // preferCSSPageSize: true,
-        });
+        const buffer = await new PDFUtils({
+            problem,
+            args: req.body,
+            template: './template/pdf-index.html',
+            header: './template/pdf-header.html',
+            footer: './template/pdf-footer.html',
+        }).create();
 
         res.setHeader('Content-Type', 'application/pdf');
         const normalize = text => text.toLowerCase().replace(/\s/, '-').normalize('NFD').replace(/[\u0300-\u036f]/g, '');

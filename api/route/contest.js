@@ -6,6 +6,7 @@ import Team from '../model/team.js';
 import contestProblem from './contestProblem.js';
 import config from '../helpers/config.js';
 import Submission from '../model/submission.js';
+import PDFUtils from '../helpers/pdf.js';
 
 const router = Router();
 
@@ -207,6 +208,39 @@ router.get('/:id/submissions', auth({'contest:admin': true}), async (req, res, n
             filename: submission.filename,
             log: submission.log,
         })) });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+
+// create pdf
+router.post('/:id/pdf', auth({'contest:admin': true}), async (req, res, next) => {
+    try {
+        const contest = new Contest({ id: req.contest.id });
+        await contest.get();
+        let problems = await contest.getProblems();
+        // res.send(problems);
+        // return;
+
+        const pdfs = await Promise.all(problems.map(async problem => new PDFUtils({
+            problem,
+            args: {
+                ...req.body,
+                'header.title': contest.name,
+                'header.subtitle': contest.description,
+            },
+            template: './template/pdf-index.html',
+            header: './template/pdf-header.html',
+            footer: './template/pdf-footer.html',
+        }).create()));
+
+        const buffer = await PDFUtils.merge(pdfs);
+
+        res.setHeader('Content-Type', 'application/pdf');
+        const normalize = text => text.toLowerCase().replace(/\s/, '-').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        res.setHeader('Content-Disposition', `attachment; filename="${normalize(contest.name)}.pdf"`);
+        res.send(buffer);
     }
     catch (error) {
         next(error);

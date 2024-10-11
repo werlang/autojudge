@@ -1,17 +1,33 @@
 import fs from 'fs';
+import { Chromiumly, HtmlConverter, PDFEngines } from "chromiumly";
 
-export default {
+export default class PDFUtils {
+
+    constructor(args) {
+        for (const key in args) {
+            this[key] = args[key];
+        }
+    }
+
+    // method to merge pdfs from buffers
+    static async merge(pdfs) {
+        return PDFEngines.merge({
+            files: [...pdfs],
+            pdfUA: true,
+        });
+    }
+
     // Function to convert image URL to Base64
-    convertImageToBase64: async function(url) {
+    async convertImageToBase64(url) {
         const response = await fetch(url);
         const buffer = await response.arrayBuffer();
         const base64 = Buffer.from(buffer).toString('base64');
         const mimeType = response.headers.get('content-type');
         return `data:${mimeType};base64,${base64}`;
-    },
+    }
 
     // Function to extract <img> src attributes and replace them with Base64 asynchronously
-    convertImagesToBase64UsingRegex: async function(htmlContent) {
+    async convertImagesToBase64UsingRegex(htmlContent) {
         // Regular expression to match all <img> tags and extract their src attributes
         const imgRegex = /<img\s+[^>]*src="([^">]+)"[^>]*>/g;
 
@@ -43,9 +59,9 @@ export default {
         });
 
         return htmlContent;
-    },
+    }
 
-    replaceText: async function(text) {
+    async replaceText(text) {
         let template = text.replace(/{{problem.title}}/g, this.problem.title);
         template = template.replace(/{{problem.description}}/g, this.problem.description);
         template = template.replace(/{{problem.hash}}/g, this.problem.hash.slice(-process.env.HASH_LENGTH));
@@ -66,24 +82,39 @@ export default {
             template = template.replace(new RegExp(`{{${key}}}`, 'g'), this.args[key]);
         }
 
+        if (!this.args['custom-logo']) {
+            template = template.replace(/{{custom-logo}}/g, ``);
+        }
+
         // Convert all external image URLs in the template to Base64 using regex
         template = await this.convertImagesToBase64UsingRegex(template);
 
         return template;
-    },
+    }
 
-    getReplacedBuffer: async function(path, problem, args) {
+    async getReplacedBuffer(path, problem, args) {
         this.problem = problem || this.problem;
         this.args = args || this.args;
         const file = fs.readFileSync(path, 'utf8');
         const replacedFile = await this.replaceText(file);
         const transformedBuffer = Buffer.from(replacedFile);
         return transformedBuffer;
-    },
+    }
 
-    set(args) {
-        for (const key in args) {
-            this[key] = args[key];
+    async create() {
+        if (!this.template || !this.header || !this.footer) {
+            throw new Error('Template, header, and footer path are required.');
         }
+        const templateFS = await this.getReplacedBuffer(this.template);
+        const headerFS = await this.getReplacedBuffer(this.header);
+        const footerFS = await this.getReplacedBuffer(this.footer);
+
+        Chromiumly.configure({ endpoint: process.env.GOTENBERG_SERVER });
+        const htmlConverter = new HtmlConverter();
+        return htmlConverter.convert({
+            html: templateFS,
+            header: headerFS,
+            footer: footerFS,
+        });
     }
 }
