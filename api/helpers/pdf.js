@@ -27,23 +27,29 @@ export default {
             }
         }
 
-        // Convert each found src to Base64 and store the replacement
-        for (let img of imagesToConvert) {
+        // Convert each found src to Base64 and store the replacement in parallel
+        const images = await Promise.all(imagesToConvert.map(async img => {
             try {
                 const base64Data = await this.convertImageToBase64(img.src);
-                htmlContent = htmlContent.replace(img.match, img.match.replace(img.src, base64Data));
+                return { match: img.match, replacement: img.match.replace(img.src, base64Data) };
             } catch (err) {
                 console.log(err);
-                htmlContent = htmlContent.replace(img.match, img.match.replace(img.src, ''));
+                return { match: img.match, replacement: img.match.replace(img.src, '') };
             }
-        }
+        }));
+        
+        images.forEach(({ match, replacement }) => {
+            htmlContent = htmlContent.replace(match, replacement);
+        });
 
         return htmlContent;
     },
 
     replaceText: async function(text) {
-        let template = text.replace(/{{title}}/g, this.problem.title);
-        template = template.replace(/{{description}}/g, this.problem.description);
+        let template = text.replace(/{{problem.title}}/g, this.problem.title);
+        template = template.replace(/{{problem.description}}/g, this.problem.description);
+        template = template.replace(/{{problem.hash}}/g, this.problem.hash.slice(-process.env.HASH_LENGTH));
+        template = template.replace(/{{logo-autojudge}}/g, `http://web:3000/assets/img/autojudge.webp`);
 
         // generate the table with the input and output
         const inputList = JSON.parse(this.problem.input_public);
@@ -52,7 +58,7 @@ export default {
             <td>${input}</td>
             <td>${outputList[i]}</td>
         </tr>`).join('');
-        template = template.replace('{{io}}', rows);
+        template = template.replace('{{problem.io}}', rows);
     
         // replace the body args
         for (const key in this.args) {

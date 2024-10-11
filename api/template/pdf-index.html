@@ -65,26 +65,15 @@
         /* Styling for Print-Specific Layout (for fixed A4 output) */
         @page {
             size: A4;
-            margin: 40mm 20mm;
+            margin: 30mm 20mm;
         }
 
 
     </style>
 </head>
 <body>
-    <h1>{{title}}</h1>
-    <p>{{description}}</p>
-    <p>{{description}}</p>
-    <p>{{description}}</p>
-    <p>{{description}}</p>
-    <p>{{description}}</p>
-    <p>{{description}}</p>
-    <p>{{description}}</p>
-    <p>{{description}}</p>
-    <p>{{description}}</p>
-    <p>{{description}}</p>
-    <img src="{{logo-1}}" style="height: 100px;">
-
+    <h1>{{problem.title}}</h1>
+    <p>{{problem.description}}</p>
 
     <!-- Input/Output Table -->
     <table>
@@ -95,7 +84,7 @@
             </tr>
         </thead>
         <tbody>
-            {{io}}
+            {{problem.io}}
         </tbody>
     </table>
 </body>
