@@ -25,12 +25,15 @@ export default {
     },
 
     render: async function() {
-        const resp = await this.contestInstance.get().catch(() => location.href = '/');
+        const resp = await this.contestInstance.get(false, true).catch(() => location.href = '/');
         this.contest = resp.contest;
-        // console.log(this.contest);
+        console.log(this.contest);
         
         const frame = document.querySelector('#frame');
         frame.innerHTML = `<div id="contest">
+            <div id="logo-container">
+                <span>${this.translate('change-logo', 'contest')}</span>
+            </div>
             <h1 id="name">${this.contest.name}</h1>
             <p id="description">${this.contest.description}</p>
             <div id="problems"></div>
@@ -42,6 +45,25 @@ export default {
         this.renderTeams(false);
         if (!this.contest.startTime) {
             this.createEditableFields();
+        }
+
+        // check the logo
+        const logoContainer = document.querySelector('#logo-container');
+        if (this.contest.logo) {
+            const logo = new Image();
+            logo.src = this.contest.logo;
+            logo.onload = () => {
+                logoContainer.innerHTML = '';
+                logoContainer.appendChild(logo);
+                logoContainer.classList.add('loaded');
+            }
+        }
+        else {
+            const content = logoContainer.innerHTML;
+            logoContainer.innerHTML = `<div class="editable" title="${this.translate('edit', 'common')}">
+                <span class="field">${content}</span>
+                <span class="edit-icon"><i class="fas fa-edit"></i></span>
+            </div>`;
         }
 
         // start contest button
@@ -105,6 +127,35 @@ export default {
     },
 
     createEditableFields: function() {
+        // send a new logo as base64
+        const logoContainer = document.querySelector('#logo-container');
+        logoContainer.addEventListener('click', () => {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.click();
+            input.addEventListener('change', async () => {
+                const file = input.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = async e => {
+                    const base64 = e.target.result;
+                    try {
+                        await new Contest({ id: this.contest.id }).update({logo: base64});
+                        new Toast(this.translate('logo-success', 'contest'), { type: 'success' });
+                        this.render();
+                    }
+                    catch (error) {
+                        // console.error(error);
+                        new Toast(error.message, { type: 'error' });
+                    }
+                };
+                reader.readAsDataURL(file);
+            });
+        });
+
+
+        // edit text fields
         document.querySelectorAll('#name, #description').forEach(e => {
             const content = e.innerHTML;
             e.innerHTML = `<div class="editable" title="${this.translate('edit', 'common')}">

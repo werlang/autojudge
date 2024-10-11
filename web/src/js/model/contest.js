@@ -15,12 +15,15 @@ export default class Contest {
         return contests;
     }
 
-    async get(logAsTeam=false) {
+    async get(logAsTeam=false, logo=false) {
         const args = {};
         if (logAsTeam) {
             args.token = Team.getToken();
         }
-        const contest = await new Api(args).get(`contests/${this.id}`);
+        const query = new URLSearchParams({
+            logo: logo,
+        }).toString();
+        const contest = await new Api(args).get(`contests/${this.id}?${query}`);
         return contest;
     }
 
@@ -34,7 +37,13 @@ export default class Contest {
     }
 
     async update(fields) {
-        const resp = await new Api().put(`contests/${this.id}`, fields);
+        const resp = await (async () => {
+            if (fields.logo) {
+                return new Api().post(`contests/${this.id}/logo`, fields);
+            }
+            return new Api().put(`contests/${this.id}`, fields);
+        })();
+        
         const contest = await this.get();
         return { ...resp, ...contest };
     }

@@ -5,6 +5,8 @@
     "teams_zero": "Nenhuma equipe encontrada",
     "teams_one": "Equipe",
     "teams_other": "Equipes",
+    "change-logo": "Clique para alterar o logo da competição",
+    "logo-success": "Logo atualizado com sucesso.",
     "save-changes": {
         "h1": "Salvar Alterações",
         "message": "Deseja salvar as alterações no campo <b>{{field}}</b>?",

@@ -141,14 +141,14 @@ router.put('/:id', auth({'contest:admin': true}), async (req, res, next) => {
     }
 });
 
-// update the logo
-router.put('/:id/logo', auth({'contest:admin': true}), async (req, res, next) => {
+// Update a contest logo
+router.post('/:id/logo', auth({'contest:admin': true}), async (req, res, next) => {
     try {
         if (!req.body.logo) {
             throw new CustomError(400, 'Logo is required.');
         }
         
-        const base64Data = req.body.logo.replace(/^data:image\/png;base64,/, '');
+        const base64Data = req.body.logo.replace(/^data:image\/\w+;base64,/, '');
         const filename = `upload/contest/logo/${req.contest.id}.png`;
         fs.writeFileSync(filename, base64Data, 'base64');
 

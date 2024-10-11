@@ -13,8 +13,8 @@ const port = 3000;
 const host = '0.0.0.0';
 const app = express();
 
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+app.use(express.urlencoded({ extended: true, limit: '500kb'}));
+app.use(express.json({ limit: '500kb' }));
 app.use(cors());
 
 // app.use('/passkey', passkeyRouter);

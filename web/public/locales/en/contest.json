@@ -5,6 +5,8 @@
     "teams_zero": "No teams found",
     "teams_one": "Team",
     "teams_other": "Teams",
+    "change-logo": "Click to change the contest logo",
+    "logo-success": "Logo updated successfully.",
     "save-changes": {
         "h1": "Save Changes",
         "message": "Do you want to save the changes to the <b>{{field}}</b> field?",
