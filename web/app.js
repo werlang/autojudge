@@ -59,8 +59,9 @@ app.get('/problems/:hash/pdf', async (req, res) => {
         body: JSON.stringify({
             input: res.locals.t('input_samples', { ns: 'problem' }),
             output: res.locals.t('output_samples', { ns: 'problem' }),
-            'header.title': '',
-            'header.subtitle': '',
+            'header.title': req.query.t || '',
+            'header.subtitle': req.query.s || '',
+            'custom-logo': req.query.l || '',
             ...req.query,
         }),
     }).then(response => response.blob());
@@ -82,6 +83,7 @@ app.get('/problems/pdf', async (req, res) => {
             output: res.locals.t('output_samples', { ns: 'problem' }),
             'header.title': req.query.t || '',
             'header.subtitle': req.query.s || '',
+            'custom-logo': req.query.l || '',
             ...req.query,
         }),
     }).then(response => response.blob());

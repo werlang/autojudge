@@ -7,6 +7,7 @@ import contestProblem from './contestProblem.js';
 import config from '../helpers/config.js';
 import Submission from '../model/submission.js';
 import PDFUtils from '../helpers/pdf.js';
+import fs from 'fs';
 
 const router = Router();
 
@@ -54,6 +55,7 @@ router.get('/', auth({'user:exists': true}), async (req, res, next) => {
                 description: contest.description,
                 duration: contest.duration,
                 startTime: contest.start_time,
+                logo: fs.existsSync(`upload/contest/logo/${contest.id}.png`),
                 teams: (await teams).length,
                 problems: (await problems).length,
             }
@@ -89,12 +91,21 @@ router.get('/:id', auth({
             }
         }));
 
+        const logoPath = `upload/contest/logo/${req.contest.id}.png`;
+        function getBase64Logo() {
+            if (!fs.existsSync(logoPath)) return '';
+            const file = fs.readFileSync(logoPath);
+            const toString = file.toString('base64');
+            return `data:image/png;base64,${toString}`;
+        }    
+
         res.send({ contest: {
             id: req.contest.id,
             name: req.contest.name,
             description: req.contest.description,
             duration: req.contest.duration,
             startTime: req.contest.start_time,
+            logo: req.query.logo ? getBase64Logo() : fs.existsSync(logoPath),
             teams,
             problems,
         } });
@@ -124,6 +135,24 @@ router.put('/:id', auth({'contest:admin': true}), async (req, res, next) => {
                 duration: req.contest.duration,
             }
         });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+
+// update the logo
+router.put('/:id/logo', auth({'contest:admin': true}), async (req, res, next) => {
+    try {
+        if (!req.body.logo) {
+            throw new CustomError(400, 'Logo is required.');
+        }
+        
+        const base64Data = req.body.logo.replace(/^data:image\/png;base64,/, '');
+        const filename = `upload/contest/logo/${req.contest.id}.png`;
+        fs.writeFileSync(filename, base64Data, 'base64');
+
+        res.send({ message: 'Logo updated.' });
     }
     catch (error) {
         next(error);
@@ -223,12 +252,21 @@ router.post('/:id/pdf', auth({'contest:admin': true}), async (req, res, next) =>
         // res.send(problems);
         // return;
 
+        const logoPath = `upload/contest/logo/${contest.id}.png`;
+        function getBase64Logo() {
+            if (!fs.existsSync(logoPath)) return '';
+            const file = fs.readFileSync(logoPath);
+            const toString = file.toString('base64');
+            return `data:image/png;base64,${toString}`;
+        } 
+
         const pdfs = await Promise.all(problems.map(async problem => new PDFUtils({
             problem,
             args: {
                 ...req.body,
                 'header.title': contest.name,
                 'header.subtitle': contest.description,
+                'custom-logo': getBase64Logo(),
             },
             template: './template/pdf-index.html',
             header: './template/pdf-header.html',

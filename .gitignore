@@ -6,6 +6,7 @@ web/public/assets/fonts
 */package*.json
 nginx/*
 api/runs/*
+api/upload
 .env
 .DS_Store
 config.js
