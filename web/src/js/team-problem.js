@@ -41,7 +41,8 @@ export default {
                         `<div class="score" title="${this.translate('score-unsolved', 'problem')}"><i class="fas fa-bullseye"></i> ${submissionsForProblem.length}</div>`
                     }
                 </div>`,
-                icon: 'fas fa-lightbulb',
+                img: `/assets/img/balloon.svg`,
+                // icon: 'fas fa-lightbulb',
                 customClass: 'problem-card',
             }).setColor(problem.color).click(() => {
                 location.href = `/teams/problems/${problem.hash}`;

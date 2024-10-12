@@ -24,9 +24,21 @@ export default class Card {
         const headElement = document.createElement('div');
         headElement.classList.add('head');
         if (img) {
-            headElement.innerHTML = `<img class="image" src="${ img }">`;
+            const ext = img.split('.').pop();
+            if (ext === 'svg') {
+                headElement.innerHTML = '';
+                fetch(img).then(response => response.text()).then(svgText => {
+                    const parser = new DOMParser();
+                    const svgDoc = parser.parseFromString(svgText, 'image/svg+xml');
+                    const svgElement = svgDoc.documentElement;
+                    headElement.appendChild(svgElement);
+                });
+            }
+            else {
+                headElement.innerHTML = `<img class="image" src="${ img }">`;
+            }
         }
-        if (icon) {
+        else if (icon) {
             headElement.innerHTML = `<i class="${ icon }"></i>`;
         }
         this.element.appendChild(headElement);
