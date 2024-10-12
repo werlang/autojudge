@@ -52,6 +52,7 @@ export default {
         if (this.contest.logo) {
             const logo = new Image();
             logo.src = this.contest.logo;
+            logo.alt = this.contest.name;
             logo.onload = () => {
                 logoContainer.innerHTML = '';
                 logoContainer.appendChild(logo);

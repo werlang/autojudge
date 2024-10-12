@@ -4,10 +4,16 @@ import createClock from "./components/contest-clock.js";
 
 export default {
     build: async function() {
+        // console.log(this.team);
         const frame = document.querySelector('#frame');
         frame.innerHTML = `
+            ${ this.team.contest.logo ? 
+                `<div id="logo-container">
+                    <img src="${this.team.contest.logo}" alt="${this.team.contest.name}">
+                </div>` : ''
+            }
             <h1>${this.translate('contest_one', 'common')} ${this.team.contest.name}</h1>
-            <p id="contest-description"></p>
+            <p id="contest-description">${this.team.contest.description}</p>
             <div id="time-left"></div>
         `;
 

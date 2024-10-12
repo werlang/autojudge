@@ -9,6 +9,11 @@ export default {
         // console.log(this.contest);
         const frame = document.querySelector('#frame');
         frame.innerHTML = `
+            ${ this.contest.logo ? 
+                `<div id="logo-container">
+                    <img src="${this.contest.logo}" alt="${this.contest.name}">
+                </div>` : ''
+            }
             <h1>${this.translate('contest_one', 'common')} ${this.contest.name}</h1>
             <p id="contest-description">${this.contest.description}</p>
             <div id="time-left"></div>

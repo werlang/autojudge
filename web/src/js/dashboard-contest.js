@@ -25,8 +25,15 @@ export default {
         // console.log(contests);
 
         container.innerHTML = '';
-        contests.map(contest => {
+        await Promise.all(contests.map(async contest => {
+            if (contest.logo) {
+                const {contest: contestFull} = await new Contest({ id: contest.id }).get(false, true);
+                contest.logo = contestFull.logo;
+            }
+            // console.log(contest);
+
             new Card(container, {
+                img: contest.logo || null,
                 title: contest.name,
                 customClass: 'contest',
                 description: `
@@ -42,7 +49,7 @@ export default {
                 // console.log(contest);
                 location.href = `/contests/${contest.id}${ contest.startTime ? '/dashboard' : '' }`;
             });
-        });
+        }));
 
         // create card for adding a new contest
         new Card(container, {

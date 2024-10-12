@@ -63,6 +63,7 @@
         .body {
             flex-grow: 1;
             display: flex;
+            flex-direction: column;
             
             .description {
                 flex-grow: 1;
@@ -152,136 +153,147 @@
     }
 }
 
-#frame #contest {
-    margin-top: 70px;
-    width: 100%;
-    max-width: 900px;
+#frame {
 
     #logo-container {
-        position: absolute;
         width: 100%;
         height: 100px;
-        left: 0;
-        margin-top: -70px;
         display: flex;
         justify-content: center;
         align-items: center;
-        font-size: 1.4rem;
-        background-color: rgba(var(--color-main-raw), 0.3);
-        cursor: pointer;
-        
-        &.loaded {
+
+        img {
+            max-height: 100px;
+        }
+    }
+
+    #contest {
+        margin-top: 70px;
+        width: 100%;
+        max-width: 900px;
+    
+        #logo-container {
+            position: absolute;
+            left: 0;
+            margin-top: -70px;
+            font-size: 1.4rem;
+            cursor: pointer;
             background-color: rgba(var(--color-main-raw), 0.2);
-            height: auto;
+            
+            &.loaded {
+                background-color: transparent;
+                height: auto;
+    
+            }
 
             img {
                 max-height: 100px;
             }
-        }
-
-        .editable {
-
+    
+            .editable {
+    
+                span {
+                    display: inline-block;
+                }
+            }
+    
             span {
-                display: inline-block;
+                display: none;
             }
         }
-
-        span {
-            display: none;
+    
+        h1 .editable {
+            align-items: center;
         }
-    }
-
-    h1 .editable {
-        align-items: center;
-    }
-
-    p .editable {
-        align-items: flex-start;
-
-        .edit-icon {
-            margin-left: -40px;
-            margin-top: -30px;
-            
-            @media @size-600 {
-                margin: 0;
-            }
-        }
-    }
-
-    .editable {
-        transition: 0.3s all;
-        border-radius: 5px;
-        padding: 5px;
-        display: flex;
-        align-items: flex-start;
-        
-        &:hover {
-
+    
+        p .editable {
+            align-items: flex-start;
+    
             .edit-icon {
-                color: rgba(var(--color-text-raw),1);
-                animation: edit-pulse 1s infinite ease-in-out;
-
-                @keyframes edit-pulse {
-                    0% {
-                        transform: scale(1);
-                    }
-                    50% {
-                        transform: scale(1.2);
-                        color: rgba(var(--color-main-raw),0.5);
-                    }
-                    100% {
-                        transform: scale(1);
-                    }
+                margin-left: -40px;
+                margin-top: -30px;
+                
+                @media @size-600 {
+                    margin: 0;
                 }
             }
         }
-
-        .field {
-            outline: none;
-            padding: 5px 10px;
+    
+        .editable {
+            transition: 0.3s all;
             border-radius: 5px;
-
-            &[contenteditable="true"], &[contenteditable="plaintext-only"] {
-                background-color: rgba(var(--color-main-raw), 0.2);
-            }
-
-        }
-
-        .edit-icon {
-            border-radius: 4px;
-            flex-direction: column;
-            font-size: 2rem;
+            padding: 5px;
             display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 0 2px;
-            cursor: pointer;
-            width: 40px;
-            height: 40px;
-            flex-shrink: 0;
-            color: rgba(var(--color-text-raw),0.3);
-
-            &.editing {
-                animation: none;
-                color: rgba(var(--color-text-raw),0.1);
+            align-items: flex-start;
+            
+            &:hover {
+    
+                .edit-icon {
+                    color: rgba(var(--color-text-raw),1);
+                    animation: edit-pulse 1s infinite ease-in-out;
+    
+                    @keyframes edit-pulse {
+                        0% {
+                            transform: scale(1);
+                        }
+                        50% {
+                            transform: scale(1.2);
+                            color: rgba(var(--color-main-raw),0.5);
+                        }
+                        100% {
+                            transform: scale(1);
+                        }
+                    }
+                }
+            }
+    
+            .field {
+                outline: none;
+                padding: 5px 10px;
+                border-radius: 5px;
+    
+                &[contenteditable="true"], &[contenteditable="plaintext-only"] {
+                    background-color: rgba(var(--color-main-raw), 0.2);
+                }
+    
+            }
+    
+            .edit-icon {
+                border-radius: 4px;
+                flex-direction: column;
+                font-size: 2rem;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 0 2px;
+                cursor: pointer;
+                width: 40px;
+                height: 40px;
+                flex-shrink: 0;
+                color: rgba(var(--color-text-raw),0.3);
+    
+                &.editing {
+                    animation: none;
+                    color: rgba(var(--color-text-raw),0.1);
+                }
             }
         }
-    }
-
-    .table {
-        margin-bottom: 15px;
-    }
-
-    #problems button {
-        margin-bottom: 20px;
-    }
-
-    #problems, #teams {
-        margin-top: 30px;
-    }
-
-    #start-contest {
-        margin-top: 30px;
+    
+        .table {
+            margin-bottom: 15px;
+        }
+    
+        #problems button {
+            margin-bottom: 20px;
+        }
+    
+        #problems, #teams {
+            margin-top: 30px;
+        }
+    
+        #start-contest {
+            margin-top: 30px;
+        }
     }
 }
 
