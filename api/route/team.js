@@ -33,6 +33,8 @@ router.get('/', auth({'team:member': true}), async (req, res, next) => {
             contest: {
                 id: contest.id,
                 name: contest.name,
+                description: contest.description,
+                logo: contest.logo,
             }
         } });
     }

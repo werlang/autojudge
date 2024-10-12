@@ -55,7 +55,7 @@ router.get('/', auth({'user:exists': true}), async (req, res, next) => {
                 description: contest.description,
                 duration: contest.duration,
                 startTime: contest.start_time,
-                logo: fs.existsSync(`upload/contest/logo/${contest.id}.png`),
+                logo: contest.logo,
                 teams: (await teams).length,
                 problems: (await problems).length,
             }
@@ -91,21 +91,13 @@ router.get('/:id', auth({
             }
         }));
 
-        const logoPath = `upload/contest/logo/${req.contest.id}.png`;
-        function getBase64Logo() {
-            if (!fs.existsSync(logoPath)) return '';
-            const file = fs.readFileSync(logoPath);
-            const toString = file.toString('base64');
-            return `data:image/png;base64,${toString}`;
-        }    
-
         res.send({ contest: {
             id: req.contest.id,
             name: req.contest.name,
             description: req.contest.description,
             duration: req.contest.duration,
             startTime: req.contest.start_time,
-            logo: req.query.logo ? getBase64Logo() : fs.existsSync(logoPath),
+            logo: req.contest.logo,
             teams,
             problems,
         } });
@@ -252,21 +244,13 @@ router.post('/:id/pdf', auth({'contest:admin': true}), async (req, res, next) =>
         // res.send(problems);
         // return;
 
-        const logoPath = `upload/contest/logo/${contest.id}.png`;
-        function getBase64Logo() {
-            if (!fs.existsSync(logoPath)) return '';
-            const file = fs.readFileSync(logoPath);
-            const toString = file.toString('base64');
-            return `data:image/png;base64,${toString}`;
-        } 
-
         const pdfs = await Promise.all(problems.map(async problem => new PDFUtils({
             problem,
             args: {
                 ...req.body,
                 'header.title': contest.name,
                 'header.subtitle': contest.description,
-                'custom-logo': getBase64Logo(),
+                'custom-logo': contest.logo,
             },
             template: './template/pdf-index.html',
             header: './template/pdf-header.html',

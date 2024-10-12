@@ -4,6 +4,7 @@ import Problem from './problem.js';
 import Db from '../helpers/mysql.js';
 import Team from './team.js';
 import Submission from './submission.js';
+import fs from 'fs';
 
 export default class Contest extends Model {
     constructor({
@@ -29,8 +30,25 @@ export default class Contest extends Model {
         this.addRelation('problem', 'contest_problems', 'contest', 'problem');
     }
 
+    static getBase64Logo(id) {
+        const logoPath = `upload/contest/logo/${id}.png`;
+        if (!fs.existsSync(logoPath)) return false;
+        const file = fs.readFileSync(logoPath);
+        const toString = file.toString('base64');
+        return `data:image/png;base64,${toString}`;
+    }
+
     static async getAll(filter) {
-        return Model.getAll('contests', filter);
+        const contests = await Model.getAll('contests', filter);
+        return contests.map(contest => ({
+            ...contest,
+            logo: Contest.getBase64Logo(contest.id),
+        }));
+    }
+
+    async get() {
+        this.logo = Contest.getBase64Logo(this.id);
+        return super.get();
     }
 
     async addProblem(problemValue) {
