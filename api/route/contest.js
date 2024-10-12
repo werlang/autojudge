@@ -141,7 +141,14 @@ router.post('/:id/logo', auth({'contest:admin': true}), async (req, res, next) =
         }
         
         const base64Data = req.body.logo.replace(/^data:image\/\w+;base64,/, '');
-        const filename = `upload/contest/logo/${req.contest.id}.png`;
+        const dir = `upload/contest/logo/`;
+        const filename = `${dir}${req.contest.id}.png`;
+
+        // Ensure the directory exists
+        if (!fs.existsSync(dir)){
+            fs.mkdirSync(dir, { recursive: true });
+        }
+
         fs.writeFileSync(filename, base64Data, 'base64');
 
         res.send({ message: 'Logo updated.' });

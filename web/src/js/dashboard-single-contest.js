@@ -108,6 +108,10 @@ export default {
             }
         });
         problems.appendChild(pdfProblems.get());
+
+        if (!this.contest.problems.length) {
+            pdfProblems.disable(false);
+        }
     },
 
     renderTeams: async function(update = true) {
