@@ -74,6 +74,13 @@ X = 3
 
 In the case of a runtime/compilation error, the script will display the error message.
 
+If no output file is found for a test case, the script will display the following message, and print the result to the console.
+
+```bash
+Output file not found, printing result:
+X = 3
+```
+
 
 ## Contributing
 

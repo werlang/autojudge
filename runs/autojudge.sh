@@ -25,7 +25,13 @@ inputs=(./input/*)
 
 for input in "${inputs[@]}"; do
   output="./output/$(basename "$input")"
-  output_contents="$(<"$output")"
+
+  # Check if the output file exists
+  if [ -f "$output" ]; then
+    output_contents="$(<"$output")"
+  else
+    output_contents=""
+  fi
 
   case "$extension" in
     "c")
@@ -67,15 +73,22 @@ for input in "${inputs[@]}"; do
 
   result="$(cat "$result_file")"
 
-  if [[ "$result" != "$output_contents" ]]; then
-    fail=$((fail + 1))
-    echo "$filename Wrong answer"
-    echo "Got:"
-    echo "$result"
-    echo "Expected:"
-    echo "$output_contents"
+  if [ -n "$output_contents" ]; then
+    # Compare result to expected output if output file exists
+    if [[ "$result" != "$output_contents" ]]; then
+      fail=$((fail + 1))
+      echo "$input Wrong answer"
+      echo "Got:"
+      echo "$result"
+      echo "Expected:"
+      echo "$output_contents"
+    else
+      pass=$((pass + 1))
+    fi
   else
-    pass=$((pass + 1))
+    # If there is no output file, just print the result
+    echo "Output file not found, printing result:"
+    echo "$result"
   fi
 
   # Clean up result file
