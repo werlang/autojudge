@@ -1,0 +1,26 @@
+x-runner: &runner-template
+    volumes:
+        - ./runs:/app
+    working_dir: /app
+
+services:
+    gcc:
+        image: gcc:9.5.0
+        <<: *runner-template
+        # docker compose run --rm gcc /bin/bash -c "gcc -o a.out hello.c && ./a.out"
+    node:
+        image: node:22
+        <<: *runner-template
+        # docker compose run --rm node node hello.js
+    php:
+        image: php:8.2-cli
+        # docker compose run --rm php php hello.php
+        <<: *runner-template
+    python:
+        image: python:3.11
+        # docker compose run --rm python python hello.py
+        <<: *runner-template
+    java:
+        image: openjdk:24
+        # docker compose run --rm java /bin/bash -c "javac hello.java && java hello"
+        <<: *runner-template

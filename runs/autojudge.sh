@@ -23,22 +23,25 @@ isError=false
 # Get every file from the 'input' directory
 inputs=(./input/*)
 
-for filename in "${inputs[@]}"; do
-  output="./output/$(basename "$filename")"
+for input in "${inputs[@]}"; do
+  output="./output/$(basename "$input")"
   output_contents="$(<"$output")"
 
   case "$extension" in
     "c")
-      command="docker-compose -f ../compilers.yaml run --rm gcc /bin/bash -c \"gcc -o a.out $file && ./a.out < $filename && rm ./a.out\""
+      command="docker compose -f ../compose.yaml run --rm gcc /bin/bash -c \"gcc -o a.out $file && ./a.out < $input && rm ./a.out\""
       ;;
     "js")
-      command="docker-compose -f ../compilers.yaml run --rm node node $file < $filename"
+      command="docker compose -f ../compose.yaml run --rm node node $file < $input"
       ;;
     "php")
-      command="docker-compose -f ../compilers.yaml run --rm php php $file < $filename"
+      command="docker compose -f ../compose.yaml run --rm php php $file < $input"
       ;;
     "py")
-      command="docker-compose -f ../compilers.yaml run --rm python python $file < $filename"
+      command="docker compose -f ../compose.yaml run --rm python python $file < $input"
+      ;;
+    "java")
+      command="docker compose -f ../compose.yaml run --rm java /bin/bash -c \"javac $file && java -cp $(dirname "$file") $(basename "$file" .java) < $input && rm $(dirname "$file")/$(basename "$file" .java).class\""
       ;;
     *)
       echo "Unsupported file extension: .$extension"

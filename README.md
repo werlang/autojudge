@@ -4,7 +4,7 @@ AutoJudge is a simple script that automates the process of running test cases fo
 
 ## Features
 
-- Supports multiple programming languages, including C, JavaScript, PHP, Python.
+- Supports multiple programming languages, including C, JavaScript, PHP, Python and Java.
 - Automatically detects the language based on the script's file extension.
 - Compiles and runs code with test cases from the `input` directory.
 - Compares the output with expected results from the `output` directory.
@@ -19,7 +19,8 @@ You will need Docker installed on your system to run the AutoJudge script within
 Before Running the autojudge, you will need to pull and build the docker images for each language supported. To do this, run the following command:
 
 ```bash
-docker-compose build
+docker compose up
+docker compose down
 ```
 
 ## Usage
