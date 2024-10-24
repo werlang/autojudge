@@ -6,3 +6,6 @@ int main() {
     printf("X = %d\n", a + b);
     return 0;
 }
+
+// Run with:
+// ./autojudge.sh hello.c

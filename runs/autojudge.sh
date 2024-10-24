@@ -35,16 +35,16 @@ for input in "${inputs[@]}"; do
 
   case "$extension" in
     "c")
-      command="docker compose -f ../compose.yaml run --rm gcc /bin/bash -c \"gcc -o a.out $file && ./a.out < $input && rm ./a.out\""
+      command="docker compose run --rm gcc /bin/bash -c \"gcc -o a.out $file && ./a.out < $input && rm ./a.out\""
       ;;
     "js")
-      command="docker compose -f ../compose.yaml run --rm node node $file < $input"
+      command="docker compose run --rm node node $file < $input"
       ;;
     "php")
-      command="docker compose -f ../compose.yaml run --rm php php $file < $input"
+      command="docker compose run --rm php php $file < $input"
       ;;
     "py")
-      command="docker compose -f ../compose.yaml run --rm python python $file < $input"
+      command="docker compose run --rm python python $file < $input"
       ;;
     "java")
       command="docker compose -f ../compose.yaml run --rm java /bin/bash -c \"javac $file && java -cp $(dirname "$file") $(basename "$file" .java) < $input && rm $(dirname "$file")/$(basename "$file" .java).class\""

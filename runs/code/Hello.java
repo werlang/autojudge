@@ -8,3 +8,6 @@ public class Hello {
         System.out.println("X = " + (a + b));
     }
 }
+
+// Run with:
+// ./autojudge.sh hello.java

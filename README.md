@@ -25,6 +25,26 @@ docker compose down
 
 ## Usage
 
+You can either run the simple `autojudge.sh` or the full `autojudge.py` script.
+
+### Simple script
+
+Go to the `simple` folder, and run the following command:
+
+```bash
+./autojudge.sh <script_file> <input_file>
+```
+
+Replace `<script_file>` with the filename of your code, and `<input_file>` with the filename of the test case.
+
+You will see the output of your code in the console.
+
+```bash
+X = 3
+```
+
+### Full test case testing script
+
 Go to the `runs` folder, and run the following command:
 
 ```bash

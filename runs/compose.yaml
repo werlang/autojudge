@@ -1,6 +1,6 @@
 x-runner: &runner-template
     volumes:
-        - ./runs:/app
+        - ./:/app
     working_dir: /app
 
 services:

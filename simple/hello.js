@@ -6,4 +6,4 @@ const b = parseInt(lines[1]);
 console.log(`X = ${a + b}`);
 
 // Run with:
-// ./autojudge.sh hello.js
+// ./autojudge.sh hello.js input
