@@ -1,10 +1,6 @@
-process.openStdin().on('data', data => {
-    const input = data.toString().trim().split(/\s+/g);
-    main(input);
-});
+let input = require('fs').readFileSync('/dev/stdin', 'utf8');
+let lines = input.split('\n');
 
-function main(input) {
-    const a = parseInt(input[0]);
-    const b = parseInt(input[1]);
-    console.log(`X = ${a + b}`);
-}
+const a = parseInt(lines[0]);
+const b = parseInt(lines[1]);
+console.log(`X = ${a + b}`);

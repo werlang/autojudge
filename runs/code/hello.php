@@ -1,5 +1,4 @@
 <?php
-$input = explode(" ", fgets(STDIN));
-$a = intval($input[0]);
-$b = intval($input[1]);
+$a = trim(fgets(STDIN));
+$b = trim(fgets(STDIN));
 echo "X = " . ($a + $b) . "\n";

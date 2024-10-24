@@ -1,3 +1,5 @@
-[a, b] = input().split()
-[a, b] = [int(a), int(b)]
-print("X = " + str(a + b) + "\n")
+a = int(input())
+b = int(input())
+
+x = a + b
+print("X = %d" % x)
