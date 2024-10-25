@@ -13,7 +13,7 @@ import TemplateVar from './helpers/template-var.js';
 import '../less/index.less';
 
 // set up typewriter effect
-document.querySelectorAll('section .col.text .content h1, #section-3 h1, #section-1 #welcome').forEach(e => {
+document.querySelectorAll('section .col.text .content h2, #section-3 h2, #section-1 #welcome').forEach(e => {
     new TypeIt(e, {
         speed: 75,
         waitUntilVisible: true,

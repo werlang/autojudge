@@ -1,4 +1,5 @@
 {
+    "title": "Page not found",
     "main-message": "This is not the page you are looking for.",
     "go-back": "Go back to the <a href=\"/\">$t(notfound:home)</a>.",
     "home": "homepage"

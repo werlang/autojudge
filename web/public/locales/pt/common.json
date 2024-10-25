@@ -40,5 +40,9 @@
     "time": "Tempo",
     "expected": "Esperado",
     "received": "Obtido",
-    "cancel": "Cancelar"
+    "cancel": "Cancelar",
+    "page-title": "AutoJudge - Plataforma de Juiz Online para Competição e Aprendizado em Programação",
+    "page-description": "AutoJudge é uma plataforma de juiz online para criar e resolver problemas de programação, hospedar competições e colaborar com equipes. Ideal para educadores e estudantes.",
+    "page-keywords": "AutoJudge, juiz online, competições de programação, desafios de programação, colaboração em equipe, avaliação de código, educadores, estudantes, habilidades de programação",
+    "dashboard": "Painel"
 }

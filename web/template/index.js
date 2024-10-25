@@ -1,4 +1,5 @@
 export default [
+    ['title', { ns: 'index' }],
     ['section1.welcome', { ns: 'index' }],
     ['section1.h3', { ns: 'index' }],
     ['section1.button-1', { ns: 'index' }],
@@ -15,4 +16,7 @@ export default [
     ['section6.p', { ns: 'index' }],
     ['section6.button', { ns: 'index' }],
     ['footer.check-project', { ns: 'components' }],
+    ['page-title', { ns: 'common' }],
+    ['page-description', { ns: 'common' }],
+    ['page-keywords', { ns: 'common' }],
 ]
