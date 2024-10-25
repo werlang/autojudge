@@ -19,7 +19,7 @@ export default fixedVars => (req, res, next) => {
         // get the translations for the view
         const translations = {};
         for (let item of template.default) {
-            const viewKey = item[1].ns + '-' + item[0].replace('.', '-');
+            const viewKey = item[1].ns + ':' + item[0].replace(/\./g, '/');
             translations[viewKey] = res.locals.t(...item);
         }
         // console.log(translations);
