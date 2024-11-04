@@ -4,7 +4,7 @@ AutoJudge is a simple script that automates the process of running test cases fo
 
 * **You can use this project as a CLI code runner. For this, check the [runner-cli](https://github.com/werlang/autojudge/tree/runner-cli) branch.**
 
-* **Check Autojudge online version at [autojudge.werlang.site](https://autojudge.werlang.site).**
+* **Check Autojudge online version at [autojudge.io](https://autojudge.io).**
 
 ## Features
 
