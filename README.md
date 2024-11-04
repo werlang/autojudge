@@ -25,7 +25,7 @@ docker compose down
 
 ## Usage
 
-You can either run the simple `autojudge.sh` or the full `autojudge.py` script.
+You can either run the simple `autojudge.sh` or the full `autojudge.sh` script.
 
 ### Simple script
 
