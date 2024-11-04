@@ -19,11 +19,18 @@ export default class PDFUtils {
 
     // Function to convert image URL to Base64
     async convertImageToBase64(url) {
-        const response = await fetch(url);
-        const buffer = await response.arrayBuffer();
-        const base64 = Buffer.from(buffer).toString('base64');
-        const mimeType = response.headers.get('content-type');
-        return `data:${mimeType};base64,${base64}`;
+        try {
+            const response = await fetch(url);
+            const buffer = await response.arrayBuffer();
+            const base64 = Buffer.from(buffer).toString('base64');
+            const mimeType = response.headers.get('content-type');
+            return `data:${mimeType};base64,${base64}`;
+        }
+        catch (err) {
+            console.log(err);
+            // placeholder image if the image cannot be loaded
+            return `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdjOHPmzH8ACDADZKt3GNsAAAAASUVORK5CYII=`;
+        }
     }
 
     // Function to extract <img> src attributes and replace them with Base64 asynchronously

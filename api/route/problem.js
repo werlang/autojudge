@@ -244,7 +244,7 @@ router.post('/:hash/pdf', auth({'user:optional': true}), async (req, res, next) 
         }).create();
 
         res.setHeader('Content-Type', 'application/pdf');
-        const normalize = text => text.toLowerCase().replace(/\s/, '-').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        const normalize = text => text.toLowerCase().replace(/\s/g, '-').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
         res.setHeader('Content-Disposition', `attachment; filename="${normalize(problem.title)}.pdf"`);
         res.send(buffer);
 
