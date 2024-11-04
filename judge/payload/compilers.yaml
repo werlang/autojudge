@@ -1,4 +1,3 @@
-# healthcheck template
 x-runner: &runner-template
     volumes:
         - runs:/app

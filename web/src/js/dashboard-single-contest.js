@@ -8,6 +8,8 @@ import Problem from "./model/problem.js";
 import Team from "./model/team.js";
 import iro from '@jaames/iro';
 
+// TODO: fix text copying in localhost
+
 export default {
 
     load: async function({id}) {
@@ -27,7 +29,7 @@ export default {
     render: async function() {
         const resp = await this.contestInstance.get(false, true).catch(() => location.href = '/');
         this.contest = resp.contest;
-        console.log(this.contest);
+        // console.log(this.contest);
         
         const frame = document.querySelector('#frame');
         frame.innerHTML = `<div id="contest">

@@ -92,7 +92,7 @@ services:
             - autojudge
     nginx:
         container_name: nginx
-        image: valian/docker-nginx-auto-ssl
+        image: pswerlang/nginx-auto-ssl
         restart: ${RESTART_POLICY}
         ports:
             - "80:80"
