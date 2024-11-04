@@ -19,8 +19,7 @@ You will need Docker installed on your system to run the AutoJudge script within
 Before Running the autojudge, you will need to pull and build the docker images for each language supported. To do this, run the following command:
 
 ```bash
-docker compose up
-docker compose down
+docker compose pull
 ```
 
 ## Usage
