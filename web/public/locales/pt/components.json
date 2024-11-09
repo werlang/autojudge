@@ -21,5 +21,11 @@
         "starts": "A competição começa em",
         "finished": "A competição terminou",
         "ends": "A competição termina em"
+    },
+    "editor": {
+        "link": {
+            "title": "Inserir Link",
+            "placeholder": "Link"
+        }
     }
 }
