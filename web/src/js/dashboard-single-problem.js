@@ -1,7 +1,12 @@
 import Button from './components/button.js';
 import Modal from './components/modal.js';
 import Toast from './components/toast.js';
-import Problem from './model/problem.js'
+import Problem from './model/problem.js';
+import Editor from './components/textEditor.js';
+
+// TODO: fix safari line break issue
+// TODO: rebuild teams css for problems
+// TODO: Add spinning icon control buttons
 
 export default {
 
@@ -19,7 +24,7 @@ export default {
         const frame = document.querySelector('#frame');
         frame.innerHTML = `<div id="problem">
             <h1 id="title">${this.problem.title}</h1>
-            <p id="description">${this.problem.description}</p>
+            <div id="description">${this.problem.description}</div>
             <div id="public-codes"></div>
             <div id="hidden-codes"></div>
             <div id="share">
@@ -117,65 +122,109 @@ export default {
     createEditableFields: function() {
         document.querySelectorAll('#title, #description').forEach(e => {
             const content = e.innerHTML;
-            e.innerHTML = `<div class="editable" title="${this.translate('edit', 'common')}">
-                <span class="field">${content}</span>
-                <span class="edit-icon"><i class="fas fa-edit"></i></span>
+            e.innerHTML = `<div class="editable">
+                <span class="field"><div>${content}</div></span>
+                <div class="controls">
+                    <span class="edit-icon" title="${this.translate('edit', 'common')}"><i class="fa-solid fa-edit"></i></span>
+                    <span class="button cancel hidden" title="${this.translate('cancel', 'common')}"><i class="fa-solid fa-times"></i></span>
+                    <span class="button confirm hidden" title="${this.translate('confirm', 'common')}"><i class="fa-solid fa-check"></i></span>
+                </div>
             </div>`;
 
             // bind events
             const editable = e.querySelector('.editable');
             const field = e.querySelector('.field');
             
-            let oldContent = field.textContent;
+            let oldContent = field.innerHTML;
 
             // click the icon
-            const editIcon = editable.querySelector('.edit-icon');
-            editIcon.addEventListener('click', () => {
-                field.contentEditable = 'plaintext-only';
-                field.focus();
-                // select all the text
-                window.getSelection().selectAllChildren(field);
-                oldContent = field.textContent;
+            const editIcon = editable.querySelector('.controls .edit-icon');
+            const confirmIcon = editable.querySelector('.controls .confirm');
+            const cancelIcon = editable.querySelector('.controls .cancel');
 
+            editIcon.addEventListener('click', () => {
+                if (editIcon.classList.contains('editing')) return;
+
+                confirmIcon.classList.remove('hidden');
+                cancelIcon.classList.remove('hidden');
+                editIcon.classList.add('hidden');
+
+                oldContent = field.innerHTML;
                 editIcon.classList.add('editing');
+
+                field.innerHTML = '';
+
+                this.editor = new Editor({
+                    mode: editable.parentNode.id === 'title' ? 'text' : 'html',
+                    element: field,
+                    content: oldContent,
+                });
             });
 
-            // leave the field
-            field.addEventListener('blur', () => {
-                field.contentEditable = false;
-                // change the icon
-                editIcon.classList.remove('editing');
-                editIcon.innerHTML = '<i class="fas fa-edit"></i>';
+            // click the cancel button
+            cancelIcon.addEventListener('click', () => {
+                // Show discard changes modal
+                new Modal(`
+                    <h1>${this.translate('discard-changes.h1', 'problem')}</h1>
+                    <p>${this.translate('discard-changes.message', 'problem', {
+                        field: this.translate(`field.${editable.parentNode.id}`, 'problem'),
+                    })}</p>
+                `)
+                // Discard changes
+                .addButton({
+                    text: this.translate('discard', 'common'),
+                    close: true,
+                    isDefault: false,
+                    callback: () => {
+                        field.innerHTML = oldContent;
+                        confirmIcon.classList.add('hidden');
+                        cancelIcon.classList.add('hidden');
+                        editIcon.classList.remove('hidden');
+                        editIcon.classList.remove('editing');
+                        this.editor.destroy();
+                    },
+                })
+                // Cancel
+                .addButton({
+                    text: this.translate('cancel', 'common'),
+                    close: true,
+                    isDefault: true,
+                });
+            });
 
-                // do not save if the content is the same
-                if (oldContent === field.textContent) return;
-
-                // do not save if the content is empty
-                if (!field.textContent) {
-                    field.textContent = oldContent;
-                    return;
-                }
-
-                // show save changes modal
-                // console.log(editable.parentNode.id, field.textContent);
+            // click the confirm button
+            confirmIcon.addEventListener('click', () => {
+                // Show save changes modal
                 new Modal(`
                     <h1>${this.translate('save-changes.h1', 'problem')}</h1>
-                    <p>${this.translate('save-changes.message', 'problem', { field: this.translate(`field.${editable.parentNode.id}`, 'problem')})}</p>
+                    <p>${this.translate('save-changes.message', 'problem', {
+                        field: this.translate(`field.${editable.parentNode.id}`, 'problem'),
+                    })}</p>
                 `)
-                // save changes
+                // Save changes
                 .addButton({
                     text: this.translate('save', 'common'),
                     close: true,
                     isDefault: false,
-                    callback: () => this.saveChanges(editable.parentNode.id, field.textContent)
+                    callback: async () => {
+                        let newContent = this.editor.getContent();
+                        this.editor.destroy();
+                        // Do not save if the content is the same
+                        if (oldContent === newContent || !newContent) {
+                            this.render();
+                            return;
+                        } 
+
+                        await this.saveChanges(editable.parentNode.id, newContent);
+                        this.render();
+                    },
                 })
-                // discard changes
-                .addButton({ 
-                    text: this.translate('discard', 'common'), 
+                // cancel
+                .addButton({
+                    text: this.translate('cancel', 'common'),
                     close: true,
                     isDefault: true,
-                    callback: () => field.textContent = oldContent
-                })
+                });
 
             });
         });

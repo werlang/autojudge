@@ -14,6 +14,10 @@
         "success": "Problem saved successfully.",
         "success-case": "Test case {{operation}} successfully."
     },
+    "discard-changes": {
+        "h1": "Discard Changes",
+        "message": "Do you want to discard the changes to the <b>{{field}}</b> field?"
+    },
     "field": {
         "title": "Title",
         "description": "Description"

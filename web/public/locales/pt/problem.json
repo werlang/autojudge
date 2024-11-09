@@ -14,6 +14,10 @@
         "success": "Problema salvo com sucesso.",
         "success-case": "Caso de teste {{operation}} com sucesso."
     },
+    "discard-changes": {
+        "h1": "Descartar Alterações",
+        "message": "Deseja descartar as alterações no campo <b>{{field}}</b>?"
+    },
     "field": {
         "title": "Título",
         "description": "Descrição"
