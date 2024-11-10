@@ -2,6 +2,7 @@
 @import 'form.less';
 @import 'table.less';
 @import 'modal.less';
+@import 'textEditor.less';
 
 .author-card {
     align-items: center;
@@ -87,37 +88,6 @@
 
 .modal#problem,
 #frame #problem {
-
-    h1 {
-        display: flex;
-        align-items: center;
-        
-        .author-card {
-            font-size: 0.7rem;
-            margin-left: 10px;
-            margin-top: -20px;
-            padding: 2px 5px;
-            cursor: default;
-
-            &:hover {
-                transform: none;
-            }
-        }
-    }
-
-    p {
-        margin-bottom: 10px;
-        white-space: pre-line;
-        font-size: 1.1rem;
-        
-        @media @size-600 {
-            font-size: 1.2rem;
-        }
-    }
-
-    h3 {
-        margin-bottom: 10px;
-    }
 
     .code {
         font-family: 'Quantico', monospace;
@@ -226,10 +196,6 @@
             & > div {
                 padding: 5px 10px;
                 border: 1px solid transparent;
-
-                p {
-                    display: block;
-                }
             }
             
             .ProseMirror{
@@ -469,8 +435,4 @@
     button {
         max-width: 600px;
     }
-}
-
-.bubble-menu {
-    display: flex;
 }

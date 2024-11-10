@@ -158,6 +158,7 @@ export default {
                     mode: editable.parentNode.id === 'title' ? 'text' : 'html',
                     element: field,
                     content: oldContent,
+                    translate: this.translate,
                 });
             });
 
@@ -208,14 +209,15 @@ export default {
                     isDefault: false,
                     callback: async () => {
                         let newContent = this.editor.getContent();
-                        this.editor.destroy();
                         // Do not save if the content is the same
                         if (oldContent === newContent || !newContent) {
+                            this.editor.destroy();
                             this.render();
                             return;
                         } 
-
+                        
                         await this.saveChanges(editable.parentNode.id, newContent);
+                        this.editor.destroy();
                         this.render();
                     },
                 })
