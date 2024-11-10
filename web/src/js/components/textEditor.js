@@ -20,6 +20,7 @@ import TableCell from '@tiptap/extension-table-cell';
 // TODO: equation
 // TODO: fix pdf generation when using images
 // TODO: fix image sizes.
+// TODO: add shortcuts tooltips
 
 
 export default class TextEditor {

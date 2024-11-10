@@ -80,6 +80,15 @@ blockquote {
     margin-left: 20px;
 }
 
+table p,
+li p {
+    margin: 0;
+}
+
+.field img {
+    border-radius: 5px;
+}
+
 .tableWrapper {
     tr:hover {
         td { background-color: rgba(var(--color-row), 0.3); }
@@ -136,10 +145,10 @@ table {
 
         td {
             background-color: rgba(var(--color-row), 0.2);
-            padding: 0 5px;
         }
         
         th, td {
+            padding: 5px 10px;
             transition: 0.3s all;
             position: relative;
             border: 1px solid transparent;
