@@ -130,6 +130,7 @@ export default {
 
         form.getSelect('answer').addOptions([
             { value: 'null', text: this.translate('judge.select', 'contest'), options: { disabled: true, selected: true } },
+            { value: 'PENDING', text: 'PENDING' },
             { value: 'ACCEPTED', text: 'ACCEPTED' },
             { value: 'WRONG_ANSWER', text: 'WRONG ANSWER' },
             { value: 'TIME_LIMIT_EXCEEDED', text: 'TIME LIMIT EXCEEDED' },
