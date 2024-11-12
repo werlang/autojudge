@@ -33,7 +33,7 @@ export default {
             id: 'teams', 
             columns: [
                 {id: 'score', name: this.translate('time', 'common'), sort: false, size: 'small'},
-                {id: 'name', name: this.translate('name', 'common'), sort: false},
+                {id: 'name', name: this.translate('name', 'common'), sort: false, escapeHTML: true},
                 {id: 'solved', name: this.translate('solved', 'common'), sort: false},
             ],
             translate: this.translate,

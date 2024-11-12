@@ -309,7 +309,7 @@ export default {
     listTeams: function(container) {
         const table = new Table({
             element: container,
-            columns: [ { id: 'name', name: this.translate('name', 'common') }, ],
+            columns: [ { id: 'name', name: this.translate('name', 'common'), escapeHTML: true }, ],
             controls: [
                 ...(this.contest.startTime ? [] : [
                     // remove team

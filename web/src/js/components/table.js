@@ -10,6 +10,8 @@
 //   - id: the id of the column (required)
 //   - name: the name of the column (required)
 //   - size: 'small' for small columns
+//   - sort: 'asc' or 'desc' to enable sorting
+//   - escapeHTML: whether to escape HTML characters or not
 // controls: an array of objects with the following properties:
 //   - id: the id of the control (required)
 //   - icon: the icon representing the control
@@ -244,7 +246,12 @@ export default class Table {
                 if (column.id) {
                     classes.push(column.id);
                 }
-                return `<div class="${classes.join(' ')}">${item[column.id]}</div>`;
+                let columnContent = item[column.id];
+                if (column.escapeHTML === true && !itemDOM.classList.contains('placeholder')) {
+                    const escapeHtml = str => str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot' }[tag]));
+                    columnContent = escapeHtml(columnContent);
+                }
+                return `<div class="${classes.join(' ')}">${columnContent}</div>`;
             }).join('');
     
             if (this.itemEvents) {

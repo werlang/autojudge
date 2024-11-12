@@ -35,7 +35,7 @@ export default {
                 {id: 'status', name: this.translate('submissions.status', 'team'), sort: false, size: 'small'},
                 {id: 'time', name: this.translate('submissions.submitted', 'team'), sort: false, size: 'small'},
                 {id: 'problem', name: this.translate('problem_one', 'common'), sort: false},
-                {id: 'team', name: this.translate('teams_one', 'common'), sort: false},
+                {id: 'team', name: this.translate('teams_one', 'common'), sort: false, escapeHTML: true},
             ],
             controls: [
                 { id: 'log', icon: 'far fa-file-code', title: this.translate('judge.log', 'contest'), action: item => this.showLog(item[0]) },
