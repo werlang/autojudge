@@ -209,9 +209,11 @@ export default {
             new Toast(this.translate('judge.no-log', 'contest'), { type: 'error' });
             return;
         }
+        const escapeHtml = str => str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot' }[tag]));
+        const log = escapeHtml(JSON.stringify(JSON.parse(submission.log), null, 2));
         new Modal(`
             <h1>${this.translate('judge.log', 'contest')}</h1>
-            <pre><code>${JSON.stringify(JSON.parse(submission.log), null, 2)}</code></pre>
+            <pre><code>${log}</code></pre>
             <button id="close" class="default">${this.translate('close', 'common')}</button>
         `, { id: 'log-modal', buttonClose: 'close' });
     },
