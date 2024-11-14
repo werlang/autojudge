@@ -44,7 +44,7 @@ export default {
 
         // add public cases: public test cases are always visible
         const publicCodes = frame.querySelector('#problem #public-codes');
-        publicCodes.innerHTML = `<h3>${this.translate('inout', 'problem', {count: inputLength(this.problem.input), hidden: ''})}</h3>`;
+        publicCodes.innerHTML = `<h3>${this.translate('inout-public', 'problem', {count: inputLength(this.problem.input)})}</h3>`;
         // create a container for the cases
         const codeContainerPublic = document.createElement('div');
         codeContainerPublic.classList.add('code-container');

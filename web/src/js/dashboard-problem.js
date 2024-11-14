@@ -102,7 +102,7 @@ export default {
         const modal = new Modal(`
             <h1 title="title">${item.title}</h1>
             <p id="description">${item.description}</p>
-            <h3>${this.translate('inout', 'problem', {count: inputLength(item.input), hidden: ''})}</h3>
+            <h3>${this.translate('inout-public', 'problem', {count: inputLength(item.input)})}</h3>
             ${codes}
         `, { id: 'problem' })
         .addButton({ text: this.translate('close', 'common'), close: true })

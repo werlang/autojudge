@@ -54,7 +54,7 @@ export default {
 
         // add public cases: public test cases are always visible
         const publicCodes = frame.querySelector('#problem #public-codes');
-        publicCodes.innerHTML = `<h3>${this.translate('inout', 'problem', {count: inputLength(this.problem.input), hidden: ''})}</h3>`;
+        publicCodes.innerHTML = `<h3>${this.translate('inout-public', 'problem', {count: inputLength(this.problem.input)})}</h3>`;
         // create a container for the cases
         const codeContainerPublic = document.createElement('div');
         codeContainerPublic.classList.add('code-container');
@@ -98,7 +98,7 @@ export default {
 
         // add hidden cases: hidden test cases are only visible to the author
         const hiddenCodes = frame.querySelector('#problem #hidden-codes');
-        hiddenCodes.innerHTML = `<h3>${this.translate('inout', 'problem', {count: inputLength(this.problem.inputHidden), hidden: this.translate('hidden', 'problem')})}</h3>`;
+        hiddenCodes.innerHTML = `<h3>${this.translate('inout-hidden', 'problem', {count: inputLength(this.problem.inputHidden)})}</h3>`;
         const codeContainerHidden = document.createElement('div');
         codeContainerHidden.classList.add('code-container');
         // render the cases in the container
