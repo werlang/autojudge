@@ -80,12 +80,19 @@ export default class GoogleLogin {
         if (!GoogleLogin.loaded) {
             throw new Error('GoogleLogin not loaded');
         }
-        google.accounts.id.prompt(notification => {
-            if (!notification.isNotDisplayed()) return;
-            if (GoogleLogin.onFailCallback) GoogleLogin.onFailCallback(notification);
-        });
 
-        await GoogleLogin.waitLogged();
+        return new Promise(async resolve => {
+            google.accounts.id.prompt(notification => {
+                if (!notification.isNotDisplayed()) return;
+                if (GoogleLogin.onFailCallback) {
+                    GoogleLogin.onFailCallback(notification);
+                    resolve(false);
+                }
+            });
+    
+            await GoogleLogin.waitLogged();
+            resolve(true);
+        })
     }
 
     static async waitLogged() {
