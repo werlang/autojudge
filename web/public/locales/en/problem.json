@@ -38,5 +38,11 @@
     "teams-solved": "Teams that solved this problem",
     "score-solved": "Your time addition for this problem",
     "score-unsolved": "Your attempts for this problem",
-    "pdf-problems": "Generate PDF with problems"
+    "pdf-problems": "Generate PDF with problems",
+    "import-cases": {
+        "title": "Import test cases",
+        "description": "You can import test cases from a <code>.csv</code> file. The file must have the following format:",
+        "placeholder": "Drop or click",
+        "error": "An error occurred while importing the test cases."
+    }
 }

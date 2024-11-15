@@ -38,5 +38,11 @@
     "teams-solved": "Equipes que resolveram este problema",
     "score-solved": "Seu acréscimo de tempo para este problema",
     "score-unsolved": "Suas tentativas para este problema",
-    "pdf-problems": "Gerar PDF com problemas"
+    "pdf-problems": "Gerar PDF com problemas",
+    "import-cases": {
+        "title": "Importar casos de teste",
+        "description": "Você pode importar casos de teste de um arquivo <code>.csv</code>. O arquivo deve ter o seguinte formato:",
+        "placeholder": "Arraste ou clique",
+        "error": "Ocorreu um erro ao importar os casos de teste."
+    }
 }

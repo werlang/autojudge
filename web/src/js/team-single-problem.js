@@ -34,7 +34,7 @@ export default {
         frame.innerHTML = `<div id="problem">
             <h1 id="title">${this.problem.title}</h1>
             <p id="description">${this.problem.description}</p>
-            <div id="public-codes"></div>
+            <div id="public-cases"></div>
             <form id="new-submission-form">
                 <h2>${this.translate('new-submission', 'team')}</h2>
                 <div id="upload"></div>
@@ -43,14 +43,14 @@ export default {
         </div>`;
 
         // add public cases: public test cases are always visible
-        const publicCodes = frame.querySelector('#problem #public-codes');
-        publicCodes.innerHTML = `<h3>${this.translate('inout-public', 'problem', {count: inputLength(this.problem.input)})}</h3>`;
+        const publicCases = frame.querySelector('#problem #public-cases');
+        publicCases.innerHTML = `<h3>${this.translate('inout-public', 'problem', {count: inputLength(this.problem.input)})}</h3>`;
         // create a container for the cases
         const codeContainerPublic = document.createElement('div');
         codeContainerPublic.classList.add('code-container');
         // render the cases in the container
         this.renderCases(codeContainerPublic, this.problem.input, this.problem.output);
-        publicCodes.appendChild(codeContainerPublic);
+        publicCases.appendChild(codeContainerPublic);
 
         const form = new Form(document.querySelector('#new-submission-form'));
         form.setData({ code: null });

@@ -16,10 +16,11 @@ import Dropzone from 'dropzone';
 
 export default class Uploader {
     
-    constructor(dropElement, { accept, onSend, onUpload, onError, placeholder, translate }) {
+    constructor(dropElement, { accept, onSend, onUpload, onError, placeholder, translate, format }) {
         this.dropElement = dropElement;
         this.translate = translate;
         this.placeholder = placeholder || this.translate('uploader.hint-drop-file', 'components');
+        this.format = format || 'base64';
         const self = this;
     
         this.dropElement.classList.add('dropzone');
@@ -85,7 +86,12 @@ export default class Uploader {
 
         const reader = new FileReader();
         let fileData = new Promise(resolve => reader.onload = () => resolve(reader.result));
-        reader.readAsDataURL(file);
+        if (this.format === 'text') {
+            reader.readAsText(file);
+        }
+        else {
+            reader.readAsDataURL(file);
+        }
         fileData = await fileData;
 
         return fileData;

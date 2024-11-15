@@ -3,6 +3,7 @@ import Modal from './components/modal.js';
 import Toast from './components/toast.js';
 import Problem from './model/problem.js';
 import Editor from './components/textEditor.js';
+import Uploader from './components/uploader.js';
 
 // TODO: fix safari line break issue
 // TODO: rebuild teams css for problems
@@ -25,8 +26,9 @@ export default {
         frame.innerHTML = `<div id="problem">
             <h1 id="title">${this.problem.title}</h1>
             <div id="description">${this.problem.description}</div>
-            <div id="public-codes"></div>
-            <div id="hidden-codes"></div>
+            <div id="public-cases" class="cases-container"></div>
+            <div id="hidden-cases" class="cases-container"></div>
+            <button id="import-cases">${this.translate('import-cases.title', 'problem')}</button>
             <div id="share">
                 <h3>${this.translate('share-section', 'problem')}</h3>
                 <div class="links">
@@ -53,14 +55,14 @@ export default {
             </div>`;
 
         // add public cases: public test cases are always visible
-        const publicCodes = frame.querySelector('#problem #public-codes');
-        publicCodes.innerHTML = `<h3>${this.translate('inout-public', 'problem', {count: inputLength(this.problem.input)})}</h3>`;
+        const publicCases = frame.querySelector('#problem #public-cases');
+        publicCases.innerHTML = `<h3>${this.translate('inout-public', 'problem', {count: inputLength(this.problem.input)})}</h3>`;
         // create a container for the cases
         const codeContainerPublic = document.createElement('div');
         codeContainerPublic.classList.add('code-container');
         // render the cases in the container
         this.renderCases(codeContainerPublic, this.problem.input, this.problem.output);
-        publicCodes.appendChild(codeContainerPublic);
+        publicCases.appendChild(codeContainerPublic);
 
         // add link actions
         frame.querySelector('#share .link').addEventListener('click', () => {
@@ -88,32 +90,122 @@ export default {
         // button for adding a new public case: only visible to the author
         const buttonAddCase = new Button({ id: 'add-case', customClass: 'new-case', text: this.translate('add-case', 'problem'), callback: () => {
             // do not add a new case if there is already one being created
-            if (publicCodes.querySelector('.create')) return;
+            if (publicCases.querySelector('.create')) return;
             codeContainerPublic.appendChild(this.createCaseNode());
             // hide all buttons
             frame.querySelectorAll('button').forEach(b => b.classList.add('hidden'));
             frame.querySelector('.code.create .input').focus();
         }});
-        publicCodes.appendChild(buttonAddCase.get());
+        publicCases.appendChild(buttonAddCase.get());
 
         // add hidden cases: hidden test cases are only visible to the author
-        const hiddenCodes = frame.querySelector('#problem #hidden-codes');
-        hiddenCodes.innerHTML = `<h3>${this.translate('inout-hidden', 'problem', {count: inputLength(this.problem.inputHidden)})}</h3>`;
+        const hiddenCases = frame.querySelector('#problem #hidden-cases');
+        hiddenCases.innerHTML = `<h3>${this.translate('inout-hidden', 'problem', {count: inputLength(this.problem.inputHidden)})}</h3>`;
         const codeContainerHidden = document.createElement('div');
         codeContainerHidden.classList.add('code-container');
         // render the cases in the container
         this.renderCases(codeContainerHidden, this.problem.inputHidden, this.problem.outputHidden);
-        hiddenCodes.appendChild(codeContainerHidden);
+        hiddenCases.appendChild(codeContainerHidden);
 
         // button for adding a new hidden case: only visible to the author
         const buttonAddHidden = new Button({ id: 'add-hidden', customClass: 'new-case', text: this.translate('add-hidden', 'problem'), callback: () => {
             // do not add a new case if there is already one being created
-            if (hiddenCodes.querySelector('.create')) return;
+            if (hiddenCases.querySelector('.create')) return;
             codeContainerHidden.appendChild(this.createCaseNode());
             frame.querySelectorAll('button').forEach(b => b.classList.add('hidden'));
             frame.querySelector('.code.create .input').focus();
         }});
-        hiddenCodes.appendChild(buttonAddHidden.get());
+        hiddenCases.appendChild(buttonAddHidden.get());
+
+
+        const buttonImport = new Button({
+            element: frame.querySelector('#import-cases'),
+            customClass: 'default',
+        });
+        const sampleJson = [
+            `Test Case #,Public,Input,Output`,
+            `0,1,single line input 1,single output`,
+            `1,1,single line input 2,multiline output line 1`,
+            `1,1,,multiline output line 2`,
+            `2,0,multiline input line 1,single output`,
+            `2,0,multiline input line 2,`,
+            `3,0,"input, with, comma",output`,
+        ];
+        buttonImport.click(() => {
+            const modal = new Modal(`
+                <h1>${this.translate('import-cases.title', 'problem')}</h1>
+                <p>${this.translate('import-cases.description', 'problem')}</p>
+                <pre><code>${sampleJson.join('\n')}</code></pre>
+                <div class="uploader"></div>
+            `);
+            modal.addButton({ text: this.translate('cancel', 'common'), close: true, isDefault: true });
+
+            // add import cases: import test cases from a file
+            const uploader = new Uploader(modal.get('.uploader'), {
+                placeholder: this.translate('import-cases.placeholder', 'problem'),
+                translate: this.translate,
+                accept: '.csv',
+                format: 'text',
+                onUpload: async (file, data) => {
+                    // console.log(file, data);
+                    if (data.accepted === false) return;
+        
+                    // parse the csv file
+                    const cases = file.split('\n').map(line => {
+                        const values = [];
+                        let inQuotes = false;
+                        let value = '';
+                        for (let char of line) {
+                            if (char === '"') {
+                                inQuotes = !inQuotes;
+                            }
+                            else if (char === ',' && !inQuotes) {
+                                values.push(value);
+                                value = '';
+                            }
+                            else {
+                                value += char;
+                            }
+                        }
+                        values.push(value);
+                        return values;
+                    });
+                    const groupedCases = []
+                    cases.forEach((caseData, i) => {
+                        // skip the header
+                        if (i === 0) return;
+
+                        const index = parseInt(caseData[0]);
+                        if (!groupedCases[index]) {
+                            groupedCases[index] = [];
+                        }
+                        groupedCases[index].push(caseData);
+                    });
+                    const groupedMergedCases = [];
+                    groupedCases.forEach((group,i) => {
+                        if (!groupedMergedCases[i]) {
+                            groupedMergedCases[i] = [];
+                        }
+                        groupedMergedCases[i].push({
+                            isPublic: group[0][1] === '1',
+                            input: group.map(g => g[2]).filter(e => e).join('\n'),
+                            output: group.map(g => g[3]).filter(e => e).join('\n'),
+                        });
+                    });
+
+                    // console.log(groupedMergedCases);
+                    for (let i in groupedMergedCases) {
+                        const caseData = groupedMergedCases[i];
+                        await this.addCase(caseData[0].input, caseData[0].output, caseData[0].isPublic);
+                    }
+                    this.render();
+                },
+                onError: () => {
+                    new Toast(this.translate('import-cases.error', 'problem'), { type: 'error', timeOut: 10000 });
+                },
+            });
+        });
+
 
         // add editable fields: fields like title and description are editable by the author
         this.createEditableFields();
@@ -289,7 +381,7 @@ export default {
                 close: true,
                 isDefault: false,
                 callback: async () => {
-                    const isPublic = code.closest('#public-codes') ? true : false;
+                    const isPublic = code.closest('#public-cases') ? true : false;
                     await this.removeCase(input, output, isPublic);
                     this.render();
                 }
@@ -336,7 +428,7 @@ export default {
                     return;
                 }
 
-                const isPublic = code.closest('#public-codes') ? true : false;
+                const isPublic = code.closest('#public-cases') ? true : false;
                 await this.addCase(inputField.textContent, outputField.textContent, isPublic);
                 this.render();
             });

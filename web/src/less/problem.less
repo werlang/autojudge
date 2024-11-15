@@ -88,6 +88,8 @@
 
 .modal#problem,
 #frame #problem {
+    display: flex;
+    flex-direction: column;
 
     .code {
         font-family: 'Quantico', monospace;
@@ -115,6 +117,24 @@
         .case:nth-child(odd) {
             background-color: rgba(var(--color-main-raw), 0.2);
         }
+    }
+
+    button {
+        // max-width: 600px;
+        margin: auto;
+    }
+
+    .cases-container {
+        display: flex;
+        flex-direction: column;
+
+        button {
+            margin: auto;
+        }
+    }
+
+    #import-cases {
+        margin-top: 50px;
     }
 }
 
