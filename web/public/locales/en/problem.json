@@ -43,6 +43,9 @@
         "title": "Import test cases",
         "description": "You can import test cases from a <code>.csv</code> file. The file must have the following format:",
         "placeholder": "Drop or click",
-        "error": "An error occurred while importing the test cases."
+        "error": "An error occurred while importing the test cases.",
+        "error-header": "Incorrect file header format.",
+        "error-columns": "Incorrect number of columns in line {{line}} of the file.",
+        "error-type": "Invalid data type in line {{line}} of the file."
     }
 }

@@ -43,6 +43,9 @@
         "title": "Importar casos de teste",
         "description": "Você pode importar casos de teste de um arquivo <code>.csv</code>. O arquivo deve ter o seguinte formato:",
         "placeholder": "Arraste ou clique",
-        "error": "Ocorreu um erro ao importar os casos de teste."
+        "error": "Ocorreu um erro ao importar os casos de teste.",
+        "error-header": "Formato incorreto do cabeçalho do arquivo.",
+        "error-columns": "Número incorreto de colunas na linha {{line}} do arquivo.",
+        "error-type": "Tipo de dado inválido na linha {{line}} do arquivo."
     }
 }

@@ -123,7 +123,7 @@ export default {
             customClass: 'default',
         });
         const sampleJson = [
-            `Test Case #,Public,Input,Output`,
+            `Case,Public,Input,Output`,
             `0,1,single line input 1,single output`,
             `1,1,single line input 2,multiline output line 1`,
             `1,1,,multiline output line 2`,
@@ -150,54 +150,17 @@ export default {
                     // console.log(file, data);
                     if (data.accepted === false) return;
         
-                    // parse the csv file
-                    const cases = file.split('\n').map(line => {
-                        const values = [];
-                        let inQuotes = false;
-                        let value = '';
-                        for (let char of line) {
-                            if (char === '"') {
-                                inQuotes = !inQuotes;
-                            }
-                            else if (char === ',' && !inQuotes) {
-                                values.push(value);
-                                value = '';
-                            }
-                            else {
-                                value += char;
-                            }
-                        }
-                        values.push(value);
-                        return values;
-                    });
-                    const groupedCases = []
-                    cases.forEach((caseData, i) => {
-                        // skip the header
-                        if (i === 0) return;
-
-                        const index = parseInt(caseData[0]);
-                        if (!groupedCases[index]) {
-                            groupedCases[index] = [];
-                        }
-                        groupedCases[index].push(caseData);
-                    });
-                    const groupedMergedCases = [];
-                    groupedCases.forEach((group,i) => {
-                        if (!groupedMergedCases[i]) {
-                            groupedMergedCases[i] = [];
-                        }
-                        groupedMergedCases[i].push({
-                            isPublic: group[0][1] === '1',
-                            input: group.map(g => g[2]).filter(e => e).join('\n'),
-                            output: group.map(g => g[3]).filter(e => e).join('\n'),
-                        });
-                    });
-
-                    // console.log(groupedMergedCases);
-                    for (let i in groupedMergedCases) {
-                        const caseData = groupedMergedCases[i];
-                        await this.addCase(caseData[0].input, caseData[0].output, caseData[0].isPublic);
+                    const cases = this.parseCases(file);
+                    if (!cases.length) {
+                        uploader.setError();
+                        return;
                     }
+
+                    for (let i in cases) {
+                        const caseData = cases[i];
+                        await this.addCase(caseData.input, caseData.output, caseData.isPublic);
+                    }
+                    modal.close();
                     this.render();
                 },
                 onError: () => {
@@ -206,9 +169,75 @@ export default {
             });
         });
 
-
         // add editable fields: fields like title and description are editable by the author
         this.createEditableFields();
+    },
+
+    parseCases: function(file) {
+        // parse the csv file
+        const cases = file.split('\n').map(line => {
+            const values = [];
+            let inQuotes = false;
+            let value = '';
+            for (let char of line) {
+                if (char === '"') {
+                    inQuotes = !inQuotes;
+                }
+                else if (char === ',' && !inQuotes) {
+                    values.push(value);
+                    value = '';
+                }
+                else {
+                    value += char;
+                }
+            }
+            values.push(value);
+            return values;
+        });
+        // console.log(cases);
+
+        // validate the csv
+        const casesValidate = [...cases];
+        let header = casesValidate.shift();
+        // check first line for the headers
+        if (header.join(',').toLowerCase() !== 'case,public,input,output') {
+            new Toast(this.translate('import-cases.error-header', 'problem'), { type: 'error' });
+            return [];
+        }
+        // check each line for the correct number of columns and content type
+        for (let i in casesValidate) {
+            const caseData = casesValidate[i];
+            if (caseData.length !== 4) {
+                new Toast(this.translate('import-cases.error-columns', 'problem', {line: parseInt(i) + 2}), { type: 'error' });
+                return [];
+            }
+            if (isNaN(caseData[0]) || caseData[0] == '' || isNaN(caseData[1])) {
+                new Toast(this.translate('import-cases.error-type', 'problem', {line: parseInt(i) + 2}), { type: 'error' });
+                return [];
+            }
+        }
+
+        const groupedCases = []
+        cases.forEach((caseData, i) => {
+            // skip the header
+            if (i === 0) return;
+
+            const index = parseInt(caseData[0]);
+            if (!groupedCases[index]) {
+                groupedCases[index] = [];
+            }
+            groupedCases[index].push(caseData);
+        });
+        const groupedMergedCases = [];
+        groupedCases.forEach((group,i) => {
+            groupedMergedCases.push({
+                isPublic: group[0][1] === '1',
+                input: group.map(g => g[2]).filter(e => e).join('\n'),
+                output: group.map(g => g[3]).filter(e => e).join('\n'),
+            });
+        });
+        // console.log(groupedMergedCases);
+        return groupedMergedCases;
     },
 
     createEditableFields: function() {
