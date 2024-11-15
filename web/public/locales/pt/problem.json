@@ -42,6 +42,8 @@
     "import-cases": {
         "title": "Importar casos de teste",
         "description": "Você pode importar casos de teste de um arquivo <code>.csv</code>. O arquivo deve ter o seguinte formato:",
+        "image": "Planilha",
+        "sample": "Texto",
         "placeholder": "Arraste ou clique",
         "error": "Ocorreu um erro ao importar os casos de teste.",
         "error-header": "Formato incorreto do cabeçalho do arquivo.",

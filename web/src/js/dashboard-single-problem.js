@@ -135,9 +135,34 @@ export default {
             const modal = new Modal(`
                 <h1>${this.translate('import-cases.title', 'problem')}</h1>
                 <p>${this.translate('import-cases.description', 'problem')}</p>
-                <pre><code>${sampleJson.join('\n')}</code></pre>
+                <div class="tabs">
+                    <nav class="tab-list">
+                        <button id="image" class="tab active">${this.translate('import-cases.image', 'problem')}</button>
+                        <button id="sample" class="tab">${this.translate('import-cases.sample', 'problem')}</button>
+                    </nav>
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="image">
+                            <img src="/assets/img/import-csv-problem.webp" alt="Import cases">
+                        </div>
+                        <div class="tab-pane" id="sample">
+                            <pre><code>${sampleJson.join('\n')}</code></pre>
+                        </div>
+                    </div>
+                </div>
                 <div class="uploader"></div>
-            `);
+            `, { id: 'import-cases' });
+
+            // Add event listeners for tabs
+            modal.get('.tab-list').addEventListener('click', (e) => {
+                if (e.target.classList.contains('tab')) {
+                    const tabs = modal.getAll('.tab');
+                    const panes = modal.getAll('.tab-pane');
+                    tabs.forEach(tab => tab.classList.remove('active'));
+                    panes.forEach(pane => pane.classList.remove('active'));
+                    e.target.classList.add('active');
+                    modal.get(`.tab-content #${e.target.id}`).classList.add('active');
+                }
+            });
             modal.addButton({ text: this.translate('cancel', 'common'), close: true, isDefault: true });
 
             // add import cases: import test cases from a file
