@@ -4,10 +4,6 @@ import Toast from './components/toast.js';
 import Problem from './model/problem.js';
 import Editor from './components/textEditor.js';
 import Uploader from './components/uploader.js';
-import Pledge from './helpers/pledge.js';
-
-// TODO: fix safari line break issue
-// TODO: Add spinning icon control buttons
 
 export default {
 
@@ -28,7 +24,7 @@ export default {
             <div id="description">${this.problem.description}</div>
             <div id="public-cases" class="cases-container"></div>
             <div id="hidden-cases" class="cases-container"></div>
-            <button id="import-cases">${this.translate('import-cases.title', 'problem')}</button>
+            <div id="import-cases-container"></div>
             <div id="share">
                 <h3>${this.translate('share-section', 'problem')}</h3>
                 <div class="links">
@@ -127,11 +123,21 @@ export default {
         });
         hiddenCases.appendChild(buttonAddHidden.get());
 
+        // add import cases button: only visible to the author
+        this.createImportCases();
 
+        // add editable fields: fields like title and description are editable by the author
+        this.createEditableFields();
+    },
+
+    createImportCases: function() {
+        const container = document.querySelector('#import-cases-container');
         const buttonImport = new Button({
-            element: frame.querySelector('#import-cases'),
+            id: 'import-cases',
+            text: this.translate('import-cases.title', 'problem'),
             customClass: 'default',
         });
+        container.appendChild(buttonImport.get());
         const sampleJson = [
             `Case,Public,Input,Output`,
             `0,1,single line input 1,single output`,
@@ -203,9 +209,6 @@ export default {
                 },
             });
         });
-
-        // add editable fields: fields like title and description are editable by the author
-        this.createEditableFields();
     },
 
     parseCases: function(file) {
@@ -497,14 +500,14 @@ export default {
                 customClass: ['add', 'button'],
                 callback: async () => {
                     // do not add a case if the fields are empty
-                    if (!inputField.textContent || !outputField.textContent) {
+                    if (!inputField.innerHTML || !outputField.innerHTML) {
                         new Toast(this.translate('empty-case', 'problem'), { type: 'error' });
                         return;
                     }
 
                     buttonRemove.disable();
                     const isPublic = code.closest('#public-cases') ? true : false;
-                    await this.addCase(inputField.textContent, outputField.textContent, isPublic);
+                    await this.addCase(inputField.innerHTML, outputField.innerHTML, isPublic);
                     buttonRemove.enable();
                     this.render();
                 }
@@ -531,6 +534,9 @@ export default {
     },
 
     addCase: async function(input, output, isPublic) {
+        // all kinds of line breaks are replaced by \n
+        input = input.replace(/(\r\n|\r|\n|<br\s*\/?>)/g, '\n');
+        output = output.replace(/(\r\n|\r|\n|<br\s*\/?>)/g, '\n');
         return this.updateCase('add', input, output, isPublic);
     },
 
