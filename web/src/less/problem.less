@@ -245,6 +245,12 @@
             height: 40px;
             flex-shrink: 0;
             color: rgba(var(--color-text-raw),0.3);
+            border: none;
+            box-shadow: none;
+
+            &:hover {
+                background-color: transparent;
+            }
 
             &.editing {
                 animation: none;
@@ -269,6 +275,8 @@
             font-size: 1.8rem;
             color: rgba(var(--color-text-raw),0.3);
             margin-left: 10px;
+            border: none;
+            box-shadow: none;
 
             &.hidden {
                 display: none;
@@ -277,11 +285,19 @@
             &.confirm:hover {
                 background-color: rgba(var(--color-success-raw),0.5);
                 box-shadow: 1px 1px 5px rgba(var(--color-background-dark-raw),0.5);
+
+                &:disabled {
+                    background-color: rgba(var(--color-text-raw),0.5);
+                }
             }
 
             &.cancel:hover {
                 background-color: rgba(var(--color-error-raw),0.5);
                 box-shadow: 1px 1px 5px rgba(var(--color-background-dark-raw),0.5);
+
+                &:disabled {
+                    background-color: rgba(var(--color-text-raw),0.5);
+                }
             }
 
 
@@ -341,18 +357,30 @@
                 width: 50px;
                 font-size: 1.5rem;
                 color: rgba(var(--color-text-raw),0.3);
+                border: none;
+                box-shadow: none;
+
+                &:disabled {
+                    cursor: not-allowed;
+                }
                 
                 &.add:hover {
                     background-color: rgba(var(--color-success-raw),0.5);
                     box-shadow: 1px 1px 5px rgba(var(--color-background-dark-raw),0.5);
+
+                    &:disabled {
+                        background-color: rgba(var(--color-text-raw),0.5);
+                    }
                 }
 
                 &.remove:hover {
                     background-color: rgba(var(--color-error-raw),0.5);
                     box-shadow: 1px 1px 5px rgba(var(--color-background-dark-raw),0.5);
+
+                    &:disabled {
+                        background-color: rgba(var(--color-text-raw),0.5);
+                    }
                 }
-
-
             }
         }
     }

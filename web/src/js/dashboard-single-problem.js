@@ -4,9 +4,9 @@ import Toast from './components/toast.js';
 import Problem from './model/problem.js';
 import Editor from './components/textEditor.js';
 import Uploader from './components/uploader.js';
+import Pledge from './helpers/pledge.js';
 
 // TODO: fix safari line break issue
-// TODO: rebuild teams css for problems
 // TODO: Add spinning icon control buttons
 
 export default {
@@ -88,14 +88,19 @@ export default {
         if (!this.problem.author) return;
 
         // button for adding a new public case: only visible to the author
-        const buttonAddCase = new Button({ id: 'add-case', customClass: 'new-case', text: this.translate('add-case', 'problem'), callback: () => {
-            // do not add a new case if there is already one being created
-            if (publicCases.querySelector('.create')) return;
-            codeContainerPublic.appendChild(this.createCaseNode());
-            // hide all buttons
-            frame.querySelectorAll('button').forEach(b => b.classList.add('hidden'));
-            frame.querySelector('.code.create .input').focus();
-        }});
+        const buttonAddCase = new Button({
+            id: 'add-case',
+            customClass: 'new-case',
+            text: this.translate('add-case', 'problem'),
+            callback: () => {
+                // do not add a new case if there is already one being created
+                if (publicCases.querySelector('.create')) return;
+                codeContainerPublic.appendChild(this.createCaseNode());
+                // hide all buttons
+                frame.querySelectorAll('button.new-case').forEach(b => b.classList.add('hidden'));
+                frame.querySelector('.code.create .input').focus();
+            }
+        });
         publicCases.appendChild(buttonAddCase.get());
 
         // add hidden cases: hidden test cases are only visible to the author
@@ -108,13 +113,18 @@ export default {
         hiddenCases.appendChild(codeContainerHidden);
 
         // button for adding a new hidden case: only visible to the author
-        const buttonAddHidden = new Button({ id: 'add-hidden', customClass: 'new-case', text: this.translate('add-hidden', 'problem'), callback: () => {
-            // do not add a new case if there is already one being created
-            if (hiddenCases.querySelector('.create')) return;
-            codeContainerHidden.appendChild(this.createCaseNode());
-            frame.querySelectorAll('button').forEach(b => b.classList.add('hidden'));
-            frame.querySelector('.code.create .input').focus();
-        }});
+        const buttonAddHidden = new Button({
+            id: 'add-hidden',
+            customClass: 'new-case',
+            text: this.translate('add-hidden', 'problem'),
+            callback: () => {
+                // do not add a new case if there is already one being created
+                if (hiddenCases.querySelector('.create')) return;
+                codeContainerHidden.appendChild(this.createCaseNode());
+                frame.querySelectorAll('button.add-case').forEach(b => b.classList.add('hidden'));
+                frame.querySelector('.code.create .input').focus();
+            }
+        });
         hiddenCases.appendChild(buttonAddHidden.get());
 
 
@@ -271,9 +281,9 @@ export default {
             e.innerHTML = `<div class="editable">
                 <span class="field"><div>${content}</div></span>
                 <div class="controls">
-                    <span class="edit-icon" title="${this.translate('edit', 'common')}"><i class="fa-solid fa-edit"></i></span>
-                    <span class="button cancel hidden" title="${this.translate('cancel', 'common')}"><i class="fa-solid fa-times"></i></span>
-                    <span class="button confirm hidden" title="${this.translate('confirm', 'common')}"><i class="fa-solid fa-check"></i></span>
+                    <button class="edit-icon" title="${this.translate('edit', 'common')}"><i class="fa-solid fa-edit"></i></button>
+                    <button class="button cancel hidden" title="${this.translate('cancel', 'common')}"><i class="fa-solid fa-times"></i></button>
+                    <button class="button confirm hidden" title="${this.translate('confirm', 'common')}"><i class="fa-solid fa-check"></i></button>
                 </div>
             </div>`;
 
@@ -284,19 +294,20 @@ export default {
             let oldContent = field.innerHTML;
 
             // click the icon
-            const editIcon = editable.querySelector('.controls .edit-icon');
-            const confirmIcon = editable.querySelector('.controls .confirm');
-            const cancelIcon = editable.querySelector('.controls .cancel');
+            const editIcon = new Button({ element: editable.querySelector('.controls .edit-icon') });
+            const confirmIcon = new Button({ element: editable.querySelector('.controls .confirm') });
+            const cancelIcon = new Button({ element: editable.querySelector('.controls .cancel') });
 
-            editIcon.addEventListener('click', () => {
-                if (editIcon.classList.contains('editing')) return;
+            editIcon.click(() => {
+                if (editIcon.editing) return;
 
-                confirmIcon.classList.remove('hidden');
-                cancelIcon.classList.remove('hidden');
-                editIcon.classList.add('hidden');
+                confirmIcon.get().classList.remove('hidden');
+                cancelIcon.get().classList.remove('hidden');
+                editIcon.get().classList.add('hidden');
 
                 oldContent = field.innerHTML;
-                editIcon.classList.add('editing');
+                editIcon.get().classList.add('editing');
+                editIcon.editing = true;
 
                 field.innerHTML = '';
 
@@ -309,7 +320,7 @@ export default {
             });
 
             // click the cancel button
-            cancelIcon.addEventListener('click', () => {
+            cancelIcon.click(() => {
                 // Show discard changes modal
                 new Modal(`
                     <h1>${this.translate('discard-changes.h1', 'problem')}</h1>
@@ -324,10 +335,11 @@ export default {
                     isDefault: false,
                     callback: () => {
                         field.innerHTML = oldContent;
-                        confirmIcon.classList.add('hidden');
-                        cancelIcon.classList.add('hidden');
-                        editIcon.classList.remove('hidden');
-                        editIcon.classList.remove('editing');
+                        confirmIcon.get().classList.add('hidden');
+                        cancelIcon.get().classList.add('hidden');
+                        editIcon.get().classList.remove('hidden');
+                        editIcon.get().classList.remove('editing');
+                        editIcon.editing = false;
                         this.editor.destroy();
                     },
                 })
@@ -340,7 +352,7 @@ export default {
             });
 
             // click the confirm button
-            confirmIcon.addEventListener('click', () => {
+            confirmIcon.click(() => {
                 // Show save changes modal
                 new Modal(`
                     <h1>${this.translate('save-changes.h1', 'problem')}</h1>
@@ -362,8 +374,12 @@ export default {
                             return;
                         } 
                         
+                        confirmIcon.disable();
+                        cancelIcon.disable();
                         await this.saveChanges(editable.parentNode.id, newContent);
                         this.editor.destroy();
+                        confirmIcon.enable();
+                        cancelIcon.enable();
                         this.render();
                     },
                 })
@@ -373,7 +389,6 @@ export default {
                     close: true,
                     isDefault: true,
                 });
-
             });
         });
     },
@@ -417,36 +432,41 @@ export default {
         controls.classList.add('controls');
 
         // remove button: to discard the new case or remove an existing one
-        const buttonRemove = document.createElement('div');
-        buttonRemove.classList.add('button', 'remove');
-        buttonRemove.title = this.translate('discard', 'common');
-        buttonRemove.innerHTML = '<i class="fa-solid fa-trash"></i>';
-        buttonRemove.addEventListener('click', async () => {
-            if (isCreate) {
-                this.render();
-                return;
-            }
-            const modal = new Modal(`
-                <h1>${this.translate('remove-case.h1', 'problem')}</h1>
-                <p>${this.translate('remove-case.message', 'problem')}</p>
-            `)
-            .addButton({
-                text: this.translate('remove', 'common'),
-                close: true,
-                isDefault: false,
-                callback: async () => {
-                    const isPublic = code.closest('#public-cases') ? true : false;
-                    await this.removeCase(input, output, isPublic);
+        const buttonRemove = new Button({
+            icon: 'trash',
+            title: this.translate('discard', 'common'),
+            customClass: ['remove', 'button'],
+            callback: async () => {
+                if (isCreate) {
                     this.render();
+                    return;
                 }
-            })
-            .addButton({ text: this.translate('cancel', 'common'), close: true, isDefault: true, callback: () => {
-                this.render();
-            } });
+                const modal = new Modal(`
+                    <h1>${this.translate('remove-case.h1', 'problem')}</h1>
+                    <p>${this.translate('remove-case.message', 'problem')}</p>
+                `)
+                .addButton({
+                    text: this.translate('remove', 'common'),
+                    close: true,
+                    isDefault: false,
+                    callback: async () => {
+                        buttonRemove.disable();
+    
+                        const isPublic = code.closest('#public-cases') ? true : false;
+                        await this.removeCase(input, output, isPublic);
+
+                        buttonRemove.enable();
+                        this.render();
+                    }
+                })
+                .addButton({ text: this.translate('cancel', 'common'), close: true, isDefault: true, callback: () => {
+                    this.render();
+                } });
+            },
         });
 
         // append the buttons to the controls
-        controls.appendChild(buttonRemove);
+        controls.appendChild(buttonRemove.get());
         code.appendChild(controls);
 
         if (isCreate) {
@@ -471,22 +491,25 @@ export default {
 
 
             // add button: to persist the new case
-            const buttonAdd = document.createElement('div');
-            buttonAdd.classList.add('button', 'add');
-            buttonAdd.title = this.translate('add-case', 'problem');
-            buttonAdd.innerHTML = '<i class="fa-solid fa-check"></i>';
-            buttonAdd.addEventListener('click', async () => {
-                // do not add a case if the fields are empty
-                if (!inputField.textContent || !outputField.textContent) {
-                    new Toast(this.translate('empty-case', 'problem'), { type: 'error' });
-                    return;
-                }
+            const buttonAdd = new Button({
+                icon: 'check',
+                title: this.translate('add-case', 'problem'),
+                customClass: ['add', 'button'],
+                callback: async () => {
+                    // do not add a case if the fields are empty
+                    if (!inputField.textContent || !outputField.textContent) {
+                        new Toast(this.translate('empty-case', 'problem'), { type: 'error' });
+                        return;
+                    }
 
-                const isPublic = code.closest('#public-cases') ? true : false;
-                await this.addCase(inputField.textContent, outputField.textContent, isPublic);
-                this.render();
+                    buttonRemove.disable();
+                    const isPublic = code.closest('#public-cases') ? true : false;
+                    await this.addCase(inputField.textContent, outputField.textContent, isPublic);
+                    buttonRemove.enable();
+                    this.render();
+                }
             });
-            controls.appendChild(buttonAdd);
+            controls.appendChild(buttonAdd.get());
         }
 
         return code;
@@ -549,7 +572,6 @@ export default {
 
         try {
             await this.problem.update(toUpdate).catch(() => location.reload());
-            // console.log(resp);
             new Toast(this.translate('save-changes.success-case', 'problem', {operation: this.translate(operation === 'add' ? 'added' : 'removed', 'common')}), { type: 'success' });
         }
         catch (error) {
