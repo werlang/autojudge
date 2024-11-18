@@ -5,7 +5,8 @@ import Form from "./components/form.js";
 import Toast from "./components/toast.js";
 import Translator from "./helpers/translate.js";
 import Button from "./components/button.js";
-import TemplateVar from "./helpers/template-var.js";
+
+import '../less/dashboard-problem.less';
 
 export default {
     build: async function() {

@@ -1,0 +1,59 @@
+@import 'card.less';
+
+#frame #problems-container {
+    width: 100%;
+    max-width: 900px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 30px;
+
+    &.card-container {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: stretch;
+
+        .head svg {
+            max-height: 100px;
+
+            .s0 {
+                fill: rgba(var(--color-text-raw),1);
+            }
+        }
+
+        .body {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+
+            .title {
+                max-height: 130px;
+                overflow: hidden;
+            }
+
+            .description {
+                .info-container {
+                    display: flex;
+                    justify-content: space-around;
+                    align-items: center;
+    
+                    i {
+                        font-size: 1.2rem;
+                        margin-right: 10px;
+                    }
+                    .solved {
+                        color: rgba(var(--color-success-raw),1);
+                    }
+                }
+            }
+        }
+    }
+
+    .problem-card {
+        .head i {
+            text-shadow: 0 0 5px rgba(var(--color-background-dark-raw), 1);
+        }
+    }
+}

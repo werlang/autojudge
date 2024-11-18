@@ -8,6 +8,8 @@ import Problem from "./model/problem.js";
 import Team from "./model/team.js";
 import iro from '@jaames/iro';
 
+import '../less/dashboard-single-contest.less';
+
 // TODO: fix text copying in localhost
 
 export default {

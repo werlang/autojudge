@@ -9,7 +9,7 @@ import TemplateVar from "./helpers/template-var.js";
 import Form from "./components/form.js";
 import ModuleLoader from "./helpers/module-loader.js";
 
-import '../less/team.less';
+import '../less/dashboard.less';
 
 const translatePledge = new Pledge();
 new Translator(['en', 'pt'], [

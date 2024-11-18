@@ -2,6 +2,8 @@ import Card from "./components/card.js";
 import Contest from "./model/contest.js";
 import Problem from "./model/problem.js";
 
+import '../less/dashboard-home.less';
+
 export default {
     build: async function() {
         const frame = document.querySelector('#frame');

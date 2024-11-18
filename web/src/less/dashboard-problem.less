@@ -1,0 +1,57 @@
+@import 'form.less';
+@import 'table.less';
+@import 'code-case.less';
+
+#frame #problems-container {
+    width: 100%;
+    max-width: 900px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    #add-problem {
+        margin-top: 30px;
+    }
+}
+
+#fog .modal#add-problem {
+    .checkbox {
+        font-size: 1.3rem;
+
+        input {
+            transform: scale(1.8);
+            margin: 0 15px 0 0;
+        }
+    }
+
+    .warn {
+        display: none;
+
+        &.active {
+            display: block;
+            font-size: 0.9rem;
+            margin: 0 10px 30px 10px; 
+            border-radius: 5px;
+            background-color: rgba(var(--color-error-raw),0.2);
+            padding: 5px 10px;
+        }
+    }
+}
+
+#fog .modal#problem {
+    max-width: 900px;
+    display: flex;
+    flex-direction: column;
+
+    #content {
+        max-width: 900px;
+    }
+
+    #description {
+        padding-right: 5px;
+    }
+
+    .button {
+        margin: auto;
+    }
+}

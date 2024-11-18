@@ -1,159 +1,14 @@
-@import 'toast.less';
-@import 'form.less';
-@import 'table.less';
-@import 'modal.less';
-@import 'textEditor.less';
-
-.author-card {
-    align-items: center;
-    border: 1px solid rgba(var(--color-text-raw),.2);
-    border-radius: 4px;
-    color: rgba(var(--color-text-raw),.6);
-    display: flex;
-    font-size: 0.5rem;
-    justify-content: center;
-    margin-left: 3px;
-    background-color: rgba(var(--color-secondary-raw),0.5);
-    padding: 0 2px;
-    text-transform: uppercase;
-    margin-top: -15px;
-    transition: 0.3s all;
-
-    &:hover {
-        transform: scale(1.2);
-        filter: brightness(1.2);
-    }
-}
-
-#frame #problems-container {
-    width: 100%;
-    max-width: 900px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    &.card-container {
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: center;
-        align-items: stretch;
-
-        .head svg {
-            max-height: 100px;
-
-            .s0 {
-                fill: rgba(var(--color-text-raw),1);
-            }
-        }
-
-        .body {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-
-            .title {
-                max-height: 130px;
-                overflow: hidden;
-            }
-
-            .description {
-                .info-container {
-                    display: flex;
-                    justify-content: space-around;
-                    align-items: center;
-    
-                    i {
-                        font-size: 1.2rem;
-                        margin-right: 10px;
-                    }
-                    .solved {
-                        color: rgba(var(--color-success-raw),1);
-                    }
-                }
-            }
-        }
-    }
-
-    #add-problem {
-        margin-top: 30px;
-    }
-
-    .problem-card {
-        .head i {
-            text-shadow: 0 0 5px rgba(var(--color-background-dark-raw), 1);
-        }
-    }
-}
-
-.modal#problem,
-#frame #problem {
-    display: flex;
-    flex-direction: column;
-
-    .code {
-        font-family: 'Quantico', monospace;
-        border-radius: 5px;
-        border: 1px solid rgba(var(--color-text-raw), 0.4);
-        margin: 5px 0;
-
-        .case {
-            padding: 5px 10px;
-            display: flex;
-            align-items: baseline;
-            background-color: rgba(var(--color-main-raw), 0.1);
-            
-            .label {
-                opacity: 0.5;
-                font-size: 0.7rem;
-                width: 50px;
-            }
-            
-            .value {
-                white-space: pre-line;
-            }
-        }
-
-        .case:nth-child(odd) {
-            background-color: rgba(var(--color-main-raw), 0.2);
-        }
-    }
-
-    button {
-        // max-width: 600px;
-        margin: auto;
-    }
-
-    .cases-container {
-        display: flex;
-        flex-direction: column;
-
-        button {
-            margin: auto;
-        }
-    }
-
-    #import-cases {
-        margin-top: 50px;
-    }
-}
-
-.modal#problem {
-    max-width: 900px;
-
-    #content {
-        max-width: 900px;
-    }
-
-    #description {
-        padding-right: 5px;
-    }
-}
+@import 'common.less';
+@import 'text-editor.less';
+@import 'uploader.less';
+@import 'code-case.less';
 
 #frame #problem {
     margin-top: 50px;
     width: 100%;
     max-width: 900px;
+    display: flex;
+    flex-direction: column;
 
     h1 .editable {
         align-items: center;
@@ -309,33 +164,13 @@
         display: flex;
         align-items: center;
         border: none;
+        font-family: 'Quantico', monospace;
+        border-radius: 5px;
+        margin: 5px 0;
+
 
         &:hover .controls .button {
             color: rgba(var(--color-text-raw),1);
-        }
-
-        .case-container {
-            flex-grow: 1;
-            font-family: 'Quantico', monospace;
-            border-radius: 5px;
-            border: 1px solid rgba(var(--color-text-raw), 0.4);
-            margin: 5px 0;    
-            
-            .case .input {
-                display: flex;
-                outline: none;
-                background-color: transparent;
-                padding: 5px 10px;
-                margin: 0;
-                border: none;
-                flex-grow: 1;
-                font-family: 'Quantico', monospace;
-    
-                &[contenteditable]:empty::before {
-                    content: attr(placeholder);
-                    color: rgba(var(--color-text-raw),0.5);
-                }
-            }
         }
 
         .controls {
@@ -385,44 +220,22 @@
         }
     }
 
-    #new-submission-form {
-        margin: 50px auto 0 auto;
-        width: 100%;
-        max-width: 600px;
-    
-        #problem {
-            margin-top: 0;
-        }
-    
-        #button-container {
-            margin-top: 35px;
-            display: flex;
-            justify-content: center;
-        }
+    button {
+        // max-width: 600px;
+        margin: auto;
     }
-}
 
-#fog .modal#add-problem {
-    .checkbox {
-        font-size: 1.3rem;
+    .cases-container {
+        display: flex;
+        flex-direction: column;
 
-        input {
-            transform: scale(1.8);
-            margin: 0 15px 0 0;
+        button {
+            margin: auto;
         }
     }
 
-    .warn {
-        display: none;
-
-        &.active {
-            display: block;
-            font-size: 0.9rem;
-            margin: 0 10px 30px 10px; 
-            border-radius: 5px;
-            background-color: rgba(var(--color-error-raw),0.2);
-            padding: 5px 10px;
-        }
+    #import-cases {
+        margin-top: 50px;
     }
 }
 
@@ -529,18 +342,5 @@
     #content.loading {
         flex-direction: row;
         justify-content: center;
-    }
-}
-
-#frame #button-container {
-    margin-top: 30px;
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    width: 100%;
-    max-width: 900px;
-
-    button {
-        max-width: 600px;
     }
 }

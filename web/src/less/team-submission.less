@@ -1,0 +1,145 @@
+@import 'table.less';
+@import 'form.less';
+@import 'uploader.less';
+
+#submissions-container {
+    width: 100%;
+    max-width: 900px;
+
+    #submissions {
+        overflow-x: auto;
+        margin: 0 -5px;
+        width: auto;
+
+        .item .time,
+        .head .time {
+            display: none;
+            max-width: 100px;
+
+            @media @size-600 {
+                display: flex;
+            }
+        }
+
+        .item .status,
+        .head .status {
+            max-width: 80px;
+        }
+
+        .item {
+            
+            .problem {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .status {
+                font-size: 1.5rem;
+                
+                i {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    width: 25px;
+                    height: 25px;
+                }
+
+                .accepted {
+                    color: #67ee67;
+                }
+                .wrong-answer {
+                    color: #ff9494;
+                }
+                .time-limit {
+                    color: #ffff80;
+                }
+                .error {
+                    color: #ffbe73;
+                }
+                .pending {
+                    color: #90ffff;
+                }
+                .parsing-error {
+                    color: #da96fe;
+                }
+            }
+
+            .score span {
+                background-color: rgba(var(--color-main-raw), 0.4);
+                font-weight: bold;
+                font-family: 'Quantico', monospace;
+                display: flex;
+                justify-content: center;
+                padding: 3px 0;
+                margin: -3px 0;
+                border-radius: 5px;
+                width: 80px;
+            }
+        }
+
+        .status, .score, .time {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+        
+    }
+
+    &.admin {
+        #submissions {
+            .status, .time {
+                justify-content: flex-start;
+            }
+        }
+    }
+}
+
+#new-submission-form {
+    width: 100%;
+    max-width: 600px;
+    margin-top: 50px;
+
+    #problem {
+        margin-top: 0;
+    }
+
+    #button-container {
+        margin-top: 35px;
+        display: flex;
+        justify-content: center;
+    }
+}
+
+.modal#submission-hint {
+    h1 {
+        
+        i {
+            margin-right: 15px;
+        }
+
+        .accepted {
+            color: #67ee67;
+        }
+        .wrong-answer {
+            color: #ff9494;
+        }
+        .time-limit {
+            color: #ffff80;
+        }
+        .error {
+            color: #ffbe73;
+        }
+        .pending {
+            color: #90ffff;
+        }
+        .parsing-error {
+            color: #da96fe;
+        }
+    }
+
+    pre {
+        white-space: pre-wrap;
+        word-wrap: break-word;
+    }
+}

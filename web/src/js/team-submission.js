@@ -8,6 +8,7 @@ import Judge from "./model/judge.js";
 import Submission from "./model/submission.js";
 import Team from "./model/team.js";
 
+import '../less/team-submission.less';
 
 export default {
     build: async function() {

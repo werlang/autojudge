@@ -3,6 +3,8 @@ import Card from "./components/card.js";
 import Submission from "./model/submission.js";
 import Team from "./model/team.js";
 
+import '../less/team-problem.less';
+
 export default {
     build: async function() {
         // console.log(this.team);

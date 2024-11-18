@@ -1,0 +1,57 @@
+@import 'table.less';
+@import 'contest-clock.less';
+
+#frame #logo-container {
+    width: 100%;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    img {
+        max-height: 100px;
+    }
+}
+
+#teams-container {
+    width: 100%;
+    max-width: 900px;
+
+    #teams {
+        margin: 0 -5px;
+        width: auto;
+
+        .item {
+            .score span {
+                background-color: rgba(var(--color-main-raw), 0.4);
+                font-weight: bold;
+                font-family: 'Quantico', monospace;
+                display: flex;
+                justify-content: center;
+                padding: 3px 0;
+                margin: -3px 0;
+                border-radius: 5px;
+                width: 80px;
+            }
+        }
+        
+        .score {
+            display: flex;
+            // justify-content: flex-end;
+            align-items: center;
+        }
+
+        .column .color {
+            background-color: var(--color-problem);
+            width: 15px;
+            height: 15px;
+            border-radius: 100%;
+            border: 1px solid rgba(var(--color-text-raw), 0.6);
+            margin: 0 2px;
+    
+            &.empty {
+                border: none;
+            }
+        }
+    }
+}

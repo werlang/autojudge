@@ -1,0 +1,52 @@
+.code {
+    font-family: 'Quantico', monospace;
+    border-radius: 5px;
+    border: 1px solid rgba(var(--color-text-raw), 0.4);
+    margin: 5px 0;
+
+    .case-container {
+        flex-grow: 1;
+        font-family: 'Quantico', monospace;
+        border-radius: 5px;
+        border: 1px solid rgba(var(--color-text-raw), 0.4);
+        margin: 5px 0;    
+    }
+
+    .case {
+        padding: 5px 10px;
+        display: flex;
+        align-items: baseline;
+        background-color: rgba(var(--color-main-raw), 0.1);
+        
+        .input {
+            display: flex;
+            outline: none;
+            background-color: transparent;
+            padding: 5px 10px;
+            margin: 0;
+            border: none;
+            flex-grow: 1;
+            font-family: 'Quantico', monospace;
+
+            &[contenteditable]:empty::before {
+                content: attr(placeholder);
+                color: rgba(var(--color-text-raw),0.5);
+            }
+        }
+
+        .label {
+            opacity: 0.5;
+            font-size: 0.7rem;
+            width: 50px;
+        }
+        
+        .value {
+            white-space: pre-line;
+        }
+    }
+
+    .case:nth-child(odd) {
+        background-color: rgba(var(--color-main-raw), 0.2);
+    }   
+}
+

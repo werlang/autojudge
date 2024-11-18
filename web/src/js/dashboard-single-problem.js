@@ -5,6 +5,8 @@ import Problem from './model/problem.js';
 import Editor from './components/textEditor.js';
 import Uploader from './components/uploader.js';
 
+import '../less/dashboard-single-problem.less';
+
 export default {
 
     load: async function({hash}) {

@@ -6,6 +6,7 @@ import Translator from "./helpers/translate.js";
 import Contest from "./model/contest.js";
 import Submission from "./model/submission.js";
 
+import '../less/contest-submission.less';
 
 export default {
     build: async function() {

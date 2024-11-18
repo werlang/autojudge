@@ -5,6 +5,8 @@ import Contest from './model/contest.js';
 import Judge from './model/judge.js';
 import Problem from './model/problem.js'
 
+import '../less/team-single-problem.less';
+
 export default {
 
     build: async function() {

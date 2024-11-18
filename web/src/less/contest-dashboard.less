@@ -1,0 +1,62 @@
+@import 'card.less';
+@import 'contest-clock.less';
+
+#frame {
+
+    #logo-container {
+        width: 100%;
+        height: 100px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        img {
+            max-height: 100px;
+        }
+    }
+}
+
+#frame #dashboard-cards {
+    .card {
+        width: 250px;
+
+        .description {
+            div, span {
+                display: flex;
+                align-items: center;
+            }
+
+            .count {
+                font-size: 2rem;
+                margin-right: 10px;
+                margin-left: 15px;
+            }
+    
+            .accepted {
+                color: #56c956;
+                font-size: 1.7rem;
+                margin-right: 10px;
+                margin-left: -5px;
+            }
+
+            #winner {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size: 1.4rem;
+                margin-top: 10px;
+
+                i {
+                    margin-right: 5px;
+                    color: rgb(254,195,10);
+                }
+            }
+        }
+    }
+
+}
+
+#frame #reset-contest {
+    margin-top: 50px;
+    max-width: 400px;
+}

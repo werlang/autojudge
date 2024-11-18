@@ -7,9 +7,9 @@ import Translator from "./helpers/translate.js";
 import Pledge from "./helpers/pledge.js";
 import LocalData from "./helpers/local-data.js";
 import ModuleLoader from "./helpers/module-loader.js";
+import Contest from "./model/contest.js";
 
 import '../less/dashboard.less';
-import Contest from "./model/contest.js";
 
 const translatePledge = new Pledge();
 new Translator(['en', 'pt'], [

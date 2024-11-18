@@ -5,6 +5,8 @@ import Toast from "./components/toast.js";
 import Contest from "./model/contest.js";
 import iro from '@jaames/iro';
 
+import '../less/contest-problem.less';
+
 export default {
     build: async function() {
         const frame = document.querySelector('#frame');

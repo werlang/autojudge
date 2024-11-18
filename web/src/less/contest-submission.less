@@ -1,74 +1,6 @@
 @import 'common.less';
-@import 'modal.less';
-@import 'input.less';
-@import 'toast.less';
-@import 'menu.less';
-@import 'header.less';
 @import 'table.less';
-@import 'uploader.less';
-@import 'problem.less';
-@import 'contest-clock.less';
-@import 'card.less';
-
-#frame-load {
-    margin-top: 100px;
-    font-size: 3rem;
-}
-
-#frame #logo-container {
-    width: 100%;
-    height: 100px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    img {
-        max-height: 100px;
-    }
-}
-
-#teams-container {
-    width: 100%;
-    max-width: 900px;
-
-    #teams {
-        margin: 0 -5px;
-        width: auto;
-
-        .item {
-            .score span {
-                background-color: rgba(var(--color-main-raw), 0.4);
-                font-weight: bold;
-                font-family: 'Quantico', monospace;
-                display: flex;
-                justify-content: center;
-                padding: 3px 0;
-                margin: -3px 0;
-                border-radius: 5px;
-                width: 80px;
-            }
-        }
-        
-        .score {
-            display: flex;
-            // justify-content: flex-end;
-            align-items: center;
-        }
-
-        .column .color {
-            background-color: var(--color-problem);
-            width: 15px;
-            height: 15px;
-            border-radius: 100%;
-            border: 1px solid rgba(var(--color-text-raw), 0.6);
-            margin: 0 2px;
-    
-            &.empty {
-                border: none;
-            }
-        }
-    }
-}
+@import 'input.less';
 
 #submissions-container {
     width: 100%;
@@ -163,56 +95,87 @@
     }
 }
 
-#problems-container {
-    width: 100%;
-    max-width: 900px;
-}
-
 #new-submission-form {
     width: 100%;
     max-width: 600px;
     margin-top: 50px;
-
-    #problem {
-        margin-top: 0;
-    }
 
     #button-container {
         margin-top: 35px;
         display: flex;
         justify-content: center;
     }
+
+    #code {
+        border-radius: 5px;
+        padding: 20px;
+        background-position: center;
+        background-repeat: no-repeat;
+        padding: 0;
+        transition: 0.3s all;
+        background-image: none;
+        box-shadow: 0 0 5px rgba(var(--color-main-raw), 0.5);
+        background-color: rgba(var(--color-main-raw), 0.1);
+        border: 2px dashed rgba(var(--color-main-raw), 0.7);
+        filter: grayscale(0.8);
+    
+        &.success {
+            border-style: solid;
+            filter: none;
+    
+            .message .button {
+                opacity: 1;
+                cursor: pointer;
+            }
+        }
+    
+        .message {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            transition: 0.3s all;
+            
+            .button {
+                margin: 0;
+                font-weight: bold;
+                border: none;
+                box-shadow: none;
+                background-color: transparent;
+                color: var(--color-text);
+                opacity: 0.4;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                transition: 0.3s all;
+                cursor: not-allowed;
+                width: 100%;
+                padding: 10px 0;
+    
+                i {
+                    font-size: 2rem;
+                    margin-bottom: 10px;
+                }
+            }
+        }
+    
+    }
 }
 
-.modal#submission-hint {
-    h1 {
-        
-        i {
-            margin-right: 15px;
-        }
-
-        .accepted {
-            color: #67ee67;
-        }
-        .wrong-answer {
-            color: #ff9494;
-        }
-        .time-limit {
-            color: #ffff80;
-        }
-        .error {
-            color: #ffbe73;
-        }
-        .pending {
-            color: #90ffff;
-        }
-        .parsing-error {
-            color: #da96fe;
-        }
-    }
-
+.modal#log-modal {
     pre {
+        margin: 0 -30px 30px;
+        padding: 10px;
         white-space: pre-wrap;
-        word-wrap: break-word;
+        border-radius: 0;
+        overflow: hidden auto;
+
+        code {
+            padding: 0px;
+            box-sizing: border-box;
+            width: 100%;
+        }
     }
 }
+

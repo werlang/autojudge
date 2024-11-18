@@ -4,6 +4,8 @@ import Toast from "./components/toast.js";
 import Contest from "./model/contest.js";
 import Team from "./model/team.js";
 
+import '../less/contest-team.less';
+
 export default {
     build: async function() {
         const frame = document.querySelector('#frame');

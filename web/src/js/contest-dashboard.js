@@ -4,6 +4,8 @@ import createClock from './components/contest-clock.js';
 import Modal from './components/modal.js';
 import Contest from './model/contest.js';
 
+import '../less/contest-dashboard.less';
+
 export default {
     build: async function() {
         // console.log(this.contest);
