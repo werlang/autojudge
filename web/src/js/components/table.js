@@ -5,6 +5,11 @@
 //   columns: [{ id: 'column1', name: 'Column 1', size: 'small' }, ...],
 //   controls: [control1, control2, ...],
 //   translate: function,
+//   selection: { enabled: true, multi: true },
+//   search: true,
+//   sort: true,
+//   maxItems: 10,
+//   pagination: true,
 // });
 // columns: an array of objects with the following properties:
 //   - id: the id of the column (required)
@@ -19,8 +24,14 @@
 //   - action: the callback function for when the control is clicked
 //     - it receives the selected items and the event
 //   - enabled: whether the control is enabled or not
-
-
+// translate: a function to translate strings
+// selection: an object with the following properties:
+//   - enabled: whether you can select items or not
+//   - multi: whether you can select multiple items or not
+// search: whether to show the search input or not
+// sort: whether to show the sort buttons or not
+// maxItems: the maximum number of items to show
+// pagination: whether to show the pagination buttons or not
 // Methods:
 //   - clear(): clears the table content
 //   - addItem(item): adds an item (row) to the table

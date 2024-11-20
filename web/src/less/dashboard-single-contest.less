@@ -1,6 +1,7 @@
 @import 'common.less';
 @import 'components/table.less';
 @import 'components/form.less';
+@import 'components/uploader.less';
 
 #frame {
     #contest {
@@ -146,6 +147,10 @@
         #problems, #teams {
             margin-top: 30px;
         }
+
+        #import-teams {
+            margin-top: 20px;
+        }    
     
         #start-contest {
             margin-top: 30px;
@@ -207,6 +212,83 @@
             &:hover {
                 background-color: rgba(var(--color-main-raw), 0.1);
             }
+        }
+    }
+}
+
+.modal#import-teams {
+    code {
+        background-color: rgba(var(--color-background-dark-raw), .4);
+        border-radius: 3px;
+        font-family: monospace;
+        padding: 1px 5px;
+    }
+
+    .tabs {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 20px;
+
+        .tab-list {
+            display: flex;
+            justify-content: center;
+
+            .tab {
+                padding: 5px 20px;
+                cursor: pointer;
+                border: 1px solid rgba(var(--color-text-raw), 0.2);
+                border-radius: 5px 5px 0 0;
+                background-color: rgba(var(--color-main-raw), 0.1);
+                transition: 0.3s all;
+
+                &.active {
+                    background-color: rgba(var(--color-main-raw), 0.4);
+                    border-bottom: none;
+                }
+
+                &:not(.active):hover {
+                    background-color: rgba(var(--color-main-raw), 0.2);
+                }
+
+                &:not(:last-child) {
+                    margin-right: 5px;
+                }
+            }
+        }
+
+        .tab-content {
+            border: 1px solid rgba(var(--color-text-raw), 0.2);
+            border-radius: 0 5px 5px 5px;
+            background-color: rgba(var(--color-main-raw), 0.1);
+
+            .tab-pane {
+                display: none;
+
+                &.active {
+                    display: flex;
+                }
+
+                pre {
+                    margin: 0;
+                    border-radius: 0 0 5px 5px;
+                    width: 100%;
+                }
+
+                img {
+                    width: 100%;
+                    border-radius: 0 0 5px 5px;
+                }
+            }
+        }
+    }
+
+    #table-container {
+        margin-bottom: 20px;
+    }
+
+    #this-link {
+        i {
+            margin-right: 5px;
         }
     }
 }

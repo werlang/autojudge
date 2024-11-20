@@ -216,6 +216,8 @@ export default {
     parseCases: function(file) {
         // parse the csv file
         const cases = file.split('\n').map(line => {
+            // remove \r
+            line = line.replace('\r', '');
             const values = [];
             let inQuotes = false;
             let value = '';

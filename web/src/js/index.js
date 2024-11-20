@@ -71,14 +71,20 @@ async function redirectOrLogin(path) {
             showSignInModal();
             return;
         }
-        return await GoogleLogin.prompt(path);
+        const prompt = await GoogleLogin.prompt(path);
+        // console.log(prompt);
+        return prompt;
     }
     catch (error) {
         console.error(error);
         new Toast(error.message, { type: 'error' });
+        return false;
     }
 }
-new Button({ element: document.querySelector('#section-1 #manage') }).click(async () => redirectOrLogin('dashboard'));
+const manageButton = new Button({ element: document.querySelector('#section-1 #manage') }).click(async () => {
+    await redirectOrLogin('dashboard');
+    manageButton.enable();
+});
 new Button({ element: document.querySelector('#section-1 #compete') }).click(async () => location.href = '/teams');
 new Button({ element: document.querySelector('#section-4 #problems') }).click(async () => redirectOrLogin('problems'));
 new Button({ element: document.querySelector('#section-5 #contests') }).click(async () => redirectOrLogin('contests'));

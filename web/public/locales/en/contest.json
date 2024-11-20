@@ -82,5 +82,21 @@
         "message": "Select the color for the problem",
         "submit": "Submit",
         "success": "Problem color updated successfully."
+    },
+    "import-teams": {
+        "title": "Import Teams",
+        "description": "You can import team names from a <code>.csv</code> file. The file must have the following format:",
+        "image": "Spreadsheet",
+        "sample": "Text",
+        "placeholder": "Drag or click",
+        "error": "An error occurred while importing the teams.",
+        "error-header": "Incorrect file header format.",
+        "error-columns": "Incorrect number of columns in line {{line}} of the file.",
+        "success-message": "The following teams were imported successfully:",
+        "login-message": "To log in, team members should access {{url}} and enter the team ID and password.",
+        "advice-message": "Team passwords are unique and cannot be recovered. Please write them down in a safe place. If necessary, you can reset the team password.",
+        "export-message": "You can export the registered teams to a <code>.csv</code> file by clicking the button below.",
+        "export-button": "Export Teams",
+        "this-link": "this link"
     }
 }

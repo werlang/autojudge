@@ -83,7 +83,10 @@ export default class GoogleLogin {
 
         return new Promise(async resolve => {
             google.accounts.id.prompt(notification => {
-                if (!notification.isNotDisplayed()) return;
+                if (!notification.isNotDisplayed()) {
+                    resolve(false);
+                    return;
+                }
                 if (GoogleLogin.onFailCallback) {
                     GoogleLogin.onFailCallback(notification);
                     resolve(false);

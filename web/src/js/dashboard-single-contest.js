@@ -7,6 +7,7 @@ import Contest from "./model/contest.js";
 import Problem from "./model/problem.js";
 import Team from "./model/team.js";
 import iro from '@jaames/iro';
+import Uploader from "./components/uploader.js";
 
 import '../less/dashboard-single-contest.less';
 
@@ -45,6 +46,8 @@ export default {
             <div id="start-contest"></div>
         </div>`;
 
+        this.startButton = new Button({ id: 'start-contest', text: this.translate('start-contest.title', 'contest'), customClass: 'default' }).click(() => this.startContest());
+
         this.renderProblems(false);
         this.renderTeams(false);
         if (!this.contest.startTime) {
@@ -72,10 +75,8 @@ export default {
         }
 
         // start contest button
-        if (!this.contest.startTime && this.contest.problems.length > 0 && this.contest.teams.length > 0) {
-            const startButton = new Button({ id: 'start-contest', text: this.translate('start-contest.title', 'contest'), customClass: 'default' }).click(() => this.startContest());
-            frame.querySelector('#start-contest').appendChild(startButton.get());
-        }
+        this.startButton.disable(false);
+        frame.querySelector('#start-contest').appendChild(this.startButton.get());
     },
 
     renderProblems: async function(update = true) {
@@ -116,6 +117,11 @@ export default {
         if (!this.contest.problems.length) {
             pdfProblems.disable(false);
         }
+
+        this.startButton.disable(false);
+        if (!this.contest.startTime && this.contest.problems.length > 0 && this.contest.teams.length > 0) {
+            this.startButton.enable();
+        }
     },
 
     renderTeams: async function(update = true) {
@@ -132,7 +138,134 @@ export default {
         if (!this.contest.startTime) {
             const addTeam = new Button({ id: 'add-team', text: `${this.translate('create', 'common')} ${this.translate('teams_one', 'common')}` }).click(() => this.addTeamModal());
             teams.appendChild(addTeam.get());
+
+            const importTeams = new Button({ id: 'import-teams', text: this.translate('import-teams.title', 'contest') }).click(() => this.createImportTeams());
+            teams.appendChild(importTeams.get());
         }
+
+        this.startButton.disable(false);
+        if (!this.contest.startTime && this.contest.problems.length > 0 && this.contest.teams.length > 0) {
+            this.startButton.enable();
+        }
+    },
+
+    createImportTeams: function() {
+        const sampleJson = [
+            `Team`,
+            `Team Name 1`,
+            `Team Name 2`,
+            `Team Name 3`,
+            `Team Name 4`,
+            `Team Name 5`,
+        ];
+        const modal = new Modal(`
+            <h1>${this.translate('import-teams.title', 'contest')}</h1>
+            <p>${this.translate('import-teams.description', 'contest')}</p>
+            <div class="tabs">
+                <nav class="tab-list">
+                    <button id="image" class="tab active">${this.translate('import-teams.image', 'contest')}</button>
+                    <button id="sample" class="tab">${this.translate('import-teams.sample', 'contest')}</button>
+                </nav>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="image">
+                        <img src="/assets/img/import-csv-team.webp" alt="Import teams">
+                    </div>
+                    <div class="tab-pane" id="sample">
+                        <pre><code>${sampleJson.join('\n')}</code></pre>
+                    </div>
+                </div>
+            </div>
+            <div class="uploader"></div>
+        `, { id: 'import-teams' });
+
+        // Add event listeners for tabs
+        modal.get('.tab-list').addEventListener('click', (e) => {
+            if (e.target.classList.contains('tab')) {
+                const tabs = modal.getAll('.tab');
+                const panes = modal.getAll('.tab-pane');
+                tabs.forEach(tab => tab.classList.remove('active'));
+                panes.forEach(pane => pane.classList.remove('active'));
+                e.target.classList.add('active');
+                modal.get(`.tab-content #${e.target.id}`).classList.add('active');
+            }
+        });
+        modal.addButton({ text: this.translate('cancel', 'common'), close: true, isDefault: true });
+
+        // add import cases: import test cases from a file
+        const uploader = new Uploader(modal.get('.uploader'), {
+            placeholder: this.translate('import-teams.placeholder', 'contest'),
+            translate: this.translate,
+            accept: '.csv',
+            format: 'text',
+            onUpload: async (file, data) => {
+                // console.log(file, data);
+                if (data.accepted === false) return;
+    
+                const cases = this.parseCases(file);
+                // console.log(cases);
+                if (!cases.length) {
+                    uploader.setError();
+                    return;
+                }
+
+                const teamData = [];
+                for (let i in cases) {
+                    const caseData = cases[i];
+                    teamData.push(await this.addTeam(caseData.name, false));
+                }
+                modal.close();
+                this.render();
+                this.showImportedTeams(teamData);
+            },
+            onError: () => {
+                new Toast(this.translate('import-teams.error', 'contest'), { type: 'error', timeOut: 10000 });
+            },
+        });
+    },
+
+    parseCases: function(file) {
+        // parse the csv file
+        const cases = file.split('\n').map(line => {
+            // remove \r
+            line = line.replace('\r', '');
+            const values = [];
+            let inQuotes = false;
+            let value = '';
+            for (let char of line) {
+                if (char === '"') {
+                    inQuotes = !inQuotes;
+                }
+                else if (char === ',' && !inQuotes) {
+                    values.push(value);
+                    value = '';
+                }
+                else {
+                    value += char;
+                }
+            }
+            values.push(value);
+            return values;
+        });
+        // console.log(cases);
+
+        // validate the csv
+        const casesValidate = [...cases];
+        let header = casesValidate.shift();
+        // check first line for the headers
+        if (header.join(',').toLowerCase() !== 'team') {
+            new Toast(this.translate('import-teams.error-header', 'contest'), { type: 'error' });
+            return [];
+        }
+        // check each line for the correct number of columns
+        for (let i in casesValidate) {
+            const caseData = casesValidate[i];
+            if (caseData.length !== 1) {
+                new Toast(this.translate('import-teams.error-columns', 'contest', {line: parseInt(i) + 2}), { type: 'error' });
+                return [];
+            }
+        }
+
+        return casesValidate.map(c => ({ name: c[0] }));
     },
 
     createEditableFields: function() {
@@ -493,16 +626,19 @@ export default {
         });
     },
 
-    addTeam: async function(name) {
+    addTeam: async function(name, showModal = true) {
         try {
             const team = await new Team({
                 contest: this.contest.id,
                 name,
             }).add();
             // console.log(team);
-            this.modalResetPassword(team);
+            if (showModal) {
+                this.modalResetPassword(team);
+            }
             new Toast(this.translate('add-team.success', 'contest'), { type: 'success' });
             this.renderTeams();
+            return team;
         }
         catch (error) {
             // console.error(error);
@@ -537,6 +673,53 @@ export default {
                 new Toast(this.translate('copy-text', 'contest'), { type: 'success' });
             });
         });
+    },
+
+    showImportedTeams: function(teams) {
+        const url = `<a id="this-link" target="_blank" href="${location.origin}/teams"><i class="fa-solid fa-arrow-up-right-from-square"></i>${this.translate('import-teams.this-link', 'contest')}</a>`;
+        const modal = new Modal(`
+            <h1>${this.translate('import-teams.title', 'contest')}</h1>
+            <p>${this.translate('import-teams.success-message', 'contest')}</p>
+            <div id="table-container"></div>
+            <p>${this.translate('import-teams.login-message', 'contest', { url, interpolation: {escapeValue: false} })}</p>
+            <p>${this.translate('import-teams.advice-message', 'contest')}</p>
+            <p>${this.translate('import-teams.export-message', 'contest')}</p>
+        `, { id: 'import-teams' })
+        .addButton({ id: 'export', text: this.translate('import-teams.export-button', 'contest'), callback: () => {
+            const csvContent = [
+                ['Name', 'ID', 'Password'],
+                ...teams.map(team => [
+                    team.name.includes(',') ? `"${team.name}"` : team.name,
+                    team.hash,
+                    team.password
+                ])
+            ].map(e => e.join(',')).join('\n');
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'teams.csv');
+            link.click();
+        } })
+        .addButton({ id: 'close', text: this.translate('close', 'common'), close: true, isDefault: true });
+
+        const table = new Table({
+            element: modal.get('#table-container'),
+            columns: [
+                { id: 'name', name: this.translate('name', 'common'), escapeHTML: true },
+                { id: 'hash', name: this.translate('id', 'common'), size: 'small' },
+                { id: 'password', name: this.translate('password', 'common'), size: 'small' },
+            ],
+            selection: false,
+            translate: this.translate,
+            search: true,
+            maxItems: 5,
+            pagination: true,
+        });
+
+        table.clear();
+        teams.forEach(team => table.addItem(team));
     },
 
     startContest: async function() {

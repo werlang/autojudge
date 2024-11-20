@@ -83,5 +83,21 @@
         "message": "Escolha uma cor para o problema",
         "submit": "Salvar",
         "success": "Cor do problema alterada com sucesso."
+    },
+    "import-teams": {
+        "title": "Importar equipes",
+        "description": "Você pode importar os nomes das equipes de um arquivo <code>.csv</code>. O arquivo deve ter o seguinte formato:",
+        "image": "Planilha",
+        "sample": "Texto",
+        "placeholder": "Arraste ou clique",
+        "error": "Ocorreu um erro ao importar os nomes das equipes.",
+        "error-header": "Formato incorreto do cabeçalho do arquivo.",
+        "error-columns": "Número incorreto de colunas na linha {{line}} do arquivo.",
+        "success-message": "As seguintes equipes foram importadas com sucesso:",
+        "login-message": "Para realizar o login, os membros da equipe devem acessar {{url}} e informar o ID da equipe e a senha.",
+        "advice-message": "A senha das equipes são únicas e não podem ser recuperadas. Por favor, anote-as em um local seguro. Caso necessário, você pode redefinir a senha da equipe.",
+        "export-message": "Você pode exportar as equipes cadastradas para um arquivo <code>.csv</code> clicando no botão abaixo.",
+        "export-button": "Exportar Equipes",
+        "this-link": "este link"
     }
 }
