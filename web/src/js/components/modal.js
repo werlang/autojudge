@@ -178,7 +178,7 @@ export default class Modal {
         return this;
     }
 
-    addInput({ id, type, placeholder, value, label, required, disabled, onEnter, focus }) {
+    addInput({ id, type, placeholder, value, label, required, disabled, onEnter, focus, onInput }) {
         let input = document.createElement('input');
         input.id = id;
         input.type = type || 'text';
@@ -195,6 +195,10 @@ export default class Modal {
                     onEnter(e, this);
                 }
             });
+        }
+
+        if (onInput) {
+            input.input(onInput);
         }
 
         this.append(input.get().parentNode);

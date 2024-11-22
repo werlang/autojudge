@@ -7,7 +7,10 @@
 //   - build(): wrap the input in a div with a label to create a floating label effect. It uses the placeholder attribute as the label text.
 //   - keyPress(callback): add a callback to the keypress event
 //   - keyUp(callback): add a callback to the keyup event
+//   - keyDown(callback): add a callback to the keydown event
 //   - input(callback): add a callback to the input event
+//   - change(callback): add a callback to the change event
+//   - focus(): focus the input
 //   - setValue(value): set the input value
 //   - disable(): disable the input
 //   - enable(): enable the input
@@ -126,24 +129,29 @@ export default class Input {
     }
 
     keyPress(callback) {
-        this.get().addEventListener('keypress', callback);
-        return this;
+        this.addEvent('keypress', callback);
     }
 
     keyUp(callback) {
-        this.get().addEventListener('keyup', callback);
-        return this;
+        this.addEvent('keyup', callback);
+    }
+
+    keyDown(callback) {
+        this.addEvent('keydown', callback);
     }
 
     input(callback) {
-        this.get().addEventListener('input', callback);
-        return this;
+        this.addEvent('input', callback);
     }
 
     change(callback) {
-        this.get().addEventListener('change', e => {
+        this.addEvent('change', callback);
+    }
+
+    addEvent(event, callback) {
+        this.get().addEventListener(event, e => {
             if (this.element.disabled) return;
-            callback(e);
+            callback(e, this.value, this);
         });
         return this;
     }
