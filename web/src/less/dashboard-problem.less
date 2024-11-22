@@ -9,6 +9,15 @@
     flex-direction: column;
     align-items: center;
 
+    .table .item .public {
+        padding-left: 20px;
+
+        i {
+            color: rgba(var(--color-success-raw), 0.8);
+            font-size: 1.5rem;
+        }
+    }
+
     #add-problem {
         margin-top: 30px;
     }
@@ -45,6 +54,27 @@
 
     #content {
         max-width: 900px;
+    }
+
+    #permission {
+        background-color: transparent;
+        border-radius: 50px;
+        padding: 1px;
+        align-self: flex-start;
+        display: flex;
+        align-items: center;
+        font-size: 0.9rem;
+        margin-bottom: -20px;
+        margin-top: 20px;
+        
+        .switch {
+            border-radius: 50px;
+            padding: 3px 10px;
+            display: flex;
+            background-color: rgba(var(--color-background-raw), 1);
+            border: 1px solid rgba(var(--color-text-raw), 0.4);
+            color: rgba(var(--color-text-raw), 0.7);
+        }
     }
 
     #description {

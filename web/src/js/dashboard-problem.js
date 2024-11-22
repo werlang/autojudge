@@ -21,6 +21,7 @@ export default {
             element: problemsDOM,
             id: 'problems', 
             columns: [
+                {id: 'public', name: this.translate('public', 'common'), size: 'small'},
                 {id: 'title', name: this.translate('title', 'common')},
             ],
             translate: this.translate,
@@ -37,10 +38,10 @@ export default {
         table.clear();
         problems.filter(problem => problem.author)
         .forEach(problem => {
-            // if (problem.author) {
-            //     problem.title += `<span class="author-card" title="${this.translate('problems.table.author-title', 'dashboard')}">${this.translate('problems.table.author', 'dashboard')}</span>`;
-            // }
-            table.addItem(problem);
+            table.addItem({
+                ...problem,
+                public: problem.public ? `<i class="fa-solid fa-square-check"></i>` : ''
+            })
         });
 
         table.addItemEvent('click', async item => {
@@ -57,16 +58,8 @@ export default {
                 <button class="default">${this.translate('send', 'common')}</button>
             </form>
         `;
-        // <input type="checkbox" id="isPublic" placeholder="${this.translate('public', 'common')}" checked>
-        // <p id="public-warn" class="warn active">${this.translate('problems.add.public-warn', 'dashboard')}</p>
-        // <p id="private-warn" class="warn">${this.translate('problems.add.private-warn', 'dashboard')}</p>
-        
         const modal = new Modal(content, { id: 'add-problem' });
         const form = new Form(content.querySelector('form'));
-
-        // form.getInput('isPublic').change(ev => {
-        //     modal.getAll('.warn').forEach(warn => warn.classList.toggle('active'));
-        // });
 
         form.submit(async data => {
             // console.log(data);
@@ -101,6 +94,9 @@ export default {
         </div>`).join('');
 
         const modal = new Modal(`
+            <div id="permission">
+                <span class="switch">${this.translate(item.public ? 'public' : 'private', 'common')}</span>
+            </div>
             <h1 title="title">${item.title}</h1>
             <p id="description">${item.description}</p>
             <h3>${this.translate('inout-public', 'problem', {count: inputLength(item.input)})}</h3>

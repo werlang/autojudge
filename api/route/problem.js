@@ -139,7 +139,7 @@ router.put('/:id', auth({'user:exists': true}), async (req, res, next) => {
             toUpdate.description = data.description;
         }
 
-        if (data.public) {
+        if (data.public !== undefined) {
             toUpdate.is_public = data.public === 'true' || data.public === true;
         }
 

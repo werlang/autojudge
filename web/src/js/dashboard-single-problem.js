@@ -22,6 +22,10 @@ export default {
 
         const frame = document.querySelector('#frame');
         frame.innerHTML = `<div id="problem">
+            <div id="permission">
+                <span class="switch public">${this.translate('public', 'common')}</span>
+                <span class="switch private">${this.translate('private', 'common')}</span>
+            </div>
             <h1 id="title">${this.problem.title}</h1>
             <div id="description">${this.problem.description}</div>
             <div id="public-cases" class="cases-container"></div>
@@ -81,9 +85,30 @@ export default {
             }
         });
 
+        const permissionContainer = frame.querySelector('#permission');
+        permissionContainer.querySelector(`.switch.${this.problem.public ? 'public' : 'private'}`).classList.add('selected');
+
         // do not add hidden cases if the problem has no author
         // also do not add editable fields
         if (!this.problem.author) return;
+
+        // change the permission of the problem to public or private: only visible to the author
+        permissionContainer.classList.add('active');
+        permissionContainer.querySelectorAll('.switch').forEach(s => s.addEventListener('click', async e => {
+            const isPublic = e.target.classList.contains('public');
+            if (isPublic === this.problem.public) return;
+
+            try {
+                await this.problem.update({ public: isPublic });
+                new Toast(this.translate('save-changes.success', 'problem'), { type: 'success' });
+                permissionContainer.querySelector('.selected').classList.remove('selected');
+                e.target.classList.add('selected');
+            }
+            catch (error) {
+                console.error(error);
+                new Toast(error.message, { type: 'error' });
+            }
+        }));
 
         // button for adding a new public case: only visible to the author
         const buttonAddCase = new Button({

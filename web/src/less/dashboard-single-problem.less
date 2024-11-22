@@ -10,6 +10,47 @@
     display: flex;
     flex-direction: column;
 
+    #permission {
+        background-color: transparent;
+        border-radius: 50px;
+        padding: 1px;
+        align-self: flex-start;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 0.9rem;
+        margin-bottom: -20px;
+        
+        &.active {
+            background-color: rgba(var(--color-main-raw), 0.2);
+            border: 1px solid rgba(var(--color-text-raw), 0.1);
+
+            .switch {
+                display: flex;
+                cursor: pointer;
+            }
+        }
+        
+        .switch {
+            display: none;
+            border-radius: 50px;
+            padding: 3px 10px;
+            color: rgba(var(--color-text-raw), 0.7);
+            transition: 0.3s all;
+
+            &:hover {
+                background-color: rgba(var(--color-background-raw), 0.6);
+            }
+
+            &.selected {
+                display: flex;
+                background-color: rgba(var(--color-background-raw), 1);
+                border: 1px solid rgba(var(--color-text-raw), 0.4);
+                color: rgba(var(--color-text-raw), 0.7);
+            }
+        }
+    }
+
     h1 .editable {
         align-items: center;
     }
