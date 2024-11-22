@@ -98,6 +98,7 @@ const dashboardRoute = (req, res) => {
         googleCredential: req.body.credential,
         problemHash: req.params.problem,
         contestId: req.params.contest,
+        hashLength: process.env.HASH_LENGTH,
     });
 }
 // routes for dashboard (menu)
@@ -110,12 +111,6 @@ app.get([
     '/contests/:contest',
 ], dashboardRoute);
 
-const teamRoute = async (req, res) => {
-    res.templateRender('team', {
-        teamId: req.params.team,
-        problemHash: req.params.problem,
-    });
-}
 // route for team. ask for team id and password
 app.get([
     '/teams',
@@ -124,7 +119,12 @@ app.get([
     '/teams/problems',
     '/teams/problems/:problem',
     '/teams/:team',
-], teamRoute);
+], (req, res) => {
+    res.templateRender('team', {
+        teamId: req.params.team,
+        problemHash: req.params.problem,
+    });
+});
 
 // route for contest admin
 app.get([

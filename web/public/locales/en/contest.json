@@ -18,8 +18,10 @@
     },
     "add-problem": {
         "h1": "Add Problems",
-        "message": "Choose problems from the list below to add to the contest.",
-        "success": "Problems added successfully."
+        "message": "Choose public problems or those you created from the list below to add to the contest.",
+        "hash": "For private problems, enter the Problem Link or Hash",
+        "success": "Problems added successfully.",
+        "error-hash": "No problem with the informed hash was found."
     },
     "remove-problem": {
         "title": "Remove Problems",

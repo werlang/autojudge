@@ -8,6 +8,7 @@ import Problem from "./model/problem.js";
 import Team from "./model/team.js";
 import iro from '@jaames/iro';
 import Uploader from "./components/uploader.js";
+import TemplateVar from "./helpers/template-var.js";
 
 import '../less/dashboard-single-contest.less';
 
@@ -546,7 +547,8 @@ export default {
             <h1>${this.translate('add-problem.h1', 'contest')}</h1>
             <p>${this.translate('add-problem.message', 'contest')}</p>
             <div id="problem-list"></div>
-        `);
+            <p>${this.translate('add-problem.hash', 'contest')}</p>
+        `, { id: 'add-problem' });
 
         const problemList = modal.get().querySelector('#problem-list');
         const table = new Table({
@@ -558,6 +560,40 @@ export default {
             maxItems: 10,
         });
 
+        modal.addInput({
+            id: 'hash',
+            label: this.translate('hash-link', 'common'),
+            onInput: async (e, value) => {
+                if (value.includes('http')) {
+                    value = value.split('/').pop();
+                }
+
+                const button = modal.getButton('add-problem');
+                if (value.length !== TemplateVar.get('hashLength')) return;
+
+                // look for problem
+                button.enable();
+                button.disable();
+                const problem = await new Problem({ hash: value }).get().catch(() => null);
+                if (!problem) {
+                    new Toast(this.translate('add-problem.error-hash', 'contest'), { type: 'error' });
+                    button.enable();
+                    button.disable(false);
+                    return;
+                }
+                
+                if (!table.getItems().find(p => p.id === problem.id)) {
+                    table.addItem(problem, 0);
+                }
+                table.select([...table.getSelected(), problem].map(p => p.id));
+
+                button.enable();
+                if (!table.getSelected().length) {
+                    button.disable(false);
+                }
+            },
+        });
+
         modal.addButton({
             id: 'add-problem',
             text: this.translate('add', 'common'),
@@ -567,7 +603,7 @@ export default {
                 if (selected.length === 0) return;
                 modal.close();
                 try {
-                    await this.addProblem(selected);;
+                    await this.addProblem(selected);
                     new Toast(this.translate('add-problem.success', 'contest'), { type: 'success' });
                     this.renderProblems();
                 }
