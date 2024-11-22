@@ -42,11 +42,12 @@ router.post('/', auth({'user:exists': true}), async (req, res, next) => {
 // get all problems
 // if author, show hidden fields
 // if public or author, show public fields
-// otherwise, show only title and id
+// otherwise, show nothing
 router.get('/', auth({'user:optional': true}), async (req, res, next) => {
     try {
         const query = {};
         const problems = await Problem.getAll(query);
+        // console.log(problems);
 
         const problemsData = problems.map(problem => {
             const problemData = {};
@@ -54,9 +55,9 @@ router.get('/', auth({'user:optional': true}), async (req, res, next) => {
             const isAuthor = req.user && problem.author === req.user.id;
             const isPublic = problem.is_public === 1;
 
-            problemData.title = problem.title;
-            problemData.id = problem.id;
             if (isAuthor || isPublic) {
+                problemData.id = problem.id;
+                problemData.title = problem.title;
                 problemData.hash = problem.hash.slice(-process.env.HASH_LENGTH);
                 problemData.description = problem.description;
                 problemData.input = problem.input_public;
@@ -71,7 +72,7 @@ router.get('/', auth({'user:optional': true}), async (req, res, next) => {
             }
             
             return problemData;
-        });
+        }).filter(problem => problem.id);
 
         res.send({ problems: problemsData });
     }
