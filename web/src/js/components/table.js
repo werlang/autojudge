@@ -199,14 +199,18 @@ export default class Table {
         }
     }
 
-    clear() {
+    clear(clearSelection = false) {
         this.domElement.innerHTML = '';
         this.domElement.appendChild(this.head);
         this.content = [];
+
+        if (clearSelection) {
+            this.selectedItems = [];
+        }
     }
 
-    addItem(item) {
-        this.content.push(item);
+    addItem(item, index = this.content.length) {
+        this.content.splice(index, 0, item);
         this.render();
     }
 
@@ -289,6 +293,10 @@ export default class Table {
 
     getSelected() {
         return this.selectedItems;
+    }
+
+    getItems() {
+        return this.content;
     }
 
     enableControl(...ids) {
@@ -429,6 +437,9 @@ export default class Table {
     }
 
     select(ids) {
+        if (!Array.isArray(ids)) {
+            ids = [ids];
+        }
         this.selectedItems = this.content.filter(item => ids.includes(item.id));
         this.render();
     }
