@@ -55,6 +55,7 @@
     "mysqldump": "^3.2.0",
     "nodemon": "^3.1.0",
     "nodemon-webpack-plugin": "^4.8.2",
+    "sharp": "^0.33.5",
     "typeit": "^8.8.3",
     "unzipper": "^0.11.6",
     "uuid": "^9.0.1",

@@ -31,7 +31,7 @@ export default class Contest extends Model {
     }
 
     static getBase64Logo(id) {
-        const logoPath = `upload/contest/logo/${id}.png`;
+        const logoPath = `upload/contest/logo/${id}`;
         if (!fs.existsSync(logoPath)) return false;
         const file = fs.readFileSync(logoPath);
         const toString = file.toString('base64');

@@ -8,6 +8,7 @@ import config from '../helpers/config.js';
 import Submission from '../model/submission.js';
 import PDFUtils from '../helpers/pdf.js';
 import fs from 'fs';
+import sharp from 'sharp';
 
 const router = Router();
 
@@ -142,14 +143,17 @@ router.post('/:id/logo', auth({'contest:admin': true}), async (req, res, next) =
         
         const base64Data = req.body.logo.replace(/^data:image\/\w+;base64,/, '');
         const dir = `upload/contest/logo/`;
-        const filename = `${dir}${req.contest.id}.png`;
+        const filename = `${dir}${req.contest.id}`;
 
         // Ensure the directory exists
         if (!fs.existsSync(dir)){
             fs.mkdirSync(dir, { recursive: true });
         }
 
-        fs.writeFileSync(filename, base64Data, 'base64');
+        const buffer = Buffer.from(base64Data, 'base64');
+        await sharp(buffer)
+            .toFormat('webp')
+            .toFile(filename);
 
         res.send({ message: 'Logo updated.' });
     }
