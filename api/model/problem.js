@@ -1,6 +1,8 @@
 import CustomError from '../helpers/error.js';
 import Model from './model.js';
 import { v4 as uuidv4 } from 'uuid';
+import fs from 'fs';
+import sharp from 'sharp';
 
 export default class Problem extends Model {
     constructor({
@@ -56,5 +58,39 @@ export default class Problem extends Model {
     async insert() {
         this.hash = uuidv4().replace(/-/g, '');
         return super.insert();
+    }
+
+    async saveImage(data) {
+        if (!data) {
+            throw new CustomError(400, 'Image is required.');
+        }
+
+        if (data.startsWith('data:image/')) {
+            data = data.replace(/^data:image\/\w+;base64,/, '');
+        }
+        const buffer = Buffer.from(data, 'base64');
+        const imgId = uuidv4().replace(/-/g, '');
+        const dir = `upload/problem/${this.id}/`;
+        const outputPath = `${dir}${imgId}`;
+
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir, { recursive: true });
+        }
+
+        await sharp(buffer).resize({ width: 800, withoutEnlargement: true }).toFormat('webp').toFile(outputPath);
+
+        return imgId;
+    }
+
+    getImage(id) {
+        const dir = `upload/problem/${this.id}/`;
+        const path = `${dir}${id}`;
+
+        if (!fs.existsSync(path)) {
+            throw new CustomError(404, 'Image not found');
+        }
+
+        const buffer = fs.readFileSync(path);
+        return buffer;
     }
 }

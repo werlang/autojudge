@@ -24,9 +24,11 @@ import TableCell from '@tiptap/extension-table-cell';
 
 
 export default class TextEditor {
-    constructor({ mode, element, content, translate } = {}) {
+    constructor({ mode, element, content, translate, uploadImageCallback, getImageCallback } = {}) {
         this.mode = mode || 'html';
         this.translate = translate;
+        this.uploadImageCallback = uploadImageCallback;
+        this.getImageCallback = getImageCallback;
 
         if (!element) {
             throw new Error('Element is required');
@@ -278,8 +280,8 @@ export default class TextEditor {
                             return;
                         }
 
-                        const src = reader.result;
-                        this.editor.chain().focus().setImage({ src }).run();
+                        const src = await this.uploadImageCallback(reader.result);
+                        this.editor.chain().focus().setImage({ src: await this.getImageCallback(src) }).run();
                     };
                     img.src = reader.result;
                 };

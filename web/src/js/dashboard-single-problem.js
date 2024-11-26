@@ -348,6 +348,8 @@ export default {
                     element: field,
                     content: oldContent,
                     translate: this.translate,
+                    uploadImageCallback: async file => new Problem(this.problem).saveImage(file),
+                    getImageCallback: async id => new Problem(this.problem).getImageURL(id),
                 });
             });
 

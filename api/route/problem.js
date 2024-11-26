@@ -294,4 +294,55 @@ router.post('/pdf', auth({'user:optional': true}), async (req, res, next) => {
     }
 });
 
+// upload a problem image
+router.post('/:hash/images', auth({'user:exists': true}), async (req, res, next) => {
+    try {
+        if (req.params.hash.length < process.env.HASH_LENGTH) {
+            throw new CustomError(400, 'Hash too short.');
+        }
+        const problems = await Problem.getAll({ hash: { like: req.params.hash }});
+        if (problems.length == 0) {
+            throw new CustomError(404, 'Problem not found.');
+        }
+        else if (problems.length > 1) {
+            throw new CustomError(401, 'Ambiguous hash.');
+        }
+        const problem = problems[0];
+
+        const outputPath = await new Problem(problem).saveImage(req.body.data);
+
+        res.send({
+            message: 'Image uploaded.',
+            id: outputPath,
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+
+// get a problem image
+router.get('/:hash/images/:id', async (req, res, next) => {
+    try {
+        if (req.params.hash.length < process.env.HASH_LENGTH) {
+            throw new CustomError(400, 'Hash too short.');
+        }
+        const problems = await Problem.getAll({ hash: { like: req.params.hash }});
+        if (problems.length == 0) {
+            throw new CustomError(404, 'Problem not found.');
+        }
+        else if (problems.length > 1) {
+            throw new CustomError(401, 'Ambiguous hash.');
+        }
+        const problem = problems[0];
+
+        const buffer = new Problem(problem).getImage(req.params.id);
+        res.setHeader('Content-Type', 'image/webp');
+        res.send(buffer);
+    }
+    catch (error) {
+        next(error);
+    }
+});
+
 export default router;

@@ -49,4 +49,13 @@ export default class Problem {
         let blob = await new Api({ options: { responseMode: 'blob' }}).post(`problems/${this.hash}/pdf`, args);
         return blob;
     }
+
+    async saveImage(data) {
+        return new Api().post(`problems/${this.hash}/images`, { data }).then(resp => resp.id);
+    }
+
+    async getImageURL(id) {
+        const response = await fetch(new Api().requestInstance.url + `/problems/${this.hash}/images/${id}`);
+        return response.url;
+    }
 }
