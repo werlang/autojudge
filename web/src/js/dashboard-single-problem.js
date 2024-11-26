@@ -348,8 +348,6 @@ export default {
                     element: field,
                     content: oldContent,
                     translate: this.translate,
-                    uploadImageCallback: async file => new Problem(this.problem).saveImage(file),
-                    getImageCallback: async id => new Problem(this.problem).getImageURL(id),
                 });
             });
 
@@ -367,8 +365,8 @@ export default {
                     text: this.translate('discard', 'common'),
                     close: true,
                     isDefault: false,
-                    callback: () => {
-                        this.removeUnunsedImages(this.editor.getContent(), oldContent);
+                    callback: async () => {
+                        oldContent = await this.resyncImageFiles(this.editor.getContent(), oldContent);
                         field.innerHTML = oldContent;
                         confirmIcon.get().classList.add('hidden');
                         cancelIcon.get().classList.add('hidden');
@@ -408,9 +406,8 @@ export default {
                             this.render();
                             return;
                         } 
-                        
-                        this.removeUnunsedImages(oldContent, newContent);
-
+                        newContent = await this.resyncImageFiles(oldContent, newContent);
+                        console.log(newContent);
                         confirmIcon.disable();
                         cancelIcon.disable();
                         await this.saveChanges(editable.parentNode.id, newContent);
@@ -620,16 +617,39 @@ export default {
         }
     },
 
-    removeUnunsedImages: function(oldContent, newContent) {
+    resyncImageFiles: async function(oldContent, newContent) {
+        // get all image tags
         const oldImages = oldContent.match(/<img[^>]+>/g) || [];
         const newImages = newContent.match(/<img[^>]+>/g) || [];
-        const oldIds = oldImages.map(img => img.match(/src="[^"]+"/)[0].replace('src="', '').replace('"', ''));
-        const newIds = newImages.map(img => img.match(/src="[^"]+"/)[0].replace('src="', '').replace('"', ''));
+        
+        // get the src attribute of each image
+        let oldSrc = oldImages.map(img => img.match(/src="[^"]+"/)[0].replace('src="', '').replace('"', ''));
+        let newSrc = newImages.map(img => img.match(/src="[^"]+"/)[0].replace('src="', '').replace('"', ''));
 
-        const unusedImages = oldIds.filter(id => !newIds.includes(id));
-        unusedImages.forEach(async id => {
-            await new Problem(this.problem).removeImage(id.split('/').pop());
+        // remove base64 images from the list
+        oldSrc = oldSrc.filter(src => !src.startsWith('data:image/'));
+
+        // upload new base64 images
+        newSrc = await Promise.all(newSrc.map(async src => {
+            if (src.startsWith('data:image/')) {
+                const problem = new Problem(this.problem);
+                const imgId = await problem.saveImage(src);
+                return problem.getImageURL(imgId);
+            }
+            return src;
+        }));
+
+        // remove unused images
+        const unusedImages = oldSrc.filter(id => !newSrc.includes(id));
+        unusedImages.forEach(async id => new Problem(this.problem).removeImage(id.split('/').pop()));
+
+        // replace the new src in the content
+        newImages.forEach((imgTag, index) => {
+            const oldSrcAttr = imgTag.match(/src="[^"]+"/)[0];
+            const newSrcAttr = `src="${newSrc[index]}"`;
+            newContent = newContent.replace(oldSrcAttr, newSrcAttr);
         });
+        return newContent;
     },
 
 }

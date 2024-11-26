@@ -280,8 +280,7 @@ export default class TextEditor {
                             return;
                         }
 
-                        const src = await this.uploadImageCallback(reader.result);
-                        this.editor.chain().focus().setImage({ src: await this.getImageCallback(src) }).run();
+                        this.editor.chain().focus().setImage({ src: reader.result }).run();
                     };
                     img.src = reader.result;
                 };
