@@ -93,4 +93,15 @@ export default class Problem extends Model {
         const buffer = fs.readFileSync(path);
         return buffer;
     }
+
+    removeImage(id) {
+        const dir = `upload/problem/${this.id}/`;
+        const path = `${dir}${id}`;
+
+        if (!fs.existsSync(path)) {
+            throw new CustomError(404, 'Image not found');
+        }
+
+        fs.unlinkSync(path);
+    }
 }

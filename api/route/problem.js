@@ -345,4 +345,27 @@ router.get('/:hash/images/:id', async (req, res, next) => {
     }
 });
 
+// delete a problem image
+router.delete('/:hash/images/:id', auth({'user:exists': true}), async (req, res, next) => {
+    try {
+        if (req.params.hash.length < process.env.HASH_LENGTH) {
+            throw new CustomError(400, 'Hash too short.');
+        }
+        const problems = await Problem.getAll({ hash: { like: req.params.hash }});
+        if (problems.length == 0) {
+            throw new CustomError(404, 'Problem not found.');
+        }
+        else if (problems.length > 1) {
+            throw new CustomError(401, 'Ambiguous hash.');
+        }
+        const problem = problems[0];
+
+        await new Problem(problem).removeImage(req.params.id);
+        res.send({ message: 'Image deleted.' });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+
 export default router;

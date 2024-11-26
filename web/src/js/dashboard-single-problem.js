@@ -368,6 +368,7 @@ export default {
                     close: true,
                     isDefault: false,
                     callback: () => {
+                        this.removeUnunsedImages(this.editor.getContent(), oldContent);
                         field.innerHTML = oldContent;
                         confirmIcon.get().classList.add('hidden');
                         cancelIcon.get().classList.add('hidden');
@@ -408,6 +409,8 @@ export default {
                             return;
                         } 
                         
+                        this.removeUnunsedImages(oldContent, newContent);
+
                         confirmIcon.disable();
                         cancelIcon.disable();
                         await this.saveChanges(editable.parentNode.id, newContent);
@@ -615,6 +618,18 @@ export default {
             console.error(error);
             new Toast(error.message, { type: 'error' });
         }
+    },
+
+    removeUnunsedImages: function(oldContent, newContent) {
+        const oldImages = oldContent.match(/<img[^>]+>/g) || [];
+        const newImages = newContent.match(/<img[^>]+>/g) || [];
+        const oldIds = oldImages.map(img => img.match(/src="[^"]+"/)[0].replace('src="', '').replace('"', ''));
+        const newIds = newImages.map(img => img.match(/src="[^"]+"/)[0].replace('src="', '').replace('"', ''));
+
+        const unusedImages = oldIds.filter(id => !newIds.includes(id));
+        unusedImages.forEach(async id => {
+            await new Problem(this.problem).removeImage(id.split('/').pop());
+        });
     },
 
 }

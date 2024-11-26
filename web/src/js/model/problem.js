@@ -54,6 +54,10 @@ export default class Problem {
         return new Api().post(`problems/${this.hash}/images`, { data }).then(resp => resp.id);
     }
 
+    async removeImage(id) {
+        return new Api().delete(`problems/${this.hash}/images/${id}`);
+    }
+    
     async getImageURL(id) {
         const response = await fetch(new Api().requestInstance.url + `/problems/${this.hash}/images/${id}`);
         return response.url;
