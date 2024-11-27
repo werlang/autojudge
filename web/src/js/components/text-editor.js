@@ -21,10 +21,6 @@ import MathExtension from '@aarkue/tiptap-math-extension';
 import katex from 'katex';
 import mathExpressions from './math-expressions.js';
 
-// TODO: fix image sizes.
-// TODO: add shortcuts tooltips
-
-
 export default class TextEditor {
     constructor({ mode, element, content, translate, uploadImageCallback, getImageCallback } = {}) {
         this.mode = mode || 'html';
@@ -71,7 +67,10 @@ export default class TextEditor {
                         ...this.parent?.(),
                         width: {
                             default: '30%',
-                            parseHTML: element => element.style.width || 'auto',
+                            parseHTML: element => {
+                                console.log(element);
+                                return element.style.width || element.getAttribute('width') || '30%';
+                            },
                             renderHTML: attributes => {
                                 if (!attributes.width) {
                                     return {};
@@ -83,7 +82,7 @@ export default class TextEditor {
                         },
                         height: {
                             default: 'auto',
-                            parseHTML: element => element.style.height || 'auto',
+                            parseHTML: element => element.style.height || element.getAttribute('height') || 'auto',
                             renderHTML: attributes => {
                                 if (!attributes.height) {
                                     return {};
@@ -180,6 +179,9 @@ export default class TextEditor {
         if (!Array.isArray(icon)) icon = [icon];
         button.innerHTML = `<i class="fa-solid ${icon.map(i => `fa-${i}`).join(' ')}"></i>`;
 
+        // Set the title attribute using the translation key
+        button.title = this.translate(`editor.menu.${id}`, 'components');
+
         button.addEventListener('click', () => {
             callback();
         });
@@ -236,7 +238,7 @@ export default class TextEditor {
         bubbleMenu.appendChild(this.createActionButton('align-right', 'align-right', 'align', () => this.editor.chain().focus().setTextAlign('right').run()));
         bubbleMenu.appendChild(this.createActionButton('align-justify', 'align-justify', 'align', () => this.editor.chain().focus().setTextAlign('justify').run()));
         
-        // Create link
+        // Insert link
         bubbleMenu.appendChild(this.createActionButton('link', 'link', 'text', () => {
             if (this.editor.getAttributes('link').href) {
                 this.editor.chain().focus().extendMarkRange('link').unsetLink().run();
@@ -275,11 +277,9 @@ export default class TextEditor {
                 reader.onload = () => {
                     const img = new Image();
                     img.onload = async () => {
-                        const maxWidth = 800;
-                        const maxHeight = 600;
-
-                        if (img.width * img.height > maxWidth * maxHeight) {
-                            new Toast(`Image dimensions too large.`, { type: 'error' });
+                        const maxSize = 1024 * 1024 * 0.25; // 250 KB
+                        if (file.size > maxSize) {
+                            new Toast(this.translate('editor.image-max-size', 'components', { maxSize: maxSize / 1024 }), { type: 'error' });
                             return;
                         }
 

@@ -27,6 +27,7 @@
             "title": "Insert Link",
             "placeholder": "Link"
         },
+        "image-max-size": "The image must be smaller than {{maxSize}} KB",
         "math": {
             "title": "Math Expressions",
             "instructions": "To write mathematical expressions, use the following delimiters:",
@@ -112,6 +113,45 @@
                     "triple-integral": "Triple Integral"
                 }
             }
+        },
+        "menu": {
+            "heading": "Headings",
+            "heading-1": "Heading 1",
+            "heading-2": "Heading 2",
+            "heading-3": "Heading 3",
+            "paragraph": "Paragraph",
+            "bold": "Bold",
+            "italic": "Italic",
+            "underline": "Underline",
+            "code": "Inline Code",
+            "align": "Text Alignment",
+            "align-left": "Align Left",
+            "align-center": "Align Center",
+            "align-right": "Align Right",
+            "align-justify": "Align Justify",
+            "link": "Insert Link",
+            "image": "Insert Image",
+            "table": "Insert Table",
+            "more": "More Options",
+            "strike": "Strikethrough",
+            "code-block": "Code Block",
+            "bullet": "Bullet List",
+            "number": "Numbered List",
+            "sub": "Subscript",
+            "sup": "Superscript",
+            "quote": "Quote",
+            "math": "Math",
+            "size-small": "Decrease Size",
+            "size-large": "Increase Size",
+            "header-row": "Toggle Header",
+            "row-before": "Add Row Before",
+            "row-after": "Add Row After",
+            "col-before": "Add Column Before",
+            "col-after": "Add Column After",
+            "delete-row": "Delete Row",
+            "delete-col": "Delete Column",
+            "merge-cells": "Merge/Split Cells",
+            "delete-table": "Delete Table"
         }
     }
 }

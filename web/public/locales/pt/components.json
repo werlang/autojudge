@@ -27,6 +27,7 @@
             "title": "Inserir Link",
             "placeholder": "Link"
         },
+        "image-max-size": "A imagem deve ser menor que {{maxSize}} KB",
         "math": {
             "title": "Expressões Matemáticas",
             "instructions": "Para escrever expressões matemáticas, use os seguintes delimitadores:",
@@ -112,6 +113,45 @@
                     "triple-integral": "Integral Tripla"
                 }
             }
+        },
+        "menu": {
+            "heading": "Títulos",
+            "heading-1": "Título 1",
+            "heading-2": "Título 2",
+            "heading-3": "Título 3",
+            "paragraph": "Parágrafo",
+            "bold": "Negrito",
+            "italic": "Itálico",
+            "underline": "Sublinhado",
+            "code": "Código Inline",
+            "align": "Alinhamento de Texto",
+            "align-left": "Alinhar à Esquerda",
+            "align-center": "Alinhar ao Centro",
+            "align-right": "Alinhar à Direita",
+            "align-justify": "Justificar",
+            "link": "Inserir Link",
+            "image": "Inserir Imagem",
+            "table": "Inserir Tabela",
+            "more": "Mais Opções",
+            "strike": "Tachado",
+            "code-block": "Bloco de Código",
+            "bullet": "Lista com Marcadores",
+            "number": "Lista Numerada",
+            "sub": "Subscrito",
+            "sup": "Sobrescrito",
+            "quote": "Citação",
+            "math": "Matemática",
+            "size-small": "Diminuir Tamanho",
+            "size-large": "Aumentar Tamanho",
+            "header-row": "Alternar Cabeçalho",
+            "row-before": "Adicionar Linha Antes",
+            "row-after": "Adicionar Linha Depois",
+            "col-before": "Adicionar Coluna Antes",
+            "col-after": "Adicionar Coluna Depois",
+            "delete-row": "Excluir Linha",
+            "delete-col": "Excluir Coluna",
+            "merge-cells": "Mesclar/Dividir Células",
+            "delete-table": "Excluir Tabela"
         }
     }
 }
