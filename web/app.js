@@ -18,7 +18,7 @@ app.set('views', import.meta.dirname + '/view/');
 
 // language middleware
 langMiddleware.init({
-    languages: ['en', 'pt'],
+    languages: ['en', 'pt', 'zh'],
     namespaces: [
         'index',
         'components',

@@ -1,0 +1,53 @@
+{
+    "inout-public_zero": "未找到输入/输出示例",
+    "inout-public_one": "输入/输出示例",
+    "inout-public_other": "输入/输出示例",
+    "inout-hidden_zero": "未找到隐藏的输入/输出",
+    "inout-hidden_one": "隐藏的输入/输出",
+    "inout-hidden_other": "隐藏的输入/输出",
+    "input_samples": "输入示例",
+    "output_samples": "输出示例",
+    "case": "案例",
+    "input": "输入",
+    "output": "输出",
+    "save-changes": {
+        "h1": "保存更改",
+        "message": "是否保存对字段<b>{{field}}</b>的更改？",
+        "success": "问题已成功保存。",
+        "success-case": "测试用例{{operation}}成功。"
+    },
+    "discard-changes": {
+        "h1": "放弃更改",
+        "message": "是否放弃对字段<b>{{field}}</b>的更改？"
+    },
+    "field": {
+        "title": "标题",
+        "description": "描述"
+    },
+    "add-case": "添加新测试用例",
+    "add-hidden": "添加新的隐藏测试用例",
+    "new-case-value": "{{inout}}的新值",
+    "empty-case": "请填写输入和输出字段。",
+    "duplicate-case": "该测试用例已存在。",
+    "share-section": "分享此问题",
+    "copy-link": "链接已复制到剪贴板",
+    "remove-case": {
+        "h1": "移除测试用例",
+        "message": "是否要移除测试用例？"
+    },
+    "teams-solved": "解决此问题的团队",
+    "score-solved": "您在此问题上的时间加分",
+    "score-unsolved": "您对此问题的尝试次数",
+    "pdf-problems": "生成问题的PDF",
+    "import-cases": {
+        "title": "导入测试用例",
+        "description": "您可以从<code>.csv</code>文件中导入测试用例。文件必须具有以下格式：",
+        "image": "电子表格",
+        "sample": "文本",
+        "placeholder": "拖放或点击",
+        "error": "导入测试用例时出错。",
+        "error-header": "文件头格式不正确。",
+        "error-columns": "文件第{{line}}行列数不正确。",
+        "error-type": "文件第{{line}}行的数据类型无效。"
+    }
+}

@@ -15,7 +15,7 @@ class Translator {
     static loaded = false;
 
     constructor(languages, namespaces) {
-        this.languages = languages;
+        this.languages = ['en', 'pt', 'zh'];
         this.namespaces = namespaces;
     }
 

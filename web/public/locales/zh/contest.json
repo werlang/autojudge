@@ -1,0 +1,104 @@
+{
+    "problems_zero": "未找到问题",
+    "problems_one": "问题",
+    "problems_other": "问题",
+    "teams_zero": "未找到团队",
+    "teams_one": "团队",
+    "teams_other": "团队",
+    "change-logo": "点击更改竞赛徽标",
+    "logo-success": "徽标更新成功。",
+    "save-changes": {
+        "h1": "保存更改",
+        "message": "是否保存对字段<b>{{field}}</b>的更改？",
+        "success": "竞赛保存成功。"
+    },
+    "field": {
+        "name": "名称",
+        "description": "描述"
+    },
+    "add-problem": {
+        "h1": "添加问题",
+        "message": "从下面的列表中选择公共或您创建的问题以添加到竞赛中。",
+        "hash": "对于私有问题，请输入问题的链接或哈希值",
+        "success": "问题添加成功。",
+        "error-hash": "未找到具有提供的哈希值的问题。"
+    },
+    "remove-problem": {
+        "title": "移除问题",
+        "open": "在新标签页中打开问题",
+        "success_one": "问题移除成功。",
+        "success_other": "问题移除成功。"
+    },
+    "add-team": {
+        "h1-name": "创建新团队",
+        "team-name": "团队名称",
+        "error-name": "团队名称必须超过3个字符。",
+        "message-1": "请记录以下密码并告知团队成员。",
+        "message-2": "他们可以通过以下链接访问竞赛。",
+        "success": "团队创建成功。"
+    },
+    "copy-text": "文本已复制到剪贴板",
+    "teams": {
+        "reset-title": "重置密码",
+        "reset-success": "密码重置成功。",
+        "remove-title": "移除团队",
+        "remove-message": "是否要移除团队？",
+        "remove-success": "团队移除成功。",
+        "rename-title": "重命名团队",
+        "rename-name": "新团队名称",
+        "rename-success": "团队重命名成功。"
+    },
+    "start-contest": {
+        "title": "开始竞赛",
+        "message": "您要现在开始竞赛吗？",
+        "button": "开始",
+        "cancel": "取消",
+        "success": "竞赛开始成功。"
+    },
+    "dashboard": {
+        "submissions": {
+            "total_one": "提交的提交",
+            "total_other": "提交的提交",
+            "accepted_one": "正确的提交",
+            "accepted_other": "正确的提交"
+        },
+        "problems": {
+            "total": "竞赛中的问题",
+            "accepted": "有正确提交的"
+        },
+        "teams": "本次竞赛的团队总数",
+        "reset-contest": "重置竞赛",
+        "reset-contest-message": "您确定要重置竞赛吗？此操作不可逆，将删除竞赛的所有提交。"
+    },
+    "judge": {
+        "title": "评判提交",
+        "file": "选择要评判的提交",
+        "select": "选择提交的状态",
+        "success": "提交状态更改成功。",
+        "log": "查看autojudge日志",
+        "no-log": "无可用日志"
+    },
+    "color-modal": {
+        "hint": "更改问题的颜色",
+        "title": "选择颜色",
+        "message": "为问题选择颜色",
+        "submit": "保存",
+        "success": "问题颜色更��成功。"
+    },
+    "import-teams": {
+        "title": "导入团队",
+        "description": "您可以从<code>.csv</code>文件中导入团队名称。文件必须具有以下格式：",
+        "image": "电子表格",
+        "sample": "文本",
+        "placeholder": "拖放或点击",
+        "error": "导入团队名称时出错。",
+        "error-header": "文件头格式不正确。",
+        "error-columns": "文件第{{line}}行列数不正确。",
+        "success-message": "以下团队已成功导入：",
+        "login-message": "要登录，团队成员必须访问{{url}}并提供团队ID和密码。",
+        "advice-message": "团队密码是唯一的，无法恢复。请将它们记录在安全的地方。如有必要，您可以重置团队密码。",
+        "export-message": "您可以点击下方按钮将已注册的团队导出为<code>.csv</code>文件。",
+        "export-button": "导出团队",
+        "this-link": "此链接"
+    }
+}
