@@ -1,6 +1,6 @@
 {
     "problems": {
-        "description": "Manage problems that you have created.",
+        "description": "Manage the problems you have created.",
         "table": {
             "add": "Add Problem",
             "author": "Author",
@@ -10,12 +10,12 @@
             "h1": "Add Problem",
             "error": "Error submitting problem.",
             "description": "Add the problem description.",
-            "public-warn": "Public problems can be seen in the problem list by all users at any time. If added to a contest, the participants may already know the problem.",
+            "public-warn": "Public problems can be seen in the problem list by all users at any time. If added to a contest, participants may already know the problem.",
             "private-warn": "Marking a problem as private will prevent it from being listed in the public problem list. You can still access it through the direct link."
         }
     },
     "contests": {
-        "description": "Create new contests, or manage those that you have created.",
+        "description": "Create new contests or manage those you have created.",
         "add": "Add new contest",
         "error": "Error submitting contest."
     },

@@ -3,12 +3,12 @@
     "section1": {
         "welcome": "Bem-vindo!",
         "h3": "Juiz Online ao seu serviço. Eu posso te ajudar com problemas de programação e competições.",
-        "button-1": "Genenciar",
+        "button-1": "Gerenciar",
         "button-2": "Competir"
     },
     "section3": {
         "h1": "O que eu posso fazer por você?",
-        "p": "O AutoJudge é uma plataforma do tipo juiz online que permite criar, gerenciar e resolver problemas de programação, hospedar competições e se juntar com sua equipe para competir. Seja você um professor, estudante ou profissional, o AutoJudge tem tudo o que você precisa!"
+        "p": "O AutoJudge é uma plataforma de juiz online que permite criar, gerenciar e resolver problemas de programação, hospedar competições e se juntar com sua equipe para competir. Seja você um professor, estudante ou profissional, o AutoJudge tem tudo o que você precisa!"
     },
     "section4": {
         "h1": "Crie, gerencie e resolva problemas",

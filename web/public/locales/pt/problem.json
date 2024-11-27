@@ -1,23 +1,23 @@
 {
-    "inout-public_zero": "Nenhum Exemplo de Entrada/Saída encontrado",
-    "inout-public_one": "Exemplo de Entrada/Saída",
-    "inout-public_other": "Exemplos de Entrada/Saída",
-    "inout-hidden_zero": "Nenhuma Entrada/Saída oculta encontrada",
-    "inout-hidden_one": "Entrada/Saída oculta",
-    "inout-hidden_other": "Entradas/Saídas ocultas",
-    "input_samples": "Exemplos de Entrada",
-    "output_samples": "Exemplos de Saída",
+    "inout-public_zero": "Nenhum exemplo de entrada/saída encontrado",
+    "inout-public_one": "Exemplo de entrada/saída",
+    "inout-public_other": "Exemplos de entrada/saída",
+    "inout-hidden_zero": "Nenhuma entrada/saída oculta encontrada",
+    "inout-hidden_one": "Entrada/saída oculta",
+    "inout-hidden_other": "Entradas/saídas ocultas",
+    "input_samples": "Exemplos de entrada",
+    "output_samples": "Exemplos de saída",
     "case": "Caso",
     "input": "Entrada",
     "output": "Saída",
     "save-changes": {
-        "h1": "Salvar Alterações",
+        "h1": "Salvar alterações",
         "message": "Deseja salvar as alterações no campo <b>{{field}}</b>?",
         "success": "Problema salvo com sucesso.",
         "success-case": "Caso de teste {{operation}} com sucesso."
     },
     "discard-changes": {
-        "h1": "Descartar Alterações",
+        "h1": "Descartar alterações",
         "message": "Deseja descartar as alterações no campo <b>{{field}}</b>?"
     },
     "field": {

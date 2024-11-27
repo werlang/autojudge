@@ -2,9 +2,9 @@
     "join-team": "Join Team",
     "ask-password": "Please enter the team password",
     "team-id": "Team ID",
-    "wrong-password": "The provided password is incorrect",
-    "password-format": "The password must have 6 numeric characters",
-    "team-id-format": "The team ID is invalid",
+    "wrong-password": "Incorrect password",
+    "password-format": "Password must be 6 numeric characters",
+    "team-id-format": "Invalid team ID",
     "submissions": {
         "submitted": "Submitted",
         "status": "Status"
@@ -14,13 +14,13 @@
     "error-select-problem": "Please select a problem",
     "error-upload-file": "Please upload a source code file",
     "hint-source-code": "Source code file",
-    "hint-file-type": "Please upload a source code file of the following formats: .c, .cpp, .java, .py, .js, .php",
+    "hint-file-type": "Please upload a source code file in the following formats: .c, .cpp, .java, .py, .js, .php",
     "status": {
-        "accepted": "The submission was accepted",
-        "wrong-answer": "The submission produced a wrong answer",
-        "time-limit": "The submission exceeded the time limit",
-        "error": "The submitted code produced an error",
-        "pending": "The submission is pending evaluation",
-        "parsing-error": "There was a parsing error with the submission, plase contact the contest administrator"
+        "accepted": "Submission accepted",
+        "wrong-answer": "Wrong answer",
+        "time-limit": "Time limit exceeded",
+        "error": "Code error",
+        "pending": "Pending evaluation",
+        "parsing-error": "Parsing error, contact administrator"
     }
 }
