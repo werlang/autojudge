@@ -581,6 +581,12 @@ export default {
                     button.disable(false);
                     return;
                 }
+                if (this.contest.problems.find(p => p.id === problem.id)) {
+                    new Toast(this.translate('add-problem.already-added', 'contest'), { type: 'error' });
+                    button.enable();
+                    button.disable(false);
+                    return;
+                }
                 
                 if (!table.getItems().find(p => p.id === problem.id)) {
                     table.addItem(problem, 0);

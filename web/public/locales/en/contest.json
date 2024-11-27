@@ -21,7 +21,8 @@
         "message": "Choose public problems or those you created from the list below to add to the contest.",
         "hash": "For private problems, enter the Problem Link or Hash",
         "success": "Problems added successfully.",
-        "error-hash": "No problem with the informed hash was found."
+        "error-hash": "No problem with the informed hash was found.",
+        "already-added": "The problem is already in the contest."
     },
     "remove-problem": {
         "title": "Remove Problems",

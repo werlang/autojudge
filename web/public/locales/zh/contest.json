@@ -21,7 +21,8 @@
         "message": "从下面的列表中选择公共或您创建的问题以添加到竞赛中。",
         "hash": "对于私有问题，请输入问题的链接或哈希值",
         "success": "问题添加成功。",
-        "error-hash": "未找到具有提供的哈希值的问题。"
+        "error-hash": "未找到具有提供的哈希值的问题。",
+        "already-added": "该问题已在竞赛中。"
     },
     "remove-problem": {
         "title": "移除问题",
@@ -83,7 +84,7 @@
         "title": "选择颜色",
         "message": "为问题选择颜色",
         "submit": "保存",
-        "success": "问题颜色更��成功。"
+        "success": "问题颜色更新成功。"
     },
     "import-teams": {
         "title": "导入团队",
@@ -92,7 +93,7 @@
         "sample": "文本",
         "placeholder": "拖放或点击",
         "error": "导入团队名称时出错。",
-        "error-header": "文件头格式不正确。",
+        "error-header": "文件头格���不正确。",
         "error-columns": "文件第{{line}}行列数不正确。",
         "success-message": "以下团队已成功导入：",
         "login-message": "要登录，团队成员必须访问{{url}}并提供团队ID和密码。",
