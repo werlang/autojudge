@@ -1,5 +1,6 @@
 import fs from 'fs';
 import { Chromiumly, HtmlConverter, PDFEngines } from "chromiumly";
+import katex from 'katex';
 
 export default class PDFUtils {
 
@@ -7,6 +8,17 @@ export default class PDFUtils {
         for (const key in args) {
             this[key] = args[key];
         }
+
+        // replace problem description math tags with rendered math
+        this.problem.description = this.problem.description.replace(/\$(.*?)\$/gm, (_, match) => {
+            try {
+                return katex.renderToString(match, { throwOnError: false });
+            }
+            catch (error) {
+                console.error(error);
+                return match;
+            }
+        });
     }
 
     // method to merge pdfs from buffers

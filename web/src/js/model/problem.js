@@ -1,4 +1,5 @@
 import Api from "../helpers/api.js";
+import katex from 'katex';
 
 export default class Problem {
 
@@ -13,6 +14,18 @@ export default class Problem {
 
     static async getAll(filter) {
         const problems = await new Api().get('problems', filter);
+        problems.problems.forEach(problem => {
+            // render math to the description
+            problem.description = problem.description.replace(/\$(.*?)\$/gm, (_, match) => {
+                try {
+                    return katex.renderToString(match, { throwOnError: false });
+                }
+                catch (error) {
+                    console.error(error);
+                    return match;
+                }
+            });
+        });
         return problems;
     }
 
@@ -21,6 +34,16 @@ export default class Problem {
         for (const key in problem) {
             this[key] = problem[key];
         }
+        // render math to the description
+        this.description = this.description.replace(/\$(.*?)\$/gm, (_, match) => {
+            try {
+                return katex.renderToString(match, { throwOnError: false });
+            }
+            catch (error) {
+                console.error(error);
+                return match;
+            }
+        });
         return this;
     }
 

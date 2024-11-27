@@ -1,6 +1,7 @@
 import Modal from './modal.js';
 import Form from './form.js';
 import Toast from './toast.js';
+import TableDom from './table.js';
 import { Editor } from '@tiptap/core';
 import StarterKit from '@tiptap/starter-kit';
 import Text from '@tiptap/extension-text';
@@ -16,9 +17,10 @@ import Table from '@tiptap/extension-table';
 import TableRow from '@tiptap/extension-table-row';
 import TableHeader from '@tiptap/extension-table-header';
 import TableCell from '@tiptap/extension-table-cell';
+import MathExtension from '@aarkue/tiptap-math-extension';
+import katex from 'katex';
+import mathExpressions from './math-expressions.js';
 
-// TODO: equation
-// TODO: fix pdf generation when using images
 // TODO: fix image sizes.
 // TODO: add shortcuts tooltips
 
@@ -142,6 +144,7 @@ export default class TextEditor {
                     element: this.createBubbleMenu(),
                     shouldShow: obj => this.shouldShow(obj),
                 }),
+                MathExtension.configure({ evaluation: false }),
             );
         }
 
@@ -320,6 +323,60 @@ export default class TextEditor {
         
         // Quote
         bubbleMenu.appendChild(this.createActionButton('quote', 'quote-right', 'more', () => this.editor.chain().focus().toggleBlockquote().run()));
+
+        // Math
+        bubbleMenu.appendChild(this.createActionButton('math', 'square-root-alt', 'more', () => {
+            const expressions = mathExpressions;
+            
+            bubbleMenu.classList.add('hide');
+            let text = `
+                <h1>${this.translate('editor.math.title', 'components')}</h1>
+                <div id="katex-instructions">
+                    <p>${this.translate('editor.math.instructions', 'components')}</p>
+                    <ul>
+                        <li>${this.translate('editor.math.inline-math', 'components')}: <code>$ ... $</code></li>
+                        <li>${this.translate('editor.math.display-math', 'components')}: <code>$$ ... $$</code></li>
+                    </ul>
+                    <p>${this.translate('editor.math.for-example', 'components')}</p>
+                    <ul>
+                        <li>${this.translate('editor.math.inline-example', 'components')} ${katex.renderToString('a^2 + b^2 = c^2', { throwOnError: false })}</li>
+                        <li>${this.translate('editor.math.display-example', 'components')} ${katex.renderToString('\\frac{a + b}{a \\cdot b}', { displayMode: true, throwOnError: false })}</li>
+                    </ul>
+                    <p>${this.translate('editor.math.click-to-insert', 'components')}</p>
+                    <p>${this.translate('editor.math.more-info', 'components')}</p>
+                    <h3>${this.translate('editor.math.examples', 'components')}</h3>
+                    <div id="katex-table"></div>
+                </div>
+            `;
+            const modal = new Modal(text, { large: true }).onClose(() => bubbleMenu.classList.remove('hide'));
+            const table = new TableDom({
+                element: modal.get('#katex-table'),
+                columns: [
+                    {id: 'type', name: 'Type', size: 'small'},
+                    {id: 'name', name: 'Name', size: 'small'},
+                    {id: 'expression', name: 'Expression'},
+                    {id: 'rendered', name: 'Rendered'},
+                ],
+                translate: this.translate,
+                maxItems: 5,
+                pagination: true,
+            });
+            table.clear();
+            expressions.forEach(e => {
+                table.addItem({
+                    type: this.translate(`editor.math.expressions.type.${e.type}`, 'components'),
+                    name: this.translate(`editor.math.expressions.name.${e.name}`, 'components'),
+                    expression: `<code>${e.expression}</code>`,
+                    expressionRaw: e.expression,
+                    rendered: katex.renderToString(e.expression, { throwOnError: false }),
+                });
+            });
+            // insert the code into the editor
+            table.addItemEvent('click', item => {
+                this.editor.commands.insertContent(`<span data-type="inlineMath" data-display="no" data-latex="${item.expressionRaw}"></span>`);
+                modal.close();
+            });
+        }));
     }
 
     createBubbleMenuImage() {

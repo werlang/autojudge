@@ -2,7 +2,7 @@ import Button from './components/button.js';
 import Modal from './components/modal.js';
 import Toast from './components/toast.js';
 import Problem from './model/problem.js';
-import Editor from './components/textEditor.js';
+import Editor from './components/text-editor.js';
 import Uploader from './components/uploader.js';
 
 import '../less/dashboard-single-problem.less';
@@ -407,7 +407,6 @@ export default {
                             return;
                         } 
                         newContent = await this.resyncImageFiles(oldContent, newContent);
-                        console.log(newContent);
                         confirmIcon.disable();
                         cancelIcon.disable();
                         await this.saveChanges(editable.parentNode.id, newContent);
