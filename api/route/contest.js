@@ -25,6 +25,8 @@ router.post('/', auth({'user:exists': true}), async (req, res, next) => {
             name: req.body.name,
             description: req.body.description,
             duration: req.body.duration || config.contest.duration,
+            penalty_time: req.body.penaltyTime,
+            freezing_time: req.body.freezingTime,
             admin: req.user.id,
         }).insert();
         return res.status(201).send({
@@ -33,6 +35,9 @@ router.post('/', auth({'user:exists': true}), async (req, res, next) => {
                 id: contest.id,
                 name: contest.name,
                 description: contest.description,
+                duration: contest.duration,
+                penaltyTime: contest.penalty_time,
+                freezingTime: contest.freezing_time,
             }
         });
     }
@@ -55,6 +60,8 @@ router.get('/', auth({'user:exists': true}), async (req, res, next) => {
                 name: contest.name,
                 description: contest.description,
                 duration: contest.duration,
+                penaltyTime: contest.penalty_time,
+                freezingTime: contest.freezing_time,
                 startTime: contest.start_time,
                 logo: contest.logo,
                 teams: (await teams).length,
@@ -97,6 +104,8 @@ router.get('/:id', auth({
             name: req.contest.name,
             description: req.contest.description,
             duration: req.contest.duration,
+            penaltyTime: req.contest.penalty_time,
+            freezingTime: req.contest.freezing_time,
             startTime: req.contest.start_time,
             logo: req.contest.logo,
             teams,
@@ -119,6 +128,8 @@ router.put('/:id', auth({'contest:admin': true}), async (req, res, next) => {
             name: req.body.name,
             description: req.body.description,
             duration: req.body.duration,
+            penalty_time: req.body.penaltyTime,
+            freezing_time: req.body.freezingTime,
         });
         res.send({
             message: 'Contest updated.',
@@ -126,6 +137,8 @@ router.put('/:id', auth({'contest:admin': true}), async (req, res, next) => {
                 name: req.contest.name,
                 description: req.contest.description,
                 duration: req.contest.duration,
+                penaltyTime: req.contest.penalty_time,
+                freezingTime: req.contest.freezing_time,
             }
         });
     }

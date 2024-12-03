@@ -73,7 +73,7 @@ export default class Submission extends Model {
 
     async updateStatus(response) {
         const status = response.status;
-        const { team, elapsedTime } = await this.isSubmissionEnabled();
+        const { team, contest, elapsedTime } = await this.isSubmissionEnabled();
 
         const data = {
             status,
@@ -82,7 +82,7 @@ export default class Submission extends Model {
         };
         
         if (status !== 'ACCEPTED') {
-            data.score = status == 'PARSING_ERROR' ? 0 : config.contest.penaltyTime * 60 * 1000;
+            data.score = status == 'PARSING_ERROR' ? 0 : contest.penalty_time * 60 * 1000;
             await this.update(data);
             await team.updateScore();
             return this;
