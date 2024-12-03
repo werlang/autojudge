@@ -4,7 +4,6 @@ import auth from '../middleware/auth.js';
 import CustomError from '../helpers/error.js';
 import Team from '../model/team.js';
 import contestProblem from './contestProblem.js';
-import config from '../helpers/config.js';
 import Submission from '../model/submission.js';
 import PDFUtils from '../helpers/pdf.js';
 import fs from 'fs';
@@ -24,7 +23,7 @@ router.post('/', auth({'user:exists': true}), async (req, res, next) => {
         const contest = await new Contest({
             name: req.body.name,
             description: req.body.description,
-            duration: req.body.duration || config.contest.duration,
+            duration: req.body.duration,
             penalty_time: req.body.penaltyTime,
             freezing_time: req.body.freezingTime,
             admin: req.user.id,

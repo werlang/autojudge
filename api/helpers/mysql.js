@@ -1,5 +1,4 @@
 import mysql from 'mysql2/promise';
-import config from './config.js';
 import CustomError from './error.js';
 import mysqldump from 'mysqldump';
 
@@ -7,11 +6,18 @@ export default class Mysql {
         
     static connected = false;
     static connection = null;
+    static config = {
+        host: 'mysql',
+        user: 'root',
+        password: process.env.MYSQL_ROOT_PASSWORD,
+        database: process.env.MYSQL_DATABASE,
+        port: process.env.MYSQL_PORT,
+    }
 
     // this is the connection pool
     static async connect() {
         if (Mysql.connected) return this;
-        Mysql.connection = mysql.createPool(config.mysql);
+        Mysql.connection = mysql.createPool(Mysql.config);
         Mysql.connected = true;
     }
 
@@ -263,7 +269,7 @@ export default class Mysql {
 
     static async dump(path, options={}) {
         return mysqldump({
-            connection: config.mysql.connection,
+            connection: Mysql.config,
             dumpToFile: path,
             ...options,
         });

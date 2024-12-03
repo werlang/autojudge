@@ -1,4 +1,3 @@
-import config from "../helpers/config.js";
 import CustomError from "../helpers/error.js";
 import Contest from "./contest.js";
 import Model from "./model.js";
