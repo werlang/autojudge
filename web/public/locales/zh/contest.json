@@ -101,5 +101,9 @@
         "export-message": "您可以点击下方按钮将已注册的团队导出为<code>.csv</code>文件。",
         "export-button": "导出团队",
         "this-link": "此链接"
-    }
+    },
+    "penalty-time": "罚时",
+    "penalty-time-hint": "每次错误提交后添加到团队总时间的分钟数",
+    "freeze-time": "冻结时间",
+    "freeze-time-hint": "竞赛结束前冻结分数的时间"
 }

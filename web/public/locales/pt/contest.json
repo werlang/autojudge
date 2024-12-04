@@ -101,5 +101,9 @@
         "export-message": "Você pode exportar as equipes cadastradas para um arquivo <code>.csv</code> clicando no botão abaixo.",
         "export-button": "Exportar Equipes",
         "this-link": "este link"
-    }
+    },
+    "penalty-time": "Tempo de Penalidade",
+    "penalty-time-hint": "Tempo em minutos a ser adicionado ao tempo total da equipe para cada submissão incorreta",
+    "freeze-time": "Tempo de Congelamento",
+    "freeze-time-hint": "Tempo antes do fim da competição em que o placar é congelado"
 }

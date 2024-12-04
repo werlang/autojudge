@@ -76,6 +76,10 @@ export default {
     },
 
     add: function() {
+        const defaultDuration = 3;
+        const defaultPenalty = 20;
+        const defaultFreeze = 15;
+
         const content = document.createElement('div');
         content.innerHTML = `
             <h1>${this.translate('contests.add', 'dashboard')}</h1>
@@ -86,10 +90,22 @@ export default {
                     <label id="duration-label">${this.translate('duration', 'common')}</label>
                     <div id="duration-container">
                         <select id="duration-h" name="duration-h" required placeholder="${this.translate('duration', 'common')} (h)">
-                            ${Array.from({ length: 12 }).map((_, i) => `<option value="${i}" ${i == 3 ? 'selected' : ''}>${i} ${this.translate('hours', 'common')}</option>`).join('')}
+                            ${Array.from({ length: 12 }).map((_, i) => `<option value="${i}" ${i == defaultDuration ? 'selected' : ''}>${i} ${this.translate('hours', 'common')}</option>`).join('')}
                         </select>
                         <select id="duration-m" name="duration-m" required placeholder="${this.translate('duration', 'common')} (m)">
                             ${Array.from({ length: 4 }).map((_, i) => `<option value="${i*15}" ${i == 0 ? 'selected' : ''}>${i*15} ${this.translate('minutes', 'common')}</option>`).join('')}
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <div id="penalty-freeze-container">
+                        <label id="penalty-label">${this.translate('penalty-time', 'contest')}<i class="fa-solid fa-info-circle hint" title="${this.translate('penalty-time-hint', 'contest')}"></i></label>
+                        <select id="penalty" name="penaltyTime" required placeholder="${this.translate('duration', 'common')} (h)">
+                            ${Array.from({ length: 13 }).map((_, i) => `<option value="${i*5}" ${i*5 == defaultPenalty ? 'selected' : ''}>${i*5} ${this.translate('minutes', 'common')}</option>`).join('')}
+                        </select>
+                        <label id="freeze-label">${this.translate('freeze-time', 'contest')}<i class="fa-solid fa-info-circle hint" title="${this.translate('freeze-time-hint', 'contest')}"></i></label>
+                        <select id="freeze" name="freezeTime" required placeholder="${this.translate('duration', 'common')} (m)">
+                            ${Array.from({ length: 13 }).map((_, i) => `<option value="${i*5}" ${i*5 == defaultFreeze ? 'selected' : ''}>${i*5} ${this.translate('minutes', 'common')}</option>`).join('')}
                         </select>
                     </div>
                 </div>
@@ -105,7 +121,7 @@ export default {
             data.duration = parseInt(data['duration-h']) * 60 + parseInt(data['duration-m']);
             try {
                 // create problem and redirect to it
-                const { contest } = await new Contest(data).create().catch(() => location.reload());
+                const { contest } = await new Contest(data).create()//.catch(() => location.reload());
                 location.href = `/contests/${contest.id}`;
             }
             catch (error) {

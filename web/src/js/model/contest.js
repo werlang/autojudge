@@ -3,11 +3,13 @@ import Team from "./team.js";
 
 export default class Contest {
     
-    constructor({ id, name, description, duration }) {
+    constructor({ id, name, description, duration, penaltyTime, freezeTime }) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.duration = duration;
+        this.penaltyTime = penaltyTime;
+        this.freezeTime = freezeTime;
     }
 
     static async getAll() {
@@ -32,6 +34,8 @@ export default class Contest {
             name: this.name,
             description: this.description,
             duration: this.duration,
+            penaltyTime: this.penaltyTime,
+            freezeTime: this.freezeTime,
         });
         return contest;
     }

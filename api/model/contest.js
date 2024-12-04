@@ -14,7 +14,7 @@ export default class Contest extends Model {
         admin,
         duration,
         penalty_time,
-        freezing_time,
+        freeze_time,
     }) {
         super('contests', {
             fields: {
@@ -24,11 +24,11 @@ export default class Contest extends Model {
                 admin,
                 duration,
                 penalty_time,
-                freezing_time,
+                freeze_time,
                 start_time: null,
             },
-            allowUpdate: ['name', 'description', 'duration', 'start_time', 'penalty_time', 'freezing_time'],
-            insertFields: ['name', 'description', 'admin', 'duration', 'penalty_time', 'freezing_time'],
+            allowUpdate: ['name', 'description', 'duration', 'start_time', 'penalty_time', 'freeze_time'],
+            insertFields: ['name', 'description', 'admin', 'duration', 'penalty_time', 'freeze_time'],
         });
 
         this.addRelation('problem', 'contest_problems', 'contest', 'problem');

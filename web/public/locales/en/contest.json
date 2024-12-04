@@ -101,5 +101,9 @@
         "export-message": "You can export the registered teams to a <code>.csv</code> file by clicking the button below.",
         "export-button": "Export Teams",
         "this-link": "this link"
-    }
+    },
+    "penalty-time": "Penalty Time",
+    "penalty-time-hint": "Time in minutes to be added to the total time of the team for each wrong submission",
+    "freeze-time": "Freeze Time",
+    "freeze-time-hint": "Time before the end of the contest that scores will be frozen"
 }
