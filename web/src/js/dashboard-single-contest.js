@@ -9,6 +9,7 @@ import Team from "./model/team.js";
 import iro from '@jaames/iro';
 import Uploader from "./components/uploader.js";
 import TemplateVar from "./helpers/template-var.js";
+import Select from "./components/select.js";
 
 import '../less/dashboard-single-contest.less';
 
@@ -33,8 +34,11 @@ export default {
     render: async function() {
         const resp = await this.contestInstance.get(false, true).catch(() => location.href = '/');
         this.contest = resp.contest;
-        // console.log(this.contest);
+        console.log(this.contest);
         
+        const durationH = Math.floor(this.contest.duration / 60);
+        const durationM = parseInt(this.contest.duration) % 60;
+        console.log(durationH, durationM);
         const frame = document.querySelector('#frame');
         frame.innerHTML = `<div id="contest">
             <div id="logo-container">
@@ -42,10 +46,39 @@ export default {
             </div>
             <h1 id="name">${this.contest.name}</h1>
             <p id="description">${this.contest.description}</p>
+            <div id="settings">
+                <label for="duration">${this.translate('duration', 'common')}</label>
+                <div id="duration-container">
+                    <select id="duration-h" name="duration-h">
+                        ${Array.from({ length: 12 }).map((_, i) => `<option value="${i}" ${i == durationH ? 'selected' : ''}>${i} ${this.translate('hours', 'common')}</option>`).join('')}
+                    </select>
+                    <select id="duration-m" name="duration-m">
+                        ${Array.from({ length: 4 }).map((_, i) => `<option value="${i*15}" ${i*15 == durationM ? 'selected' : ''}>${i*15} ${this.translate('minutes', 'common')}</option>`).join('')}
+                    </select>
+                </div>
+                <label id="penalty-label">${this.translate('penalty-time', 'contest')}<i class="fa-solid fa-info-circle hint" title="${this.translate('penalty-time-hint', 'contest')}"></i></label>
+                    <select id="penalty" name="penaltyTime" required placeholder="${this.translate('duration', 'common')} (h)">
+                        ${Array.from({ length: 13 }).map((_, i) => `<option value="${i*5}" ${i*5 == this.contest.penaltyTime ? 'selected' : ''}>${i*5} ${this.translate('minutes', 'common')}</option>`).join('')}
+                    </select>
+                    <label id="freeze-label">${this.translate('freeze-time', 'contest')}<i class="fa-solid fa-info-circle hint" title="${this.translate('freeze-time-hint', 'contest')}"></i></label>
+                    <select id="freeze" name="freezeTime" required placeholder="${this.translate('duration', 'common')} (m)">
+                        ${Array.from({ length: 13 }).map((_, i) => `<option value="${i*5}" ${i*5 == this.contest.freezeTime ? 'selected' : ''}>${i*5} ${this.translate('minutes', 'common')}</option>`).join('')}
+                    </select>
+            </div>
             <div id="problems"></div>
             <div id="teams"></div>
             <div id="start-contest"></div>
         </div>`;
+
+        const durationHDOM = new Select(frame.querySelector('#duration-h'));
+        const durationMDOM = new Select(frame.querySelector('#duration-m'));
+        
+        [durationHDOM, durationMDOM].forEach(e => e.change(() => {
+            const duration = parseInt(durationHDOM.value) * 60 + parseInt(durationMDOM.value);
+            this.saveChanges('duration', duration);
+        }))
+        new Select(frame.querySelector('#penalty')).change((e, value) => this.saveChanges('penaltyTime', value));
+        new Select(frame.querySelector('#freeze')).change((e, value) => this.saveChanges('freezeTime', value));
 
         this.startButton = new Button({ id: 'start-contest', text: this.translate('start-contest.title', 'contest'), customClass: 'default' }).click(() => this.startContest());
 
