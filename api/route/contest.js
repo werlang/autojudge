@@ -23,9 +23,9 @@ router.post('/', auth({'user:exists': true}), async (req, res, next) => {
         const contest = await new Contest({
             name: req.body.name,
             description: req.body.description,
-            duration: req.body.duration,
-            penalty_time: req.body.penaltyTime,
-            freeze_time: req.body.freezeTime,
+            duration: req.body.duration || 180,
+            penalty_time: req.body.penaltyTime || 20,
+            freeze_time: req.body.freezeTime || 15,
             admin: req.user.id,
         }).insert();
         return res.status(201).send({
@@ -86,8 +86,7 @@ router.get('/:id', auth({
         }
         
         const teams = await req.contest.getTeams();
-        const contest = new Contest({ id: req.contest.id });
-        let problems = await contest.getProblems();
+        let problems = await req.contest.getProblems();
         problems = await Promise.all(problems.map(async problem => {
             return {
                 id: problem.id,
@@ -105,6 +104,9 @@ router.get('/:id', auth({
             duration: req.contest.duration,
             penaltyTime: req.contest.penalty_time,
             freezeTime: req.contest.freeze_time,
+            remainingTime: req.contest.getRemainingTime() > 0 ? req.contest.getRemainingTime() : 0,
+            frozenScoreboard: req.contest.isFrozen() && !req.contest.is_unlocked,
+            finalScoreboard: req.contest.is_unlocked ? true : false,
             startTime: req.contest.start_time,
             logo: req.contest.logo,
             teams,
@@ -286,6 +288,17 @@ router.post('/:id/pdf', auth({'contest:admin': true}), async (req, res, next) =>
         const normalize = text => text.toLowerCase().replace(/\s/, '-').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
         res.setHeader('Content-Disposition', `attachment; filename="${normalize(contest.name)}.pdf"`);
         res.send(buffer);
+    }
+    catch (error) {
+        next(error);
+    }
+});
+
+// unlock a contest
+router.put('/:id/unlock', auth({'contest:admin': true}), async (req, res, next) => {
+    try {
+        await req.contest.unlock();
+        res.send({ message: 'Contest unlocked.' });
     }
     catch (error) {
         next(error);

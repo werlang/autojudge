@@ -34,11 +34,10 @@ export default {
     render: async function() {
         const resp = await this.contestInstance.get(false, true).catch(() => location.href = '/');
         this.contest = resp.contest;
-        console.log(this.contest);
+        // console.log(this.contest);
         
         const durationH = Math.floor(this.contest.duration / 60);
         const durationM = parseInt(this.contest.duration) % 60;
-        console.log(durationH, durationM);
         const frame = document.querySelector('#frame');
         frame.innerHTML = `<div id="contest">
             <div id="logo-container">
@@ -110,6 +109,9 @@ export default {
 
         // start contest button
         this.startButton.disable(false);
+        if (!this.contest.startTime && this.contest.problems.length > 0 && this.contest.teams.length > 0) {
+            this.startButton.enable();
+        }
         frame.querySelector('#start-contest').appendChild(this.startButton.get());
     },
 

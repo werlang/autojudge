@@ -10,3 +10,4 @@ api/upload
 .env
 .DS_Store
 config.js
+*.sql

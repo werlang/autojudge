@@ -26,8 +26,9 @@ export default class Contest extends Model {
                 penalty_time,
                 freeze_time,
                 start_time: null,
+                is_unlocked: null,
             },
-            allowUpdate: ['name', 'description', 'duration', 'start_time', 'penalty_time', 'freeze_time'],
+            allowUpdate: ['name', 'description', 'duration', 'start_time', 'penalty_time', 'freeze_time', 'is_unlocked'],
             insertFields: ['name', 'description', 'admin', 'duration', 'penalty_time', 'freeze_time'],
         });
 
@@ -113,14 +114,30 @@ export default class Contest extends Model {
         return targetTime - startTime;
     }
 
+    isFrozen(targetTime) {
+        const remainingTime = this.getRemainingTime(targetTime);
+        return remainingTime <= this.freeze_time * 60 * 1000;
+    }
+
     isRunning() {
         return this.isStarted() && this.getRemainingTime() > 0;
     }
 
     async getTeams() {
+        const locked = this.isFrozen() && !this.is_unlocked;
+
         let teams = await Team.getAll({ contest: this.id, is_active: 1 });
         return await Promise.all(teams.map(async team => {
-            let solvedProblems = (await Submission.getAll({ team: team.id, status: 'ACCEPTED' })).map(s => s.problem);
+            let solvedProblems = (await Submission.getAll({
+                team: team.id,
+                status: 'ACCEPTED',
+            }));
+            solvedProblems = solvedProblems.filter(s => {
+                const toTime = locked ? new Date(this.start_time).getTime() + (this.duration - this.freeze_time) * 60 * 1000 : Date.now();
+                return new Date(s.submitted_at).getTime() <= toTime;
+            });
+            solvedProblems = solvedProblems.map(s => s.problem);
+            // Remove duplicates
             solvedProblems = solvedProblems.reduce((p,c) => p.includes(c) ? p : [...p, c], []);
 
             return {
@@ -130,5 +147,15 @@ export default class Contest extends Model {
                 solvedProblems,
             }
         }));
+    }
+
+    async unlock() {
+        if (!this.isStarted()) {
+            throw new CustomError(403, 'Contest has not started yet');
+        }
+        if (this.getRemainingTime() > 0) {
+            throw new CustomError(403, 'Contest is still running');
+        }
+        return this.update({ is_unlocked: 1 });
     }
 }
