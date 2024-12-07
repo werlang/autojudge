@@ -21,6 +21,7 @@ export default {
             <div id="time-left"></div>
             <div id="dashboard-cards"></div>
             <button id="reset-contest" class="default">${this.translate('dashboard.reset-contest', 'contest')}</button>
+            <button id="unlock-contest" class="default">${this.translate('dashboard.unlock-contest', 'contest')}</button>
         `;
 
         createClock(document.querySelector('#time-left'), {
@@ -100,6 +101,34 @@ export default {
                     close: true,
                 });
             },
-        })
+        });
+
+        const unlockButton = new Button({
+            element: frame.querySelector('#unlock-contest'),
+            callback: () => {
+                new Modal(`
+                    <h1>${this.translate('dashboard.unlock-contest', 'contest')}</h1>
+                    <p>${this.translate('dashboard.unlock-contest-message', 'contest')}</p>
+                `)
+                .addButton({
+                    text: this.translate('yes', 'common'),
+                    callback: async (e, modal) => {
+                        modal.close();
+                        unlockButton.disable();
+                        await new Contest({ id: this.contest.id }).unlock();
+                        unlockButton.enable();
+                        location.href = `/contests/${this.contest.id}`;
+                    },
+                    isDefault: false,
+                })
+                .addButton({
+                    text: this.translate('no', 'common'),
+                    close: true,
+                });
+            },
+        });
+        if (!this.contest.frozenScoreboard) {
+            unlockButton.disable(false);
+        }
     },
 }

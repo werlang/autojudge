@@ -69,7 +69,9 @@
         },
         "teams": "本次竞赛的团队总数",
         "reset-contest": "重置竞赛",
-        "reset-contest-message": "您确定要重置竞赛吗？此操作不可逆，将删除竞赛的所有提交。"
+        "reset-contest-message": "您确定要重置竞赛吗？此操作不可逆，将删除竞赛的所有提交。",
+        "unlock-contest": "解锁竞赛排行榜",
+        "unlock-contest-message": "您确定要解锁竞赛排行榜吗？这将允许团队查看最终的排行榜和他们的提交记录。"
     },
     "judge": {
         "title": "评判提交",
@@ -84,7 +86,7 @@
         "title": "选择颜色",
         "message": "为问题选择颜色",
         "submit": "保存",
-        "success": "问题颜色更新成功。"
+        "success": "问题颜色更新��功。"
     },
     "import-teams": {
         "title": "导入团队",
@@ -93,7 +95,7 @@
         "sample": "文本",
         "placeholder": "拖放或点击",
         "error": "导入团队名称时出错。",
-        "error-header": "文件头格���不正确。",
+        "error-header": "文件头格式不正确。",
         "error-columns": "文件第{{line}}行列数不正确。",
         "success-message": "以下团队已成功导入：",
         "login-message": "要登录，团队成员必须访问{{url}}并提供团队ID和密码。",

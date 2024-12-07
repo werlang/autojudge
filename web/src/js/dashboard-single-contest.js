@@ -56,13 +56,13 @@ export default {
                     </select>
                 </div>
                 <label id="penalty-label">${this.translate('penalty-time', 'contest')}<i class="fa-solid fa-info-circle hint" title="${this.translate('penalty-time-hint', 'contest')}"></i></label>
-                    <select id="penalty" name="penaltyTime" required placeholder="${this.translate('duration', 'common')} (h)">
-                        ${Array.from({ length: 13 }).map((_, i) => `<option value="${i*5}" ${i*5 == this.contest.penaltyTime ? 'selected' : ''}>${i*5} ${this.translate('minutes', 'common')}</option>`).join('')}
-                    </select>
-                    <label id="freeze-label">${this.translate('freeze-time', 'contest')}<i class="fa-solid fa-info-circle hint" title="${this.translate('freeze-time-hint', 'contest')}"></i></label>
-                    <select id="freeze" name="freezeTime" required placeholder="${this.translate('duration', 'common')} (m)">
-                        ${Array.from({ length: 13 }).map((_, i) => `<option value="${i*5}" ${i*5 == this.contest.freezeTime ? 'selected' : ''}>${i*5} ${this.translate('minutes', 'common')}</option>`).join('')}
-                    </select>
+                <select id="penalty" name="penaltyTime" required placeholder="${this.translate('duration', 'common')} (h)">
+                    ${Array.from({ length: 13 }).map((_, i) => `<option value="${i*5}" ${i*5 == this.contest.penaltyTime ? 'selected' : ''}>${i*5} ${this.translate('minutes', 'common')}</option>`).join('')}
+                </select>
+                <label id="freeze-label">${this.translate('freeze-time', 'contest')}<i class="fa-solid fa-info-circle hint" title="${this.translate('freeze-time-hint', 'contest')}"></i></label>
+                <select id="freeze" name="freezeTime" required placeholder="${this.translate('duration', 'common')} (m)">
+                    ${Array.from({ length: 13 }).map((_, i) => `<option value="${i*5}" ${i*5 == this.contest.freezeTime ? 'selected' : ''}>${i*5} ${this.translate('minutes', 'common')}</option>`).join('')}
+                </select>
             </div>
             <div id="problems"></div>
             <div id="teams"></div>

@@ -86,6 +86,11 @@ export default class Contest {
         return resp;
     }
 
+    async unlock() {
+        const resp = await new Api().put(`contests/${this.id}/unlock`);
+        return resp;
+    }
+
     async getSubmissions() {
         const submissions = await new Api().get(`contests/${this.id}/submissions`);
         return submissions;
