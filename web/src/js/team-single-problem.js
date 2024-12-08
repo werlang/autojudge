@@ -90,6 +90,7 @@ export default {
                 // console.log(response);
                 form.clear();
                 uploader.reset();
+                window.open(`/teams`);
             }
             catch (error) {
                 new Toast(this.translate(error.message, 'api'), { type: 'error' });

@@ -65,8 +65,7 @@ export default {
 
         table.clear();
         this.contest.teams.map(team => {
-            const colors = this.contest.problems.filter(p => team.solvedProblems.includes(p.id)).map(p => p.color);
-            const colorBadges = colors.map(color => `<div class="color" style="--color-problem: ${color}"></div>`);
+            const colorBadges = this.contest.problems.filter(p => team.solvedProblems.includes(p.id)).map(p => `<div class="color" style="--color-problem: ${p.color}" title="${p.title}"></div>`);
 
             if (this.contest.frozenScoreboard) {
                 colorBadges.push(`<div class="color">?</div>`);
