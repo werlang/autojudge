@@ -3,6 +3,7 @@ import Card from './components/card.js';
 import createClock from './components/contest-clock.js';
 import Modal from './components/modal.js';
 import Contest from './model/contest.js';
+import Toast from './components/toast.js';
 
 import '../less/contest-dashboard.less';
 
@@ -116,8 +117,8 @@ export default {
                         modal.close();
                         unlockButton.disable();
                         await new Contest({ id: this.contest.id }).unlock();
-                        unlockButton.enable();
-                        location.href = `/contests/${this.contest.id}`;
+                        unlockButton.disable(false);
+                        new Toast(this.translate('dashboard.unlock-contest-success', 'contest'), { type: 'success' });
                     },
                     isDefault: false,
                 })

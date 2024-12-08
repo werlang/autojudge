@@ -54,10 +54,23 @@ export default {
         });
         // console.log(this.contest);
 
+        const h2 = document.querySelector('#teams-container h2');
+        if (this.contest.frozenScoreboard) {
+            // change h2
+            h2.innerHTML = `<h2>${this.translate('teams_other', 'common')}${this.contest && this.contest.frozenScoreboard ? ` (${this.translate('frozen', 'common')})` : ''}</h2>`;
+        }
+        else {
+            h2.innerHTML = `<h2>${this.translate('teams_other', 'common')}</h2>`;
+        }
+
         table.clear();
         this.contest.teams.map(team => {
             const colors = this.contest.problems.filter(p => team.solvedProblems.includes(p.id)).map(p => p.color);
             const colorBadges = colors.map(color => `<div class="color" style="--color-problem: ${color}"></div>`);
+
+            if (this.contest.frozenScoreboard) {
+                colorBadges.push(`<div class="color">?</div>`);
+            }
 
             return {
                 name: team.name,

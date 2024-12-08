@@ -71,7 +71,8 @@
         "reset-contest": "Redefinir Competição",
         "reset-contest-message": "Tem certeza que deseja redefinir a competição? Esta ação é irreversível e apagará todas as submissões da competição.",
         "unlock-contest": "Desbloquear Placar da Competição",
-        "unlock-contest-message": "Tem certeza de que deseja desbloquear o placar da competição? Isso permitirá que as equipes vejam o placar final e suas submissões."
+        "unlock-contest-message": "Tem certeza de que deseja desbloquear o placar da competição? Isso permitirá que as equipes vejam o placar final e suas submissões.",
+        "unlock-contest-success": "Placar da competição desbloqueado com sucesso."
     },
     "judge": {
         "title": "Julgar Submissão",

@@ -61,9 +61,13 @@ export default class Button {
 
     // disable the button and show a loading icon
     disable(spin = true) {
-        if (this.isDisabled) return this;
         this.element.setAttribute('disabled', true);
-        this.oldHTML = this.element.innerHTML;
+        if (!this.isDisabled) {
+            this.oldHTML = this.element.innerHTML;
+        }
+        if (this.isDisabled && !spin) {
+            this.element.innerHTML = this.oldHTML;
+        }
         if (spin) {
             this.element.innerHTML = '<i class="fa-solid fa-spinner fa-spin-pulse"></i>';
         }

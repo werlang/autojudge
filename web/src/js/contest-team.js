@@ -22,7 +22,7 @@ export default {
     showTeams: async function() {
         const frame = document.querySelector('#frame');
         frame.innerHTML += `<div id="teams-container">
-            <h2>${this.translate('teams_other', 'common')}</h2>
+            <h2>${this.translate('teams_other', 'common')}${this.contest && this.contest.frozenScoreboard ? ` (${this.translate('frozen', 'common')})` : ''}</h2>
         </div>`;
 
         const teamsDOM = frame.querySelector('#teams-container');
@@ -67,6 +67,10 @@ export default {
         this.contest.teams.map(team => {
             const colors = this.contest.problems.filter(p => team.solvedProblems.includes(p.id)).map(p => p.color);
             const colorBadges = colors.map(color => `<div class="color" style="--color-problem: ${color}"></div>`);
+
+            if (this.contest.frozenScoreboard) {
+                colorBadges.push(`<div class="color">?</div>`);
+            }
 
             return {
                 id: team.id,

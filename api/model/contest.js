@@ -153,8 +153,8 @@ export default class Contest extends Model {
         if (!this.isStarted()) {
             throw new CustomError(403, 'Contest has not started yet');
         }
-        if (this.getRemainingTime() > 0) {
-            throw new CustomError(403, 'Contest is still running');
+        if (!this.isFrozen()) {
+            throw new CustomError(403, 'Contest is not frozen');
         }
         return this.update({ is_unlocked: 1 });
     }

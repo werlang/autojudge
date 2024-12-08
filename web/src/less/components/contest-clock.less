@@ -15,6 +15,12 @@
         border-radius: 5px;
         background-color: rgba(var(--color-background-dark-raw), 0.5);
         box-shadow: 0 0 5px rgba(var(--color-main-raw), 0.5);
+        transition: all 0.5s;
+
+        &.frozen {
+            background-color: rgba(var(--color-main-raw), 0.5);
+            color: white;
+        }
 
         span {
             padding: 0px 5px;

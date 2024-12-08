@@ -71,7 +71,8 @@
         "reset-contest": "Reset Contest",
         "reset-contest-message": "Are you sure you want to reset the contest? This action is irreversible and will delete all submissions from the contest.",
         "unlock-contest": "Unlock Contest Leaderboard",
-        "unlock-contest-message": "Are you sure you want to unlock the contest leaderboard? This will allow teams to see the final leaderboard and their submission records."
+        "unlock-contest-message": "Are you sure you want to unlock the contest leaderboard? This will allow teams to see the final leaderboard and their submission records.",
+        "unlock-contest-success": "Contest leaderboard unlocked successfully."
     },
     "judge": {
         "title": "Judge Submission",
