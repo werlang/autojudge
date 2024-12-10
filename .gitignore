@@ -7,6 +7,7 @@ web/public/assets/fonts
 nginx/*
 api/runs/*
 api/upload
+api/**/coverage
 .env
 .DS_Store
 config.js
