@@ -19,6 +19,13 @@ export default class Mysql {
         if (Mysql.connected) return this;
         Mysql.connection = mysql.createPool(Mysql.config);
         Mysql.connected = true;
+        return this;
+    }
+
+    static async close() {
+        if (!Mysql.connected) return this;
+        Mysql.connection.end();
+        Mysql.connected = false;
     }
 
     // this is a wrapper for mysql2's query function
@@ -31,8 +38,9 @@ export default class Mysql {
         // console.log(raw);
         // console.log(Mysql.format(sql, data));
         try {
-            const [data] = await Mysql.connection.execute(raw.sql, raw.data);
-            return data;
+            const result = await Mysql.connection.execute(raw.sql.trim(), raw.data);
+            if (result) return result[0];
+            return result;
         }
         catch (error) {
             throw new CustomError(500, error.message, error);
@@ -72,6 +80,9 @@ export default class Mysql {
                     values[i] = v.dec;
                     return `\`${k}\` = ${k} - ?`;
                 }
+                else {
+                    throw new CustomError(400, 'Invalid update operation.');
+                }
             }
 
             return `\`${k}\` = ?`;
@@ -109,14 +120,14 @@ export default class Mysql {
             data.push(clause);
         }
         
-        return this.query(sql, data);
+        return Mysql.query(sql, data);
     }
 
     static getWhereStatements(filter) {
-        let values = Object.values(filter);
+        let values = [];
 
         const statement = Object.entries(filter).map(([k,v],i) => {
-            // email = null
+            // email: null
             if (v === null) return `\`${k}\` IS NULL`;
 
             if (Array.isArray(v)){
@@ -124,7 +135,7 @@ export default class Mysql {
                 if (v.length === 0) return '1=0';
                 
                 // add all values to the values array
-                values.splice(i, 1, ...v);
+                values.push(...v);
                 return `\`${k}\` IN (${v.map(() => '?').join(',')})`;
             }
             else if (typeof v === 'object'){
@@ -133,39 +144,40 @@ export default class Mysql {
                     if (!Array.isArray(v.in) || v.in.length === 0) return '1=0';
                     
                     // add all values to the values array
-                    values.splice(i, 1, ...v.in);
+                    values.push(...v.in);
                     return `\`${k}\` IN (${v.in.map(() => '?').join(',')})`;
                 }
 
                 // age: { between: [18, 20] }
                 if (Object.keys(v)[0] === 'between'){
                     // add 2 values to the values array
-                    values.splice(i, 1, v.between[0], v.between[1]);
+                    values.push(v.between[0], v.between[1]);
                     return `\`${k}\` BETWEEN ? AND ?`;
                 }
 
                 // name: { like: '%John%' }
                 if (Object.keys(v)[0] === 'like'){
                     // replace the value with the like value
-                    values[i] = `%${v.like}%`;
+                    values.push(`%${v.like}%`);
                     return `\`${k}\` LIKE ?`;
                 }
 
                 // name: { not: 'John' }
                 if (Object.keys(v)[0] === 'not'){
-                    values[i] = v.not;
                     // name: { not: null }
                     if (v.not === null) return `\`${k}\` IS NOT NULL`;
+                    values.push(v.not);
                     return `\`${k}\` != ?`;
                 }
 
                 // age: { '>=': 18 }
                 const e = Object.keys(v)[0];
-                values[i] = Object.values(v)[0];
+                values.push(Object.values(v)[0]);
                 return `\`${k}\` ${e} ?`;
             }
 
             // name: 'John'
+            values.push(v);
             return `\`${k}\` = ?`;
         }).join(' AND ');
 
@@ -173,7 +185,7 @@ export default class Mysql {
     }
 
     // db.find('users', { filter: { name: 'John' }, view: ['name', 'age'], opt: { limit: 1, sort: { age: -1 }, skip: 1 } });
-    static async find(table, { filter={}, view=[], opt={}}) {
+    static async find(table, { filter={}, view=[], opt={}} = {}) {
         view = Array.isArray(view) ? view : [ view ];
         view = view.length > 0 ? view.map(v => `\`${v}\``).join(',') : '*';
 
@@ -225,7 +237,7 @@ export default class Mysql {
                 });
             }
             catch(error) {
-                console.log(data)
+                // console.log(data)
             }
     
             sql = join;

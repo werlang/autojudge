@@ -31,6 +31,7 @@ export default class Model {
     #allowUpdate = [];
     #insertFields = [];
     #tableName = '';
+    relations = [];
 
     constructor(tableName, { fields, allowUpdate, insertFields }) {
         this.#tableName = tableName;
@@ -66,10 +67,6 @@ export default class Model {
             filter: { [field]: this[field], ...additionalFilters },
         });
 
-        if (item.length === 0) {
-            throw new CustomError(404, `${this.constructor.name} not found`);
-        }
-
         item = item[0];
         for (const key of Object.keys(item)) {
             this[key] = item[key];
@@ -98,9 +95,6 @@ export default class Model {
     }
 
     addRelation(relationName, tableName, nativeField, relatedField) {
-        if (!this.relations) {
-            this.relations = [];
-        }
         this.relations[relationName] = new Relation(tableName, { [nativeField]: this.id }, relatedField);
     }
 
