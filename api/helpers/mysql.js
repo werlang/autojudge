@@ -50,6 +50,9 @@ export default class Mysql {
     // db.insert('users', { name: 'John', age: 25 });
     // db.insert('users', [{ name: 'John', age: 25 }, { name: 'Jane', age: 22 }]);
     static async insert(table, data) {
+        if (!data) {
+            throw new CustomError(400, 'Invalid data for insert operation.');
+        }
         if (!Array.isArray(data)) data = [ data ];
 
         return Promise.all(data.map(row => {
@@ -62,6 +65,9 @@ export default class Mysql {
 
     // db.update('users', { name: 'John', age: 11 }, id);
     static async update(table, data, id) {
+        if (!id) {
+            throw new CustomError(400, 'No identifier provided for update.');
+        }
         if (!Object.keys(data).length) {
             throw new CustomError(400, 'No data to update.');
         }
@@ -104,6 +110,10 @@ export default class Mysql {
     }
 
     static async delete(table, clause, opt={}) {
+        if (!clause) {
+            throw new CustomError(400, 'Invalid clause for delete operation.');
+        }
+
         const limit = opt.limit ? `LIMIT ${ opt.limit }` : '';
 
         let sql = '';
@@ -189,6 +199,11 @@ export default class Mysql {
         view = Array.isArray(view) ? view : [ view ];
         view = view.length > 0 ? view.map(v => `\`${v}\``).join(',') : '*';
 
+        // filter not an object
+        if (typeof filter !== 'object') {
+            throw new CustomError(400, 'Invalid filter for find operation.');
+        }
+
         const filterNames = Object.keys(filter);
         let values = Object.values(filter);
         // WHERE name = ? AND age >= ?
@@ -248,6 +263,9 @@ export default class Mysql {
     }
 
     static format(sql, data) {
+        if (!Mysql.connection) {
+            throw new CustomError(500, 'Database not connected.');
+        }
         return Mysql.connection.format(sql, data);
     }
 

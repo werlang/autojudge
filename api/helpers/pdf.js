@@ -9,20 +9,21 @@ export default class PDFUtils {
             this[key] = args[key];
         }
 
+        if (!this.problem || !this.problem.description) {
+            throw new Error('Problem description is required.');
+        }
+
+        if (!this.args) this.args = {};
+
         // replace problem description math tags with rendered math
-        this.problem.description = this.problem.description.replace(/\$(.*?)\$/gm, (_, match) => {
-            try {
-                return katex.renderToString(match, { throwOnError: false });
-            }
-            catch (error) {
-                console.error(error);
-                return match;
-            }
-        });
+        this.problem.description = this.problem.description.replace(/\$(.*?)\$/gm, (_, match) => katex.renderToString(match, { throwOnError: false }));
     }
 
     // method to merge pdfs from buffers
     static async merge(pdfs) {
+        if (!pdfs || !pdfs.length) {
+            throw new Error('No PDFs to merge');
+        }
         return PDFEngines.merge({
             files: [...pdfs],
             pdfUA: true,
@@ -81,15 +82,15 @@ export default class PDFUtils {
     }
 
     async replaceText(text) {
-        let template = text.replace(/{{problem.title}}/g, this.problem.title);
-        template = template.replace(/{{problem.description}}/g, this.problem.description);
-        template = template.replace(/{{problem.hash}}/g, this.problem.hash.slice(-process.env.HASH_LENGTH));
+        let template = text.replace(/{{problem.title}}/g, this.problem.title || '');
+        template = template.replace(/{{problem.description}}/g, this.problem.description || '');
+        template = template.replace(/{{problem.hash}}/g, process.env.HASH_LENGTH === 'null' ? '' : this.problem.hash?.slice(-process.env.HASH_LENGTH)) || '';
         template = template.replace(/{{logo-autojudge}}/g, `http://web:3000/assets/img/autojudge.webp`);
-        template = template.replace(/{{production-domain}}/g, process.env.PRODUCTION_DOMAIN);
+        template = template.replace(/{{production-domain}}/g, process.env.PRODUCTION_DOMAIN === 'null' ? '' : process.env.PRODUCTION_DOMAIN);
 
         // generate the table with the input and output
-        const inputList = JSON.parse(this.problem.input_public);
-        const outputList = JSON.parse(this.problem.output_public);
+        const inputList = JSON.parse(this.problem.input_public || '[]');
+        const outputList = JSON.parse(this.problem.output_public || '[]');
         const rows = inputList.map((input, i) => `<tr>
             <td>${input}</td>
             <td>${outputList[i]}</td>
@@ -98,7 +99,7 @@ export default class PDFUtils {
     
         // replace the body args
         for (const key in this.args) {
-            template = template.replace(new RegExp(`{{${key}}}`, 'g'), this.args[key]);
+            template = template.replace(new RegExp(`{{${key}}}`, 'g'), this.args[key] || '');
         }
 
         if (!this.args['custom-logo']) {
@@ -114,10 +115,15 @@ export default class PDFUtils {
     async getReplacedBuffer(path, problem, args) {
         this.problem = problem || this.problem;
         this.args = args || this.args;
-        const file = fs.readFileSync(path, 'utf8');
-        const replacedFile = await this.replaceText(file);
-        const transformedBuffer = Buffer.from(replacedFile);
-        return transformedBuffer;
+        try {
+            const file = fs.readFileSync(path, 'utf8');
+            const replacedFile = await this.replaceText(file);
+            const transformedBuffer = Buffer.from(replacedFile);
+            return transformedBuffer;
+        } catch (err) {
+            console.error(`Error reading file at ${path}:`, err);
+            throw new Error('File not found');
+        }
     }
 
     async create() {
