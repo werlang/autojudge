@@ -40,7 +40,7 @@ export default class PDFUtils {
             return `data:${mimeType};base64,${base64}`;
         }
         catch (err) {
-            console.log(err);
+            // console.log(err);
             // placeholder image if the image cannot be loaded
             return `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdjOHPmzH8ACDADZKt3GNsAAAAASUVORK5CYII=`;
         }
@@ -69,7 +69,7 @@ export default class PDFUtils {
                 const base64Data = await this.convertImageToBase64(img.src);
                 return { match: img.match, replacement: img.match.replace(img.src, base64Data) };
             } catch (err) {
-                console.log(err);
+                // console.log(err);
                 return { match: img.match, replacement: img.match.replace(img.src, '') };
             }
         }));
@@ -121,7 +121,7 @@ export default class PDFUtils {
             const transformedBuffer = Buffer.from(replacedFile);
             return transformedBuffer;
         } catch (err) {
-            console.error(`Error reading file at ${path}:`, err);
+            // console.error(`Error reading file at ${path}:`, err);
             throw new Error('File not found');
         }
     }

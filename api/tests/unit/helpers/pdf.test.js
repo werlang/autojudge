@@ -23,6 +23,7 @@ describe('PDFUtils Class', () => {
     beforeAll(() => {
         katex.renderToString.mockImplementation(text => `<span>${text}</span>`);
         jest.spyOn(global, 'fetch');
+        jest.spyOn(fs, 'readFileSync');
     });
 
     beforeEach(() => {
@@ -216,7 +217,7 @@ describe('PDFUtils Class', () => {
         });
 
         test('should throw error when file does not exist', async () => {
-            fs.readFileSync.mockImplementation(() => { throw new Error('ENOENT: no such file or directory') });
+            fs.readFileSync.mockImplementation(() => { throw new Error('File not found') });
             await expect(pdfUtils.getReplacedBuffer('nonexistent/path')).rejects.toThrow('File not found');
         });
 

@@ -1,11 +1,18 @@
 export default class Request {
-    constructor({ url, headers }) {
+    constructor({ url, headers, timeout = 5000 }) {
         this.url = url;
         this.headers = new Headers(headers || {});
+        this.timeout = timeout;
     }
 
     setHeader(key, value) {
         this.headers.set(key, value);
+    }
+
+    setHeaders(headers) {
+        for (const [key, value] of Object.entries(headers)) {
+            this.headers.set(key, value);
+        }
     }
 
     async get(endpoint, args) {
@@ -16,7 +23,7 @@ export default class Request {
         return this.request('POST', endpoint, args);
     }
 
-    async request(method, endpoint, data={}) {
+    async request(method, endpoint, data = {}) {
         const options = {
             method,
             headers: this.headers,
@@ -31,16 +38,25 @@ export default class Request {
             endpoint += '?' + queryString;
         }
 
-        const request = await fetch(`${this.url}/${endpoint}`, options);
+        options.signal = AbortSignal.timeout(this.timeout);
 
-        const text = await request.text();
         try {
-            return JSON.parse(text);
-        }
-        catch (e) {
-            console.error(e);
-            return text;
+            const response = await fetch(`${this.url}/${endpoint}`, options);
+
+            if (!response.ok) {
+                const text = await response.text();
+                throw new Error(text);
+            }
+
+            const text = await response.text();
+            try {
+                return JSON.parse(text);
+            } catch (e) {
+                return text;
+            }
+        } catch (error) {
+            // console.error('Request failed', error);
+            throw error;
         }
     }
-
 }
