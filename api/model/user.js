@@ -27,6 +27,14 @@ export default class User extends Model {
         });
     }
 
+    async insert() {
+        if (!this.email || !this.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+            throw new Error('Invalid email');
+        }
+
+        return super.insert();
+    }
+
     async updatePassword(password) {
         return this.update({ password: await bcrypt.hash(password, 10) });
     }
