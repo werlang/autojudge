@@ -212,17 +212,18 @@ async function isTeamMember(req, context, id) {
     if (context === 'id') {
         return req.team;
     }
-    else if (context === 'contest') {
-        const teams = await Team.getAll({ contest: id });
-        for (const team of teams) {
-            if (req.team.id === team.id) {
-                req.team = team;
-                return team;
-            }
-        };
-    }
 
-    throw new CustomError(401, 'Invalid token.');
+    // context === 'contest'
+    const teams = await Team.getAll({ contest: id });
+    for (const team of teams) {
+        if (req.team.id === team.id) {
+            req.team = team;
+            return team;
+        }
+    };
+
+    req.team = null;
+    throw new CustomError(403, 'You are not allowed to access this resource.');
 }
 
 async function isContestAdmin(contestId, req) {
@@ -316,7 +317,8 @@ function auth(modes = {}) {
             try {
                 await authTeam(req);
                 const contest = await new Contest({ id: req.team.contest }).get();
-                if (!contest.isRunning()) {
+                const running = contest.isRunning();
+                if (!running) {
                     throw new CustomError(403, 'The contest is not running');
                 }
                 anyPassed = true;
