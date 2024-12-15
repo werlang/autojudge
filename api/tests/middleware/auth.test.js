@@ -1,12 +1,12 @@
-import auth from '../../../middleware/auth.js';
-import CustomError from '../../../helpers/error.js';
-import User from '../../../model/user.js';
-import Team from '../../../model/team.js';
-import Contest from '../../../model/contest.js';
+import auth from '../../middleware/auth.js';
+import CustomError from '../../helpers/error.js';
+import User from '../../model/user.js';
+import Team from '../../model/team.js';
+import Contest from '../../model/contest.js';
 import { OAuth2Client } from 'google-auth-library';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-import Submission from '../../../model/submission.js';
+import Submission from '../../model/submission.js';
 
 jest.mock('../../../model/user.js');
 jest.mock('../../../model/team.js');
