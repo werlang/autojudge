@@ -1,7 +1,7 @@
-import Submission from '../../model/submission.js';
-import Team from '../../model/team.js';
-import Contest from '../../model/contest.js';
-import Db from '../../helpers/mysql.js';
+import Submission from '../../../model/submission.js';
+import Team from '../../../model/team.js';
+import Contest from '../../../model/contest.js';
+import Db from '../../../helpers/mysql.js';
 
 jest.mock('../../../helpers/mysql.js');
 jest.mock('../../../model/team.js');

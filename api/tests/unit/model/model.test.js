@@ -1,5 +1,5 @@
-import Model from '../../model/model.js';
-import Db from '../../helpers/mysql.js';
+import Model from '../../../model/model.js';
+import Db from '../../../helpers/mysql.js';
 
 jest.mock('../../../helpers/mysql.js');
 
