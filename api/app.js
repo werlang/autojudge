@@ -9,8 +9,6 @@ import problems from './route/problem.js';
 import submissions from './route/submission.js';
 import judge from './route/judge.js';
 
-const port = 3000;
-const host = '0.0.0.0';
 const app = express();
 
 app.use(express.urlencoded({ extended: true, limit: '1024kb'}));
@@ -33,7 +31,4 @@ app.use((req, res) => {
     res.status(404).send({ message: 'I am sorry, but I think you are lost.' });
 });
 
-app.listen(port, host, () => {
-    console.log(`Web Server running at http://${host}:${port}/`);
-});
-
+export default app;
