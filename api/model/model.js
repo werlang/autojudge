@@ -67,6 +67,10 @@ export default class Model {
             filter: { [field]: this[field], ...additionalFilters },
         });
 
+        if (!item.length) {
+            throw new CustomError(404, 'Item not found');
+        }
+
         item = item[0];
         for (const key of Object.keys(item)) {
             this[key] = item[key];

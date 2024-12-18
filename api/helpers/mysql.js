@@ -15,9 +15,14 @@ export default class Mysql {
     }
 
     // this is the connection pool
-    static async connect() {
+    static async connect(config = {}) {
         if (Mysql.connected) return this;
-        Mysql.connection = mysql.createPool(Mysql.config);
+
+        if (process.env.NODE_ENV == 'test') {
+            Mysql.config.database += '_test';
+        }
+
+        Mysql.connection = mysql.createPool({ ...config, ...Mysql.config });
         Mysql.connected = true;
         return this;
     }

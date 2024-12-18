@@ -118,13 +118,17 @@ router.post('/google', auth({ 'user:token': true }), async (req, res, next) => {
                 if (error.code !== 404) {
                     throw error;
                 }
+
+                if (!payload.email || !payload.given_name || !payload.family_name) {
+                    throw new CustomError(500, 'Google token is missing required fields.');
+                }
     
                 const newUser = await new User({
                     google_id: payload.sub,
                     email: payload.email,
                     name: payload.given_name,
                     last_name: payload.family_name,
-                    picture: payload.picture,
+                    picture: payload.picture || null,
                 }).insert();
     
                 return {

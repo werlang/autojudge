@@ -53,6 +53,22 @@ describe('Model Class', () => {
             expect(model.bar).toBe(sampleData.bar);
         });
 
+        test('should get data by a field', async () => {
+            Db.find.mockResolvedValue([sampleData]);
+
+            await model.getBy('foo');
+
+            expect(Db.find).toHaveBeenCalledWith('sample_table', { filter: { foo: sampleData.foo } });
+            expect(model.foo).toBe(sampleData.foo);
+            expect(model.bar).toBe(sampleData.bar);
+        });
+
+        test('should throw an error if no data is found', async () => {
+            Db.find.mockResolvedValue([]);
+
+            await expect(model.get()).rejects.toThrow('Item not found');
+        });
+
         test('should update data in the database', async () => {
             const updatedData = { foo: 'updatedFoo', bar: 'updatedBar' };
             const updatedFields = { foo: updatedData.foo };

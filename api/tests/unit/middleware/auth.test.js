@@ -30,6 +30,11 @@ describe('Auth Middleware', () => {
         jest.clearAllMocks();
     });
 
+    test('should just fail', async () => {
+        await auth({})(req, res, next);
+        expect(next).toHaveBeenCalledWith(expect.any(CustomError));
+    });
+
     describe('checkToken', () => {
         test('should throw error if token not found', async () => {
             await auth({ 'user:token': true })(req, res, next);
