@@ -255,154 +255,71 @@ function auth(modes = {}) {
         let anyPassed = false;
         let errorList = [];
 
-        // check if the token is valid
-        if (modes['user:token']) {
-            try {
-                await checkToken(req);
-                anyPassed = true;
-            }
-            catch (error) {
-                errorList.push(error);
-            }
-        }
-
-        // check if the user is logging with the password
-        if (modes['user:password']) {
-            try {
-                await authUser(req);
-                anyPassed = true;
-            }
-            catch (error) {
-                errorList.push(error);
-            }
-        }
-
-        // check if the user exists (token)
-        if (modes['user:exists']) {
-            try {
-                await checkUser(req);
-                anyPassed = true;
-            }
-            catch (error) {
-                errorList.push(error);
-            }
-        }
-
-        // logged user optional
-        if (modes['user:optional']) {
-            anyPassed = true;
-            try {
-                await checkUser(req);
-            }
-            catch (error) {
-                // do nothing
-            }
-        }
-
-        // check if the user is the admin of the contest
-        if (modes['contest:admin']) {
-            const key = modes['contest:admin'] === true ? 'id' : modes['contest:admin'];
-            try {
+        const modeHandlers = {
+            // check if the token is valid
+            'user:token': checkToken,
+            // check if the user is logging with the password
+            'user:password': authUser,
+            // check if the user exists (token)
+            'user:exists': checkUser,
+            // logged user optional
+            'user:optional': async (req) => {
+                // ignore errors to set anyPassed to true
+                try { await checkUser(req); } catch {}
+            },
+            // check if the user is the admin of the contest
+            'contest:admin': async (req) => {
+                const key = modes['contest:admin'] === true ? 'id' : modes['contest:admin'];
                 const contestId = req.params[key] || req.body[key];
                 await isContestAdmin(contestId, req);
-                anyPassed = true;
-            }
-            catch (error) {
-                errorList.push(error);
-            }
-        }
-
-        // login with team password, receives the jwt
-        if (modes['team:login']) {
-            try {
+            },
+            // login with team password, receives the jwt
+            'team:login': async (req) => {
                 await authTeam(req);
                 const contest = await new Contest({ id: req.team.contest }).get();
-                const running = contest.isRunning();
-                if (!running) {
-                    throw new CustomError(403, 'The contest is not running');
-                }
-                anyPassed = true;
-            }
-            catch (error) {
-                errorList.push(error);
-            }
-            
-        }
-
-        // check if the user is authenticated as a team member
-        if (modes['team:exists']) {
-            try {
-                await checkTeam(req);
-                anyPassed = true;
-            }
-            catch (error) {
-                errorList.push(error);
-            }
-        }
-
-        // check if the password matches a team (is a member of the team)
-        if (modes['team:member']) {
-            const key = modes['team:member'] === true ? 'id' : modes['team:member'];
-            try {
+                if (!contest.isRunning()) throw new CustomError(403, 'The contest is not running');
+            },
+            // check if the user is authenticated as a team member
+            'team:exists': checkTeam,
+            // check if the password matches a team (is a member of the team)
+            'team:member': async (req) => {
+                const key = modes['team:member'] === true ? 'id' : modes['team:member'];
                 const teamId = req.params[key] || req.body[key];
                 await isTeamMember(req, 'id', teamId);
-                anyPassed = true;
-            }
-            catch (error) {
-                errorList.push(error);
-            }
-        }
-
-        // check if the password matches a team in the contest
-        if (modes['team:contest']) {
-            const key = modes['team:contest'] === true ? 'id' : modes['team:contest'];
-            try {
+            },
+            // check if the password matches a team in the contest
+            'team:contest': async (req) => {
+                const key = modes['team:contest'] === true ? 'id' : modes['team:contest'];
                 const contestId = req.params[key] || req.body[key];
                 await isTeamMember(req, 'contest', contestId);
-                anyPassed = true;
-            }
-            catch (error) {
-                errorList.push(error);
-            }
-        }
-
-        // check if the user is the owner of the submission
-        if (modes['team:submission']) {
-            try {
+            },
+            // check if the user is the owner of the submission
+            'team:submission': async (req) => {
                 const key = modes['team:submission'] === true ? 'id' : modes['team:submission'];
                 const submissionId = req.params[key] || req.body[key];
                 const submission = await new Submission({ id: submissionId }).get();
                 await isTeamMember(req, 'id', submission.team);
-                anyPassed = true;
-            }
-            catch (error) {
-                errorList.push(error);
-            }
-        }
-
-        // check if the user is the admin of the contest where the team is
-        if (modes['contest:admin:team']) {
-            const key = modes['contest:admin:team'] === true ? 'id' : modes['contest:admin:team'];
-            try {
+            },
+            // check if the user is the admin of the contest where the team is
+            'contest:admin:team': async (req) => {
+                const key = modes['contest:admin:team'] === true ? 'id' : modes['contest:admin:team'];
                 const teamId = req.params[key] || req.body[key];
                 const team = await new Team({ id: teamId }).get();
                 req.team = team;
                 await isContestAdmin(team.contest, req);
-                anyPassed = true;
-            }
-            catch (error) {
-                errorList.push(error);
-            }
-        }
+            },
+            // check if the call was made by the background service
+            'background': isBackground,
+        };
 
-        // check if the call was made by the background service
-        if (modes['background']) {
-            try {
-                isBackground(req);
-                anyPassed = true;
-            }
-            catch (error) {
-                errorList.push(error);
+        for (const mode in modes) {
+            if (modeHandlers[mode]) {
+                try {
+                    await modeHandlers[mode](req);
+                    anyPassed = true;
+                } catch (error) {
+                    errorList.push(error);
+                }
             }
         }
 
