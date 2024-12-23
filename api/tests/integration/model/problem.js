@@ -14,4 +14,24 @@ export default class Problem extends Model {
         return this.call('/', 'POST', problem);
     }
 
+    async get() {
+        return this.call(`/${this.hash}`, 'GET');
+    }
+
+    async update(problem) {
+        return this.call(`/${this.id}`, 'PUT', problem);
+    }
+
+    async uploadImage() {
+        const data = { data: 'data:image/png;base64,base64data' }
+        return this.call(`/${this.hash}/images`, 'POST', data);
+    }
+
+    async deleteImage(id) {
+        return this.call(`/${this.hash}/images/${id}`, 'DELETE');
+    }
+
+    async getImage(id) {
+        return this.call(`/${this.hash}/images/${id}`, 'GET');
+    }
 }
