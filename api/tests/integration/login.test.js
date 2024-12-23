@@ -86,6 +86,7 @@ describe('Login route', () => {
             expect(res.status).toBe(200);
             expect(res.body.user.password).toBeUndefined();
         });
+
     });
 
     describe('Login user', () => {
@@ -158,6 +159,24 @@ describe('Login route', () => {
 
             expect(res.status).toBe(401);
             expect(res.body.message).toContain('Invalid token');
+        });
+
+        test('should throw an error if email is missing', async () => {
+            const res = await new User({
+                password: 'password',
+            }).login();
+
+            expect(res.status).toBe(400);
+            expect(res.body.message).toBe('Email and password are required.');
+        });
+
+        test('should throw an error if password is missing', async () => {
+            const res = await new User({
+                email: 'test@example.com',
+            }).login();
+
+            expect(res.status).toBe(400);
+            expect(res.body.message).toBe('Email and password are required.');
         });
     });
 

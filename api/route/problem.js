@@ -15,6 +15,9 @@ router.post('/', auth({'user:exists': true}), async (req, res, next) => {
         if (!req.body.title) {
             throw new CustomError(400, 'Title is required.');
         }
+        if (req.body.title.length > 255) {
+            throw new CustomError(400, 'Title exceeds maximum length.');
+        }
 
         const problem = await new Problem({
             title: req.body.title,
