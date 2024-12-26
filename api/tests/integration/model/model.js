@@ -21,8 +21,14 @@ export default class Model {
         if (token) {
             request.set('Authorization', `Bearer ${token}`);
         }
-         
-        return request.send(body || Object.fromEntries(this.fields.map(field => [field, this[field]])));
+        
+        const res = await request.send(body || Object.fromEntries(this.fields.map(field => [field, this[field]])));
+        this.updateAttributes({ lastCall: {
+            ...res.body,
+            status: res.status,
+            header: res.header,
+        }});
+        return res;
     }
 
     async updateAttributes(fields) {

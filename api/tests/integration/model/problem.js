@@ -10,28 +10,58 @@ export default class Problem extends Model {
         return new Model({}, '/problems', token).call('/', 'GET');
     }
 
+    static async getPdf(problems) {
+        return new Model({}, '/problems').call('/pdf', 'POST', problems);
+    }
+
     async insert(problem) {
-        return this.call('/', 'POST', problem);
+        const res = await this.call('/', 'POST', problem);
+        if (res.body.problem) {
+            this.updateAttributes(res.body.problem);
+        }
+        return this;
     }
 
     async get() {
-        return this.call(`/${this.hash}`, 'GET');
+        const res = await this.call(`/${this.hash}`, 'GET');
+        if (res.body.problem) {
+            this.updateAttributes(res.body.problem);
+        }
+        return this;
     }
 
     async update(problem) {
-        return this.call(`/${this.id}`, 'PUT', problem);
+        const res = await this.call(`/${this.id}`, 'PUT', problem);
+        if (res.body.problem) {
+            this.updateAttributes(res.body.problem);
+        }
+        return this;
     }
 
-    async uploadImage() {
-        const data = { data: 'data:image/png;base64,base64data' }
-        return this.call(`/${this.hash}/images`, 'POST', data);
+    async uploadImage(data) {
+        data = data || { data: 'data:image/png;base64,base64data' };
+        await this.call(`/${this.hash}/images`, 'POST', data);
+        return this;
     }
 
     async deleteImage(id) {
-        return this.call(`/${this.hash}/images/${id}`, 'DELETE');
+        const res = await this.call(`/${this.hash}/images/${id}`, 'DELETE');
+        return this;
     }
 
     async getImage(id) {
-        return this.call(`/${this.hash}/images/${id}`, 'GET');
+        const res = await this.call(`/${this.hash}/images/${id}`, 'GET');
+        if (res.body) {
+            this.image = res.body;
+        }
+        return this;
+    }
+
+    async getPdf() {
+        const res = await this.call(`/${this.hash}/pdf`, 'POST');
+        if (res.body) {
+            this.pdf = res.body;
+        }
+        return this;
     }
 }

@@ -1,6 +1,7 @@
 import fs from 'fs';
 import { Chromiumly, HtmlConverter, PDFEngines } from "chromiumly";
 import katex from 'katex';
+import CustomError from './error';
 
 export default class PDFUtils {
 
@@ -10,7 +11,7 @@ export default class PDFUtils {
         }
 
         if (!this.problem || !this.problem.description) {
-            throw new Error('Problem description is required.');
+            throw new CustomError(400, 'Problem description is required.');
         }
 
         if (!this.args) this.args = {};
@@ -22,7 +23,7 @@ export default class PDFUtils {
     // method to merge pdfs from buffers
     static async merge(pdfs) {
         if (!pdfs || !pdfs.length) {
-            throw new Error('No PDFs to merge');
+            throw new CustomError(400, 'No PDFs to merge');
         }
         return PDFEngines.merge({
             files: [...pdfs],
@@ -122,13 +123,13 @@ export default class PDFUtils {
             return transformedBuffer;
         } catch (err) {
             // console.error(`Error reading file at ${path}:`, err);
-            throw new Error('File not found');
+            throw new CustomError(404, 'File not found');
         }
     }
 
     async create() {
         if (!this.template || !this.header || !this.footer) {
-            throw new Error('Template, header, and footer path are required.');
+            throw new CustomError(400, 'Template, header, and footer path are required.');
         }
         const templateFS = await this.getReplacedBuffer(this.template);
         const headerFS = await this.getReplacedBuffer(this.header);

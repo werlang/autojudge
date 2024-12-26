@@ -33,7 +33,7 @@ export default (err, req, res, next) => {
             error: true,
             status: 500,
             type: 'Internal Server Error',
-            message: 'An unexpected error occurred',
+            message: err.message || 'An unexpected error occurred',
             data: err.message || err,
         });
         return;

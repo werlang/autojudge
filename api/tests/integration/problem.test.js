@@ -4,39 +4,37 @@ import User from './model/user.js';
 import Problem from './model/problem.js';
 import sharp from 'sharp';
 import fs from 'fs';
-import Test from 'supertest/lib/test.js';
 
 jest.mock('jsonwebtoken');
 jest.mock('sharp');
-// jest.mock('fs');
 
 describe('Problem Route', () => {
-    let problem;
+    let problemData;
     const token = 'valid_token';
-    let user1, user2;
+    let user1Data, user2Data;
 
     beforeAll(async () => {
         await MysqlConnector.connect();
 
-        user1 = {
+        user1Data = {
             name: 'Test',
             lastName: 'User',
             email: 'test@example.com',
             password: 'password',
         };
 
-        user2 = {
+        user2Data = {
             name: 'Another',
             lastName: 'User',
             email: 'anotheruser@example.com',
             password: 'password',
         };
 
-        problem = {
+        problemData = {
             title: 'Test problem',
             description: 'This is a test problem',
-            input: 'input',
-            output: 'output',
+            input: ['input1', 'input2'],
+            output: ['output1', 'output2'],
         };
 
         jest.spyOn(fs, 'existsSync');
@@ -50,72 +48,78 @@ describe('Problem Route', () => {
     });
     
     beforeEach(async () => {
-        jwt.verify.mockImplementation(() => ({ user: user1.email }));
+        jwt.verify.mockImplementation(() => ({ user: user1Data.email }));
         await MysqlConnector.cleanup();
     });
 
     describe('Insert problem', () => {
 
         test('should insert a new problem', async () => {
-            await new User(user1).insert();
-            const res = await new Problem(problem).insert();
+            await new User(user1Data).insert();
+            const problem = new Problem(problemData);
+            await problem.insert();
+            const { message, status } = problem.lastCall;
 
-            expect(res.body.message).toBe('Problem created.');
-            expect(res.status).toBe(201);
-            expect(res.body.problem.id).toBe(1);
-            expect(res.body.problem.title).toBe(problem.title);
-            expect(res.body.problem.description).toBe(problem.description);
-            expect(res.body.problem.public).toBe(true);
-            expect(res.body.problem.hash).toBeDefined();
+            expect(message).toBe('Problem created.');
+            expect(status).toBe(201);
+            expect(problem.id).toBe(1);
+            expect(problem.title).toBe(problem.title);
+            expect(problem.description).toBe(problem.description);
+            expect(problem.public).toBe(true);
+            expect(problem.hash).toBeDefined();
         });
 
         test('should throw an error if missing required fields', async () => {
-            await new User(user1).insert();
-            const res = await new Problem({
-                ...problem,
+            await new User(user1Data).insert();
+            const problem = new Problem({
+                ...problemData,
                 title: null,
-            }).insert();
+            });
+            await problem.insert();
+            const { message, status } = problem.lastCall;
 
-            expect(res.body.message).toBe('Title is required.');
-            expect(res.status).toBe(400);
+            expect(message).toBe('Title is required.');
+            expect(status).toBe(400);
         });
 
         test('should handle optional fields correctly', async () => {
-            await new User(user1).insert();
-            const res = await new Problem({
+            await new User(user1Data).insert();
+            const problem = await new Problem({
                 title: 'Test problem',
             }).insert();
+            const { message, status } = problem.lastCall;
 
-            expect(res.body.message).toBe('Problem created.');
-            expect(res.status).toBe(201);
-            expect(res.body.problem.title).toBe('Test problem');
-            expect(res.body.problem.description).toBe('');
-            expect(res.body.problem.public).toBe(true);
+            expect(message).toBe('Problem created.');
+            expect(status).toBe(201);
+            expect(problem.title).toBe('Test problem');
+            expect(problem.description).toBe('');
+            expect(problem.public).toBe(true);
         });
 
         test('should handle boundary conditions', async () => {
-            await new User(user1).insert();
-            const res = await new Problem({
-                ...problem,
+            await new User(user1Data).insert();
+            const problem = await new Problem({
+                ...problemData,
                 title: 'a'.repeat(300),
             }).insert();
+            const { message, status } = problem.lastCall;
 
-            expect(res.body.message).toBe('Title exceeds maximum length.');
-            expect(res.status).toBe(400);
+            expect(message).toBe('Title exceeds maximum length.');
+            expect(status).toBe(400);
         });
     });
 
     describe('Get all problems', () => {
 
         test('should show no problems if problems not public and user not author', async () => {
-            await new User(user1).insert();
+            await new User(user1Data).insert();
             await Promise.all([
-                new Problem({...problem, public: false}).insert(),
-                new Problem({...problem, public: false}).insert(),
-                new Problem({...problem, public: false}).insert(),
+                new Problem({...problemData, public: false}).insert(),
+                new Problem({...problemData, public: false}).insert(),
+                new Problem({...problemData, public: false}).insert(),
             ]);
-            await new User(user2).insert();
-            jwt.verify.mockImplementation(() => ({ user: user2.email}));
+            await new User(user2Data).insert();
+            jwt.verify.mockImplementation(() => ({ user: user2Data.email}));
             const res = await Problem.getAll(token);
 
             expect(res.body.problems).toHaveLength(0);
@@ -123,14 +127,14 @@ describe('Problem Route', () => {
         });
 
         test('should show public problems if user not author', async () => {
-            await new User(user1).insert();
+            await new User(user1Data).insert();
             await Promise.all([
-                new Problem({...problem, public: false}).insert(),
-                new Problem(problem).insert(),
-                new Problem(problem).insert(),
+                new Problem({...problemData, public: false}).insert(),
+                new Problem(problemData).insert(),
+                new Problem(problemData).insert(),
             ]);
-            await new User(user2).insert();
-            jwt.verify.mockImplementation(() => ({ user: user2.email }));
+            await new User(user2Data).insert();
+            jwt.verify.mockImplementation(() => ({ user: user2Data.email }));
             const res = await Problem.getAll(token);
 
             expect(res.body.problems).toHaveLength(2);
@@ -139,11 +143,11 @@ describe('Problem Route', () => {
         });
 
         test('should show all problems if user is author', async () => {
-            await new User(user1).insert();
+            await new User(user1Data).insert();
             await Promise.all([
-                new Problem({...problem, public: false}).insert(),
-                new Problem(problem).insert(),
-                new Problem(problem).insert(),
+                new Problem({...problemData, public: false}).insert(),
+                new Problem(problemData).insert(),
+                new Problem(problemData).insert(),
             ]);
             const res = await Problem.getAll(token);
 
@@ -156,36 +160,41 @@ describe('Problem Route', () => {
     describe('Get problem by hash', () => {
 
         test('should get a problem by hash being author', async () => {
-            await new User(user1).insert();
-            const newProblem = await new Problem(problem).insert();
-            const res = await new Problem(newProblem.body.problem).get();
+            await new User(user1Data).insert();
+            const problem = await new Problem(problemData).insert().then(problem => problem.get());
+            const { status } = problem.lastCall;
 
-            expect(res.status).toBe(200);
-            expect(res.body.problem.author).toBe(true);
-            expect(res.body.problem).toMatchObject(newProblem.body.problem);
+            expect(status).toBe(200);
+            expect(problem.author).toBe(true);
+            expect(problem).toMatchObject({
+                title: problemData.title,
+                description: problemData.description,
+            });
         });
 
         test('should throw an error if problem not found', async () => {
-            await new User(user1).insert();
-            const res = await new Problem(problem).get();
-
-            expect(res.body.message).toBe('Problem not found.');
-            expect(res.status).toBe(404);
+            await new User(user1Data).insert();
+            const problem = await new Problem(problemData).get();
+            const { status, message } = problem.lastCall;
+            
+            expect(message).toBe('Problem not found.');
+            expect(status).toBe(404);
         });
 
         test('should get only public information if problem is not public and user is not author', async () => {
-            await new User(user1).insert();
-            const newProblem = await new Problem({...problem, public: false}).insert();
-            await new User(user2).insert();
-            jwt.verify.mockImplementation(() => ({ user: user2.email }));
+            await new User(user1Data).insert();
+            const problem = await new Problem({...problemData, public: false}).insert();
+            await new User(user2Data).insert();
+            jwt.verify.mockImplementation(() => ({ user: user2Data.email }));
 
-            const res = await new Problem(newProblem.body.problem).get();
+            await problem.get();
+            const { status } = problem.lastCall;
 
-            expect(res.status).toBe(200);
-            expect(res.body.problem.author).toBeUndefined();
-            expect(res.body.problem).toMatchObject({
-                title: newProblem.body.problem.title,
-                description: newProblem.body.problem.description,
+            expect(status).toBe(200);
+            expect(problem.author).toBeUndefined();
+            expect(problem).toMatchObject({
+                title: problem.title,
+                description: problem.description,
                 public: false,
             });
         });
@@ -195,8 +204,8 @@ describe('Problem Route', () => {
     describe('Update problem', () => {
 
         async function updateProblem(customArgs={}, updateAsAuthor=true) {
-            await new User(user1).insert();
-            const newProblem = await new Problem({...problem, ...customArgs}).insert();
+            await new User(user1Data).insert();
+            const problem = await new Problem({...problemData, ...customArgs}).insert();
 
             const newData = {
                 title: 'New title',
@@ -209,71 +218,74 @@ describe('Problem Route', () => {
             };
 
             if (!updateAsAuthor) {
-                await new User(user2).insert();
-                jwt.verify.mockImplementation(() => ({ user: user2.email }));
+                await new User(user2Data).insert();
+                jwt.verify.mockImplementation(() => ({ user: user2Data.email }));
             }
 
-            const res = await new Problem(newProblem.body.problem).update(newData);
+            await problem.update(newData);
 
             return {
                 data: newData,
-                problem: newProblem.body.problem,
-                res,
+                problem,
+                message: problem.lastCall.message,
+                status: problem.lastCall.status,
             };
         }
 
         test('should update a problem', async () => {
-            const { data, res } = await updateProblem();
+            const { problem, data, status, message } = await updateProblem();
 
-            expect(res.status).toBe(200);
-            expect(res.body.message).toBe('Problem updated.');
-            expect(res.body.problem).toMatchObject({
+            expect(status).toBe(200);
+            expect(message).toBe('Problem updated.');
+            expect(problem).toMatchObject({
                 title: data.title,
                 description: data.description,
             });
         });
 
         test('should throw an error if problem not found', async () => {
-            await new User(user1).insert();
-            const res = await new Problem({ id: 999 }).update({});
+            await new User(user1Data).insert();
+            const problem = await new Problem({ id: 999 }).update({});
+            const { status, message } = problem.lastCall;
 
-            expect(res.status).toBe(404);
-            expect(res.body.message).toBe('Item not found');
+            expect(status).toBe(404);
+            expect(message).toBe('Item not found');
         });
 
         test('should throw an error if user is not author', async () => {
-            const { res } = await updateProblem({}, false);
+            const { status, message } = await updateProblem({}, false);
 
-            expect(res.status).toBe(403);
-            expect(res.body.message).toContain('You are not allowed to update this problem.');
+            expect(status).toBe(403);
+            expect(message).toContain('You are not allowed to update this problem.');
         });
 
         test('should show hidden fields if user is author', async () => {
             const { problem } = await updateProblem();
+            await problem.get();
+            const { status } = problem.lastCall;
 
-            const res = await new Problem(problem).get();
-
-            expect(res.status).toBe(200);
-            expect(res.body.problem.inputHidden).toBe('New input hidden');
-            expect(res.body.problem.outputHidden).toBe('New output hidden');
+            expect(status).toBe(200);
+            expect(problem.inputHidden).toBe('New input hidden');
+            expect(problem.outputHidden).toBe('New output hidden');
         });
 
         test('should hide hidden fields if user is not author', async () => {
             const { problem } = await updateProblem();
             
-            await new User(user2).insert();
-            jwt.verify.mockImplementation(() => ({ user: user2.email }));
+            await new User(user2Data).insert();
+            jwt.verify.mockImplementation(() => ({ user: user2Data.email }));
 
-            const res = await new Problem(problem).get();
+            await problem.get();
+            const { status } = problem.lastCall;
 
-            expect(res.status).toBe(200);
-            expect(res.body.problem.inputHidden).toBeUndefined();
-            expect(res.body.problem.outputHidden).toBeUndefined();
+            expect(status).toBe(200);
+            expect(problem.inputHidden).toBeUndefined();
+            expect(problem.outputHidden).toBeUndefined();
         });
     });
 
     describe('Problem image', () => {
-        async function uploadImage() {
+        async function uploadImage(args) {
             sharp.mockImplementation(() => ({
                 resize: () => ({
                     toBuffer: () => Promise.resolve('sample_image'),
@@ -284,33 +296,95 @@ describe('Problem Route', () => {
             fs.readFileSync.mockImplementation(() => 'sample_image');
             fs.unlinkSync.mockImplementation(() => {});
 
-            await new User(user1).insert();
-            const newProblem = await new Problem(problem).insert();
-            const res = await new Problem(newProblem.body.problem).uploadImage();
-            return { problem: newProblem.body.problem, res };
+            await new User(user1Data).insert();
+            const problem = await new Problem(problemData).insert().then(problem => problem.uploadImage(args));
+            const { status, message, header } = problem.lastCall;
+            return { problem, status, message, header };
         }
 
         test('should successfully upload an image to a problem', async () => {
-            const {res} = await uploadImage();
-            expect(res.body.message).toBe('Image uploaded.');
-            expect(res.status).toBe(200);
+            const { status, message } = await uploadImage();
+            expect(message).toBe('Image uploaded.');
+            expect(status).toBe(200);
+        });
+
+        test('should give error if no image is provided', async () => {
+            const { status, message } = await uploadImage({ data: null });
+            expect(message).toBe('Image is required.');
+            expect(status).toBe(400);
         });
 
         test('should retrieve an image from a problem', async () => {
-            const { problem, res } = await uploadImage();
-            let res2 = await new Problem(problem).getImage(res.body.id);
+            const { problem } = await uploadImage();
+            await problem.getImage('foo');
+            const { status, header } = problem.lastCall;
 
-            expect(res2.body).toBeInstanceOf(Buffer);
-            expect(res2.headers['content-type']).toContain('image/webp');
-            expect(res2.status).toBe(200);
+            expect(problem.image).toBeInstanceOf(Buffer);
+            expect(header['content-type']).toContain('image/webp');
+            expect(status).toBe(200);
+        });
+
+        test('should throw an error if problem not found', async () => {
+            await new User(user1Data).insert();
+            const problem = await new Problem({ id: 999 }).getImage('foo');
+            const { status, message } = problem.lastCall;
+
+            expect(message).toBe('Problem not found.');
+            expect(status).toBe(404);
         });
 
         test('should delete an image from a problem', async () => {
-            const { problem, res } = await uploadImage();
-            let res2 = await new Problem(problem).deleteImage(res.body.id);
+            const { problem } = await uploadImage();
+            await problem.deleteImage(problem.id);
+            const { message, status } = problem.lastCall;
 
-            expect(res2.body.message).toBe('Image deleted.');
-            expect(res2.status).toBe(200);
+            expect(message).toBe('Image deleted.');
+            expect(status).toBe(200);
+        });
+
+        test('should throw an error if problem not found when deleting', async () => {
+            await new User(user1Data).insert();
+            const problem = await new Problem(problemData).deleteImage(1);
+            const { status, message } = problem.lastCall;
+
+            expect(message).toBe('Problem not found.');
+            expect(status).toBe(404);
+        });
+    });
+
+    describe('Problem pdf', () => {
+
+        test('should generate a pdf from a problem', async () => {
+            await new User(user1Data).insert();
+            const problem = await new Problem(problemData).insert().then(problem => problem.getPdf());
+            const { status, header } = problem.lastCall;
+
+            expect(problem.pdf).toBeInstanceOf(Buffer);
+            expect(header['content-type']).toBe('application/pdf');
+            expect(status).toBe(200);
+        });
+
+        test('should throw an error if problem have no description', async () => {
+            await new User(user1Data).insert();
+            const problem = await new Problem({ title: 'Test problem' }).insert().then(problem => problem.getPdf());
+            const { status, message } = problem.lastCall;
+
+            expect(message).toBe('Problem description is required.');
+            expect(status).toBe(400);
+        });
+
+        test('should generate a pdf from multiple problems, merging them', async () => {
+            await new User(user1Data).insert();
+            const problems = await Promise.all([
+                await new Problem(problemData).insert(),
+                await new Problem(problemData).insert(),
+                await new Problem(problemData).insert(),
+            ]);
+            const res = await Problem.getPdf({ problems: problems.map(p => p.hash) });
+
+            expect(res.body).toBeInstanceOf(Buffer);
+            expect(res.header['content-type']).toBe('application/pdf');
+            expect(res.status).toBe(200);
         });
     });
 
