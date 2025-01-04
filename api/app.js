@@ -8,6 +8,10 @@ import teams from './route/team.js';
 import problems from './route/problem.js';
 import submissions from './route/submission.js';
 import judge from './route/judge.js';
+import Mysql from './helpers/mysql.js';
+
+const port = 3000;
+const host = '0.0.0.0';
 
 const app = express();
 
@@ -28,7 +32,17 @@ app.use(errorMiddleware);
 
 // 404
 app.use((req, res) => {
-    res.status(404).send({ message: 'I am sorry, but I think you are lost.' });
+    res.status(404).send({ message: 'I am sor ry, but I think you are lost.' });
+});
+
+if (process.env.NODE_ENV !== 'test') {
+    app.listen(port, host, () => {
+        console.log(`Web Server running at http://${host}:${port}/`);
+    });
+}
+
+app.on('close', async () => {
+    await Mysql.close();
 });
 
 export default app;

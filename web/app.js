@@ -4,6 +4,9 @@ import cookieParser from 'cookie-parser';
 import langMiddleware from './middleware/language.js';
 import renderMiddleware from './middleware/render.js';
 
+const port = 3000;
+const host = '0.0.0.0';
+
 const app = express();
 
 app.use(cookieParser());
@@ -142,6 +145,10 @@ app.use(express.static(import.meta.dirname + '/public/'));
 // 404
 app.use((req, res) => {
     res.status(404).templateRender('notfound');
+});
+
+app.listen(port, host, () => {
+    console.log(`Web Server running at http://${host}:${port}/`);
 });
 
 export default app;

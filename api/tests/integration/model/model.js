@@ -28,6 +28,7 @@ export default class Model {
             status: res.status,
             header: res.header,
         }});
+        app.emit('close');
         return res;
     }
 

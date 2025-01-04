@@ -29,13 +29,14 @@ describe('Login route', () => {
         })});
 
         await MysqlConnector.connect();
+        await MysqlConnector.cleanup();
     });
 
     afterAll(async () => {
         await MysqlConnector.close();
     });
 
-    beforeEach(async () => {
+    afterEach(async () => {
         await MysqlConnector.cleanup();
     });
 

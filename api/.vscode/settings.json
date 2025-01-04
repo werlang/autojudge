@@ -1,7 +1,7 @@
 {
-    "jest.autoRun": "off",
+    "jest.runMode": "on-demand",
     "jest.virtualFolders": [
         {"name": "unit-tests", "jestCommandLine": "npm test -- --config jest.unit.config.mjs", "runMode": "watch"},
-        {"name": "integration-tests", "jestCommandLine": "npm test -- --config jest.integration.config.mjs", "runMode": "on-demand"}
+        {"name": "integration-tests", "jestCommandLine": "npm test -- --config jest.integration.config.mjs --runInBand", "runMode": "on-demand"}
     ]
 }

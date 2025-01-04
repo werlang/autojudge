@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { Chromiumly, HtmlConverter, PDFEngines } from "chromiumly";
 import katex from 'katex';
-import CustomError from './error';
+import CustomError from './error.js';
 
 export default class PDFUtils {
 

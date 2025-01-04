@@ -14,8 +14,6 @@ describe('Problem Route', () => {
     let user1Data, user2Data;
 
     beforeAll(async () => {
-        await MysqlConnector.connect();
-
         user1Data = {
             name: 'Test',
             lastName: 'User',
@@ -41,14 +39,20 @@ describe('Problem Route', () => {
         jest.spyOn(fs, 'readFileSync');
         jest.spyOn(fs, 'unlinkSync');
 
+        await MysqlConnector.connect();
+        await MysqlConnector.cleanup();
     });
 
     afterAll(async () => {
         await MysqlConnector.close();
     });
-    
+
     beforeEach(async () => {
+        // default logged user is user1
         jwt.verify.mockImplementation(() => ({ user: user1Data.email }));
+    });
+    
+    afterEach(async () => {
         await MysqlConnector.cleanup();
     });
 

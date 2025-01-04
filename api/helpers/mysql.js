@@ -18,7 +18,7 @@ export default class Mysql {
     static async connect(config = {}) {
         if (Mysql.connected) return this;
 
-        if (process.env.NODE_ENV == 'test') {
+        if (process.env.NODE_ENV == 'test' && !Mysql.config.database.endsWith('_test')) {
             Mysql.config.database += '_test';
         }
 
