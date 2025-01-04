@@ -4,10 +4,10 @@
   "description": "Send code and get them judged automatically",
   "type": "module",
   "scripts": {
-    "production": "node server.js",
-    "development": "nodemon --inspect=0.0.0.0 server.js",
+    "production": "node app.js",
+    "development": "nodemon --inspect=0.0.0.0 app.js",
     "test": "jest --watchAll",
-    "production:webpack": "webpack && node server.js",
+    "production:webpack": "webpack && node app.js",
     "development:webpack": "webpack",
     "test:webpack": "webpack",
     "compilers": "cd payload && echo $'TMPDIR=.\nFILE=a\nINPUT=b' > .env && docker compose -f compilers.yaml pull && rm .env"
