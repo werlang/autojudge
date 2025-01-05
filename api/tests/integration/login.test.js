@@ -50,6 +50,13 @@ describe('Login route', () => {
             expect(res.body.user.email).toBe(user.email);
         });
 
+        test('should throw an error if email is invalid', async () => {
+            const res = await new User({ ...user, email: 'invalid_email' }).insert();
+
+            expect(res.body.message).toBe('Invalid email');
+            expect(res.status).toBe(400);
+        });
+
         test.each([
             ['password', 'name', 'lastName'],
             ['email', 'name', 'lastName'],

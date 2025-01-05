@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 import Model from './model.js';
+import CustomError from '../helpers/error.js';
 
 export default class User extends Model {
 
@@ -29,7 +30,7 @@ export default class User extends Model {
 
     async insert() {
         if (!this.email || !this.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
-            throw new Error('Invalid email');
+            throw new CustomError(400, 'Invalid email');
         }
 
         return super.insert();
