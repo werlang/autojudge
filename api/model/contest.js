@@ -95,7 +95,7 @@ export default class Contest extends Model {
             throw new CustomError(403, 'Contest has already started');
         }
         // this.start_time = Math.floor(Date.now() / 1000);
-        return this.update({ start_time: Db.toDateTime(Date.now()) });
+        return await this.update({ start_time: Db.toDateTime(Date.now()) });
     }
 
     getRemainingTime(targetTime) {

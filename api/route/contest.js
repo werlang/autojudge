@@ -104,8 +104,8 @@ router.get('/:id', auth({
             duration: req.contest.duration,
             penaltyTime: req.contest.penalty_time,
             freezeTime: req.contest.freeze_time,
-            remainingTime: req.contest.getRemainingTime() > 0 ? req.contest.getRemainingTime() : 0,
-            frozenScoreboard: req.contest.isFrozen() && !req.contest.is_unlocked,
+            remainingTime: req.contest.isStarted() ? (req.contest.getRemainingTime() > 0 ? req.contest.getRemainingTime() : 0) : null,
+            frozenScoreboard: req.contest.isFrozen() && !req.contest.is_unlocked && req.contest.isStarted(),
             finalScoreboard: req.contest.is_unlocked ? true : false,
             startTime: req.contest.start_time,
             logo: req.contest.logo,
@@ -123,7 +123,7 @@ router.get('/:id', auth({
 router.put('/:id', auth({'contest:admin': true}), async (req, res, next) => {
     try {
         if (req.contest.isStarted()) {
-            throw new CustomError(400, 'Contest has already started');
+            throw new CustomError(403, 'Contest has already started');
         }
         await req.contest.update({
             name: req.body.name,
@@ -153,6 +153,9 @@ router.post('/:id/logo', auth({'contest:admin': true}), async (req, res, next) =
     try {
         if (!req.body.logo) {
             throw new CustomError(400, 'Logo is required.');
+        }
+        if (req.contest.isStarted()) {
+            throw new CustomError(403, 'Contest has already started');
         }
         
         const base64Data = req.body.logo.replace(/^data:image\/\w+;base64,/, '');

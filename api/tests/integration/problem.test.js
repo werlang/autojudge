@@ -10,7 +10,6 @@ jest.mock('sharp');
 
 describe('Problem Route', () => {
     let problemData;
-    const token = 'valid_token';
     let user1Data, user2Data;
 
     beforeAll(async () => {
@@ -124,7 +123,7 @@ describe('Problem Route', () => {
             ]);
             await new User(user2Data).insert();
             jwt.verify.mockImplementation(() => ({ user: user2Data.email}));
-            const res = await Problem.getAll(token);
+            const res = await Problem.getAll();
 
             expect(res.body.problems).toHaveLength(0);
             expect(res.status).toBe(200);
@@ -139,7 +138,7 @@ describe('Problem Route', () => {
             ]);
             await new User(user2Data).insert();
             jwt.verify.mockImplementation(() => ({ user: user2Data.email }));
-            const res = await Problem.getAll(token);
+            const res = await Problem.getAll();
 
             expect(res.body.problems).toHaveLength(2);
             expect(res.body.problems[0].author).toBeUndefined();
@@ -153,7 +152,7 @@ describe('Problem Route', () => {
                 new Problem(problemData).insert(),
                 new Problem(problemData).insert(),
             ]);
-            const res = await Problem.getAll(token);
+            const res = await Problem.getAll();
 
             expect(res.body.problems).toHaveLength(3);
             expect(res.body.problems[0].author).toBe(true);

@@ -4,36 +4,37 @@ export default class Problem extends Model {
 
     constructor(fields, token) {
         super(fields, '/problems', token);
+        this.entity = 'problem';
     }
 
-    static async getAll(token) {
+    static async getAll(token = 'valid_token') {
         return new Model({}, '/problems', token).call('/', 'GET');
     }
 
-    static async getPdf(problems) {
-        return new Model({}, '/problems').call('/pdf', 'POST', problems);
+    static async getPdf(data) {
+        return new Model({}, '/problems').call('/pdf', 'POST', data);
     }
 
-    async insert(problem) {
-        const res = await this.call('/', 'POST', problem);
-        if (res.body.problem) {
-            this.updateAttributes(res.body.problem);
+    async insert(data) {
+        const res = await this.call('/', 'POST', data);
+        if (res.body[this.entity]) {
+            this.updateAttributes(res.body[this.entity]);
         }
         return this;
     }
 
     async get() {
         const res = await this.call(`/${this.hash}`, 'GET');
-        if (res.body.problem) {
-            this.updateAttributes(res.body.problem);
+        if (res.body[this.entity]) {
+            this.updateAttributes(res.body[this.entity]);
         }
         return this;
     }
 
-    async update(problem) {
-        const res = await this.call(`/${this.id}`, 'PUT', problem);
-        if (res.body.problem) {
-            this.updateAttributes(res.body.problem);
+    async update(data) {
+        const res = await this.call(`/${this.id}`, 'PUT', data);
+        if (res.body[this.entity]) {
+            this.updateAttributes(res.body[this.entity]);
         }
         return this;
     }

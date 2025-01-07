@@ -91,7 +91,7 @@ export default class Model {
             }
         }
         await Db.update(this.#tableName, toChange, this.id);
-        return this.get();
+        return await this.get();
     }
 
     async delete() {
