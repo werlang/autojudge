@@ -45,4 +45,20 @@ export default class Contest extends Model {
         return this;
     }
 
+    async addProblem(problemId) {
+        return this.call(`/${this.id}/problems/${problemId}`, 'POST');
+    }
+
+    async getProblems() {
+        return this.call(`/${this.id}/problems`, 'GET');
+    }
+
+    async removeProblem(problemId) {
+        return this.call(`/${this.id}/problems/${problemId}`, 'DELETE');
+    }
+
+    async updateProblem(problemId, data) {
+        return this.call(`/${this.id}/problems/${problemId}`, 'PUT', data);
+    }
+
 }

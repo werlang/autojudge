@@ -94,6 +94,10 @@ export default class Contest extends Model {
         if (this.isStarted()) {
             throw new CustomError(403, 'Contest has already started');
         }
+        const problems = await this.getProblems();
+        if (!problems.length) {
+            throw new CustomError(400, 'Contest must have at least one problem');
+        }
         // this.start_time = Math.floor(Date.now() / 1000);
         return await this.update({ start_time: Db.toDateTime(Date.now()) });
     }

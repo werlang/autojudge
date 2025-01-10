@@ -2,6 +2,7 @@ import MysqlConnector from './mysqlConnector.js';
 import jwt from 'jsonwebtoken';
 import User from './model/user.js';
 import Contest from './model/contest.js';
+import Problem from './model/problem.js';
 import sharp from 'sharp';
 import fs from 'fs';
 
@@ -12,6 +13,7 @@ describe('Contest Route', () => {
     let userData;
     let user2Data;
     let contestData;
+    let problemData;
 
     beforeAll(async () => {
         userData = {
@@ -34,6 +36,15 @@ describe('Contest Route', () => {
             duration: 180,
             penaltyTime: 20,
             freezeTime: 15,
+        };
+
+        problemData = {
+            title: 'Test problem',
+            description: 'This is a test problem',
+            input: JSON.stringify(['input1', 'input2']),
+            output: JSON.stringify(['output1', 'output2']),
+            inputHidden: JSON.stringify(['input1', 'input2']),
+            outputHidden: JSON.stringify(['output1', 'output2']),
         };
 
         jest.spyOn(fs, 'existsSync');
@@ -119,10 +130,6 @@ describe('Contest Route', () => {
             expect(contests[1].admin).toBe(user.id);
         });
 
-        test('should return all problems from contests', async () => {
-            // TODO: implement this test
-        });
-
         test('should return all teams from contests', async () => {
             // TODO: implement this test
         });
@@ -155,10 +162,135 @@ describe('Contest Route', () => {
             expect(contest.frozenScoreboard).toBe(false);
         });
 
-        test('should return contest problems', async () => {
-            // TODO: implement this test
+    });
+
+    // TODO: create a funtino to improve problem relationship tests
+    // TODO: improve model to only allow i/o i array format
+
+    describe('Contest problems relationship', () => {
+
+        test('should throw an error if problem does not have hidden test cases', async () => {
+            await new User(userData).insert();
+            const contest = await new Contest(contestData).insert();
+            const problem = await new Problem(problemData).insert();
+            await contest.addProblem(problem.id);
+            const { status, message } = contest.lastCall;
+
+            expect(message).toBe('Problem must have hidden test cases');
+            expect(status).toBe(400);
         });
 
+        test('should add a problem to a contest', async () => {
+            await new User(userData).insert();
+            const contest = await new Contest(contestData).insert();
+            const problem = await new Problem(problemData).insert();
+            await problem.update({
+                inputHidden: problemData.inputHidden,
+                outputHidden: problemData.outputHidden,
+            });
+            await contest.addProblem(problem.id);
+            const { status, message } = contest.lastCall;
+            
+            expect(message).toBe('Problem added to contest.');
+            expect(status).toBe(201);
+        });
+
+        test('should return all problems from a contest', async () => {
+            await new User(userData).insert();
+            const contest = await new Contest(contestData).insert();
+            const problem0 = await new Problem(problemData).insert();
+            const problem = await new Problem(problemData).insert();
+            await problem0.update({
+                inputHidden: problemData.inputHidden,
+                outputHidden: problemData.outputHidden,
+                input: problemData.input,
+                output: problemData.output,
+            });
+            await problem.update({
+                inputHidden: problemData.inputHidden,
+                outputHidden: problemData.outputHidden,
+                input: problemData.input,
+                output: problemData.output,
+            });
+            await contest.addProblem(problem.id);
+            await contest.addProblem(problem0.id);
+
+            const {problems} = (await contest.getProblems()).body;
+            const { status } = contest.lastCall;
+            
+            expect(problems.length).toBe(2);
+            expect(status).toBe(200);
+            expect(problems[0].id).toBe(problem.id);
+            expect(problems[0].title).toBe(problem.title);
+            expect(problems[0].description).toBe(problem.description);
+            expect(problems[0].input).toBe(problem.input);
+            expect(problems[0].output).toBe(problem.output);
+            expect(problems[0].inputHidden).toBe(problem.inputHidden);
+            expect(problems[0].outputHidden).toBe(problem.outputHidden);
+        });
+
+        test('problems from other authors should not show hidden test cases', async () => {
+            await new User(userData).insert();
+            const contest = await new Contest(contestData).insert();
+            
+            jwt.verify.mockImplementation(() => ({ user: user2Data.email }));
+            await new User(user2Data).insert();
+            const problem = await new Problem(problemData).insert();
+            await problem.update({
+                inputHidden: problemData.inputHidden,
+                outputHidden: problemData.outputHidden,
+            });
+            
+            jwt.verify.mockImplementation(() => ({ user: userData.email }));
+            await contest.addProblem(problem.id);
+
+            const {problems} = (await contest.getProblems()).body;
+            const { status } = contest.lastCall;
+
+            expect(problems.length).toBe(1);
+            expect(status).toBe(200);
+            expect(problems[0].id).toBe(problem.id);
+            expect(problems[0].title).toBe(problem.title);
+            expect(problems[0].description).toBe(problem.description);
+            expect(problems[0].inputHidden).toBe(undefined);
+            expect(problems[0].outputHidden).toBe(undefined);
+        });
+
+        test('should remove a problem from a contest', async () => {
+            await new User(userData).insert();
+            const contest = await new Contest(contestData).insert();
+            const problem = await new Problem(problemData).insert();
+            await problem.update({
+                inputHidden: problemData.inputHidden,
+                outputHidden: problemData.outputHidden,
+            });
+            await contest.addProblem(problem.id);
+            await contest.removeProblem(problem.id);
+            const { status, message } = contest.lastCall;
+
+            expect(message).toBe('Problem removed from contest.');
+            expect(status).toBe(200);
+        });
+
+        test('should change problem color and order in a contest', async () => {
+            await new User(userData).insert();
+            const contest = await new Contest(contestData).insert();
+            const problem = await new Problem(problemData).insert();
+            await problem.update({
+                inputHidden: problemData.inputHidden,
+                outputHidden: problemData.outputHidden,
+            });
+            await contest.addProblem(problem.id);
+            await contest.updateProblem(problem.id, { color: 'red', order: 1 });
+            const { status, message } = contest.lastCall;
+
+            expect(message).toBe('Problem updated.');
+            expect(status).toBe(200);
+
+            const problems = (await contest.getProblems()).body.problems;
+            expect(problems[0].color).toBe('red');
+            expect(problems[0].order).toBe(1);
+        });
     });
 
     describe('Get a single contest (team login)', () => {
@@ -218,14 +350,30 @@ describe('Contest Route', () => {
 
     describe('Start contest', () => {
 
-        test('should start a contest', async () => {
+        test('should not allow to start a contest with no problems', async () => {
             await new User(userData).insert();
             const contest = await new Contest(contestData).insert();
             await contest.start();
             const { status, message } = contest.lastCall;
 
-            expect(status).toBe(200);
+            expect(status).toBe(400);
+            expect(message).toBe('Contest must have at least one problem');
+        });
+
+        test('should start a contest', async () => {
+            await new User(userData).insert();
+            const contest = await new Contest(contestData).insert();
+            const problem = await new Problem(problemData).insert();
+            await problem.update({
+                inputHidden: problemData.inputHidden,
+                outputHidden: problemData.outputHidden,
+            });
+            await contest.addProblem(problem.id);
+            await contest.start();
+            const { status, message } = contest.lastCall;
+
             expect(message).toBe('Contest started.');
+            expect(status).toBe(200);
             
             // wait 10 seconds to make sure get executes after start
             const now = Date.now();
@@ -240,6 +388,12 @@ describe('Contest Route', () => {
             
             await new User(userData).insert();
             const contest = await new Contest(contestData).insert();
+            const problem = await new Problem(problemData).insert();
+            await problem.update({
+                inputHidden: problemData.inputHidden,
+                outputHidden: problemData.outputHidden,
+            });
+            await contest.addProblem(problem.id);
             await contest.start();
             
             const now = Date.now();
@@ -254,6 +408,12 @@ describe('Contest Route', () => {
         test('should not allow to update contest logo after it has started', async () => {
             await new User(userData).insert();
             const contest = await new Contest(contestData).insert();
+            const problem = await new Problem(problemData).insert();
+            await problem.update({
+                inputHidden: problemData.inputHidden,
+                outputHidden: problemData.outputHidden,
+            });
+            await contest.addProblem(problem.id);
             await contest.start();
 
             const now = Date.now();
@@ -264,5 +424,6 @@ describe('Contest Route', () => {
             expect(message).toBe('Contest has already started');
             expect(status).toBe(403);
         });
+
     });
 });
