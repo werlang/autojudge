@@ -321,7 +321,7 @@ describe('Contest Route', () => {
 
     describe('Start contest', () => {
 
-        async function addProblem() {
+        async function startContest() {
             const user = await new User(userData).insert();
             const contest = await new Contest(contestData).insert();
             const problem = await new Problem(problemData).insert();
@@ -331,6 +331,8 @@ describe('Contest Route', () => {
             });
             await contest.addProblem(problem.id);
             const { status, message } = contest.lastCall;
+
+            await contest.start();
 
             return { user, contest, problem, status, message };
         }
@@ -346,8 +348,7 @@ describe('Contest Route', () => {
         });
 
         test('should start a contest', async () => {
-            const { contest } = await addProblem();
-            await contest.start();
+            const { contest } = await startContest();
             const { status, message } = contest.lastCall;
 
             expect(message).toBe('Contest started.');
@@ -363,8 +364,7 @@ describe('Contest Route', () => {
         });
 
         test('should not allow to update a contest after it has started', async () => {
-            const { contest } = await addProblem();
-            await contest.start();
+            const { contest } = await startContest();
             
             const now = Date.now();
             Date.now.mockImplementation(() => now + 10000);
@@ -376,8 +376,7 @@ describe('Contest Route', () => {
         });
 
         test('should not allow to update contest logo after it has started', async () => {
-            const { contest } = await addProblem();
-            await contest.start();
+            const { contest } = await startContest();
 
             const now = Date.now();
             Date.now.mockImplementation(() => now + 10000);
@@ -386,6 +385,70 @@ describe('Contest Route', () => {
 
             expect(message).toBe('Contest has already started');
             expect(status).toBe(403);
+        });
+
+        test('should not allow to update contest problems after it has started', async () => {
+            const { contest, problem } = await startContest();
+
+            const now = Date.now();
+            Date.now.mockImplementation(() => now + 10000);
+            await contest.addProblem(problem.id);
+            const { status, message } = contest.lastCall;
+
+            expect(message).toBe('Contest has already started');
+            expect(status).toBe(403);
+        });
+
+        test('should not allow to remove a problem after contest has started', async () => {
+            await new User(userData).insert();
+            const contest = await new Contest(contestData).insert();
+            const problem = await new Problem(problemData).insert();
+            await problem.update({
+                input: problemData.input,
+                output: problemData.output,
+                inputHidden: problemData.inputHidden,
+                outputHidden: problemData.outputHidden,
+            });
+            await contest.addProblem(problem.id);
+
+            const now = Date.now();
+            Date.now.mockImplementation(() => now + 10000);
+            await contest.removeProblem(problem.id);
+            const { status, message } = contest.lastCall;
+
+            expect(message).toBe('Contest has already started');
+            expect(status).toBe(403);
+        });
+
+        test('should reset a contest', async () => {
+            // TODO: implement this test after submission and teams is done.
+            // test start_time === null
+            // check if there are 0 submissions from the contest
+            // check if all teams have score 0
+        });
+
+        test('should unlock a contest', async () => {
+            const { contest } = await startContest();
+            await contest.get();
+            
+            expect(contest.finalScoreboard).toBe(false);
+            expect(contest.frozenScoreboard).toBe(false);
+            
+            const now = Date.now();
+            const newTime = (contest.duration - contest.freezeTime + 1) * 60 * 1000 + now;
+            Date.now.mockImplementation(() => newTime);
+            
+            await contest.get();
+            expect(contest.finalScoreboard).toBe(false);
+            expect(contest.frozenScoreboard).toBe(true);
+
+            await contest.unlock();
+            const { message } = contest.lastCall;
+
+            await contest.get();
+            expect(message).toBe('Contest unlocked.');
+            expect(contest.finalScoreboard).toBe(true);
+
         });
 
     });

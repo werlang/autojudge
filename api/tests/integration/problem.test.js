@@ -63,6 +63,8 @@ describe('Problem Route', () => {
             await problem.insert();
             const { message, status } = problem.lastCall;
 
+            await problem.get();
+
             expect(message).toBe('Problem created.');
             expect(status).toBe(201);
             expect(problem.id).toBe(1);

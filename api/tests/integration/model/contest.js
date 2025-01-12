@@ -61,4 +61,8 @@ export default class Contest extends Model {
         return this.call(`/${this.id}/problems/${problemId}`, 'PUT', data);
     }
 
+    async unlock() {
+        return this.call(`/${this.id}/unlock`, 'PUT');
+    }
+
 }
