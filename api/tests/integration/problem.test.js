@@ -206,7 +206,7 @@ describe('Problem Route', () => {
 
     describe('Update problem', () => {
 
-        async function updateProblem(customArgs={}, updateAsAuthor=true) {
+        async function updateProblem(customArgs={}, updateAsAuthor=true, customArgsUpdate={}) {
             await new User(user1Data).insert();
             const problem = await new Problem({...problemData, ...customArgs}).insert();
 
@@ -214,10 +214,10 @@ describe('Problem Route', () => {
                 title: 'New title',
                 description: 'New description',
                 public: false,
-                input: 'New input',
-                output: 'New output',
-                inputHidden: 'New input hidden',
-                outputHidden: 'New output hidden',
+                input: ['New input'],
+                output: ['New output'],
+                inputHidden: ['New input hidden'],
+                outputHidden: ['New output hidden'],
             };
 
             if (!updateAsAuthor) {
@@ -225,7 +225,7 @@ describe('Problem Route', () => {
                 jwt.verify.mockImplementation(() => ({ user: user2Data.email }));
             }
 
-            await problem.update(newData);
+            await problem.update({ ...newData, ...customArgsUpdate });
 
             return {
                 data: newData,
@@ -238,8 +238,8 @@ describe('Problem Route', () => {
         test('should update a problem', async () => {
             const { problem, data, status, message } = await updateProblem();
 
-            expect(status).toBe(200);
             expect(message).toBe('Problem updated.');
+            expect(status).toBe(200);
             expect(problem).toMatchObject({
                 title: data.title,
                 description: data.description,
@@ -255,6 +255,19 @@ describe('Problem Route', () => {
             expect(message).toBe('Item not found');
         });
 
+        test.each([
+            { input: 'input1', output: ['output1'] },
+            { input: ['input1'], output: 'output1' },
+            { input: ['input1'], output: ['output1', 'output2'] },
+            { inputHidden: ['input1'], outputHidden: ['output1', 'output2'] },
+        ])
+        ('should throw an error if input and output data does not match',async (fields) => {
+            const { status, message } = await updateProblem({}, true, fields);
+
+            expect(message).toBe('Input and output must be arrays of the same length.');
+            expect(status).toBe(400);
+        });
+
         test('should throw an error if user is not author', async () => {
             const { status, message } = await updateProblem({}, false);
 
@@ -268,8 +281,8 @@ describe('Problem Route', () => {
             const { status } = problem.lastCall;
 
             expect(status).toBe(200);
-            expect(problem.inputHidden).toBe('New input hidden');
-            expect(problem.outputHidden).toBe('New output hidden');
+            expect(problem.inputHidden).toBe(JSON.stringify(['New input hidden']));
+            expect(problem.outputHidden).toBe(JSON.stringify(['New output hidden']));
         });
 
         test('should hide hidden fields if user is not author', async () => {

@@ -41,10 +41,10 @@ describe('Contest Route', () => {
         problemData = {
             title: 'Test problem',
             description: 'This is a test problem',
-            input: JSON.stringify(['input1', 'input2']),
-            output: JSON.stringify(['output1', 'output2']),
-            inputHidden: JSON.stringify(['input1', 'input2']),
-            outputHidden: JSON.stringify(['output1', 'output2']),
+            input: ['input1', 'input2'],
+            output: ['output1', 'output2'],
+            inputHidden: ['input1', 'input2'],
+            outputHidden: ['output1', 'output2'],
         };
 
         jest.spyOn(fs, 'existsSync');
@@ -164,56 +164,41 @@ describe('Contest Route', () => {
 
     });
 
-    // TODO: create a funtino to improve problem relationship tests
-    // TODO: improve model to only allow i/o i array format
-
     describe('Contest problems relationship', () => {
 
-        test('should throw an error if problem does not have hidden test cases', async () => {
-            await new User(userData).insert();
-            const contest = await new Contest(contestData).insert();
+        async function addProblem({ hidden = false, contest, user } = {}) {
+            user = user || await new User(userData).insert();
+            contest = contest || await new Contest(contestData).insert();
             const problem = await new Problem(problemData).insert();
+            if (hidden) {
+                await problem.update({
+                    input: problemData.input,
+                    output: problemData.output,
+                    inputHidden: problemData.inputHidden,
+                    outputHidden: problemData.outputHidden,
+                });
+            }
             await contest.addProblem(problem.id);
             const { status, message } = contest.lastCall;
 
+            return { user, contest, problem, status, message };
+        }
+
+        test('should throw an error if problem does not have hidden test cases', async () => {
+            const { status, message } = await addProblem();
             expect(message).toBe('Problem must have hidden test cases');
             expect(status).toBe(400);
         });
 
         test('should add a problem to a contest', async () => {
-            await new User(userData).insert();
-            const contest = await new Contest(contestData).insert();
-            const problem = await new Problem(problemData).insert();
-            await problem.update({
-                inputHidden: problemData.inputHidden,
-                outputHidden: problemData.outputHidden,
-            });
-            await contest.addProblem(problem.id);
-            const { status, message } = contest.lastCall;
-            
+            const { status, message } = await addProblem({ hidden: true });
             expect(message).toBe('Problem added to contest.');
             expect(status).toBe(201);
         });
 
         test('should return all problems from a contest', async () => {
-            await new User(userData).insert();
-            const contest = await new Contest(contestData).insert();
-            const problem0 = await new Problem(problemData).insert();
-            const problem = await new Problem(problemData).insert();
-            await problem0.update({
-                inputHidden: problemData.inputHidden,
-                outputHidden: problemData.outputHidden,
-                input: problemData.input,
-                output: problemData.output,
-            });
-            await problem.update({
-                inputHidden: problemData.inputHidden,
-                outputHidden: problemData.outputHidden,
-                input: problemData.input,
-                output: problemData.output,
-            });
-            await contest.addProblem(problem.id);
-            await contest.addProblem(problem0.id);
+            const { contest, problem, user } = await addProblem({ hidden: true });
+            await addProblem({ hidden: true, user, contest });
 
             const {problems} = (await contest.getProblems()).body;
             const { status } = contest.lastCall;
@@ -223,10 +208,10 @@ describe('Contest Route', () => {
             expect(problems[0].id).toBe(problem.id);
             expect(problems[0].title).toBe(problem.title);
             expect(problems[0].description).toBe(problem.description);
-            expect(problems[0].input).toBe(problem.input);
-            expect(problems[0].output).toBe(problem.output);
-            expect(problems[0].inputHidden).toBe(problem.inputHidden);
-            expect(problems[0].outputHidden).toBe(problem.outputHidden);
+            expect(problems[0].input).toBe(JSON.stringify(problem.input));
+            expect(problems[0].output).toBe(JSON.stringify(problem.output));
+            expect(problems[0].inputHidden).toBe(JSON.stringify(problem.inputHidden));
+            expect(problems[0].outputHidden).toBe(JSON.stringify(problem.outputHidden));
         });
 
         test('problems from other authors should not show hidden test cases', async () => {
@@ -257,14 +242,7 @@ describe('Contest Route', () => {
         });
 
         test('should remove a problem from a contest', async () => {
-            await new User(userData).insert();
-            const contest = await new Contest(contestData).insert();
-            const problem = await new Problem(problemData).insert();
-            await problem.update({
-                inputHidden: problemData.inputHidden,
-                outputHidden: problemData.outputHidden,
-            });
-            await contest.addProblem(problem.id);
+            const { contest, problem } = await addProblem({ hidden: true });
             await contest.removeProblem(problem.id);
             const { status, message } = contest.lastCall;
 
@@ -273,14 +251,7 @@ describe('Contest Route', () => {
         });
 
         test('should change problem color and order in a contest', async () => {
-            await new User(userData).insert();
-            const contest = await new Contest(contestData).insert();
-            const problem = await new Problem(problemData).insert();
-            await problem.update({
-                inputHidden: problemData.inputHidden,
-                outputHidden: problemData.outputHidden,
-            });
-            await contest.addProblem(problem.id);
+            const { contest, problem } = await addProblem({ hidden: true });
             await contest.updateProblem(problem.id, { color: 'red', order: 1 });
             const { status, message } = contest.lastCall;
 
@@ -350,6 +321,20 @@ describe('Contest Route', () => {
 
     describe('Start contest', () => {
 
+        async function addProblem() {
+            const user = await new User(userData).insert();
+            const contest = await new Contest(contestData).insert();
+            const problem = await new Problem(problemData).insert();
+            await problem.update({
+                inputHidden: problemData.inputHidden,
+                outputHidden: problemData.outputHidden,
+            });
+            await contest.addProblem(problem.id);
+            const { status, message } = contest.lastCall;
+
+            return { user, contest, problem, status, message };
+        }
+
         test('should not allow to start a contest with no problems', async () => {
             await new User(userData).insert();
             const contest = await new Contest(contestData).insert();
@@ -361,14 +346,7 @@ describe('Contest Route', () => {
         });
 
         test('should start a contest', async () => {
-            await new User(userData).insert();
-            const contest = await new Contest(contestData).insert();
-            const problem = await new Problem(problemData).insert();
-            await problem.update({
-                inputHidden: problemData.inputHidden,
-                outputHidden: problemData.outputHidden,
-            });
-            await contest.addProblem(problem.id);
+            const { contest } = await addProblem();
             await contest.start();
             const { status, message } = contest.lastCall;
 
@@ -385,15 +363,7 @@ describe('Contest Route', () => {
         });
 
         test('should not allow to update a contest after it has started', async () => {
-            
-            await new User(userData).insert();
-            const contest = await new Contest(contestData).insert();
-            const problem = await new Problem(problemData).insert();
-            await problem.update({
-                inputHidden: problemData.inputHidden,
-                outputHidden: problemData.outputHidden,
-            });
-            await contest.addProblem(problem.id);
+            const { contest } = await addProblem();
             await contest.start();
             
             const now = Date.now();
@@ -406,14 +376,7 @@ describe('Contest Route', () => {
         });
 
         test('should not allow to update contest logo after it has started', async () => {
-            await new User(userData).insert();
-            const contest = await new Contest(contestData).insert();
-            const problem = await new Problem(problemData).insert();
-            await problem.update({
-                inputHidden: problemData.inputHidden,
-                outputHidden: problemData.outputHidden,
-            });
-            await contest.addProblem(problem.id);
+            const { contest } = await addProblem();
             await contest.start();
 
             const now = Date.now();

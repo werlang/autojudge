@@ -146,18 +146,20 @@ router.put('/:id', auth({'user:exists': true}), async (req, res, next) => {
             toUpdate.is_public = data.public === 'true' || data.public === true;
         }
 
-        if (data.input) {
-            toUpdate.input_public = data.input;
-        }
-        if (data.inputHidden) {
-            toUpdate.input_hidden = data.inputHidden;
+        if (data.input && data.output) {
+            if (!Array.isArray(data.input) || !Array.isArray(data.output) || data.input.length !== data.output.length) {
+                throw new CustomError(400, 'Input and output must be arrays of the same length.');
+            }
+            toUpdate.input_public = JSON.stringify(data.input);
+            toUpdate.output_public = JSON.stringify(data.output);
         }
 
-        if (data.output) {
-            toUpdate.output_public = data.output;
-        }
-        if (data.outputHidden) {
-            toUpdate.output_hidden = data.outputHidden;
+        if (data.inputHidden && data.outputHidden) {
+            if (!Array.isArray(data.inputHidden) || !Array.isArray(data.outputHidden) || data.inputHidden.length !== data.outputHidden.length) {
+                throw new CustomError(400, 'Input and output must be arrays of the same length.');
+            }
+            toUpdate.input_hidden = JSON.stringify(data.inputHidden);
+            toUpdate.output_hidden = JSON.stringify(data.outputHidden);
         }
 
         await problem.update(toUpdate);
