@@ -6,16 +6,16 @@ export default class User extends Model {
         super(fields, '/login', token);
     }
 
-    async insert(user) {
-        return this.call('/register', 'POST', user);
+    async insert(data) {
+        return this.call('/register', 'POST', data);
     }
 
     async googleLogin() {
         return this.call('/google', 'POST', null, this.token);
     }
 
-    async login(user) {
-        return this.call('/', 'POST', user);
+    async login(data) {
+        return this.call('/', 'POST', data);
     }
 
     async get() {

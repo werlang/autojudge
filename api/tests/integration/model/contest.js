@@ -65,4 +65,9 @@ export default class Contest extends Model {
         return this.call(`/${this.id}/unlock`, 'PUT');
     }
 
+    async insertTeam(data) {
+        await this.call(`/${this.id}/teams`, 'POST', data);
+        return this;
+    }
+
 }
