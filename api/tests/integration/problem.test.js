@@ -11,6 +11,8 @@ jest.mock('sharp');
 describe('Problem Route', () => {
     let problemData;
     let user1Data, user2Data;
+    let connector;
+    let sqlFile = fs.readFileSync('tests/integration/database-test.sql', 'utf8');
 
     beforeAll(async () => {
         user1Data = {
@@ -37,22 +39,19 @@ describe('Problem Route', () => {
         jest.spyOn(fs, 'existsSync');
         jest.spyOn(fs, 'readFileSync');
         jest.spyOn(fs, 'unlinkSync');
-
-        await MysqlConnector.connect();
-        await MysqlConnector.cleanup();
     });
 
     afterAll(async () => {
-        await MysqlConnector.close();
     });
 
     beforeEach(async () => {
+        connector = await new MysqlConnector({ sqlFile }).bootstrap();
         // default logged user is user1
         jwt.verify.mockImplementation(() => ({ user: user1Data.email }));
     });
     
     afterEach(async () => {
-        await MysqlConnector.cleanup();
+        await connector.destroy();
     });
 
     describe('Insert problem', () => {
@@ -135,8 +134,8 @@ describe('Problem Route', () => {
             await new User(user1Data).insert();
             await Promise.all([
                 new Problem({...problemData, public: false}).insert(),
-                new Problem(problemData).insert(),
-                new Problem(problemData).insert(),
+                new Problem({...problemData, public: true}).insert(),
+                new Problem({...problemData, public: true}).insert(),
             ]);
             await new User(user2Data).insert();
             jwt.verify.mockImplementation(() => ({ user: user2Data.email }));
@@ -151,8 +150,8 @@ describe('Problem Route', () => {
             await new User(user1Data).insert();
             await Promise.all([
                 new Problem({...problemData, public: false}).insert(),
-                new Problem(problemData).insert(),
-                new Problem(problemData).insert(),
+                new Problem({...problemData, public: true}).insert(),
+                new Problem({...problemData, public: true}).insert(),
             ]);
             const res = await Problem.getAll();
 

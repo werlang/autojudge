@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken';
 import { OAuth2Client } from 'google-auth-library';
 import MysqlConnector from './mysqlConnector.js';
 import User from './model/user.js';
+import fs from 'fs';
 
 jest.mock('jsonwebtoken');
 jest.mock('google-auth-library');
@@ -9,6 +10,8 @@ jest.mock('google-auth-library');
 describe('Login route', () => {
     const token = 'valid_token';
     let user;
+    let connector;
+    let sqlFile = fs.readFileSync('tests/integration/database-test.sql', 'utf8');
 
     beforeAll(async () => {
         user = {
@@ -27,17 +30,17 @@ describe('Login route', () => {
             family_name: user.lastName,
             picture: 'https://example.com/picture.jpg',
         })});
-
-        await MysqlConnector.connect();
-        await MysqlConnector.cleanup();
     });
 
-    afterAll(async () => {
-        await MysqlConnector.close();
+    beforeEach(async () => {
+        connector = await new MysqlConnector({ sqlFile }).bootstrap();
     });
 
     afterEach(async () => {
-        await MysqlConnector.cleanup();
+        await connector.destroy();
+    });
+    
+    afterAll(async () => {
     });
 
     describe('Insert user', () => {
@@ -74,8 +77,8 @@ describe('Login route', () => {
             await new User(user).insert();
             const res = await new User(user).insert();
 
-            expect(res.status).toBe(409);
             expect(res.body.message).toBe('User already exists');
+            expect(res.status).toBe(409);
         });
 
         test('should register a user with google credentials', async () => {

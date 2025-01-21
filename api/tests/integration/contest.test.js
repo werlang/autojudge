@@ -14,6 +14,8 @@ describe('Contest Route', () => {
     let user2Data;
     let contestData;
     let problemData;
+    let connector;
+    let sqlFile = fs.readFileSync('tests/integration/database-test.sql', 'utf8');
 
     beforeAll(async () => {
         userData = {
@@ -51,16 +53,14 @@ describe('Contest Route', () => {
         jest.spyOn(fs, 'mkdirSync');
         jest.spyOn(fs, 'readFileSync');
         jest.spyOn(Date, 'now');
-
-        await MysqlConnector.connect();
-        await MysqlConnector.cleanup();
     });
 
     afterAll(async () => {
-        await MysqlConnector.close();
     });
 
     beforeEach(async () => {
+        connector = await new MysqlConnector({ sqlFile }).bootstrap();
+
         // default logged user is user1
         jwt.verify.mockImplementation(() => ({ user: userData.email }));
 
@@ -75,7 +75,7 @@ describe('Contest Route', () => {
     
     afterEach(async () => {
         jest.clearAllMocks();
-        await MysqlConnector.cleanup();
+        await connector.destroy();
     });
 
     describe('Insert contest', () => {
@@ -410,6 +410,7 @@ describe('Contest Route', () => {
                 outputHidden: problemData.outputHidden,
             });
             await contest.addProblem(problem.id);
+            await contest.start();
 
             const now = Date.now();
             Date.now.mockImplementation(() => now + 10000);

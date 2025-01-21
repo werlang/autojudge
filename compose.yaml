@@ -86,7 +86,7 @@ services:
         volumes:
             - mysql:/var/lib/mysql
             - ./database.sql:/docker-entrypoint-initdb.d/database.sql
-            # - .:/app
+            - .:/app
         ports:
             - 127.0.0.1:${MYSQL_PORT}:3306
         networks:

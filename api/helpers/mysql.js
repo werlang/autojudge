@@ -18,8 +18,9 @@ export default class Mysql {
     static async connect(config = {}) {
         if (Mysql.connected) return this;
 
-        if (process.env.NODE_ENV == 'test' && !Mysql.config.database.endsWith('_test')) {
-            Mysql.config.database += '_test';
+        if (process.env.NODE_ENV == 'test') {
+            Mysql.originalDatabase = process.env.MYSQL_DATABASE;
+            Mysql.config.database = Mysql.originalDatabase + '_test_' + process.env.TEST_DATABASE_ID;
         }
 
         Mysql.connection = mysql.createPool({ ...config, ...Mysql.config });
