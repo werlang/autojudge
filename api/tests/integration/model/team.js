@@ -8,7 +8,9 @@ export default class Team extends Model {
     }
 
     async login() {
-        return this.call(`/${this.id}/login`, 'POST');
+        // console.log(this.password);
+        const res = await this.call(`/${this.id}/login`, 'POST', {}, this.password);
+        return res.body;
     }
 
     async insert() {
@@ -16,8 +18,10 @@ export default class Team extends Model {
             name: this.name,
             contest: this.contest.id,
         });
-        if (res.lastCall && res.lastCall.team) {
-            this.updateAttributes(res.lastCall.team);
+        if (res.lastCall) {
+            if (res.lastCall.team) {
+                this.updateAttributes(res.lastCall.team);
+            }
             this.lastCall = res.lastCall;
         }
         return this;

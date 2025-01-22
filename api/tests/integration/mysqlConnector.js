@@ -20,6 +20,7 @@ export default class MysqlConnector {
             host: 'mysql',
             user: 'root',
             password: process.env.MYSQL_ROOT_PASSWORD,
+            charset: 'utf8mb4',
         }).then(async (connection) => {
             // drop all databases
             const dbList = await connection.query("SHOW DATABASES");
@@ -47,18 +48,26 @@ export default class MysqlConnector {
             user: 'root',
             password: process.env.MYSQL_ROOT_PASSWORD,
             database: process.env.MYSQL_DATABASE + '_test_' + dbId,
+            charset: 'utf8mb4',
         };
 
         const createDbQuery = `CREATE DATABASE IF NOT EXISTS \`${this.config.database}\``;
-        await mysql.createConnection({
-            ...this.config,
-            database: null,
-        }).then(async (connection) => {
-            await connection.query(createDbQuery);
-            await connection.end();
-        });
 
-        this.connection = await mysql.createConnection(this.config);
+        try {
+            await mysql.createConnection({
+                ...this.config,
+                database: null,
+            }).then(async (connection) => {
+                await connection.query(createDbQuery);
+                await connection.end();
+            });
+    
+            this.connection = await mysql.createConnection(this.config);
+        }
+        catch (err) {
+            // console.log(this.config);
+            throw new CustomError(500, err.message);
+        }
         return this;
     }
 

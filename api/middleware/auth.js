@@ -149,6 +149,7 @@ async function authTeam(req) {
         }
     }
     catch (error) {
+        // console.log(error);
     }
 
     // try to get the team using the hash. It must allow parts of the hash, but only should authenticate if returns a single team
