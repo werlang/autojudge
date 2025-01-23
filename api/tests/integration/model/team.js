@@ -27,4 +27,34 @@ export default class Team extends Model {
         return this;
     }
 
+    async get() {
+        const res = await this.call(`/`, 'GET');
+        if (res.body.team) {
+            this.updateAttributes(res.body.team);
+        }
+        this.lastCall = res.lastCall || res.body;
+        return this;
+    }
+
+    async update(data) {
+        const res = await this.call(`/${this.id}`, 'PUT', {...data});
+        if (res.body.team) {
+            this.updateAttributes(res.body.team);
+        }
+        this.lastCall = res.lastCall || res.body;
+    }
+
+    async resetPassword() {
+        const res = await this.call(`/${this.id}/reset`, 'PUT');
+        if (res.body.team) {
+            this.updateAttributes(res.body.team);
+        }
+        this.lastCall = res.lastCall || res.body;
+    }
+
+    async delete() {
+        const res = await this.call(`/${this.id}`, 'DELETE');
+        this.lastCall = res.lastCall || res.body;
+    }
+
 }

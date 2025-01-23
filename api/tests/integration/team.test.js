@@ -50,6 +50,7 @@ describe('Team Route', () => {
         };
 
         jest.spyOn(bcrypt, 'compare');
+        jest.spyOn(Date, 'now');
 
     });
 
@@ -72,7 +73,7 @@ describe('Team Route', () => {
         // await MysqlConnector.destroyAll();
     });
 
-    async function insertTeam(data={}) {
+    async function insertTeam(data={}, start=true) {
         await new User(userData).insert();
         const contest = await new Contest(contestData).insert();
         const problem = await new Problem(problemData).insert();
@@ -83,7 +84,9 @@ describe('Team Route', () => {
         await contest.addProblem(problem.id);
         
         const team = await new Team({ ...teamData, contest, ...data }).insert();
-        await contest.start();
+        if (start) {
+            await contest.start();
+        }
 
         return team;
     }
@@ -111,12 +114,39 @@ describe('Team Route', () => {
             expect(status).toBe(400);
         });
 
+        test('should not allow to insert a if contest has started', async () => {
+            const team = await insertTeam();
+            const contest = await new Contest({ id: team.contest }).get();
+            await contest.start();
+
+            const now = Date.now();
+            Date.now.mockImplementation(() => now + 10000);
+
+            await team.insert();
+            const { message, status } = team.lastCall;
+
+            expect(message).toContain('Contest has already started');
+            expect(status).toBe(403);
+        });
+
+        test('should not allow to insert a team if not contest admin', async () => {
+            jwt.verify.mockImplementation(() => ({ user: 'foo.bar@example.com' }));
+            const team = await insertTeam();
+            await team.insert();
+            const { message, status } = team.lastCall;
+
+            expect(status).toBe(401);
+        });
+
     });
 
     describe('Team login', () => {
 
         test('should login a team', async () => {
             const team = await insertTeam();
+            
+            const now = Date.now();
+            Date.now.mockImplementation(() => now + 10000);
             const {token} = await team.login();
 
             expect(token).toBe('valid_token');
@@ -125,10 +155,147 @@ describe('Team Route', () => {
         test('should not login a team with invalid password', async () => {
             const team = await insertTeam();
             bcrypt.compare.mockImplementation(() => false);
+
+            const now = Date.now();
+            Date.now.mockImplementation(() => now + 10000);
+
             const res = await team.login();
 
             expect(res.message).toBe('Invalid password');
             expect(res.status).toBe(401);
+        });
+
+    });
+
+    describe('Team get', () => {
+
+        test('should get a team', async () => {
+            const team = await insertTeam();
+
+            const now = Date.now();
+            Date.now.mockImplementation(() => now + 10000);
+
+            await team.login();
+            jwt.verify.mockImplementation(() => ({ team: teamData.id }));
+            await team.get();
+
+            expect(team.id).toBe(1);
+            expect(team.hash).toHaveLength(6);
+            expect(team.name).toBe('Team 1');
+            expect(team.score).toBe(0);
+            expect(team.contest.id).toBe(1);
+            expect(team.contest.name).toBe('Contest 1');
+            expect(team.contest.description).toBe('Description');
+            expect(team.contest.logo).toBe(false);
+        });
+
+        test('should not get a team if not logged', async () => {
+            const team = await insertTeam();
+            jwt.verify.mockImplementation(() => ({}));
+            await team.get();
+            const { message, status } = team.lastCall;
+
+            expect(message).toBe('Invalid token.');
+            expect(status).toBe(401);
+        });
+
+    });
+
+    describe('Team update', () => {
+        
+        test('should update a team', async () => {
+            const team = await insertTeam();
+            // user logged is the contest admin
+            jwt.verify.mockImplementation(() => ({ user: userData.email }));
+    
+            await team.update({ name: 'New name' });
+
+            expect(team.name).toBe('New name');
+        });
+
+        test('should not update a team without a name', async () => {
+            const team = await insertTeam();
+            jwt.verify.mockImplementation(() => ({ user: userData.email }));
+
+            await team.update({ name: null });
+            const { message, status } = team.lastCall;
+
+            expect(message).toContain('Name is required.');
+            expect(status).toBe(400);
+        });
+
+        test('should not update a team score directly', async () => {
+            const team = await insertTeam();
+            jwt.verify.mockImplementation(() => ({ user: userData.email }));
+
+            await team.update({ name: 'New name', score: 100 });
+            const { message, status } = team.lastCall;
+
+            expect(message).toContain('Score cannot be updated directly.');
+            expect(status).toBe(403);
+        });
+
+        test('should reset a team password', async () => {
+            const team = await insertTeam();
+            const oldPassword = team.password;
+            jwt.verify.mockImplementation(() => ({ user: userData.email }));
+    
+            await team.resetPassword();
+    
+            expect(team.password).not.toBe(oldPassword);
+        });
+
+        test('should not reset a team password if not contest admin', async () => {
+            const team = await insertTeam();
+            jwt.verify.mockImplementation(() => ({ user: 'foo.bar@example.com' }));
+
+            await team.resetPassword();
+            const { message, status } = team.lastCall;
+
+            expect(status).toBe(401);
+        });
+    });
+
+    describe('Team delete', () => {
+
+        test('should not delete a team if contest has started', async () => {
+            const team = await insertTeam();
+            jwt.verify.mockImplementation(() => ({ user: userData.email }));
+            
+            const now = Date.now();
+            Date.now.mockImplementation(() => now + 10000);
+
+            await team.delete();
+            const { message, status } = team.lastCall;
+    
+            expect(message).toContain('Contest has already started');
+            expect(status).toBe(403);
+        });
+
+        test('should delete a team', async () => {
+            const team = await insertTeam({}, false);
+            jwt.verify.mockImplementation(() => ({ user: userData.email }));
+    
+            const now = Date.now();
+            Date.now.mockImplementation(() => now + 10000);
+
+            await team.delete();
+            const { message } = team.lastCall;
+    
+            expect(message).toContain('Team removed.');
+        });
+
+        test('should not delete a team if not contest admin', async () => {
+            const team = await insertTeam({}, false);
+            jwt.verify.mockImplementation(() => ({ user: 'foo.bar@example.com' }));
+
+            const now = Date.now();
+            Date.now.mockImplementation(() => now + 10000);
+
+            await team.delete();
+            const { message, status } = team.lastCall;
+
+            expect(status).toBe(401);
         });
 
     });
