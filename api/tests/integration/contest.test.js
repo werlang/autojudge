@@ -319,23 +319,23 @@ describe('Contest Route', () => {
         
     });
 
+    async function startContest() {
+        const user = await new User(userData).insert();
+        const contest = await new Contest(contestData).insert();
+        const problem = await new Problem(problemData).insert();
+        await problem.update({
+            inputHidden: problemData.inputHidden,
+            outputHidden: problemData.outputHidden,
+        });
+        await contest.addProblem(problem.id);
+        const { status, message } = contest.lastCall;
+
+        await contest.start();
+
+        return { user, contest, problem, status, message };
+    }
+
     describe('Start contest', () => {
-
-        async function startContest() {
-            const user = await new User(userData).insert();
-            const contest = await new Contest(contestData).insert();
-            const problem = await new Problem(problemData).insert();
-            await problem.update({
-                inputHidden: problemData.inputHidden,
-                outputHidden: problemData.outputHidden,
-            });
-            await contest.addProblem(problem.id);
-            const { status, message } = contest.lastCall;
-
-            await contest.start();
-
-            return { user, contest, problem, status, message };
-        }
 
         test('should not allow to start a contest with no problems', async () => {
             await new User(userData).insert();
@@ -361,6 +361,19 @@ describe('Contest Route', () => {
 
             expect(contest.startTime).not.toBe(null);
             expect(contest.remainingTime).not.toBe(null);
+        });
+
+        test('should not allow to start a contest that has already started', async () => {
+            const { contest } = await startContest();
+
+            const now = Date.now();
+            Date.now.mockImplementation(() => now + 10000);
+
+            await contest.start();
+            const { status, message } = contest.lastCall;
+
+            expect(message).toBe('Contest has already started');
+            expect(status).toBe(403);
         });
 
         test('should not allow to update a contest after it has started', async () => {
@@ -428,6 +441,10 @@ describe('Contest Route', () => {
             // check if all teams have score 0
         });
 
+    });
+
+    describe('Unlock contest', () => {
+
         test('should unlock a contest', async () => {
             const { contest } = await startContest();
             await contest.get();
@@ -452,5 +469,30 @@ describe('Contest Route', () => {
 
         });
 
+        test('should not allow to unlock a contest that has not started', async () => {
+            await new User(userData).insert();
+            const contest = await new Contest(contestData).insert();
+            await contest.unlock();
+            const { status, message } = contest.lastCall;
+
+            expect(status).toBe(403);
+            expect(message).toBe('Contest has not started yet');
+        });
+
+        test('should not allow to unlock a contest that is not locked (frozen)', async () => {
+            const { contest } = await startContest();
+            await contest.get();
+            await contest.unlock();
+
+            const now = Date.now();
+            Date.now.mockImplementation(() => now + 10000);
+
+            // unlock again, should throw an error
+            await contest.unlock();
+            const { status, message } = contest.lastCall;
+
+            expect(status).toBe(403);
+            expect(message).toBe('Contest is not frozen');
+        });
     });
 });

@@ -10,6 +10,8 @@ import Problem from './model/problem.js';
 jest.mock('jsonwebtoken');
 jest.mock('sharp');
 
+// TODO: have to test team.updateScore. But this is called on the submissions route
+
 describe('Team Route', () => {
     let userData;
     let contestData;
