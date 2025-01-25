@@ -65,4 +65,13 @@ export default class Problem extends Model {
         }
         return this;
     }
+
+    async addSubmission(data) {
+        // send body.code and body.filename
+        const res = await this.call(`/${this.id}/judge`, 'POST', data);
+        if (res.body.submission) {
+            this.submission = res.body.submission;
+        }
+        return this;
+    }
 }

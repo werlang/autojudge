@@ -19,8 +19,8 @@ export default class Team extends Model {
             contest: this.contest.id,
         });
         if (res.lastCall) {
-            if (res.lastCall.team) {
-                this.updateAttributes(res.lastCall.team);
+            if (res.lastCall[this.entity]) {
+                this.updateAttributes(res.lastCall[this.entity]);
             }
             this.lastCall = res.lastCall;
         }
