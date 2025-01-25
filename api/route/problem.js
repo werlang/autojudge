@@ -191,8 +191,20 @@ router.post('/:id/judge', [
             throw new CustomError(404, 'Problem not found in contest.');
         }
         const problem = await new Problem({ id: req.params.id }).get();
-        if (!problem.input_hidden || !problem.output_hidden) {
+        if (
+            !problem.input_hidden ||
+            !problem.output_hidden ||
+            JSON.parse(problem.input_hidden).length === 0 ||
+            JSON.parse(problem.output_hidden).length === 0
+        ) {
             throw new CustomError(403, 'Problem does not have hidden test cases');
+        }
+
+        if (!req.body.code) {
+            throw new CustomError(400, 'Code is required');
+        }
+        if (!req.body.filename) {
+            throw new CustomError(400, 'Filename is required');
         }
 
         // check if team has an accepted submission for this problem

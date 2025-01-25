@@ -77,7 +77,7 @@ export default class Submission extends Model {
         const data = {
             status,
             score: elapsedTime,
-            log: response,
+            log: JSON.stringify(response),
         };
         
         if (status !== 'ACCEPTED') {

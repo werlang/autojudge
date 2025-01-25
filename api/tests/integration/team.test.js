@@ -8,7 +8,6 @@ import Team from './model/team.js';
 import Problem from './model/problem.js';
 
 jest.mock('jsonwebtoken');
-jest.mock('sharp');
 
 // TODO: have to test team.updateScore. But this is called on the submissions route
 
@@ -19,6 +18,8 @@ describe('Team Route', () => {
     let teamData;
     let connector;
     let sqlFile = fs.readFileSync('tests/integration/database-test.sql', 'utf8');
+
+    const passTime = time => jest.setSystemTime(new Date(Date.now() + time));
 
     beforeAll(async () => {
         userData = {
@@ -52,11 +53,12 @@ describe('Team Route', () => {
         };
 
         jest.spyOn(bcrypt, 'compare');
-        jest.spyOn(Date, 'now');
 
     });
 
     beforeEach(async () => {
+        jest.useFakeTimers({ doNotFake: ['nextTick', 'setImmediate'] })
+
         connector = await new MysqlConnector({ sqlFile }).bootstrap();
 
         // default logged user is user1
@@ -67,6 +69,8 @@ describe('Team Route', () => {
     });
     
     afterEach(async () => {
+        jest.useRealTimers();
+
         jest.clearAllMocks();
         await connector.destroy();
     });
@@ -121,8 +125,7 @@ describe('Team Route', () => {
             const contest = await new Contest({ id: team.contest }).get();
             await contest.start();
 
-            const now = Date.now();
-            Date.now.mockImplementation(() => now + 10000);
+            passTime(1000);
 
             await team.insert();
             const { message, status } = team.lastCall;
@@ -147,8 +150,7 @@ describe('Team Route', () => {
         test('should login a team', async () => {
             const team = await insertTeam();
             
-            const now = Date.now();
-            Date.now.mockImplementation(() => now + 10000);
+            passTime(1000);
             const {token} = await team.login();
 
             expect(token).toBe('valid_token');
@@ -158,8 +160,7 @@ describe('Team Route', () => {
             const team = await insertTeam();
             bcrypt.compare.mockImplementation(() => false);
 
-            const now = Date.now();
-            Date.now.mockImplementation(() => now + 10000);
+            passTime(1000);
 
             const res = await team.login();
 
@@ -174,8 +175,7 @@ describe('Team Route', () => {
         test('should get a team', async () => {
             const team = await insertTeam();
 
-            const now = Date.now();
-            Date.now.mockImplementation(() => now + 10000);
+            passTime(1000);
 
             await team.login();
             jwt.verify.mockImplementation(() => ({ team: teamData.id }));
@@ -264,8 +264,7 @@ describe('Team Route', () => {
             const team = await insertTeam();
             jwt.verify.mockImplementation(() => ({ user: userData.email }));
             
-            const now = Date.now();
-            Date.now.mockImplementation(() => now + 10000);
+            passTime(1000);
 
             await team.delete();
             const { message, status } = team.lastCall;
@@ -278,8 +277,7 @@ describe('Team Route', () => {
             const team = await insertTeam({}, false);
             jwt.verify.mockImplementation(() => ({ user: userData.email }));
     
-            const now = Date.now();
-            Date.now.mockImplementation(() => now + 10000);
+            passTime(1000);
 
             await team.delete();
             const { message } = team.lastCall;
@@ -291,8 +289,7 @@ describe('Team Route', () => {
             const team = await insertTeam({}, false);
             jwt.verify.mockImplementation(() => ({ user: 'foo.bar@example.com' }));
 
-            const now = Date.now();
-            Date.now.mockImplementation(() => now + 10000);
+            passTime(1000);
 
             await team.delete();
             const { message, status } = team.lastCall;

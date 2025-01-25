@@ -152,13 +152,14 @@ describe('Submission Class', () => {
                 elapsedTime: 500,
             });
             Db.update.mockResolvedValue();
+            Db.find.mockResolvedValue([sampleData]);
 
             await submission.updateStatus(response);
 
             expect(Db.update).toHaveBeenCalledWith('submissions', {
                 status: 'ACCEPTED',
                 score: 500,
-                log: response,
+                log: JSON.stringify(response),
             }, submission.id);
         });
 
@@ -170,13 +171,14 @@ describe('Submission Class', () => {
                 elapsedTime: 500,
             });
             Db.update.mockResolvedValue();
+            Db.find.mockResolvedValue([sampleData]);
 
             await submission.updateStatus(response);
 
             expect(Db.update).toHaveBeenCalledWith('submissions', {
                 status: 'WRONG_ANSWER',
                 score: 20 * 60 * 1000,
-                log: response,
+                log: JSON.stringify(response),
             }, submission.id);
         });
 
@@ -188,13 +190,14 @@ describe('Submission Class', () => {
                 elapsedTime: 500,
             });
             Db.update.mockResolvedValue();
+            Db.find.mockResolvedValue([sampleData]);
 
             await submission.updateStatus(response);
 
             expect(Db.update).toHaveBeenCalledWith('submissions', {
                 status: 'PARSING_ERROR',
                 score: 0,
-                log: response,
+                log: JSON.stringify(response),
             }, submission.id);
         });
     });

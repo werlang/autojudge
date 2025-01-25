@@ -17,6 +17,8 @@ describe('Contest Route', () => {
     let connector;
     let sqlFile = fs.readFileSync('tests/integration/database-test.sql', 'utf8');
 
+    const passTime = time => jest.setSystemTime(new Date(Date.now() + time));
+
     beforeAll(async () => {
         userData = {
             name: 'Test',
@@ -52,13 +54,14 @@ describe('Contest Route', () => {
         jest.spyOn(fs, 'existsSync');
         jest.spyOn(fs, 'mkdirSync');
         jest.spyOn(fs, 'readFileSync');
-        jest.spyOn(Date, 'now');
     });
 
     afterAll(async () => {
     });
 
     beforeEach(async () => {
+        jest.useFakeTimers({ doNotFake: ['nextTick', 'setImmediate'] })
+
         connector = await new MysqlConnector({ sqlFile }).bootstrap();
 
         // default logged user is user1
@@ -74,6 +77,8 @@ describe('Contest Route', () => {
     });
     
     afterEach(async () => {
+        jest.useRealTimers();
+
         jest.clearAllMocks();
         await connector.destroy();
     });
@@ -354,9 +359,8 @@ describe('Contest Route', () => {
             expect(message).toBe('Contest started.');
             expect(status).toBe(200);
             
-            // wait 10 seconds to make sure get executes after start
-            const now = Date.now();
-            Date.now.mockImplementation(() => now + 10000);
+            // wait 1 second to make sure get executes after start
+            passTime(1000);
             await contest.get();
 
             expect(contest.startTime).not.toBe(null);
@@ -366,8 +370,7 @@ describe('Contest Route', () => {
         test('should not allow to start a contest that has already started', async () => {
             const { contest } = await startContest();
 
-            const now = Date.now();
-            Date.now.mockImplementation(() => now + 10000);
+            passTime(1000);
 
             await contest.start();
             const { status, message } = contest.lastCall;
@@ -379,8 +382,7 @@ describe('Contest Route', () => {
         test('should not allow to update a contest after it has started', async () => {
             const { contest } = await startContest();
             
-            const now = Date.now();
-            Date.now.mockImplementation(() => now + 10000);
+            passTime(1000);
             await contest.update({ name: 'New Name' });
             const { status, message } = contest.lastCall;
 
@@ -391,8 +393,7 @@ describe('Contest Route', () => {
         test('should not allow to update contest logo after it has started', async () => {
             const { contest } = await startContest();
 
-            const now = Date.now();
-            Date.now.mockImplementation(() => now + 10000);
+            passTime(1000);
             await contest.updateLogo('image_data');
             const { status, message } = contest.lastCall;
 
@@ -403,8 +404,7 @@ describe('Contest Route', () => {
         test('should not allow to update contest problems after it has started', async () => {
             const { contest, problem } = await startContest();
 
-            const now = Date.now();
-            Date.now.mockImplementation(() => now + 10000);
+            passTime(1000);
             await contest.addProblem(problem.id);
             const { status, message } = contest.lastCall;
 
@@ -425,8 +425,7 @@ describe('Contest Route', () => {
             await contest.addProblem(problem.id);
             await contest.start();
 
-            const now = Date.now();
-            Date.now.mockImplementation(() => now + 10000);
+            passTime(1000);
             await contest.removeProblem(problem.id);
             const { status, message } = contest.lastCall;
 
@@ -452,9 +451,8 @@ describe('Contest Route', () => {
             expect(contest.finalScoreboard).toBe(false);
             expect(contest.frozenScoreboard).toBe(false);
             
-            const now = Date.now();
-            const newTime = (contest.duration - contest.freezeTime + 1) * 60 * 1000 + now;
-            Date.now.mockImplementation(() => newTime);
+            const lapse = (contest.duration - contest.freezeTime + 1) * 60 * 1000;
+            passTime(lapse);
             
             await contest.get();
             expect(contest.finalScoreboard).toBe(false);
@@ -484,8 +482,7 @@ describe('Contest Route', () => {
             await contest.get();
             await contest.unlock();
 
-            const now = Date.now();
-            Date.now.mockImplementation(() => now + 10000);
+            passTime(1000);
 
             // unlock again, should throw an error
             await contest.unlock();
