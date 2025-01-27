@@ -70,4 +70,8 @@ export default class Contest extends Model {
         return this;
     }
 
+    async reset() {
+        return this.call(`/${this.id}/reset`, 'PUT');
+    }
+
 }

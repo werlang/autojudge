@@ -5,6 +5,7 @@ import Contest from './model/contest.js';
 import Problem from './model/problem.js';
 import sharp from 'sharp';
 import fs from 'fs';
+import Team from './model/team.js';
 
 jest.mock('jsonwebtoken');
 jest.mock('sharp');
@@ -14,6 +15,7 @@ describe('Contest Route', () => {
     let user2Data;
     let contestData;
     let problemData;
+    let teamData;
     let connector;
     let sqlFile = fs.readFileSync('tests/integration/database-test.sql', 'utf8');
 
@@ -49,6 +51,12 @@ describe('Contest Route', () => {
             output: ['output1', 'output2'],
             inputHidden: ['input1', 'input2'],
             outputHidden: ['output1', 'output2'],
+        };
+
+        teamData = {
+            id: 1,
+            name: 'Team 1',
+            password: 'password',
         };
 
         jest.spyOn(fs, 'existsSync');
@@ -136,7 +144,18 @@ describe('Contest Route', () => {
         });
 
         test('should return all teams from contests', async () => {
-            // TODO: implement this test
+            const user = await new User(userData).insert();
+            const contest = await new Contest(contestData).insert();
+            const team1 = await new Team({ name: 'Team 1', contest }).insert();
+            const team2 = await new Team({ name: 'Team 2', contest }).insert();
+
+            jwt.verify.mockImplementation(() => ({ user: userData.email }));
+            await contest.get();
+            
+            const teams = contest.teams;
+            expect(teams.length).toBe(2);
+            expect(teams[0].name).toBe(team1.name);
+            expect(teams[1].name).toBe(team2.name);
         });
     });
 
@@ -165,6 +184,10 @@ describe('Contest Route', () => {
             expect(contest.remainingTime).toBe(null);
             expect(contest.finalScoreboard).toBe(false);
             expect(contest.frozenScoreboard).toBe(false);
+        });
+
+        test('should generate a pdf with the contest problems', async () => {
+            // TODO: implement this test
         });
 
     });
@@ -270,7 +293,38 @@ describe('Contest Route', () => {
     });
 
     describe('Get a single contest (team login)', () => {
-        // TODO: implement this test
+        
+        test('should return a single contest', async () => {
+            fs.existsSync.mockReturnValue(false);
+
+            jwt.verify.mockImplementation(() => ({ user: userData.email }));
+            await new User(userData).insert();
+            const contest = await new Contest(contestData).insert();
+            
+            const team = await new Team({ ...teamData, contest }).insert();
+            await team.login();
+            jwt.verify.mockImplementation(() => ({ team: teamData.id }));
+
+            await contest.get();
+            const { status } = contest.lastCall;
+
+            expect(status).toBe(200);
+
+            // fields in the contestData object
+            expect(contest.name).toBe(contestData.name);
+            expect(contest.description).toBe(contestData.description);
+            expect(contest.duration).toBe(contestData.duration);
+            expect(contest.penaltyTime).toBe(contestData.penaltyTime);
+            expect(contest.freezeTime).toBe(contestData.freezeTime);
+
+            // fields added by the model
+            expect(contest.logo).toBe(false);
+            expect(contest.startTime).toBe(null);
+            expect(contest.remainingTime).toBe(null);
+            expect(contest.finalScoreboard).toBe(false);
+            expect(contest.frozenScoreboard).toBe(false);
+        });
+
     });
 
     describe('Update contest', () => {
@@ -327,6 +381,7 @@ describe('Contest Route', () => {
     async function startContest() {
         const user = await new User(userData).insert();
         const contest = await new Contest(contestData).insert();
+        const team = await new Team({ ...teamData, contest }).insert();
         const problem = await new Problem(problemData).insert();
         await problem.update({
             inputHidden: problemData.inputHidden,
@@ -337,7 +392,7 @@ describe('Contest Route', () => {
 
         await contest.start();
 
-        return { user, contest, problem, status, message };
+        return { user, contest, problem, team, status, message };
     }
 
     describe('Start contest', () => {
@@ -431,13 +486,6 @@ describe('Contest Route', () => {
 
             expect(message).toBe('Contest has already started');
             expect(status).toBe(403);
-        });
-
-        test('should reset a contest', async () => {
-            // TODO: implement this test after submission and teams is done.
-            // test start_time === null
-            // check if there are 0 submissions from the contest
-            // check if all teams have score 0
         });
 
     });

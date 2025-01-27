@@ -8,8 +8,6 @@ import Team from './model/team.js';
 import Problem from './model/problem.js';
 import Submission from './model/submission.js';
 
-// TODO: check for coverage. insert new tests
-
 jest.mock('jsonwebtoken');
 
 describe('Submission Route', () => {
@@ -174,45 +172,75 @@ describe('Submission Route', () => {
             expect(status).toBe(400);
         });
 
+        test('should not insert a submission if team already solved the problem', async () => {
+            const { team, problem } = await startContest();
 
+            jwt.verify.mockImplementation(() => ({ team: team.id }));
+            const submission1 = await new Submission({ ...submissionData, problem }).insert();
 
-        // TODO: this, after manual submission test is done
-        // test('should not insert a submission if team already solved the problem', async () => {
+            jwt.verify.mockImplementation(() => ({ user: userData.email }));
+            await submission1.updateStatus('ACCEPTED');
 
-        // });
+            jwt.verify.mockImplementation(() => ({ team: team.id }));
+            const submission2 = await new Submission({ ...submissionData, problem }).insert();
+            const { message, status } = submission2.lastCall;
+
+            expect(message).toBe('Team already solved this problem');
+            expect(status).toBe(403);
+        });
 
     });
 
     describe('Submission get', () => {
 
         test('should get all submissions for a team', async () => {
-            const {problem} = await startContest();
+            const {problem, contest} = await startContest();
 
             jwt.verify.mockImplementation(() => ({ team: teamData.id }));
             await new Submission({...submissionData, problem}).insert();
+            const submission1 = await new Submission({...submissionData, problem}).insert();
+            const submission2 = await new Submission({...submissionData, problem}).insert();
 
+            jwt.verify.mockImplementation(() => ({ user: userData.email }));
+            await submission1.updateStatus('WRONG_ANSWER');
+            await submission2.updateStatus('ACCEPTED');
+
+            jwt.verify.mockImplementation(() => ({ team: teamData.id }));
             const {submissions} = await Submission.getAll();
 
-            expect(submissions.length).toBe(1);
+            expect(submissions.length).toBe(3);
             expect(submissions[0].id).toBe(1);
             expect(submissions[0].status).toBe('PENDING');
             expect(submissions[0].score).toBe(0);
             expect(submissions[0].hint).toBe(null);
             expect(submissions[0].problem.id).toBe(problem.id);
             expect(submissions[0].problem.title).toBe(problem.title);
+            
+            expect(submissions[1].id).toBe(2);
+            expect(submissions[1].status).toBe('WRONG_ANSWER');
+            expect(submissions[1].score).toBe(contest.penaltyTime * 60 * 1000);
+            
+            expect(submissions[2].id).toBe(3);
+            expect(submissions[2].status).toBe('ACCEPTED');
+            // as mysql time cannot be mocked, we cannot test the accept score
+            // expect(submissions[2].score).toBe(0);
         });
 
         test('should get a specific submission by ID', async () => {
-            const { team, problem } = await startContest();
+            const { team, problem, contest } = await startContest();
 
             jwt.verify.mockImplementation(() => ({ team: team.id }));
             const submission = await new Submission({ ...submissionData, problem }).insert();
 
+            jwt.verify.mockImplementation(() => ({ user: userData.email }));
+            await submission.updateStatus('WRONG_ANSWER');
+
+            jwt.verify.mockImplementation(() => ({ team: team.id }));
             await submission.get();
 
             expect(submission.id).toBe(1);
-            expect(submission.status).toBe('PENDING');
-            expect(submission.score).toBe(0);
+            expect(submission.status).toBe('WRONG_ANSWER');
+            expect(submission.score).toBe(contest.penaltyTime * 60 * 1000);
             expect(submission.team).toBe(team.id);
             expect(submission.problem).toBe(problem.id);
 
@@ -275,8 +303,9 @@ describe('Submission Route', () => {
 
     describe('Submission manual update', () => {
 
-        test('should update a submission if user is admin', async () => {
-            const { team, problem } = await startContest();
+        test.each(['ACCEPTED', 'WRONG_ANSWER', 'ERROR'])
+        ('should update a submission to %s if user is admin', async (status) => {
+            const { team, problem, contest } = await startContest();
 
             jwt.verify.mockImplementation(() => ({ team: team.id }));
             const submission = await new Submission({ ...submissionData, problem }).insert();
@@ -284,12 +313,15 @@ describe('Submission Route', () => {
             passTime(1000);
 
             jwt.verify.mockImplementation(() => ({ user: userData.email }));
-            await submission.updateStatus('ACCEPTED');
+            await submission.updateStatus(status);
+            await submission.get();
 
+            console.log(submission);
+            expect(submission.status).toBe(status);
 
-            expect(submission.status).toBe('ACCEPTED');
-            // as mysql time cannot be mocked, we cannot test the score
-            expect(submission.score).toBe(0);
+            // as mysql time cannot be mocked, we cannot test the accept score
+            const penalty = status === 'ACCEPTED' ? 0 : contest.penaltyTime * 60 * 1000;
+            expect(submission.score).toBe(penalty);
         });
 
         test('should not allow update if user is not admin', async () => {
@@ -301,11 +333,13 @@ describe('Submission Route', () => {
             passTime(1000);
 
             jwt.verify.mockImplementation(() => ({ user: 'not_admin@example.com' }));
+            await new User({...userData, email: 'not_admin@example.com'}).insert();
+            
             await submission.updateStatus('ACCEPTED');
             const { message, status } = submission.lastCall;
 
-            expect(message).toBe('Invalid token. Item not found');
-            expect(status).toBe(401);
+            expect(message).toBe('Only the contest admin can update the submission status');
+            expect(status).toBe(403);
         });
 
         test('should not update if status is invalid', async () => {
@@ -326,4 +360,33 @@ describe('Submission Route', () => {
 
     });
 
+    describe('Contest submissions', () => {
+
+        test('should reset a contest', async () => {
+            const { contest, problem } = await startContest();
+
+            jwt.verify.mockImplementation(() => ({ team: teamData.id }));
+            const submission = await new Submission({...submissionData, problem}).insert();
+            
+            jwt.verify.mockImplementation(() => ({ user: userData.email }));
+            await contest.reset();
+            await contest.get();
+
+            expect(contest.startTime).toBe(null);
+            expect(contest.teams[0].score).toBe(0);
+
+            jwt.verify.mockImplementation(() => ({ team: teamData.id }));
+            const {submissions} = await Submission.getAll();
+
+            expect(submissions.length).toBe(0);
+        });
+
+        test('should get all submissions for a contest', async () => {
+            // TODO: implement this test
+        });
+
+    });
+
 });
+
+// TODO: /judge endpoint after judge tests are done

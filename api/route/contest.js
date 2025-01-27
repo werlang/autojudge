@@ -196,15 +196,21 @@ router.put('/:id/reset', auth({'contest:admin': true}), async (req, res, next) =
         await req.contest.update({ start_time: null });
 
         let teams = await Team.getAll({ contest: req.contest.id });
-        teams.forEach(async team => {
-            new Team({ id: team.id }).update({ score: 0 });
-            let submissions = await Submission.getAll({
-                team: team.id,
-            });
-            submissions.forEach(async submission => {
-                new Submission({ id: submission.id }).delete();
-            });
-        });
+        await Promise.all(
+            teams.map(async team => 
+                Promise.all([
+                    new Team({ id: team.id }).update({ score: 0 }),
+                    Submission.getAll({
+                        team: team.id,
+                    })
+                    .then(submissions => 
+                        submissions.map(async submission => 
+                            new Submission({ id: submission.id }).delete()
+                        )
+                    ),
+                ])
+            )
+        );
 
         res.send({ message: 'Contest reset.' });
     }
