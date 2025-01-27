@@ -122,4 +122,11 @@ export default class MysqlConnector {
         await this.import();
         return this;
     }
+
+    async query(sql, values) {
+        if (!this.connection) {
+            throw new CustomError(500, 'Database not connected.');
+        }
+        return this.connection.execute(sql, values);
+    }
 }

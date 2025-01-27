@@ -187,7 +187,25 @@ describe('Contest Route', () => {
         });
 
         test('should generate a pdf with the contest problems', async () => {
-            // TODO: implement this test
+            fs.readFileSync.mockImplementation(() => 'sample_data');
+
+            await new User(userData).insert();
+            const contest = await new Contest(contestData).insert();
+            for (let i = 0; i < 5; i++) {
+                const problem = await new Problem(problemData).insert();
+                await problem.update({
+                    inputHidden: problemData.inputHidden,
+                    outputHidden: problemData.outputHidden,
+                });
+                await contest.addProblem(problem.id);
+            }
+
+            await contest.getPdf();
+            const { status, header } = contest.lastCall;
+
+            expect(contest.pdf).toBeInstanceOf(Buffer);
+            expect(header['content-type']).toBe('application/pdf');
+            expect(status).toBe(200);
         });
 
     });
@@ -228,7 +246,7 @@ describe('Contest Route', () => {
             const { contest, problem, user } = await addProblem({ hidden: true });
             await addProblem({ hidden: true, user, contest });
 
-            const {problems} = (await contest.getProblems()).body;
+            const {problems} = await contest.getProblems();
             const { status } = contest.lastCall;
             
             expect(problems.length).toBe(2);
@@ -257,7 +275,7 @@ describe('Contest Route', () => {
             jwt.verify.mockImplementation(() => ({ user: userData.email }));
             await contest.addProblem(problem.id);
 
-            const {problems} = (await contest.getProblems()).body;
+            const {problems} = await contest.getProblems();
             const { status } = contest.lastCall;
 
             expect(problems.length).toBe(1);
@@ -286,7 +304,7 @@ describe('Contest Route', () => {
             expect(message).toBe('Problem updated.');
             expect(status).toBe(200);
 
-            const problems = (await contest.getProblems()).body.problems;
+            const {problems} = await contest.getProblems();
             expect(problems[0].color).toBe('red');
             expect(problems[0].order).toBe(1);
         });

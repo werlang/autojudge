@@ -82,6 +82,7 @@ describe('Submission Route', () => {
     });
 
     async function startContest(data={}) {
+        const elapsedTime = 1000;
         jwt.verify.mockImplementation(() => ({ user: userData.email }));
         await new User(userData).insert();
         const contest = await new Contest(contestData).insert();
@@ -94,8 +95,17 @@ describe('Submission Route', () => {
         
         const team = await new Team({ ...teamData, contest, ...data }).insert();
         await contest.start();
+        await contest.get();
 
-        passTime(1000);
+        // use mysqlconnector to make contest start_time be in the past
+        await connector.query(`UPDATE contests SET start_time = ? WHERE id = ?`, [
+            new Date(new Date(contest.startTime).getTime() - elapsedTime),
+            contest.id
+        ]);
+
+        passTime(elapsedTime);
+
+        await contest.get();
 
         return {team, contest, problem};
     }
@@ -316,11 +326,9 @@ describe('Submission Route', () => {
             await submission.updateStatus(status);
             await submission.get();
 
-            console.log(submission);
             expect(submission.status).toBe(status);
 
-            // as mysql time cannot be mocked, we cannot test the accept score
-            const penalty = status === 'ACCEPTED' ? 0 : contest.penaltyTime * 60 * 1000;
+            const penalty = status === 'ACCEPTED' ? 1000 : contest.penaltyTime * 60 * 1000;
             expect(submission.score).toBe(penalty);
         });
 
@@ -382,7 +390,33 @@ describe('Submission Route', () => {
         });
 
         test('should get all submissions for a contest', async () => {
-            // TODO: implement this test
+            const { team, problem, contest } = await startContest();
+
+            jwt.verify.mockImplementation(() => ({ team: team.id }));
+            await new Submission({...submissionData, problem}).insert();
+            const submission1 = await new Submission({...submissionData, problem}).insert();
+            const submission2 = await new Submission({...submissionData, problem}).insert();
+
+            jwt.verify.mockImplementation(() => ({ user: userData.email }));
+            await submission1.updateStatus('WRONG_ANSWER');
+            await submission2.updateStatus('ACCEPTED');
+
+            const {submissions} = await contest.getSubmissions();
+
+            expect(submissions.length).toBe(3);
+            expect(submissions[0].id).toBe(1);
+            expect(submissions[0].status).toBe('PENDING');
+            expect(submissions[0].score).toBe(0);
+            expect(submissions[0].problem).toBe(1);
+            
+            expect(submissions[1].id).toBe(2);
+            expect(submissions[1].status).toBe('WRONG_ANSWER');
+            expect(submissions[1].score).toBe(contest.penaltyTime * 60 * 1000);
+            
+            expect(submissions[2].id).toBe(3);
+            expect(submissions[2].status).toBe('ACCEPTED');
+            // as mysql time cannot be mocked, we cannot test the accept score
+            // expect(submissions[2].score).toBe(0);
         });
 
     });

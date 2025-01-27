@@ -46,23 +46,31 @@ export default class Contest extends Model {
     }
 
     async addProblem(problemId) {
-        return this.call(`/${this.id}/problems/${problemId}`, 'POST');
+        await this.call(`/${this.id}/problems/${problemId}`, 'POST');
+        return this;
     }
 
     async getProblems() {
-        return this.call(`/${this.id}/problems`, 'GET');
+        const problems = await this.call(`/${this.id}/problems`, 'GET');
+        if (problems.body.problems) {
+            this.problems = problems.body.problems;
+        }
+        return this;
     }
 
     async removeProblem(problemId) {
-        return this.call(`/${this.id}/problems/${problemId}`, 'DELETE');
+        await this.call(`/${this.id}/problems/${problemId}`, 'DELETE');
+        return this;
     }
 
     async updateProblem(problemId, data) {
-        return this.call(`/${this.id}/problems/${problemId}`, 'PUT', data);
+        await this.call(`/${this.id}/problems/${problemId}`, 'PUT', data);
+        return this;
     }
 
     async unlock() {
-        return this.call(`/${this.id}/unlock`, 'PUT');
+        await this.call(`/${this.id}/unlock`, 'PUT');
+        return this;
     }
 
     async insertTeam(data) {
@@ -71,7 +79,24 @@ export default class Contest extends Model {
     }
 
     async reset() {
-        return this.call(`/${this.id}/reset`, 'PUT');
+        await this.call(`/${this.id}/reset`, 'PUT');
+        return this;
+    }
+
+    async getPdf() {
+        const res = await this.call(`/${this.id}/pdf`, 'POST');
+        if (res.body) {
+            this.pdf = res.body;
+        }
+        return this;
+    }
+
+    async getSubmissions() {
+        const submissions = await this.call(`/${this.id}/submissions`, 'GET');
+        if (submissions.body.submissions) {
+            this.submissions = submissions.body.submissions;
+        }
+        return this;
     }
 
 }
