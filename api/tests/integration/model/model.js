@@ -17,8 +17,10 @@ export default class Model {
     async call(endpoint = '/', method = 'GET', body, token) {
         const request = this.request[method.toLowerCase()](`${this.route}${endpoint}`).set('Content-Type', 'application/json');
 
-        token = token !== false || this.token;
         if (token) {
+            this.token = token;
+        }
+        if (this.token || this.token === false) {
             request.set('Authorization', `Bearer ${token}`);
         }
         

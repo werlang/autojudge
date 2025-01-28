@@ -376,8 +376,8 @@ describe('Contest Route', () => {
             await contest.updateLogo('image_data');
             const { message, status } = contest.lastCall;
             
-            expect(status).toBe(200);
             expect(message).toBe('Logo updated.');
+            expect(status).toBe(200);
             
             await contest.get();
             expect(contest.logo).toBe('data:image/png;base64,image_data');

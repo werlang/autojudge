@@ -117,11 +117,9 @@ describe('Problem Route', () => {
 
         test('should show no problems if problems not public and user not author', async () => {
             await new User(user1Data).insert();
-            await Promise.all([
-                new Problem({...problemData, public: false}).insert(),
-                new Problem({...problemData, public: false}).insert(),
-                new Problem({...problemData, public: false}).insert(),
-            ]);
+            await new Problem({...problemData, public: false}).insert();
+            await new Problem({...problemData, public: false}).insert();
+            await new Problem({...problemData, public: false}).insert();
             await new User(user2Data).insert();
             jwt.verify.mockImplementation(() => ({ user: user2Data.email}));
             const res = await Problem.getAll();
@@ -132,11 +130,9 @@ describe('Problem Route', () => {
 
         test('should show public problems if user not author', async () => {
             await new User(user1Data).insert();
-            await Promise.all([
-                new Problem({...problemData, public: false}).insert(),
-                new Problem({...problemData, public: true}).insert(),
-                new Problem({...problemData, public: true}).insert(),
-            ]);
+            await new Problem({...problemData, public: false}).insert();
+            await new Problem({...problemData, public: true}).insert();
+            await new Problem({...problemData, public: true}).insert();
             await new User(user2Data).insert();
             jwt.verify.mockImplementation(() => ({ user: user2Data.email }));
             const res = await Problem.getAll();
@@ -148,11 +144,9 @@ describe('Problem Route', () => {
 
         test('should show all problems if user is author', async () => {
             await new User(user1Data).insert();
-            await Promise.all([
-                new Problem({...problemData, public: false}).insert(),
-                new Problem({...problemData, public: true}).insert(),
-                new Problem({...problemData, public: true}).insert(),
-            ]);
+            await new Problem({...problemData, public: false}).insert();
+            await new Problem({...problemData, public: true}).insert();
+            await new Problem({...problemData, public: true}).insert();
             const res = await Problem.getAll();
 
             expect(res.body.problems).toHaveLength(3);

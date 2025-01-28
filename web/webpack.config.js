@@ -77,7 +77,7 @@ export default {
                 '**/src/**',
                 '**/public/**',
             ],
-            script: import.meta.dirname + '/server.js',
+            script: import.meta.dirname + '/app.js',
             nodeArgs: ['--inspect=0.0.0.0:9229'],
             ext: 'html, js, json',
         }),

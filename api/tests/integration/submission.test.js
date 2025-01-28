@@ -232,8 +232,6 @@ describe('Submission Route', () => {
             
             expect(submissions[2].id).toBe(3);
             expect(submissions[2].status).toBe('ACCEPTED');
-            // as mysql time cannot be mocked, we cannot test the accept score
-            // expect(submissions[2].score).toBe(0);
         });
 
         test('should get a specific submission by ID', async () => {
@@ -253,7 +251,10 @@ describe('Submission Route', () => {
             expect(submission.score).toBe(contest.penaltyTime * 60 * 1000);
             expect(submission.team).toBe(team.id);
             expect(submission.problem).toBe(problem.id);
+        });
 
+        test('should return expected and received values if submission is wrong answer', async () => {
+            // TODO: implement this after judge tests are done
         });
 
         test('should return 404 if submission not found', async () => {
