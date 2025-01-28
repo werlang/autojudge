@@ -5,16 +5,16 @@ export default class Model {
 
     fields = [];
 
-    constructor(fields = {}, route, token) {
+    constructor(fields = {}, route, token, url) {
         this.updateAttributes(fields);
 
-        this.request = Request(app);
+        this.request = Request(url || app);
 
         this.route = route || '/';
         this.token = token || false;
     }
 
-    async call(endpoint = '/', method = 'GET', body, token) {
+    async call(endpoint, method = 'GET', body, token) {
         const request = this.request[method.toLowerCase()](`${this.route}${endpoint}`).set('Content-Type', 'application/json');
 
         if (token) {

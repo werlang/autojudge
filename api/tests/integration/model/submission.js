@@ -47,4 +47,13 @@ export default class Submission extends Model {
         return this;
     }
 
+    async judge() {
+        const res = await this.call(`/${this.id}/judge`, 'POST', {}, process.env.BACKGROUND_TOKEN);
+        // return res;
+        if (res.body[this.entity]) {
+            this.run = res.body[this.entity];
+        }
+        return this;
+    }
+
 }
