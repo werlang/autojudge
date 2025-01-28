@@ -37,12 +37,18 @@ class Runner {
         fs.mkdirSync(path.join(this.tmpDir, 'output'), { recursive: true });
 
         // write input and output files
-        JSON.parse(this.tests.input).forEach((test, i) => {
-            fs.writeFileSync(path.join(this.tmpDir, 'input', `test${i.toString().padStart(2, '0')}`), test);
-        });
-        JSON.parse(this.tests.output).forEach((test, i) => {
-            fs.writeFileSync(path.join(this.tmpDir, 'output', `test${i.toString().padStart(2, '0')}`), test);
-        });
+        try {
+            JSON.parse(this.tests.input).forEach((test, i) => {
+                fs.writeFileSync(path.join(this.tmpDir, 'input', `test${i.toString().padStart(2, '0')}`), test);
+            });
+            JSON.parse(this.tests.output).forEach((test, i) => {
+                fs.writeFileSync(path.join(this.tmpDir, 'output', `test${i.toString().padStart(2, '0')}`), test);
+            });
+        }
+        catch (error) {
+            console.error(error);
+            throw new Error('Error parsing JSON tests');
+        }
     }
 
     async run() {

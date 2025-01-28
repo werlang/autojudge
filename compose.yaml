@@ -41,8 +41,10 @@ services:
             sh -c "
             if [ '$${NODE_ENV}' = 'production' ]; then
                 npm run start;
-            else
+            elif [ '$${NODE_ENV}' = 'development' ]; then
                 npm run start:dev;
+            else
+                tail -f /dev/null;
             fi"
         # command: tail -f /dev/null #idle container
         networks:
@@ -66,10 +68,8 @@ services:
             sh -c "
             if [ '$${NODE_ENV}' = 'production' ]; then
                 npm run start;
-            elif [ '$${NODE_ENV}' = 'development' ]; then
-                npm run start:dev;
             else
-                tail -f /dev/null;
+                npm run start:dev;
             fi"
         # command: tail -f /dev/null #idle container
         networks:

@@ -7,6 +7,16 @@ const router = Router();
 router.post('/', async (req, res, next) => {
     try {
         // console.log(req.body)
+
+        if (!req.body.filename) {
+            return res.status(400).send({ message: 'Filename is required' });
+        }
+        if (!req.body.code) {
+            return res.status(400).send({ message: 'Code is required' });
+        }
+        if (!req.body.tests) {
+            return res.status(400).send({ message: 'Tests are required' });
+        }
         
         const request = new Request({ url: `http://judge:3000` });
         const response = await request.post('', {

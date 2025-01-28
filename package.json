@@ -8,7 +8,7 @@
     "start:dev": "nodemon --inspect=0.0.0.0 app.js",
     "webpack": "webpack && node app.js",
     "webpack:dev": "webpack",
-    "compilers": "cd payload && echo $'TMPDIR=.\nFILE=a\nINPUT=b' > .env && docker compose -f compilers.yaml pull && rm .env"
+    "test": "jest"
   },
   "nodemonConfig": {
     "ignore": []

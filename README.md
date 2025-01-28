@@ -25,8 +25,12 @@ Build the Docker images and start the containers:
 docker compose up -d
 ```
 
-Pull the images for the languages you will use. With the judge service running, you can pull the images with the following command:
+Pull the images for the languages you will use:
 
 ```bash
-docker exec judge npm run compilers
+docker pull gcc:9.5.0
+docker pull node:22
+docker pull php:8.2-cli
+docker pull python:3.11
+docker pull openjdk:24
 ```
