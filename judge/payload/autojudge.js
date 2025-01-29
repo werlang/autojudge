@@ -62,6 +62,7 @@ fs.readdir(inputDir, async (error, inputFiles) => {
         // Give extra time for each language
         const extraTime = {
             c: 0.8,
+            cpp: 0.8,
             js: 0.6,
             php: 0.7,
             py: 0.6,
@@ -75,7 +76,8 @@ fs.readdir(inputDir, async (error, inputFiles) => {
 
         let command = `docker compose -f compilers.yaml run --rm `;
         const compilers = {
-            c: 'gcc',
+            c: 'c',
+            cpp: 'cpp',
             js: 'node',
             php: 'php',
             py: 'python',
