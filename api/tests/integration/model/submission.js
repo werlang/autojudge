@@ -17,6 +17,11 @@ export default class Submission extends Model {
         return res.body;
     }
 
+    static async getPending(token = 'valid_token') {
+        const res = await new Model({}, '/submissions', token).call('/pending', 'GET', {}, process.env.BACKGROUND_TOKEN);
+        return res.body;
+    }
+
     async insert() {
         const res = await this.problem.addSubmission({
             code: this.code,

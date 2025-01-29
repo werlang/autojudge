@@ -204,7 +204,7 @@ describe('Backround Tasks', () => {
     });
 
     test('should handle code with runtime error', async () => {
-        const code = 'int main() { int *p = NULL; *p = 0; return 0; }';
+        const code = '#include <stdio.h>\nint main() { int *p = NULL; *p = 0; return 0; }';
         const {submission} = await addSubmission({
             filename: 'hello.c',
             code: Buffer.from(code).toString('base64'),
@@ -235,5 +235,3 @@ describe('Backround Tasks', () => {
         expect(submission.run.results[1].received).toBe('foo');
     });
 });
-
-// TODO: /judge endpoint after judge tests are done

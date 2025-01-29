@@ -253,10 +253,6 @@ describe('Submission Route', () => {
             expect(submission.problem).toBe(problem.id);
         });
 
-        test('should return expected and received values if submission is wrong answer', async () => {
-            // TODO: implement this after judge tests are done
-        });
-
         test('should return 404 if submission not found', async () => {
             const { team } = await startContest();
 
@@ -306,9 +302,23 @@ describe('Submission Route', () => {
             expect(submissions.length).toBe(2);
         });
             
-        // TODO: this, after background service test is done
-        // test('should return all submissions with status PENDING', async () => {
-        // });
+        test('should return all submissions with status PENDING', async () => {
+            const { team, problem } = await startContest();
+            jwt.verify.mockImplementation(() => ({ team: team.id }));
+            await new Submission({ ...submissionData, problem }).insert();
+            await new Submission({ ...submissionData, problem }).insert();
+            const accepted = await new Submission({ ...submissionData, problem }).insert();
+
+            jwt.verify.mockImplementation(() => ({ user: userData.email }));
+            await accepted.updateStatus('ACCEPTED');
+
+            const {submissions} = await Submission.getPending();
+            // console.log(submissions);
+
+            expect(submissions.length).toBe(2);
+            expect(submissions[0].status).toBe('PENDING');
+            expect(submissions[1].status).toBe('PENDING');
+        });
 
     });
 
@@ -423,5 +433,3 @@ describe('Submission Route', () => {
     });
 
 });
-
-// TODO: /judge endpoint after judge tests are done
