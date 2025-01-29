@@ -33,7 +33,7 @@ router.get('/', auth({'team:exists': true}), async (req, res, next) => {
                     if (!firstLog) return null;
                     return {
                         expected: firstLog.expected,
-                        received: firstLog.got,
+                        received: firstLog.received,
                         message: firstLog.message,
                     }
                 }
@@ -108,7 +108,7 @@ router.get('/:id', auth({'team:submission': true}), async (req, res, next) => {
             if (log) {
                 log = {
                     expected: log.expected,
-                    received: log.got,
+                    received: log.received,
                 }
             }
         }
@@ -154,13 +154,12 @@ router.post('/:id/judge', auth({'background': true}), async (req, res, next) => 
         });
         // console.log(response);
 
-        response.status = 'ACCEPTED';
         // this is the TLE check for the entire process. the autojudge script itself
-        if (response.error && response.error === 'TLE') {
+        if (response.error && response.status === 'TLE') {
             response.status = 'TIME_LIMIT_EXCEEDED';
         }
         // if the response do not return a valid json, it is a parsing error
-        else if (response.failed === undefined) {
+        else if (response.error) {
             response.status = 'PARSING_ERROR';
         }
         else if (response.failed > 0) {
@@ -168,12 +167,15 @@ router.post('/:id/judge', auth({'background': true}), async (req, res, next) => 
             if (response.results.find(r => r.status === 'TLE')) {
                 response.status = 'TIME_LIMIT_EXCEEDED';
             }
-            if (response.results.find(r => r.status === 'RTE')) {
+            else if (response.results.find(r => r.status === 'RTE')) {
                 response.status = 'ERROR';
             }
             else {
                 response.status = 'WRONG_ANSWER';
             }
+        }
+        else {
+            response.status = 'ACCEPTED';
         }
 
         await submission.updateStatus(response);

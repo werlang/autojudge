@@ -112,7 +112,7 @@ class Runner {
             // return pledge.get();
             const response = await pledge.timeout(timeout);
             if (response === 'Request Timeout') {
-                return { error: 'TLE', message: 'Request Timeout' };
+                return { error: true, status: 'TLE', message: 'Request Timeout' };
             }
             try {
                 return JSON.parse(response);

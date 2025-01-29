@@ -7,7 +7,6 @@ import Contest from './model/contest.js';
 import Team from './model/team.js';
 import Problem from './model/problem.js';
 import Submission from './model/submission.js';
-import Judge from './model/judge.js';
 
 jest.mock('jsonwebtoken');
 
@@ -53,13 +52,10 @@ describe('Backround Tasks', () => {
             password: 'password',
         };
 
-        const rawCode = `#include <stdio.h>\nint main(){ int a, b; scanf("%d %d", &a, &b); printf("%d ", a + b); return 0; }`;
-
         submissionData = {
             id: 1,
             filename: 'hello.c',
-            // b64
-            code: Buffer.from(rawCode).toString('base64'),
+            code: Buffer.from('foo').toString('base64'),
         };
 
         jest.spyOn(bcrypt, 'compare');
@@ -97,7 +93,7 @@ describe('Backround Tasks', () => {
         });
         await contest.addProblem(problem.id);
         
-        const team = await new Team({ ...teamData, contest, ...data }).insert();
+        const team = await new Team({ ...teamData, contest }).insert();
         await contest.start();
         await contest.get();
 
@@ -112,21 +108,131 @@ describe('Backround Tasks', () => {
         await contest.get();
 
         jwt.verify.mockImplementation(() => ({ team: team.id }));
-        const submission = await new Submission({ ...submissionData, problem }).insert();
+        const submission = await new Submission({ ...submissionData, problem, ...data }).insert();
 
         return {team, contest, problem, submission};
     }
 
-    test('should submit a problem to be judged', async () => {
-        const {submission} = await addSubmission();
+    test.each([
+        ['C', 'c', '#include <stdio.h>\nint main(){ int a, b; scanf("%d %d", &a, &b); printf("%d ", a + b); return 0; }'],
+        ['C++', 'cpp', '#include <iostream>\nint main(){ int a, b; std::cin >> a >> b; std::cout << a + b; return 0; }'],
+        ['Python', 'py', 'a, b = map(int, input().split()); print(a + b)'],
+        ['Javascript', 'js', 'const [a, b] = require("fs").readFileSync(0, "utf8").split(" ").map(Number); console.log(a + b);'],
+        ['PHP', 'php', '<?php [$a, $b] = explode(" ", trim(fgets(STDIN))); echo $a + $b;'],
+        ['Java', 'java', 'import java.util.Scanner;\npublic class Main { public static void main(String[] args) { Scanner sc = new Scanner(System.in); int a = sc.nextInt(), b = sc.nextInt(); System.out.print(a + b); } }'],
+    ])('should submit a correct solution in %s to be judged', async (language, extension, code) => {
+        const {submission} = await addSubmission({
+            filename: language === 'Java' ? 'Main.java' : `hello.${extension}`,
+            code: Buffer.from(code).toString('base64'),
+        });
 
         await submission.judge();
-
-        console.log(submission.run);
+        // console.log(submission.run);
 
         expect(submission.run.failed).toBe(0);
+    });
 
-        // lots of stuff needs to be tested here to prevent judge from breaking
+    test('should submit a correct solution in an unsupported language', async () => {
+        // language = pascal
+        const code = 'begin readln(a, b); writeln(a + b); end.';
+        const {submission} = await addSubmission({
+            filename: 'hello.pas',
+            code: Buffer.from(code).toString('base64'),
+        });
+
+        await submission.judge();
+        // console.log(submission.run);
+
+        expect(submission.run.message).toBe(`Unsupported extension: pas`);
+        expect(submission.run.error).toBe(true);
+        expect(submission.run.status).toBe('PARSING_ERROR');
+    });
+
+    test('should handle invalid code', async () => {
+        const {submission} = await addSubmission({
+            filename: 'hello.c',
+            code: 'invalid code',
+        });
+
+        await submission.judge();
+        // console.log(submission.run);
+
+        expect(submission.run.passed).toBe(0);
+        expect(submission.run.status).toBe('ERROR');
+    });
+
+    test('should handle invalid filename', async () => {
+        const {submission} = await addSubmission({
+            filename: 'invalid',
+            code: Buffer.from('foo').toString('base64'),
+        });
+
+        await submission.judge();
+        // console.log(submission.run);
+
+        expect(submission.run.message).toBe(`Unsupported extension: `);
+        expect(submission.run.error).toBe(true);
+        expect(submission.run.status).toBe('PARSING_ERROR');
+    });
+
+    test('should handle code with time limit exceeded', async () => {
+        const code = 'int main() { while(1); return 0; }';
+        const {submission} = await addSubmission({
+            filename: 'hello.c',
+            code: Buffer.from(code).toString('base64'),
+        });
+
+        await submission.judge();
+        // console.log(submission.run);
+
+        expect(submission.run.status).toBe('TIME_LIMIT_EXCEEDED');
+        expect(submission.run.error).toBe(true);
+    });
+
+    test('should handle code with compilation error', async () => {
+        const code = 'int main() { return 0s; }';
+        const {submission} = await addSubmission({
+            filename: 'hello.c',
+            code: Buffer.from(code).toString('base64'),
+        });
+
+        await submission.judge();
+        // console.log(submission.run);
+
+        expect(submission.run.status).toBe('ERROR');
+        expect(submission.run.passed).toBe(0);
+    });
+
+    test('should handle code with runtime error', async () => {
+        const code = 'int main() { int *p = NULL; *p = 0; return 0; }';
+        const {submission} = await addSubmission({
+            filename: 'hello.c',
+            code: Buffer.from(code).toString('base64'),
+        });
+
+        await submission.judge();
+        // console.log(submission.run);
+
+        expect(submission.run.status).toBe('ERROR');
+        expect(submission.run.passed).toBe(0);
+    });
+
+    test('should handle code with wrong output', async () => {
+        const code = '#include <stdio.h>\nint main() { printf("foo"); return 0; }';
+        const {submission} = await addSubmission({
+            filename: 'hello.c',
+            code: Buffer.from(code).toString('base64'),
+        });
+
+        await submission.judge();
+        // console.log(submission.run);
+
+        expect(submission.run.status).toBe('WRONG_ANSWER');
+        expect(submission.run.passed).toBe(0);
+        expect(submission.run.results[0].expected).toBe('3');
+        expect(submission.run.results[0].received).toBe('foo');
+        expect(submission.run.results[1].expected).toBe('7');
+        expect(submission.run.results[1].received).toBe('foo');
     });
 });
 

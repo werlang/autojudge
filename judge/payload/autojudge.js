@@ -43,7 +43,7 @@ catch (error) {
 fs.readdir(inputDir, async (error, inputFiles) => {
     if (error) {
         console.log(JSON.stringify({ error , message: "Error reading input directory"}));
-        process.exit(1);
+        return;
     }
 
     for (const inputFile of inputFiles) {
@@ -56,7 +56,7 @@ fs.readdir(inputDir, async (error, inputFiles) => {
             outputContents = fs.readFileSync(outputFilePath, 'utf8');
         } catch (error) {
             console.log(JSON.stringify({ error, message: `Error reading output file ${outputFilePath}:`}));
-            process.exit(1);
+            return;
         }
 
         // Give extra time for each language
@@ -89,7 +89,7 @@ fs.readdir(inputDir, async (error, inputFiles) => {
         }
         else {
             console.log(JSON.stringify({ error: true, message: `Unsupported extension: ${extension}`}));
-            process.exit(1);
+            return;
         }
 
         // check for TLE
@@ -101,7 +101,7 @@ fs.readdir(inputDir, async (error, inputFiles) => {
                     status: "TLE"
                 });
                 fail += 1;
-                resolve();
+                resolve(false);
             }, timeLimit * 1000)
         });
 
@@ -122,7 +122,7 @@ fs.readdir(inputDir, async (error, inputFiles) => {
                 results.push({
                     file: inputFilePath,
                     status: "WA",
-                    got: stdout,
+                    received: stdout,
                     expected: outputContents
                 });
             }
@@ -136,17 +136,23 @@ fs.readdir(inputDir, async (error, inputFiles) => {
             }
 
             clearTimeout(timeout);
-            resolve();
+            resolve(true);
         }));
 
         // return when either the command finishes or the timeout is reached
-        await Promise.race([timeoutPromise, exePromise]);
+        const race = await Promise.race([timeoutPromise, exePromise]);
+
+        // check if timeout is reached
+        if (race === false) {
+            console.log(JSON.stringify({ error: true, status: 'TLE', message: "Code execution timeout" }));
+            return;
+        }
     }
 
     // When all files are processed, output the results
     if (results.length !== inputFiles.length) {
         console.log(JSON.stringify({ error: true, message: "Error processing files"}));
-        process.exit(1);
+        return;
     }
 
     console.log(JSON.stringify({

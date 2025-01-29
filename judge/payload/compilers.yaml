@@ -6,6 +6,14 @@ x-runner: &runner-template
         - .env
     networks:
         - runner
+    deploy:
+        resources:
+            limits:
+                cpus: "0.5"
+                memory: 128M
+            reservations:
+                cpus: "0.2"
+                memory: 64M
 
 services:
     c:
