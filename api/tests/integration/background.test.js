@@ -234,4 +234,64 @@ describe('Backround Tasks', () => {
         expect(submission.run.results[1].expected).toBe('7');
         expect(submission.run.results[1].received).toBe('foo');
     });
+
+    test('should not judge a submission if problem is already solved', async () => {
+        const {submission} = await addSubmission(submissionData);
+
+        jwt.verify.mockImplementation(() => ({ user: userData.email }));
+        await submission.updateStatus('ACCEPTED');
+        
+        await submission.judge();
+        const { message, status} = submission.lastCall;
+
+        expect(message).toBe('Submission already judged');
+        expect(status).toBe(400);
+    });
+
+    test('should receive submission feedback when requesting all submissions for team', async () => {
+        const code = '#include <stdio.h>\nint main() { printf("foo"); return 0; }';
+        const {team, contest, problem, submission} = await addSubmission({
+            filename: 'hello.c',
+            code: Buffer.from(code).toString('base64'),
+        });
+
+        // will result in a wrong answer
+        await submission.judge();
+
+        jwt.verify.mockImplementation(() => ({ team: team.id }));
+        const {submissions} = await Submission.getAll();
+
+        console.log(submissions);
+
+        expect(submissions).toHaveLength(1);
+        expect(submissions[0].problem.id).toBe(problem.id);
+        expect(submissions[0].status).toBe('WRONG_ANSWER');
+        expect(submissions[0].score).toBe(contest.penaltyTime * 60 * 1000);
+        // will use only the first result as feedback
+        expect(submissions[0].hint.expected).toBe('3');
+        expect(submissions[0].hint.received).toBe('foo');
+    });
+
+    test('should receive submission feedback when requesting a single submission', async () => {
+        const code = '#include <stdio.h>\nint main() { printf("foo"); return 0; }';
+        const {submission, team, contest, problem} = await addSubmission({
+            filename: 'hello.c',
+            code: Buffer.from(code).toString('base64'),
+        });
+
+        // will result in a wrong answer
+        await submission.judge();
+
+        jwt.verify.mockImplementation(() => ({ team: team.id }));
+        await submission.get();
+
+        // console.log(submission.lastCall);
+
+        expect(submission.status).toBe('WRONG_ANSWER');
+        expect(submission.score).toBe(contest.penaltyTime * 60 * 1000);
+        expect(submission.problem).toBe(problem.id);
+        expect(submission.team).toBe(team.id);
+        expect(submission.log.expected).toBe('3');
+        expect(submission.log.received).toBe('foo');
+    });
 });
