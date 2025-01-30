@@ -32,7 +32,7 @@ app.use(errorMiddleware);
 
 // 404
 app.use((req, res) => {
-    res.status(404).send({ message: 'I am sor ry, but I think you are lost.' });
+    res.status(404).send({ message: 'I am sorry, but I think you are lost.' });
 });
 
 if (process.env.NODE_ENV !== 'test') {

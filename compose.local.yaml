@@ -15,12 +15,12 @@ services:
         env_file:
             - .env
         command: >
-            sh -c "
-            if [ '$${NODE_ENV}' = 'production' ]; then
-                npm run webpack;
+            sh -c '
+            if [ "$$NODE_ENV" = "production" ]; then
+                npm run webpack
             else
-                npm run webpack:dev;
-            fi"
+                npm run webpack:dev
+            fi'
         # command: tail -f /dev/null #idle container
         networks:
             - autojudge
@@ -40,12 +40,15 @@ services:
             - ./package.json:/app/package.json
             - node_modules:/app/node_modules
         command: >
-            sh -c "
-            if [ '$${NODE_ENV}' = 'production' ]; then
-                npm run start;
+            sh -c '
+            if [ "$$NODE_ENV" = "production" ]; then
+                npm run start
+            elif [ "$$NODE_ENV" = "development" ]; then
+                npm run start:dev
             else
-                npm run start:dev;
-            fi"
+                echo "Test mode. No action." 
+                tail -f /dev/null
+            fi'
         # command: tail -f /dev/null #idle container
         networks:
             - autojudge
@@ -58,6 +61,8 @@ services:
             context: .
             dockerfile: Dockerfile-dind
         restart: ${RESTART_POLICY}
+        env_file:
+            - .env
         volumes:
             - ./judge:/app
             - ./package.json:/app/package.json
@@ -65,14 +70,12 @@ services:
             - runs:/app/runs
             - /var/run/docker.sock:/var/run/docker.sock
         command: >
-            sh -c "
-            if [ '$${NODE_ENV}' = 'production' ]; then
-                npm run start;
-            elif [ '$${NODE_ENV}' = 'development' ]; then
-                npm run start:dev;
+            sh -c '
+            if [ "$$NODE_ENV" = "production" ]; then
+                npm run start
             else
-                tail -f /dev/null;
-            fi"
+                npm run start:dev
+            fi'
         # command: tail -f /dev/null #idle container
         networks:
             - autojudge
@@ -94,14 +97,15 @@ services:
             - ./package.json:/app/package.json
             - node_modules:/app/node_modules
         command: >
-            sh -c "
-            if [ '$${NODE_ENV}' = 'production' ]; then
-                npm run start;
-            elif [ '$${NODE_ENV}' = 'development' ]; then
-                npm run start:dev;
+            sh -c '
+            if [ "$$NODE_ENV" = "production" ]; then
+                npm run start
+            elif [ "$$NODE_ENV" = "development" ]; then
+                npm run start:dev
             else
-                tail -f /dev/null;
-            fi"
+                echo "Test mode. No action." 
+                tail -f /dev/null
+            fi'
         networks:
             - autojudge
         depends_on:
