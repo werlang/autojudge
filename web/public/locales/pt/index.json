@@ -3,8 +3,8 @@
     "section1": {
         "welcome": "Bem-vindo!",
         "h3": "Juiz Online ao seu serviço. Eu posso te ajudar com problemas de programação e competições.",
-        "button-1": "Gerenciar",
-        "button-2": "Competir"
+        "button-1": "Gerenciar Competição",
+        "button-2": "Participar com Equipe"
     },
     "section3": {
         "h1": "O que eu posso fazer por você?",
