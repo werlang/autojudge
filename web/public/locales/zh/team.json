@@ -1,0 +1,26 @@
+{
+    "join-team": "加入团队",
+    "ask-password": "请输入团队密码",
+    "team-id": "团队ID",
+    "wrong-password": "密码不正确",
+    "password-format": "密码必须为6位数字",
+    "team-id-format": "团队ID无效",
+    "submissions": {
+        "submitted": "已提交",
+        "status": "状态"
+    },
+    "new-submission": "新提交",
+    "select-problem": "选择问题",
+    "error-select-problem": "请选择一个问题",
+    "error-upload-file": "请上传源代码文件",
+    "hint-source-code": "源代码文件",
+    "hint-file-type": "请上传以下格式的源代码文件：.c, .cpp, .java, .py, .js, .php",
+    "status": {
+        "accepted": "提交已被接受",
+        "wrong-answer": "答案错误",
+        "time-limit": "超出时间限制",
+        "error": "代码产生错误",
+        "pending": "等待评估",
+        "parsing-error": "解析错误，请联系管理员"
+    }
+}

@@ -1,6 +1,6 @@
 // Error handling middleware
 
-module.exports = (err, req, res, next) => {
+export default (err, req, res, next) => {
     // Error list
     const errorList = [
         { status: 304, type: 'Not Modified' },
@@ -33,7 +33,7 @@ module.exports = (err, req, res, next) => {
             error: true,
             status: 500,
             type: 'Internal Server Error',
-            message: 'An unexpected error occurred',
+            message: err.message || 'An unexpected error occurred',
             data: err.message || err,
         });
         return;

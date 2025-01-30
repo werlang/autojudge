@@ -1,0 +1,112 @@
+{
+    "problems_zero": "Nenhum problema encontrado",
+    "problems_one": "Problema",
+    "problems_other": "Problemas",
+    "teams_zero": "Nenhuma equipe encontrada",
+    "teams_one": "Equipe",
+    "teams_other": "Equipes",
+    "change-logo": "Clique para alterar o logo da competição",
+    "logo-success": "Logo atualizado com sucesso.",
+    "save-changes": {
+        "h1": "Salvar Alterações",
+        "message": "Deseja salvar as alterações no campo <b>{{field}}</b>?",
+        "success": "Competição salva com sucesso."
+    },
+    "field": {
+        "name": "Nome",
+        "description": "Descrição"
+    },
+    "add-problem": {
+        "h1": "Adicionar Problemas",
+        "message": "Escolha problemas públicos ou que você criou da lista abaixo para adicionar à competição.",
+        "hash": "Para problemas privados, insira o Link ou Hash do Problema",
+        "success": "Problemas adicionados com sucesso.",
+        "error-hash": "Nenhum problema com o hash informado foi encontrado.",
+        "already-added": "O problema já está na competição."
+    },
+    "remove-problem": {
+        "title": "Remover Problemas",
+        "open": "Abrir problema em nova aba",
+        "success_one": "Problema removido com sucesso.",
+        "success_other": "Problemas removidos com sucesso."
+    },
+    "add-team": {
+        "h1-name": "Criar Nova Equipe",
+        "team-name": "Nome da Equipe",
+        "error-name": "O nome da equipe deve ter mais de 3 caracteres.",
+        "message-1": "Anote a senha abaixo e informe aos membros da equipe.",
+        "message-2": "Eles poderão acessar a competição através do link abaixo.",
+        "success": "Equipe criada com sucesso."
+    },
+    "copy-text": "Texto copiado para a área de transferência",
+    "teams": {
+        "reset-title": "Redefinir Senha",
+        "reset-success": "Senha redefinida com sucesso.",
+        "remove-title": "Remover Equipe",
+        "remove-message": "Deseja remover a equipe?",
+        "remove-success": "Equipe removida com sucesso.",
+        "rename-title": "Renomear Equipe",
+        "rename-name": "Novo Nome da Equipe",
+        "rename-success": "Equipe renomeada com sucesso."
+    },
+    "start-contest": {
+        "title": "Iniciar Competição",
+        "message": "Deseja iniciar a competição agora?",
+        "button": "Iniciar",
+        "cancel": "Cancelar",
+        "success": "Competição iniciada com sucesso."
+    },
+    "dashboard": {
+        "submissions": {
+            "total_one": "Submissão enviada",
+            "total_other": "Submissões enviadas",
+            "accepted_one": "submissão correta",
+            "accepted_other": "submissões corretas"
+        },
+        "problems": {
+            "total": "Problemas na competição",
+            "accepted": "com submissão correta"
+        },
+        "teams": "Total de Equipes nesta competição",
+        "reset-contest": "Redefinir Competição",
+        "reset-contest-message": "Tem certeza que deseja redefinir a competição? Esta ação é irreversível e apagará todas as submissões da competição.",
+        "unlock-contest": "Desbloquear Placar da Competição",
+        "unlock-contest-message": "Tem certeza de que deseja desbloquear o placar da competição? Isso permitirá que as equipes vejam o placar final e suas submissões.",
+        "unlock-contest-success": "Placar da competição desbloqueado com sucesso."
+    },
+    "judge": {
+        "title": "Julgar Submissão",
+        "file": "Selecione a submissão que deseja julgar",
+        "select": "Selecione o status da submissão",
+        "success": "Status da submissão alterado com sucesso.",
+        "log": "Verifique o log do autojudge",
+        "no-log": "Nenhum log disponível"
+    },
+    "color-modal": {
+        "hint": "Altere a cor do problema",
+        "title": "Escolha uma cor",
+        "message": "Escolha uma cor para o problema",
+        "submit": "Salvar",
+        "success": "Cor do problema atualizada com sucesso."
+    },
+    "import-teams": {
+        "title": "Importar equipes",
+        "description": "Você pode importar os nomes das equipes de um arquivo <code>.csv</code>. O arquivo deve ter o seguinte formato:",
+        "image": "Planilha",
+        "sample": "Texto",
+        "placeholder": "Arraste ou clique",
+        "error": "Ocorreu um erro ao importar os nomes das equipes.",
+        "error-header": "Formato incorreto do cabeçalho do arquivo.",
+        "error-columns": "Número incorreto de colunas na linha {{line}} do arquivo.",
+        "success-message": "As seguintes equipes foram importadas com sucesso:",
+        "login-message": "Para realizar o login, os membros da equipe devem acessar {{url}} e informar o ID da equipe e a senha.",
+        "advice-message": "As senhas das equipes são únicas e não podem ser recuperadas. Por favor, anote-as em um local seguro. Caso necessário, você pode redefinir a senha da equipe.",
+        "export-message": "Você pode exportar as equipes cadastradas para um arquivo <code>.csv</code> clicando no botão abaixo.",
+        "export-button": "Exportar Equipes",
+        "this-link": "este link"
+    },
+    "penalty-time": "Tempo de Penalidade",
+    "penalty-time-hint": "Tempo em minutos a ser adicionado ao tempo total da equipe para cada submissão incorreta",
+    "freeze-time": "Tempo de Congelamento",
+    "freeze-time-hint": "Tempo antes do fim da competição em que o placar é congelado"
+}

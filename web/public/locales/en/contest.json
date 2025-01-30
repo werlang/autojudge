@@ -1,0 +1,112 @@
+{
+    "problems_zero": "No problems found",
+    "problems_one": "Problem",
+    "problems_other": "Problems",
+    "teams_zero": "No teams found",
+    "teams_one": "Team",
+    "teams_other": "Teams",
+    "change-logo": "Click to change the contest logo",
+    "logo-success": "Logo updated successfully.",
+    "save-changes": {
+        "h1": "Save Changes",
+        "message": "Do you want to save the changes to the <b>{{field}}</b> field?",
+        "success": "Contest saved successfully."
+    },
+    "field": {
+        "name": "Name",
+        "description": "Description"
+    },
+    "add-problem": {
+        "h1": "Add Problems",
+        "message": "Choose public problems or those you created from the list below to add to the contest.",
+        "hash": "For private problems, enter the Problem Link or Hash",
+        "success": "Problems added successfully.",
+        "error-hash": "No problem with the informed hash was found.",
+        "already-added": "The problem is already in the contest."
+    },
+    "remove-problem": {
+        "title": "Remove Problems",
+        "open": "Open problem in new tab",
+        "success_one": "Problem removed successfully.",
+        "success_other": "Problems removed successfully."
+    },
+    "add-team": {
+        "h1-name": "Create New Team",
+        "team-name": "Team Name",
+        "error-name": "The team name should be longer than 3 characters.",
+        "message-1": "Write down the password below and inform the team members.",
+        "message-2": "They will be able to access the contest through the link below.",
+        "success": "Team created successfully."
+    },
+    "copy-text": "Text copied to clipboard",
+    "teams": {
+        "reset-title": "Reset Password",
+        "reset-success": "Password reset successfully.",
+        "remove-title": "Remove Team",
+        "remove-message": "Do you want to remove the team?",
+        "remove-success": "Team removed successfully.",
+        "rename-title": "Rename Team",
+        "rename-name": "New Team Name",
+        "rename-success": "Team renamed successfully."
+    },
+    "start-contest": {
+        "title": "Start Contest",
+        "message": "Do you want to start the contest now?",
+        "button": "Start",
+        "cancel": "Cancel",
+        "success": "Contest started successfully."
+    },
+    "dashboard": {
+        "submissions": {
+            "total_one": "Submission sent",
+            "total_other": "Submissions sent",
+            "accepted_one": "correct submission",
+            "accepted_other": "correct submissions"
+        },
+        "problems": {
+            "total": "Problems in the contest",
+            "accepted": "Have at least one correct submission"
+        },
+        "teams": "Total Teams in this contest",
+        "reset-contest": "Reset Contest",
+        "reset-contest-message": "Are you sure you want to reset the contest? This action is irreversible and will delete all submissions from the contest.",
+        "unlock-contest": "Unlock Contest Leaderboard",
+        "unlock-contest-message": "Are you sure you want to unlock the contest leaderboard? This will allow teams to see the final leaderboard and their submission records.",
+        "unlock-contest-success": "Contest leaderboard unlocked successfully."
+    },
+    "judge": {
+        "title": "Judge Submission",
+        "file": "Select the submission to judge",
+        "select": "Select the submission status",
+        "success": "Submission status updated successfully.",
+        "log": "Check the autojudge log",
+        "no-log": "No log available"
+    },
+    "color-modal": {
+        "hint": "Change the color of the problem",
+        "title": "Select Color",
+        "message": "Select the color for the problem",
+        "submit": "Submit",
+        "success": "Problem color updated successfully."
+    },
+    "import-teams": {
+        "title": "Import Teams",
+        "description": "You can import team names from a <code>.csv</code> file. The file must have the following format:",
+        "image": "Spreadsheet",
+        "sample": "Text",
+        "placeholder": "Drag or click",
+        "error": "An error occurred while importing the teams.",
+        "error-header": "Incorrect file header format.",
+        "error-columns": "Incorrect number of columns in line {{line}} of the file.",
+        "success-message": "The following teams were imported successfully:",
+        "login-message": "To log in, team members should access {{url}} and enter the team ID and password.",
+        "advice-message": "Team passwords are unique and cannot be recovered. Please write them down in a safe place. If necessary, you can reset the team password.",
+        "export-message": "You can export the registered teams to a <code>.csv</code> file by clicking the button below.",
+        "export-button": "Export Teams",
+        "this-link": "this link"
+    },
+    "penalty-time": "Penalty Time",
+    "penalty-time-hint": "Time in minutes to be added to the total time of the team for each wrong submission",
+    "freeze-time": "Freeze Time",
+    "freeze-time-hint": "Time before the end of the contest that scores will be frozen"
+}

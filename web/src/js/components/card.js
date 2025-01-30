@@ -8,25 +8,40 @@
 //   - customClass: custom class to be added in the card element
 // Methods:
 //   - get(): return the card element
-//   - addClass(className): add a class to the card element
+//   - addClass(className): add a class (or array os classes) to the card element
 //   - removeClass(className): remove a class from the card element
 //   - toggleClass(className): toggle a class in the card
 //   - click(callback): add a click event to the card
 
 
 export default class Card {
-    constructor(container, { id, icon, title, description, customClass }) {
+    constructor(container, { id, icon, img, title, description, customClass }) {
         container.classList.add('card-container');
 
         this.element = document.createElement('div');
         this.element.classList.add('card');
 
-        if (icon) {
-            const headElement = document.createElement('div');
-            headElement.classList.add('head');
-            headElement.innerHTML = `<i class="${ icon }"></i>`;
-            this.element.appendChild(headElement);
+        const headElement = document.createElement('div');
+        headElement.classList.add('head');
+        if (img) {
+            const ext = img.split('.').pop();
+            if (ext === 'svg') {
+                headElement.innerHTML = '';
+                fetch(img).then(response => response.text()).then(svgText => {
+                    const parser = new DOMParser();
+                    const svgDoc = parser.parseFromString(svgText, 'image/svg+xml');
+                    const svgElement = svgDoc.documentElement;
+                    headElement.appendChild(svgElement);
+                });
+            }
+            else {
+                headElement.innerHTML = `<img class="image" src="${ img }">`;
+            }
         }
+        else if (icon) {
+            headElement.innerHTML = `<i class="${ icon }"></i>`;
+        }
+        this.element.appendChild(headElement);
 
         const bodyElement = document.createElement('div');
         bodyElement.classList.add('body');
@@ -35,7 +50,12 @@ export default class Card {
             const titleElement = document.createElement('div');
             titleElement.classList.add('title');
             titleElement.innerHTML = title;
-            bodyElement.appendChild(titleElement);
+            if (icon || img) {
+                bodyElement.appendChild(titleElement);
+            }
+            else {
+                headElement.appendChild(titleElement);
+            }
         }
 
         if (description) {
@@ -48,17 +68,25 @@ export default class Card {
         this.element.appendChild(bodyElement);
 
         if (customClass) {
-            this.addClass(customClass);
+            if (!Array.isArray(customClass)) {
+                customClass = [customClass];
+            }
+            customClass.map(className => this.addClass(className));
         }
 
         if (id) {
             this.element.id = id;
         }
 
+        this.setColor();
+
         container.appendChild(this.element);
     }
 
-    get() {
+    get(selector) {
+        if (selector) {
+            return this.element.querySelector(selector);
+        }
         return this.element;
     }
 
@@ -84,6 +112,11 @@ export default class Card {
         }
 
         this.element.addEventListener('click', callback);
+        return this;
+    }
+
+    setColor(color) {
+        this.element.style.setProperty('--color-card', color || 'var(--color-main)');
         return this;
     }
 }

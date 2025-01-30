@@ -1,0 +1,25 @@
+@import 'common.less';
+@import 'components/card.less';
+
+.card-container {
+    flex-wrap: wrap;
+
+    @media @size-900 {
+    }
+}
+
+#dashboard-container {
+    .card .description .placeholder {
+        display: inline-block;
+        border-radius: 5px;
+        background-color: var(--color-background);
+        color: var(--color-background);
+        animation: placeholder-card 1.6s infinite;
+
+        @keyframes placeholder-card {
+            0% { opacity: 0.3; }
+            50% { opacity: 0.5; }
+            100% { opacity: 0.3; }
+        }
+    }
+}

@@ -1,0 +1,53 @@
+{
+    "inout-public_zero": "Nenhum exemplo de entrada/saída encontrado",
+    "inout-public_one": "Exemplo de entrada/saída",
+    "inout-public_other": "Exemplos de entrada/saída",
+    "inout-hidden_zero": "Nenhuma entrada/saída oculta encontrada",
+    "inout-hidden_one": "Entrada/saída oculta",
+    "inout-hidden_other": "Entradas/saídas ocultas",
+    "input_samples": "Exemplos de entrada",
+    "output_samples": "Exemplos de saída",
+    "case": "Caso",
+    "input": "Entrada",
+    "output": "Saída",
+    "save-changes": {
+        "h1": "Salvar alterações",
+        "message": "Deseja salvar as alterações no campo <b>{{field}}</b>?",
+        "success": "Problema salvo com sucesso.",
+        "success-case": "Caso de teste {{operation}} com sucesso."
+    },
+    "discard-changes": {
+        "h1": "Descartar alterações",
+        "message": "Deseja descartar as alterações no campo <b>{{field}}</b>?"
+    },
+    "field": {
+        "title": "Título",
+        "description": "Descrição"
+    },
+    "add-case": "Adicionar novo caso de teste",
+    "add-hidden": "Adicionar novo caso de teste oculto",
+    "new-case-value": "Novo valor de {{inout}}",
+    "empty-case": "Por favor, preencha os campos de entrada e saída.",
+    "duplicate-case": "Este caso de teste já existe.",
+    "share-section": "Compartilhe este problema",
+    "copy-link": "Link copiado para a área de transferência",
+    "remove-case": {
+        "h1": "Remover caso de teste",
+        "message": "Deseja remover o caso de teste?"
+    },
+    "teams-solved": "Equipes que resolveram este problema",
+    "score-solved": "Seu acréscimo de tempo para este problema",
+    "score-unsolved": "Suas tentativas para este problema",
+    "pdf-problems": "Gerar PDF com problemas",
+    "import-cases": {
+        "title": "Importar casos de teste",
+        "description": "Você pode importar casos de teste de um arquivo <code>.csv</code>. O arquivo deve ter o seguinte formato:",
+        "image": "Planilha",
+        "sample": "Texto",
+        "placeholder": "Arraste ou clique",
+        "error": "Ocorreu um erro ao importar os casos de teste.",
+        "error-header": "Formato incorreto do cabeçalho do arquivo.",
+        "error-columns": "Número incorreto de colunas na linha {{line}} do arquivo.",
+        "error-type": "Tipo de dado inválido na linha {{line}} do arquivo."
+    }
+}

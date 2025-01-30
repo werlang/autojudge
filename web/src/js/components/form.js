@@ -24,6 +24,10 @@ export default class Form {
     buttons = {};
     inputs = {};
     selects = {};
+
+    static VALIDATION_RULES = {
+        EMAIL: e => e.match(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/),
+    };
     
     constructor(element) {
         this.dom = element;
@@ -47,30 +51,23 @@ export default class Form {
 
         // for every input, add the default behavior of clicking the default button when pressing enter
         this.getInput().forEach((input,i) => {
-            if (!Array.isArray(input)) {
-                input = [input];
-            }
-            input.forEach((input,j) => {
-                // check if the input is not a textarea
-                if (
-                    input.get().tagName == 'TEXTAREA' ||
-                    input.get().type == 'checkbox'
-                ) return;
-                
-                if (this.dom.tagName != 'FORM') {
-                    input.keyPress(e => {
-                        if (e.key == 'Enter') {
-                            const defButton = this.getButton().find(e => e.get().classList.contains('default'));
-                            if (defButton.get().getAttribute('type') == 'submit') return;
-                            defButton.click();
-                        }
-                    });
-                }
-                if (i == 0 && j == 0) {
-                    input.get().focus();
+            // check if the input is not a textarea
+            if ( input.get().tagName == 'TEXTAREA' || input.get().type == 'checkbox' ) return;
+            if (this.dom.tagName == 'FORM') return;
+            
+            input.keyPress(e => {
+                if (e.key == 'Enter') {
+                    const defButton = this.getButton().find(e => e.get().classList.contains('default'));
+                    if (defButton.get().getAttribute('type') == 'submit') return;
+                    defButton.click();
                 }
             });
         });
+
+        // focus on the first input
+        if (this.getInput().length && this.getInput()[0].get()) {
+            this.getInput()[0].get().focus();
+        }
     }
 
     // validate every input in the form
@@ -78,7 +75,10 @@ export default class Form {
     //   - id: id of the input to be validated
     //   - rule: callback that should return true if the input is valid
     //   - message: message to be displayed if the input is invalid
-    validate(validationArray, silent = false) {
+    validate(validationArray, {
+        silent = false,
+        returnList = false,
+    }={}) {
         // response object: contains the total of valid and invalid inputs and a list of the ids of each
         const response = {
             success: { total: 0, list: []},
@@ -124,7 +124,11 @@ export default class Form {
             }
             
         }
-        return response;
+
+        if (returnList === true) {
+            return response;
+        }
+        return response.fail.total == 0;
     }
 
     // get all buttons or a specific button in the form

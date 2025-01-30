@@ -1,18 +1,16 @@
-import Request from "../helpers/request";
-import TemplateVar from "../helpers/template-var";
+import Api from "../helpers/api.js";
+import Team from "./team.js";
 
 export default class Judge {
-    request = new Request({ url: `https://${TemplateVar.get('apiurl')}` });
 
-    constructor({ tests, code, filename }) {
-        this.tests = tests;
+    constructor({ problem, code, filename }) {
+        this.problem = problem;
         this.code = code;
         this.filename = filename;
     }
 
     async run() {
-        return await this.request.post('judge', {
-            tests: this.tests,
+        return await new Api({ token: Team.getToken() }).post(`problems/${this.problem}/judge`, {
             code: this.code,
             filename: this.filename,
         });

@@ -3,7 +3,7 @@ services:
         container_name: web
         build:
             context: .
-            dockerfile: Dockerfile-web
+            dockerfile: Dockerfile-node
         volumes:
             - ./web:/app
             - ./package.json:/app/package.json
@@ -13,7 +13,13 @@ services:
             - 127.0.0.1:9230:9229
         env_file:
             - .env
-        command: npm run ${NODE_ENV}
+        command: >
+            sh -c '
+            if [ "$$NODE_ENV" = "production" ]; then
+                npm run webpack
+            else
+                npm run webpack:dev
+            fi'
         # command: tail -f /dev/null #idle container
         networks:
             - autojudge
@@ -21,24 +27,105 @@ services:
         container_name: api
         build:
             context: .
-            dockerfile: Dockerfile-api
+            dockerfile: Dockerfile-node
         restart: ${RESTART_POLICY}
         ports:
             - 127.0.0.1:9229:9229
+        env_file:
+            - .env
         volumes:
             - ./api:/app
-            - runs:/app/runs
             - ./package.json:/app/package.json
             - node_modules:/app/node_modules
+        command: >
+            sh -c '
+            if [ "$$NODE_ENV" = "production" ]; then
+                npm run start
+            elif [ "$$NODE_ENV" = "development" ]; then
+                npm run start:dev
+            else
+                echo "Test mode. No action." 
+                tail -f /dev/null
+            fi'
+        # command: tail -f /dev/null #idle container
+        networks:
+            - autojudge
+        depends_on:
+            - mysql
+            - judge
+    judge:
+        container_name: judge
+        build:
+            context: .
+            dockerfile: Dockerfile-dind
+        restart: ${RESTART_POLICY}
+        env_file:
+            - .env
+        volumes:
+            - ./judge:/app
+            - ./package.json:/app/package.json
+            - node_modules:/app/node_modules
+            - runs:/app/runs
             - /var/run/docker.sock:/var/run/docker.sock
-        command: npm run ${NODE_ENV}
+        command: >
+            sh -c '
+            if [ "$$NODE_ENV" = "production" ]; then
+                npm run start
+            else
+                npm run start:dev
+            fi'
         # command: tail -f /dev/null #idle container
         networks:
             - autojudge
             - runner
+        ports:
+            - 127.0.0.1:9232:9229
+    background:
+        container_name: background
+        build:
+            context: .
+            dockerfile: Dockerfile-node
+        restart: ${RESTART_POLICY}
+        ports:
+            - 127.0.0.1:9231:9229
+        env_file:
+            - .env
+        volumes:
+            - ./background:/app
+            - ./package.json:/app/package.json
+            - node_modules:/app/node_modules
+        command: >
+            sh -c '
+            if [ "$$NODE_ENV" = "production" ]; then
+                npm run start
+            elif [ "$$NODE_ENV" = "development" ]; then
+                npm run start:dev
+            else
+                echo "Test mode. No action." 
+                tail -f /dev/null
+            fi'
+        networks:
+            - autojudge
+        depends_on:
+            - api
+    mysql:
+        container_name: mysql
+        image: mysql:8.0
+        restart: ${RESTART_POLICY}
+        environment:
+            - MYSQL_DATABASE=${MYSQL_DATABASE}
+            - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+        volumes:
+            - mysql:/var/lib/mysql
+            - ./database.sql:/docker-entrypoint-initdb.d/database.sql
+            - .:/app
+        ports:
+            - 127.0.0.1:${MYSQL_PORT}:3306
+        networks:
+            - autojudge
     nginx:
         container_name: nginx
-        image: valian/docker-nginx-auto-ssl
+        image: pswerlang/nginx-auto-ssl
         restart: ${RESTART_POLICY}
         ports:
             - "80:80"
@@ -47,14 +134,23 @@ services:
             - ./nginx:/etc/nginx/conf.d
         environment:
             - SITES=${URL}=web:3000;${API}=api:3000
+            - ALLOWED_DOMAINS=${PRODUCTION_DOMAIN}
             - FORCE_HTTPS=true
         networks:
             - autojudge
-            
+        depends_on:
+            - web
+            - api
+    gotenberg:
+        container_name: gotenberg
+        image: gotenberg/gotenberg:8
+        networks:
+            - autojudge
 volumes:
     node_modules:
     runs:
         name: judge_tmp_run
+    mysql:
 networks:
     runner:
     autojudge:

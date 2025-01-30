@@ -1,0 +1,26 @@
+{
+    "join-team": "Join Team",
+    "ask-password": "Please enter the team password",
+    "team-id": "Team ID",
+    "wrong-password": "Incorrect password",
+    "password-format": "Password must be 6 numeric characters",
+    "team-id-format": "Invalid team ID",
+    "submissions": {
+        "submitted": "Submitted",
+        "status": "Status"
+    },
+    "new-submission": "New Submission",
+    "select-problem": "Select a problem",
+    "error-select-problem": "Please select a problem",
+    "error-upload-file": "Please upload a source code file",
+    "hint-source-code": "Source code file",
+    "hint-file-type": "Please upload a source code file in the following formats: .c, .cpp, .java, .py, .js, .php",
+    "status": {
+        "accepted": "Submission accepted",
+        "wrong-answer": "Wrong answer",
+        "time-limit": "Time limit exceeded",
+        "error": "Code error",
+        "pending": "Pending evaluation",
+        "parsing-error": "Parsing error, contact administrator"
+    }
+}

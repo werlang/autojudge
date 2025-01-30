@@ -1,0 +1,4 @@
+{
+    "ignore": ["runs/*"],
+    "ext": "js, json"
+}

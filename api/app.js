@@ -1,36 +1,48 @@
-const express = require('express');
-const cors = require('cors');
-const Runner = require('./model/runner');
+import express from 'express';
+import cors from 'cors';
+import errorMiddleware from './middleware/error.js';
+// import passkeyRouter from './route/passKey.js';
+import login from './route/login.js';
+import contest from './route/contest.js';
+import teams from './route/team.js';
+import problems from './route/problem.js';
+import submissions from './route/submission.js';
+import judge from './route/judge.js';
+import Mysql from './helpers/mysql.js';
 
 const port = 3000;
 const host = '0.0.0.0';
+
 const app = express();
 
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+app.use(express.urlencoded({ extended: true, limit: '1024kb'}));
+app.use(express.json({ limit: '1024kb' }));
 app.use(cors());
 
-app.post('/judge', async (req, res, next) => {
-    try {
-        // console.log(req.body)
-        const response = await new Runner({ ...req.body }).run();
-        res.send({ message: response });
-    }
-    catch (err) {
-        console.log(err);
-        next(err);
-    }
-});
+// app.use('/passkey', passkeyRouter);
+app.use('/judge', judge);
+app.use('/login', login);
+app.use('/contests', contest);
+app.use('/teams', teams);
+app.use('/problems', problems);
+app.use('/submissions', submissions);
 
 // error handling
-app.use(require('./middleware/error'));
+app.use(errorMiddleware);
 
 // 404
 app.use((req, res) => {
     res.status(404).send({ message: 'I am sorry, but I think you are lost.' });
 });
 
-app.listen(port, host, () => {
-    console.log(`Web Server running at http://${host}:${port}/`);
+if (process.env.NODE_ENV !== 'test') {
+    app.listen(port, host, () => {
+        console.log(`Web Server running at http://${host}:${port}/`);
+    });
+}
+
+app.on('close', async () => {
+    await Mysql.close();
 });
 
+export default app;

@@ -1,6 +1,6 @@
 # AutoJudge
 
-AutoJudge is a simple script that automates the process of running test cases for different programming languages. It can be used to evaluate the correctness of solutions for various programming problems.
+AutoJudge is a platform for hosting programming contests, where users can submit their solutions to problems and have them automatically evaluated. The platform supports multiple programming languages and provides a web interface for running the autojudge.
 
 * **You can use this project as a CLI code runner. For this, check the [runner-cli](https://github.com/werlang/autojudge/tree/runner-cli) branch.**
 
@@ -8,12 +8,10 @@ AutoJudge is a simple script that automates the process of running test cases fo
 
 ## Features
 
-- Supports multiple programming languages, including C, JavaScript, PHP, Python.
+- Supports multiple programming languages, including C, JavaScript, Java, PHP, Python.
 - Automatically detects the language based on the script's file extension.
-- Compiles and runs code with test cases from the `input` directory.
-- Compares the output with expected results from the `output` directory.
-- Provides pass/fail statistics for each test case.
-- Web interface allowing to save problems on _local storage_ and run autojudge in the browser.
+- Provides a web interface for contest management, problem submission.
+- For teams, the platform supports team registration, solution submission, and ranking.
 
 ## Requirements
 
@@ -27,20 +25,12 @@ Build the Docker images and start the containers:
 docker compose up -d
 ```
 
-Pull the images for the languages you will use. With the api service running, you can pull the images with the following command:
+Pull the images for the languages you will use:
 
 ```bash
-docker exec api npm run compilers
+docker pull gcc:9.5.0
+docker pull node:22
+docker pull php:8.2-cli
+docker pull python:3.11
+docker pull openjdk:24
 ```
-
-Build the front-end css and js files. call the webpack command inside the container:
-
-```bash
-docker exec web npx webpack
-```
-
-Hit `Ctrl+C` when the process finishes.
-
-## Usage
-
-Nginx will serve the front-end at `https://autojudge.localhost`. You can access the web interface to run the autojudge. From there, you can check the instructions on how to use the tool.

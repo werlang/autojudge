@@ -1,0 +1,28 @@
+{
+    "problems": {
+        "description": "Gerencie os problemas que você criou.",
+        "table": {
+            "add": "Adicionar Problema",
+            "author": "Autor",
+            "author-title": "Eu sou o autor"
+        },
+        "add": {
+            "h1": "Adicionar Problema",
+            "error": "Erro ao enviar problema.",
+            "description": "Adicione a descrição do problema.",
+            "public-warn": "Problemas públicos podem ser vistos na lista de problemas por todos os usuários a qualquer momento. Se adicionados a uma competição, os participantes podem já conhecer o problema.",
+            "private-warn": "Marcar um problema como privado impedirá que ele seja listado na lista de problemas públicos. Você ainda poderá acessá-lo através do link direto."
+        }
+    },
+    "contests": {
+        "description": "Crie novas competições ou gerencie aquelas que você criou.",
+        "add": "Adicionar nova competição",
+        "error": "Erro ao enviar competição."
+    },
+    "home": {
+        "h1": "Painel",
+        "description": "Crie e gerencie problemas e competições.",
+        "problems": "Você criou <b>{{count}}</b> problemas na plataforma.",
+        "contests": "Você administra <b>{{count}}</b> competições."
+    }
+}

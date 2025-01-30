@@ -38,7 +38,7 @@ export default class HTMLLoader {
         }
         
         try {
-            this.html = await fetch(`html/${ this.file }.html`).then(res => res.text());
+            this.html = await fetch(`/html/${ this.file }.html`).then(res => res.text());
             return this.html;
         }
         catch (error) {
@@ -52,17 +52,25 @@ export default class HTMLLoader {
 
         target = target || this.target;
 
+        if (target) {
+            target.innerHTML = await this.replace();
+        }
+
+        return this;
+    }
+
+    async replace() {
+        if (!this.html) {
+            await this.fetch();
+        }
+
         let replaced = this.html;
         Object.entries(this.vars).forEach(([k,v]) => {
             const regex = new RegExp(`{{${k}}}`, 'g');
             replaced = replaced.replace(regex, v);
         });
 
-        if (target) {
-            target.innerHTML = replaced;
-        }
-
-        return this;
+        return replaced;
     }
 
 }

@@ -1,0 +1,14 @@
+{
+    "Contest has ended": "竞赛已结束",
+    "Contest has not started yet": "竞赛尚未开始",
+    "Contest has already started": "竞赛已开始",
+    "Submission received": "提交已收到",
+    "Invalid password": "密码无效",
+    "The contest is not running": "竞赛未进行中",
+    "Problem must have hidden test cases": "问题必须包含隐藏测试用例",
+    "Problem does not have hidden test cases": "问题没有隐藏测试用例",
+    "Team already solved this problem": "团队已解决该问题",
+    "User already exists": "用户已存在",
+    "Missing required fields": "缺少必填字段",
+    "User not found": "未找到用户"
+}

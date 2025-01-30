@@ -1,32 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <title>AutoJudge</title>
-    <link rel="shortcut icon" href="img/favicon.ico">
-    <script type="module" src="js/index.min.js" defer></script>
-    <link rel="stylesheet" href="css/index.min.css">
+    {{>meta}}
+    <title>{{common:page-title}}</title>
+    <script type="module" src="/js/index.min.js" defer></script>
+    <link rel="stylesheet" href="/css/index.min.css">
 
 </head>
 <body>
     <div id="frame">
-        <div id="logo">
-            <img src="img/autojudge.webp">
-            <h1>root@<span id="site-name">autojudge</span>~$ Welcome!<span id="underline">_</span></h1>
-        </div>
-        <h3>Online Judge at your service. I can help you test your code against multiple test cases.</h3>
-        
-        <div id="options"></div>
+        <section id="section-1" class="row">
+            <div id="col-left" class="col">
+                <h1>{{common:page-title}}</h1> <!-- For SEO -->
+                <div id="logo">
+                    <img src="/assets/img/autojudge.webp" alt="AutoJudge online judge platform logo">
+                    <h2>root@<span id="site-name">autojudge</span>~$ <span id="welcome">{{index:section1/welcome}}</span></h2>
+                </div>
+                <h3>{{index:section1/h3}}</h3>
+                <div id="button-container">
+                    <button id="manage" class="default">{{index:section1/button-1}}</button>
+                    <button id="compete" class="default">{{index:section1/button-2}}</button>
+                </div>
+            </div>
+            <div id="video-container" class="col">
+                <video autoplay muted loop loading="lazy">
+                    <source src="/assets/video/index-processor.webm" type="video/webm">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </section>
+        <section id="section-3">
+            <div>
+                <h2>{{index:section3/h1}}</h2>
+                <p>{{index:section3/p}}</p>
+                <div id="options"></div>
+            </div>
+        </section>
+        <section id="section-4" class="row">
+            <div class="col text">
+                <div class="content">
+                    <h2>{{index:section4/h1}}</h2>
+                    <p>{{index:section4/p}}</p>
+                    <div id="button-container">
+                        <button id="problems" class="default">{{index:section4/button}}</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col image"></div>
+        </section>
+        <section id="section-5" class="row">
+            <div class="col image"></div>
+            <div class="col text">
+                <div class="content">
+                    <h2>{{index:section5/h1}}</h2>
+                    <p>{{index:section5/p}}</p>
+                    <div id="button-container">
+                        <button id="contests" class="default">{{index:section5/button}}</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="section-6" class="row">
+            <div class="col text">
+                <div class="content">
+                    <h2>{{index:section6/h1}}</h2>
+                    <p>{{index:section6/p}}</p>
+                    <div id="button-container">
+                        <button id="teams" class="default">{{index:section6/button}}</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col image"></div>
+        </section>
     </div>
-    <footer>
-        <div class="col">
-            <div>Check the project on <a href="https://github.com/werlang/autojudge" target="_blank"><i class="fa-brands fa-github"></i> GitHub</a></div>
-            <div>© <span id="year"></span> Pablo Werlang</div>
-        </div>
-    </footer>
-
-    <input id="apiurl" class="template-var" type="hidden" value="{{apiurl}}">
+    {{>footer}}
+    {{{template-vars}}}
 </body>
 </html>

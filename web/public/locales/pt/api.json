@@ -1,0 +1,14 @@
+{
+    "Contest has ended": "A competição terminou",
+    "Contest has not started yet": "A competição ainda não começou",
+    "Contest has already started": "A competição já começou",
+    "Submission received": "Submissão recebida",
+    "Invalid password": "Senha inválida",
+    "The contest is not running": "A competição não está em andamento",
+    "Problem must have hidden test cases": "O problema deve conter casos de teste ocultos",
+    "Problem does not have hidden test cases": "O problema não contém casos de teste ocultos",
+    "Team already solved this problem": "A equipe já resolveu este problema",
+    "User already exists": "O usuário já existe",
+    "Missing required fields": "Campos obrigatórios ausentes",
+    "User not found": "Usuário não encontrado"
+}

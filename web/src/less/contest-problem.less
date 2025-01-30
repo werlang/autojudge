@@ -1,0 +1,51 @@
+@import 'components/table.less';
+
+#frame {
+    #problems-container {
+        width: 100%;
+        max-width: 900px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        
+        .column .color {
+            background-color: var(--color-problem);
+            width: 25px;
+            height: 25px;
+            border-radius: 100%;
+            border: 1px solid rgba(var(--color-text-raw), 0.6);
+        
+            &.empty {
+                border: none;
+            }
+        }
+    }
+
+    #button-container {
+        margin-top: 30px;
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        width: 100%;
+        max-width: 900px;
+    
+        button {
+            max-width: 600px;
+        }
+    }
+} 
+
+.modal#color-modal {
+    max-width: 400px;
+
+    #picker {
+        margin: 20px auto;
+    }
+
+    #button-container button {
+        --color-problem: var(--color-secondary);
+        background-color: var(--color-problem);
+        text-shadow: 0 0 4px rgba(var(--color-background-dark-raw), 1);
+        max-width: none;
+    }
+}

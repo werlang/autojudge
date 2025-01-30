@@ -7,8 +7,18 @@
 //   - build(): wrap the input in a div with a label to create a floating label effect. It uses the placeholder attribute as the label text.
 //   - keyPress(callback): add a callback to the keypress event
 //   - keyUp(callback): add a callback to the keyup event
+//   - keyDown(callback): add a callback to the keydown event
 //   - input(callback): add a callback to the input event
+//   - change(callback): add a callback to the change event
+//   - focus(): focus the input
 //   - setValue(value): set the input value
+//   - disable(): disable the input
+//   - enable(): enable the input
+//   - setMask(mask): set a mask to the input. The mask is a string with the following characters:
+//       - 0: only numbers
+//       - X: only uppercase letters
+//       - x: only lowercase letters
+//       - Any other character: fixed character
 // Example:
 //   const input = new Input(document.querySelector('#my-input'));
 //   input.setError('E-mail inválido');
@@ -18,6 +28,7 @@ import Toast from './toast.js';
 export default class Input {
     constructor(element, { abstract=false, id, value }={}) {
         this.element = element || document.createElement('input');
+        this.element.classList.add('material-input');
         this.value = this.element.value || '';
 
         if (id) {
@@ -42,6 +53,14 @@ export default class Input {
         if (this.element.type == 'checkbox') {
             const label = document.createElement('label');
             label.classList.add('checkbox');
+
+            if (this.element.disabled) {
+                label.classList.add('disabled');
+            }
+
+            this.element.addEventListener('change', () => this.setValue(this.element.checked) );
+            this.setValue(this.element.checked);
+
             label.appendChild(this.element);
             label.appendChild(span);
             wrapper.appendChild(label);
@@ -67,6 +86,10 @@ export default class Input {
                 this.element.classList.remove('filled');
             }
         });
+
+        if (this.value) {
+            this.setValue(this.value);
+        }
     }
 
     get() {
@@ -106,22 +129,46 @@ export default class Input {
     }
 
     keyPress(callback) {
-        this.get().addEventListener('keypress', callback);
-        return this;
+        this.addEvent('keypress', callback);
     }
 
     keyUp(callback) {
-        this.get().addEventListener('keyup', callback);
-        return this;
+        this.addEvent('keyup', callback);
+    }
+
+    keyDown(callback) {
+        this.addEvent('keydown', callback);
     }
 
     input(callback) {
-        this.get().addEventListener('input', callback);
-        return this;
+        this.addEvent('input', callback);
     }
 
     change(callback) {
-        this.get().addEventListener('change', callback);
+        this.addEvent('change', callback);
+    }
+
+    addEvent(event, callback) {
+        this.get().addEventListener(event, e => {
+            if (this.element.disabled) return;
+            callback(e, this.value, this);
+        });
+        return this;
+    }
+
+    disable() {
+        this.element.disabled = true;
+        if (this.element.type == 'checkbox') {
+            this.element.parentElement.classList.add('disabled');
+        }
+        return this;
+    }
+
+    enable() {
+        this.element.disabled = false;
+        if (this.element.type == 'checkbox') {
+            this.element.parentElement.classList.remove('disabled');
+        }
         return this;
     }
 
@@ -175,6 +222,11 @@ export default class Input {
         this.get().value = output;
         this.value = output;
 
+        return this;
+    }
+
+    focus() {
+        this.get().focus();
         return this;
     }
 

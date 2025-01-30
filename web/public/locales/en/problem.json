@@ -1,0 +1,53 @@
+{
+    "inout-public_zero": "No input/output samples found",
+    "inout-public_one": "Input/output sample",
+    "inout-public_other": "Input/output samples",
+    "inout-hidden_zero": "No hidden input/output found",
+    "inout-hidden_one": "Hidden input/output",
+    "inout-hidden_other": "Hidden input/output",
+    "input_samples": "Input samples",
+    "output_samples": "Output samples",
+    "case": "Case",
+    "input": "Input",
+    "output": "Output",
+    "save-changes": {
+        "h1": "Save changes",
+        "message": "Do you want to save the changes to the <b>{{field}}</b> field?",
+        "success": "Problem saved successfully.",
+        "success-case": "Test case {{operation}} successfully."
+    },
+    "discard-changes": {
+        "h1": "Discard changes",
+        "message": "Do you want to discard the changes to the <b>{{field}}</b> field?"
+    },
+    "field": {
+        "title": "Title",
+        "description": "Description"
+    },
+    "add-case": "Add new test case",
+    "add-hidden": "Add new hidden test case",
+    "new-case-value": "New {{inout}} value",
+    "empty-case": "Please fill in the input and output fields.",
+    "duplicate-case": "This test case already exists.",
+    "share-section": "Share this problem",
+    "copy-link": "Link copied to clipboard",
+    "remove-case": {
+        "h1": "Remove test case",
+        "message": "Do you want to remove the test case?"
+    },
+    "teams-solved": "Teams that solved this problem",
+    "score-solved": "Your time addition for this problem",
+    "score-unsolved": "Your attempts for this problem",
+    "pdf-problems": "Generate PDF with problems",
+    "import-cases": {
+        "title": "Import test cases",
+        "description": "You can import test cases from a <code>.csv</code> file. The file must have the following format:",
+        "image": "Spreadsheet",
+        "sample": "Text",
+        "placeholder": "Drop or click",
+        "error": "An error occurred while importing the test cases.",
+        "error-header": "Incorrect file header format.",
+        "error-columns": "Incorrect number of columns in line {{line}} of the file.",
+        "error-type": "Invalid data type in line {{line}} of the file."
+    }
+}

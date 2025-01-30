@@ -1,7 +1,14 @@
 node_modules
 web/public/css/*
 web/public/js/*
+web/public/assets/img/generated
+web/public/assets/fonts
 */package*.json
 nginx/*
 api/runs/*
+api/upload
+api/**/coverage
 .env
+.DS_Store
+config.js
+*.sql

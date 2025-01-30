@@ -1,0 +1,94 @@
+@import 'components/table.less';
+@import 'components/form.less';
+
+#frame {
+    #teams-container {
+        width: 100%;
+        max-width: 900px;
+    
+        #teams {
+            margin: 0 -5px;
+            width: auto;
+    
+            .item {
+                .score span {
+                    background-color: rgba(var(--color-main-raw), 0.4);
+                    font-weight: bold;
+                    font-family: 'Quantico', monospace;
+                    display: flex;
+                    justify-content: center;
+                    padding: 3px 0;
+                    margin: -3px 0;
+                    border-radius: 5px;
+                    width: 80px;
+                }
+            }
+            
+            .score {
+                display: flex;
+                // justify-content: flex-end;
+                align-items: center;
+            }
+    
+            .column .color {
+                background-color: var(--color-problem);
+                width: 15px;
+                height: 15px;
+                border-radius: 100%;
+                border: 1px solid rgba(var(--color-text-raw), 0.6);
+                margin: 0 2px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.8rem;
+        
+                &.empty {
+                    border: none;
+                }
+            }
+        }
+    }
+}
+
+.modal#add-team {
+    pre {
+        text-align: center;
+        margin-top: 0;
+        margin-bottom: 25px;
+        cursor: pointer;
+        transition: 0.3s all;
+        display: flex;
+        justify-content: space-between;
+
+        &#password code {
+            font-size: 1.3rem;
+            letter-spacing: .4rem;
+        }
+
+        &:hover {
+            filter: brightness(0.8);
+
+            .copy {
+                opacity: 1;
+            }
+        }
+
+        code {
+            flex-grow: 1;
+        }
+
+        .copy {
+            padding: 0 10px;
+            margin: -5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: 0.3s all;
+            opacity: 0.3;
+
+            &:hover {
+                background-color: rgba(var(--color-main-raw), 0.1);
+            }
+        }
+    }
+}

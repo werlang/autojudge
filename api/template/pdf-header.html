@@ -1,0 +1,59 @@
+<html>
+<head>
+    <style>
+    body {
+        margin: 0;
+    }
+    
+    .content {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 12pt;
+        margin: 0 10mm;
+    }
+
+    .content .col.left {
+        text-align: left;
+        width: 70pt;
+    }
+        
+    .content .col.right {
+            text-align: right;
+            width: 70pt;  
+    }
+
+    .content .col.center {
+        text-align: center;
+    }
+
+    .content .col .logo {
+        filter: grayscale(1);
+        height: 60pt;
+    }
+
+    .content .col.center .header-title {
+        font-size: 20pt;
+    }
+    .content .col.center .header-subtitle {
+        font-size: 14pt;
+    }
+
+    </style>
+</head>
+<body>
+    <div class="content">
+        <div class="col left">
+            <img class="logo" src="{{custom-logo}}">
+        </div>
+        <div class="col center">
+            <div class="header-title">{{header.title}}</div>
+            <div class="header-subtitle">{{header.subtitle}}</div>
+        </div>
+        <div class="col right">
+            <img class="logo" src="{{logo-autojudge}}">
+        </div>
+    </div>
+</body>
+</html>

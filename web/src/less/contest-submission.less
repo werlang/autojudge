@@ -1,0 +1,181 @@
+@import 'common.less';
+@import 'components/table.less';
+@import 'components/input.less';
+
+#submissions-container {
+    width: 100%;
+    max-width: 900px;
+
+    #submissions {
+        overflow-x: auto;
+        margin: 0 -5px;
+        width: auto;
+
+        .item .time,
+        .head .time {
+            display: none;
+            max-width: 100px;
+
+            @media @size-600 {
+                display: flex;
+            }
+        }
+
+        .item .status,
+        .head .status {
+            max-width: 80px;
+        }
+
+        .item {
+            
+            .problem {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .status {
+                font-size: 1.5rem;
+                
+                i {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    width: 25px;
+                    height: 25px;
+                }
+
+                .accepted {
+                    color: #67ee67;
+                }
+                .wrong-answer {
+                    color: #ff9494;
+                }
+                .time-limit {
+                    color: #ffff80;
+                }
+                .error {
+                    color: #ffbe73;
+                }
+                .pending {
+                    color: #90ffff;
+                }
+                .parsing-error {
+                    color: #da96fe;
+                }
+            }
+
+            .score span {
+                background-color: rgba(var(--color-main-raw), 0.4);
+                font-weight: bold;
+                font-family: 'Quantico', monospace;
+                display: flex;
+                justify-content: center;
+                padding: 3px 0;
+                margin: -3px 0;
+                border-radius: 5px;
+                width: 80px;
+            }
+        }
+
+        .status, .score, .time {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+        
+    }
+
+    &.admin {
+        #submissions {
+            .status, .time {
+                justify-content: flex-start;
+            }
+        }
+    }
+}
+
+#new-submission-form {
+    width: 100%;
+    max-width: 600px;
+    margin-top: 50px;
+
+    #button-container {
+        margin-top: 35px;
+        display: flex;
+        justify-content: center;
+    }
+
+    #code {
+        border-radius: 5px;
+        padding: 20px;
+        background-position: center;
+        background-repeat: no-repeat;
+        padding: 0;
+        transition: 0.3s all;
+        background-image: none;
+        box-shadow: 0 0 5px rgba(var(--color-main-raw), 0.5);
+        background-color: rgba(var(--color-main-raw), 0.1);
+        border: 2px dashed rgba(var(--color-main-raw), 0.7);
+        filter: grayscale(0.8);
+    
+        &.success {
+            border-style: solid;
+            filter: none;
+    
+            .message .button {
+                opacity: 1;
+                cursor: pointer;
+            }
+        }
+    
+        .message {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            transition: 0.3s all;
+            
+            .button {
+                margin: 0;
+                font-weight: bold;
+                border: none;
+                box-shadow: none;
+                background-color: transparent;
+                color: var(--color-text);
+                opacity: 0.4;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                transition: 0.3s all;
+                cursor: not-allowed;
+                width: 100%;
+                padding: 10px 0;
+    
+                i {
+                    font-size: 2rem;
+                    margin-bottom: 10px;
+                }
+            }
+        }
+    
+    }
+}
+
+.modal#log-modal {
+    pre {
+        margin: 0 -30px 30px;
+        padding: 10px;
+        white-space: pre-wrap;
+        border-radius: 0;
+        overflow: hidden auto;
+
+        code {
+            padding: 0px;
+            box-sizing: border-box;
+            width: 100%;
+        }
+    }
+}
+

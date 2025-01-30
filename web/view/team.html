@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {{>meta}}
+    <title>AutoJudge - {{common:teams_one}}</title>
+    <script type="module" src="/js/team.min.js" defer></script>
+    <link rel="stylesheet" href="/css/team.min.css">
+</head>
+<body>
+    <div id="frame">
+        <i id="frame-load" class="fa-solid fa-spinner fa-spin-pulse"></i>
+    </div>
+    {{>footer}}
+    {{{template-vars}}}
+</body>
+</html>

@@ -1,0 +1,7 @@
+{
+    "jest.runMode": "on-demand",
+    "jest.virtualFolders": [
+        {"name": "unit-tests", "jestCommandLine": "npm test -- --config jest.unit.config.mjs", "runMode": "watch"},
+        {"name": "integration-tests", "jestCommandLine": "npm test -- --config jest.integration.config.mjs", "runMode": "on-demand"}
+    ]
+}

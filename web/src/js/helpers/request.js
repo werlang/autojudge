@@ -1,6 +1,16 @@
+// Request class to make API requests
+// Usage:
+// Unauthenticated request:
+// const request = new Request({ url: 'http://localhost:3000' });
+// request.setHeader('Authorization', 'Bearer ' + token);
+// request.get('endpoint', { key: value });
+// request.post('endpoint', { key: value });
+
+
 export default class Request {
-    constructor({ url, headers }) {
+    constructor({ url, headers, options }) {
         this.url = url;
+        this.options = options || {};
         this.headers = new Headers(headers || {});
     }
 
@@ -16,14 +26,22 @@ export default class Request {
         return this.request('POST', endpoint, args);
     }
 
-    async request(method, endpoint, data={}) {
-        const options = {
+    async put(endpoint, args) {
+        return this.request('PUT', endpoint, args);
+    }
+
+    async delete(endpoint, args) {
+        return this.request('DELETE', endpoint, args);
+    }
+
+    async request(method, endpoint, data={}, options={}) {
+        const fetchOptions = {
             method,
             headers: this.headers,
         };
 
-        if (method === 'POST') {
-            options.body = JSON.stringify(data);
+        if (method === 'POST' || method === 'PUT') {
+            fetchOptions.body = JSON.stringify(data);
             this.headers.set('Content-Type', 'application/json');
         }
         if (method === 'GET') {
@@ -31,16 +49,14 @@ export default class Request {
             endpoint += '?' + queryString;
         }
 
-        const request = await fetch(`${this.url}/${endpoint}`, options);
+        options = { ...this.options, ...options };
+        const responseMode = options.responseMode || 'json';
 
-        const text = await request.text();
-        try {
-            return JSON.parse(text);
+        const response = await fetch(`${this.url}/${endpoint}`, fetchOptions).then(data => data[responseMode]());
+        if (response.error) {
+            throw new Error(response.message);
         }
-        catch (e) {
-            console.error(e);
-            return text;
-        }
+        return response;
     }
 
 }

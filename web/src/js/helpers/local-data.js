@@ -46,7 +46,14 @@ class LocalData {
     }
 
     // save data to local storage
-    set() {
+    set({ id, data, expires } = {}) {
+        if (id) this.id = id;
+        if (data) this.data = data;
+        if (expires) this.expires = expires;
+        if (this.expires) {
+            this.expires = this.formatExpires(this.expires);
+        }
+
         localStorage.setItem(this.id, JSON.stringify({
             data: this.data,
             expires: this.expires
@@ -76,6 +83,44 @@ class LocalData {
     addTime(time) {
         this.expires = (this.expires === false ? Date.now() : this.expires) + time;
         this.set();
+    }
+
+    formatExpires(expires) {
+        // check expire format to support '1s', '1m', '1h', '1d', '1w', '1M', '1y', or timestamp
+        if (typeof expires === 'string') {
+            const value = parseInt(expires.slice(0, -1));
+            const unit = expires.slice(-1);
+            // console.log(value, unit);
+         
+            if (isNaN(value)) {
+                throw new Error('Invalid expiration time');
+            }
+
+            switch (unit) {
+                case 's': expires = value * 1000; break;
+                case 'm': expires = value * 1000 * 60; break;
+                case 'h': expires = value * 1000 * 60 * 60; break;
+                case 'd': expires = value * 1000 * 60 * 60 * 24; break;
+                case 'w': expires = value * 1000 * 60 * 60 * 24 * 7; break;
+                case 'M': expires = value * 1000 * 60 * 60 * 24 * 30; break;
+                case 'y': expires = value * 1000 * 60 * 60 * 24 * 365; break;
+                default: throw new Error('Invalid expiration time');
+            }
+
+            expires = Date.now() + expires;
+        }
+        // check if date
+        else if (expires instanceof Date) {
+            expires = expires.getTime();
+        }
+        else if (typeof expires === 'number') {
+            expires = parseInt(expires);
+        }
+        else {
+            throw new Error('Invalid expiration time');
+        }
+
+        return expires;
     }
 }
 
