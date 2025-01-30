@@ -11,4 +11,3 @@ api/**/coverage
 .env
 .DS_Store
 config.js
-*.sql
