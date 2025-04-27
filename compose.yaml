@@ -85,32 +85,42 @@ services:
             - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
         volumes:
             - mysql:/var/lib/mysql
-            # - .:/app
+            - .:/app
         ports:
             - 127.0.0.1:${MYSQL_PORT}:3306
         networks:
             - autojudge
-    nginx:
-        container_name: nginx
-        image: pswerlang/nginx-auto-ssl
-        restart: ${RESTART_POLICY}
-        ports:
-            - "80:80"
-            - "443:443"
-        volumes:
-            - ./nginx:/etc/nginx/conf.d
-        environment:
-            - SITES=${URL}=web:3000;${API}=api:3000
-            - ALLOWED_DOMAINS=${PRODUCTION_DOMAIN}
-            - FORCE_HTTPS=true
-        networks:
-            - autojudge
-        depends_on:
-            - web
-            - api
+    # nginx:
+    #     container_name: nginx
+    #     image: pswerlang/nginx-auto-ssl
+    #     restart: ${RESTART_POLICY}
+    #     ports:
+    #         - "80:80"
+    #         - "443:443"
+    #     volumes:
+    #         - ./nginx:/etc/nginx/conf.d
+    #     environment:
+    #         - SITES=${URL}=web:3000;${API}=api:3000
+    #         - ALLOWED_DOMAINS=${PRODUCTION_DOMAIN}
+    #         - FORCE_HTTPS=true
+    #     networks:
+    #         - autojudge
+    #     depends_on:
+    #         - web
+    #         - api
     gotenberg:
         container_name: gotenberg
         image: gotenberg/gotenberg:8
+        networks:
+            - autojudge
+    tunnel:
+        image: cloudflare/cloudflared
+        restart: ${RESTART_POLICY}
+        command: tunnel --no-autoupdate run
+        environment:
+            - TUNNEL_TOKEN=${CLOUDFLARE_TOKEN}
+        env_file:
+            - .env
         networks:
             - autojudge
 volumes:

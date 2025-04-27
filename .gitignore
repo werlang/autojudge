@@ -9,5 +9,5 @@ api/runs/*
 api/upload
 .env
 .DS_Store
-config.js
-*.sql
+api/helpers/config.js
+database.sql
