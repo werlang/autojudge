@@ -1,3 +1,9 @@
+x-healthcheck: &healthcheck
+    test: curl -k -f api:3000/ready
+    interval: 1m
+    timeout: 30s
+    retries: 3
+
 services:
     web:
         container_name: web
@@ -38,6 +44,8 @@ services:
         depends_on:
             - mysql
             - judge
+        healthcheck:
+            <<: *healthcheck
     judge:
         container_name: judge
         build:
@@ -90,6 +98,9 @@ services:
             - 127.0.0.1:${MYSQL_PORT}:3306
         networks:
             - autojudge
+        healthcheck:
+            <<: *healthcheck
+            test: mysql -uroot -p${MYSQL_ROOT_PASSWORD} --execute="SELECT 1" 2>/dev/null || exit 1
     # nginx:
     #     container_name: nginx
     #     image: pswerlang/nginx-auto-ssl
@@ -111,9 +122,11 @@ services:
     gotenberg:
         container_name: gotenberg
         image: gotenberg/gotenberg:8
+        restart: ${RESTART_POLICY}
         networks:
             - autojudge
     tunnel:
+        container_name: tunnel
         image: cloudflare/cloudflared
         restart: ${RESTART_POLICY}
         command: tunnel --no-autoupdate run
@@ -123,6 +136,19 @@ services:
             - .env
         networks:
             - autojudge
+        healthcheck:
+            <<: *healthcheck
+            test: ["CMD", "cloudflared", "tunnel", "--metrics", "api:3000", "ready"]
+    autoheal:
+        image: willfarrell/autoheal
+        restart: ${RESTART_POLICY}
+        environment:
+            - AUTOHEAL_CONTAINER_LABEL=all # autoheal all containers
+            - AUTOHEAL_INTERVAL=10 # check every 10 seconds
+            - AUTOHEAL_START_PERIOD=60 # wait 60 seconds before first check
+            - AUTOHEAL_DEFAULT_STOP_TIMEOUT=10 # wait 10 seconds before killing container
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock # mount docker socket
 volumes:
     node_modules:
     runs:

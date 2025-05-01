@@ -28,6 +28,10 @@ app.use('/submissions', submissions);
 // error handling
 app.use(errorMiddleware);
 
+app.get('/ready', (req, res) => {
+    res.status(200).send({ message: 'I am ready!' });
+});
+
 // 404
 app.use((req, res) => {
     res.status(404).send({ message: 'I am sorry, but I think you are lost.' });
