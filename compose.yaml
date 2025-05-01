@@ -132,13 +132,14 @@ services:
         command: tunnel --no-autoupdate run
         environment:
             - TUNNEL_TOKEN=${CLOUDFLARE_TOKEN}
+            - TUNNEL_METRICS=0.0.0.0:60123
         env_file:
             - .env
         networks:
             - autojudge
         healthcheck:
             <<: *healthcheck
-            test: ["CMD", "cloudflared", "tunnel", "--metrics", "api:3000", "ready"]
+            test: ["CMD", "cloudflared", "tunnel", "--metrics", "localhost:60123", "ready"]
     autoheal:
         image: willfarrell/autoheal
         restart: ${RESTART_POLICY}
