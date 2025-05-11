@@ -21,8 +21,8 @@ document.querySelectorAll('section .col.text .content h2, #section-3 h2, #sectio
     }).go();
 });
 
-const splashVideo = document.querySelector('#section-1 video');
-splashVideo.playbackRate = 0.4;
+// const splashVideo = document.querySelector('#section-1 video');
+// splashVideo.playbackRate = 0.7;
 
 const translate = await new Translator(['en', 'pt'], [
     'index',

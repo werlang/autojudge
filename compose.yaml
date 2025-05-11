@@ -6,7 +6,6 @@ x-healthcheck: &healthcheck
 
 services:
     web:
-        container_name: web
         build:
             context: .
             dockerfile: Dockerfile-node
@@ -17,6 +16,7 @@ services:
         restart: ${RESTART_POLICY}
         ports:
             - 127.0.0.1:9230:9229
+            - 127.0.0.1:80:3000
         env_file:
             - .env
         command: npm run ${NODE_ENV}:webpack
@@ -24,13 +24,13 @@ services:
         networks:
             - autojudge
     api:
-        container_name: api
         build:
             context: .
             dockerfile: Dockerfile-node
         restart: ${RESTART_POLICY}
         ports:
             - 127.0.0.1:9229:9229
+            - 127.0.0.1:8080:3000
         env_file:
             - .env
         volumes:
@@ -47,7 +47,6 @@ services:
         healthcheck:
             <<: *healthcheck
     judge:
-        container_name: judge
         build:
             context: .
             dockerfile: Dockerfile-dind
@@ -66,7 +65,6 @@ services:
         ports:
             - 127.0.0.1:9232:9229
     background:
-        container_name: background
         build:
             context: .
             dockerfile: Dockerfile-node
@@ -85,7 +83,6 @@ services:
         depends_on:
             - api
     mysql:
-        container_name: mysql
         image: mysql:8.0
         restart: ${RESTART_POLICY}
         environment:
@@ -101,32 +98,12 @@ services:
         healthcheck:
             <<: *healthcheck
             test: mysql -uroot -p${MYSQL_ROOT_PASSWORD} --execute="SELECT 1" 2>/dev/null || exit 1
-    # nginx:
-    #     container_name: nginx
-    #     image: pswerlang/nginx-auto-ssl
-    #     restart: ${RESTART_POLICY}
-    #     ports:
-    #         - "80:80"
-    #         - "443:443"
-    #     volumes:
-    #         - ./nginx:/etc/nginx/conf.d
-    #     environment:
-    #         - SITES=${URL}=web:3000;${API}=api:3000
-    #         - ALLOWED_DOMAINS=${PRODUCTION_DOMAIN}
-    #         - FORCE_HTTPS=true
-    #     networks:
-    #         - autojudge
-    #     depends_on:
-    #         - web
-    #         - api
     gotenberg:
-        container_name: gotenberg
         image: gotenberg/gotenberg:8
         restart: ${RESTART_POLICY}
         networks:
             - autojudge
     tunnel:
-        container_name: tunnel
         image: cloudflare/cloudflared
         restart: ${RESTART_POLICY}
         command: tunnel --no-autoupdate run
