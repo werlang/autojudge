@@ -11,7 +11,7 @@ export default class Mysql {
         user: 'root',
         password: process.env.MYSQL_ROOT_PASSWORD,
         database: process.env.MYSQL_DATABASE,
-        port: process.env.MYSQL_PORT,
+        port: 3306,
     }
 
     // this is the connection pool

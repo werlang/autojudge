@@ -1,6 +1,11 @@
+x-healthcheck: &healthcheck
+    test: curl -k -f api:3000/ready
+    interval: 1m
+    timeout: 30s
+    retries: 3
+
 services:
     web:
-        container_name: web
         build:
             context: .
             dockerfile: Dockerfile-node
@@ -11,6 +16,7 @@ services:
         restart: ${RESTART_POLICY}
         ports:
             - 127.0.0.1:9230:9229
+            - 127.0.0.1:80:3000
         env_file:
             - .env
         command: >
@@ -24,13 +30,13 @@ services:
         networks:
             - autojudge
     api:
-        container_name: api
         build:
             context: .
             dockerfile: Dockerfile-node
         restart: ${RESTART_POLICY}
         ports:
             - 127.0.0.1:9229:9229
+            - 127.0.0.1:8080:3000
         env_file:
             - .env
         volumes:
@@ -53,8 +59,9 @@ services:
         depends_on:
             - mysql
             - judge
+        healthcheck:
+            <<: *healthcheck
     judge:
-        container_name: judge
         build:
             context: .
             dockerfile: Dockerfile-dind
@@ -81,7 +88,6 @@ services:
         ports:
             - 127.0.0.1:9232:9229
     background:
-        container_name: background
         build:
             context: .
             dockerfile: Dockerfile-node
@@ -109,7 +115,6 @@ services:
         depends_on:
             - api
     mysql:
-        container_name: mysql
         image: mysql:8.0
         restart: ${RESTART_POLICY}
         environment:
@@ -117,35 +122,43 @@ services:
             - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
         volumes:
             - mysql:/var/lib/mysql
-            - ./database.sql:/docker-entrypoint-initdb.d/database.sql
             - .:/app
         ports:
             - 127.0.0.1:${MYSQL_PORT}:3306
         networks:
             - autojudge
-    nginx:
-        container_name: nginx
-        image: pswerlang/nginx-auto-ssl
-        restart: ${RESTART_POLICY}
-        ports:
-            - "80:80"
-            - "443:443"
-        volumes:
-            - ./nginx:/etc/nginx/conf.d
-        environment:
-            - SITES=${URL}=web:3000;${API}=api:3000
-            - ALLOWED_DOMAINS=${PRODUCTION_DOMAIN}
-            - FORCE_HTTPS=true
-        networks:
-            - autojudge
-        depends_on:
-            - web
-            - api
+        healthcheck:
+            <<: *healthcheck
+            test: mysql -uroot -p${MYSQL_ROOT_PASSWORD} --execute="SELECT 1" 2>/dev/null || exit 1
     gotenberg:
-        container_name: gotenberg
         image: gotenberg/gotenberg:8
+        restart: ${RESTART_POLICY}
         networks:
             - autojudge
+    tunnel:
+        image: cloudflare/cloudflared
+        restart: ${RESTART_POLICY}
+        command: tunnel --no-autoupdate run
+        environment:
+            - TUNNEL_TOKEN=${CLOUDFLARE_TOKEN}
+            - TUNNEL_METRICS=0.0.0.0:60123
+        env_file:
+            - .env
+        networks:
+            - autojudge
+        healthcheck:
+            <<: *healthcheck
+            test: ["CMD", "cloudflared", "tunnel", "--metrics", "localhost:60123", "ready"]
+    autoheal:
+        image: willfarrell/autoheal
+        restart: ${RESTART_POLICY}
+        environment:
+            - AUTOHEAL_CONTAINER_LABEL=all # autoheal all containers
+            - AUTOHEAL_INTERVAL=10 # check every 10 seconds
+            - AUTOHEAL_START_PERIOD=60 # wait 60 seconds before first check
+            - AUTOHEAL_DEFAULT_STOP_TIMEOUT=10 # wait 10 seconds before killing container
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock # mount docker socket
 volumes:
     node_modules:
     runs:

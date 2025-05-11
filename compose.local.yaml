@@ -1,6 +1,5 @@
 services:
     web:
-        container_name: web
         build:
             context: .
             dockerfile: Dockerfile-node
@@ -25,7 +24,6 @@ services:
         networks:
             - autojudge
     api:
-        container_name: api
         build:
             context: .
             dockerfile: Dockerfile-node
@@ -56,7 +54,6 @@ services:
             - mysql
             - judge
     judge:
-        container_name: judge
         build:
             context: .
             dockerfile: Dockerfile-dind
@@ -83,7 +80,6 @@ services:
         ports:
             - 127.0.0.1:9232:9229
     background:
-        container_name: background
         build:
             context: .
             dockerfile: Dockerfile-node
@@ -111,7 +107,6 @@ services:
         depends_on:
             - api
     mysql:
-        container_name: mysql
         image: mysql:8.0
         restart: ${RESTART_POLICY}
         environment:
@@ -120,13 +115,12 @@ services:
         volumes:
             - mysql:/var/lib/mysql
             - ./database.sql:/docker-entrypoint-initdb.d/database.sql
-            # - .:/app
+            - .:/app
         ports:
             - 127.0.0.1:${MYSQL_PORT}:3306
         networks:
             - autojudge
     gotenberg:
-        container_name: gotenberg
         image: gotenberg/gotenberg:8
         networks:
             - autojudge
