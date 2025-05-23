@@ -31,9 +31,6 @@ case "$extension" in
   "js")
     command="docker compose run --rm --no-TTY node node $file < $input"
     ;;
-  "php")
-    command="docker compose run --rm --no-TTY php php $file < $input"
-    ;;
   "py")
     command="docker compose run --rm --no-TTY python python $file < $input"
     ;;

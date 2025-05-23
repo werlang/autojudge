@@ -12,10 +12,6 @@ services:
         image: node:22
         <<: *runner-template
         # docker compose run --rm node node hello.js
-    php:
-        image: php:8.2-cli
-        # docker compose run --rm php php hello.php
-        <<: *runner-template
     python:
         image: python:3.11
         # docker compose run --rm python python hello.py
