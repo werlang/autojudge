@@ -31,8 +31,4 @@ Replace `<script_file>` with the filename of your code, and `<input_file>` with 
 
 You will see the output of your code in the console.
 
-```bash
-X = 3
-```
-
 There are example code files for each language. You can use them as a reference to create your own code.
