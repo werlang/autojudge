@@ -35,4 +35,4 @@ You will see the output of your code in the console.
 X = 3
 ```
 
-There are example code files in the `simple` folder for each language. You can use them as a reference to create your own code.
+There are example code files for each language. You can use them as a reference to create your own code.
