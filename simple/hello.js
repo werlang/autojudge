@@ -1,9 +1,9 @@
-let input = require('fs').readFileSync('/dev/stdin', 'utf8');
-let lines = input.split('\n');
+const input = require('fs').readFileSync('/dev/stdin', 'utf8').split(/\s/);
 
-const a = parseInt(lines[0]);
-const b = parseInt(lines[1]);
+const a = parseInt(input.shift());
+const b = parseInt(input.shift());
+
 console.log(`X = ${a + b}`);
 
 // Run with:
-// ./autojudge.sh hello.js input
+// ./autojudge.sh hello.js

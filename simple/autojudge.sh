@@ -18,13 +18,15 @@ fi
 extension="${file##*.}"
 
 if [ ! -f "$input" ]; then
-  echo "Input file not found: $input"
-  exit 1
+  input="input"
 fi
 
 case "$extension" in
   "c")
     command="docker compose run --rm --no-TTY gcc /bin/bash -c \"gcc -o a.out $file && ./a.out < $input && rm ./a.out\""
+    ;;
+  "cpp")
+    command="docker compose run --rm --no-TTY gcc /bin/bash -c \"g++ -o a.out $file && ./a.out < $input && rm ./a.out\""
     ;;
   "js")
     command="docker compose run --rm --no-TTY node node $file < $input"

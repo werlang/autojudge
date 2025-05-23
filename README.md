@@ -4,7 +4,7 @@ AutoJudge is a simple script that automates the process of running test cases fo
 
 ## Features
 
-- Supports multiple programming languages, including C, JavaScript, PHP, Python and Java.
+- Supports multiple programming languages, including C, C++, JavaScript, PHP, Python and Java.
 - Automatically detects the language based on the script's file extension.
 - Compiles and runs code with test cases from the `input` directory.
 - Compares the output with expected results from the `output` directory.
@@ -34,13 +34,16 @@ Go to the `simple` folder, and run the following command:
 ./autojudge.sh <script_file> <input_file>
 ```
 
-Replace `<script_file>` with the filename of your code, and `<input_file>` with the filename of the test case.
+Replace `<script_file>` with the filename of your code, and `<input_file>` with the filename of the test case. If no `<input_file>` is specified, the script will use the default `input` file.
 
 You will see the output of your code in the console.
 
 ```bash
 X = 3
 ```
+
+There are example code files in the `simple` folder for each language. You can use them as a reference to create your own code.
+
 
 ### Full test case testing script
 
