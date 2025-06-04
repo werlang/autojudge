@@ -1,0 +1,14 @@
+{
+    "name": "aj-cli",
+    "version": "1.0.0",
+    "description": "AutoJudge CLI - OBI version",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "node -e \"const fs=require('fs');const f=process.argv[1];const h='header.js';const t='.ajtmp.js';fs.writeFileSync(t,fs.readFileSync(h)+fs.readFileSync(f));require('child_process').spawnSync('node',[t],{stdio:'inherit'});fs.unlinkSync(t);\""
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "scanf-printf-obi": "^1.0.0"
+    }
+}

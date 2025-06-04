@@ -1,10 +1,13 @@
-const input = require('fs').readFileSync('/dev/stdin', 'utf8').split(/\s/);
+// exemplo de solução
+  
+// declara duas variáveis
+var val1, val2;
 
-const a = parseInt(input.shift());
-const b = parseInt(input.shift());
+// lê dois valores inteiros
+scanf("%d%d", "val1", "val2");
 
-if (a > b)
-    console.log(a);
+// escreve o resultado
+if (val1 > val2)
+    printf("%d\n", val1);
 else
-    console.log(b);
-
+    printf("%d\n", val2);

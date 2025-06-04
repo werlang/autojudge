@@ -23,19 +23,19 @@ fi
 
 case "$extension" in
   "c")
-    command="docker compose run --rm --no-TTY gcc /bin/bash -c \"gcc -o a.out $file && ./a.out < $input && rm ./a.out\""
+    command="docker compose run --rm --no-TTY gcc /bin/bash -c \"gcc -lm -O2 -static -o a.out $file && ./a.out < $input && rm ./a.out\""
     ;;
   "cpp")
-    command="docker compose run --rm --no-TTY gcc /bin/bash -c \"g++ -o a.out $file && ./a.out < $input && rm ./a.out\""
+    command="docker compose run --rm --no-TTY gcc /bin/bash -c \"g++ -lm -O2 -static -o a.out $file && ./a.out < $input && rm ./a.out\""
     ;;
   "js")
-    command="docker compose run --rm --no-TTY node node $file < $input"
+    command="docker compose run --rm --no-TTY node npm -s start $file < $input"
     ;;
   "py")
     command="docker compose run --rm --no-TTY python python $file < $input"
     ;;
   "java")
-    command="docker compose run --rm --no-TTY java /bin/bash -c \"javac $file && java -cp $(dirname "$file") $(basename "$file" .java) < $input && rm $(dirname "$file")/$(basename "$file" .java).class\""
+    command="docker compose run --rm --no-TTY java /bin/bash -c \"javac $file && java -Xmx1024m -Xms1024m -cp $(dirname "$file") $(basename "$file" .java) < $input && rm $(dirname "$file")/$(basename "$file" .java).class\""
     ;;
   *)
     echo "Unsupported file extension: .$extension"

@@ -5,18 +5,27 @@ x-runner: &runner-template
 
 services:
     gcc:
-        image: gcc:9.5.0
+        image: gcc:15
         <<: *runner-template
         # docker compose run --rm gcc /bin/bash -c "gcc -o a.out hello.c && ./a.out"
     node:
-        image: node:22
+        build:
+            context: .
+            dockerfile: Dockerfile.node
         <<: *runner-template
+        volumes:
+            - node_modules:/app/node_modules
+            - ./:/app
         # docker compose run --rm node node hello.js
     python:
-        image: python:3.11
+        image: python:3.13-alpine
         # docker compose run --rm python python hello.py
         <<: *runner-template
     java:
-        image: openjdk:24
+        image: openjdk:24-slim
         # docker compose run --rm java /bin/bash -c "javac hello.java && java hello"
         <<: *runner-template
+
+volumes:
+    node_modules:
+        

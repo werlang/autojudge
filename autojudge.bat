@@ -28,18 +28,18 @@ if not exist "%input%" (
 set "command="
 
 if /i "%extension%"=="c" (
-    set "command=docker compose run --rm --no-TTY gcc cmd /c \"gcc -o a.out %file% && a.out < %input% && del a.out\""
+    set "command=docker compose run --rm --no-TTY gcc cmd /c \"gcc -lm -O2 -static -o a.out %file% && a.out < %input% && del a.out\""
 ) else if /i "%extension%"=="cpp" (
-    set "command=docker compose run --rm --no-TTY gcc cmd /c \"g++ -o a.out %file% && a.out < %input% && del a.out\""
+    set "command=docker compose run --rm --no-TTY gcc cmd /c \"g++ -lm -O2 -static -o a.out %file% && a.out < %input% && del a.out\""
 ) else if /i "%extension%"=="js" (
-    set "command=docker compose run --rm --no-TTY node node %file% < %input%"
+    set "command=docker compose run --rm --no-TTY node npm -s start %file% < %input%"
 ) else if /i "%extension%"=="py" (
     set "command=docker compose run --rm --no-TTY python python %file% < %input%"
 ) else if /i "%extension%"=="java" (
     for %%I in ("%file%") do (
         set "dir=%%~dpI"
         set "name=%%~nI"
-        set "command=docker compose run --rm --no-TTY java cmd /c \"javac %file% && java -cp !dir! !name! < %input% && del !dir!!name!.class\""
+        set "command=docker compose run --rm --no-TTY java cmd /c \"javac %file% && java -Xmx1024m -Xms1024m -cp !dir! !name! < %input% && del !dir!!name!.class\""
     )
 ) else (
     echo Unsupported file extension: .%extension%
