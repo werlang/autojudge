@@ -52,8 +52,8 @@ fi
 cat <<EOF > .env
 RESTART_POLICY=unless-stopped
 NODE_ENV=$NODE_ENV
-URL=autojudge.localhost
-API=api.autojudge.localhost
+URL=localhost
+API=localhost:3000
 PRODUCTION_DOMAIN=autojudge.io
 GOOGLE_CLIENT_ID=YOUR_GOOGLE_CLIENT_ID
 MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
@@ -67,6 +67,7 @@ BACKGROUND_INTERVAL=5000
 RUNNER_TIMEOUT=30000
 LOCAL_SERVER=$LOCAL_SERVER_IP
 GOTENBERG_SERVER=http://gotenberg:3000
+CLOUDFLARE_TOKEN=YOUR_CLOUDFLARE_TOKEN
 EOF
 
 read -p "Do you want to pull the Docker images the judge needs to evaluate submissions? (yes/no) [yes]: " PULL_IMAGES
@@ -90,6 +91,6 @@ if [ "$START_SERVICES" == "yes" ]; then
         echo "Setup complete. The containers are ready. You can access the web interface at http://$LOCAL_SERVER_IP:3000."
     else
         docker compose up -d
-        echo "Setup complete. The containers are ready. You can access the web interface at https://localtest.me."
+        echo "Setup complete. The containers are ready. You can access the web interface at http://localhost."
     fi
 fi

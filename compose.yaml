@@ -15,7 +15,7 @@ services:
             - node_modules:/app/node_modules
         restart: ${RESTART_POLICY}
         ports:
-            - 127.0.0.1:9230:9229
+            # - 127.0.0.1:9230:9229
             - 127.0.0.1:80:3000
         env_file:
             - .env
@@ -35,8 +35,8 @@ services:
             dockerfile: Dockerfile-node
         restart: ${RESTART_POLICY}
         ports:
-            - 127.0.0.1:9229:9229
-            - 127.0.0.1:8080:3000
+            # - 127.0.0.1:9229:9229
+            - 127.0.0.1:3000:3000
         env_file:
             - .env
         volumes:
@@ -85,15 +85,15 @@ services:
         networks:
             - autojudge
             - runner
-        ports:
-            - 127.0.0.1:9232:9229
+        # ports:
+        #     - 127.0.0.1:9232:9229
     background:
         build:
             context: .
             dockerfile: Dockerfile-node
         restart: ${RESTART_POLICY}
-        ports:
-            - 127.0.0.1:9231:9229
+        # ports:
+        #     - 127.0.0.1:9231:9229
         env_file:
             - .env
         volumes:
@@ -123,8 +123,8 @@ services:
         volumes:
             - mysql:/var/lib/mysql
             - .:/app
-        ports:
-            - 127.0.0.1:${MYSQL_PORT}:3306
+        # ports:
+        #     - 127.0.0.1:${MYSQL_PORT}:3306
         networks:
             - autojudge
         healthcheck:
